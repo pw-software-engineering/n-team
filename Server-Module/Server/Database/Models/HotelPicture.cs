@@ -8,7 +8,7 @@ namespace Server.Database.Models
     public class HotelPicture
     {
         //Properties
-        public int HoteID { get; set; }
+        public int HotelID { get; set; }
         public int PictureID { get; set; }
         public byte[] Picture { get; set; }
     }

@@ -18,7 +18,5 @@ namespace Server.Database.Models
         public DateTime ToTime { get; set; }
         public uint NumberOfChildren { get; set; }
         public uint NumberOfAdults { get; set; }
-
-        
     }
 }

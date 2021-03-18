@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Server.Database
 {
-    public class ServerDBContext:DbContext
+    public class ServerDBContext : DbContext
     {
         public ServerDBContext(DbContextOptions<ServerDBContext> options) : base(options)
         {
@@ -36,6 +36,7 @@ namespace Server.Database
                .HasKey(cr => cr.ReservationID);
             modelBuilder.Entity<ClientReview>()
                .HasKey(cr => cr.ReviewID);
+            
             //Hotel PrimaryKeys
             modelBuilder.Entity<HotelInfo>()
                .HasKey(hi => hi.HotelID);
@@ -43,6 +44,7 @@ namespace Server.Database
                .HasKey(hp => hp.PictureID);
             modelBuilder.Entity<HotelRoom>()
                .HasKey(hr => hr.RoomID);
+            
             //Offer PrimaryKeys
             modelBuilder.Entity<Offer>()
                .HasKey(o => o.OfferID);
@@ -50,6 +52,76 @@ namespace Server.Database
                .HasKey(ohr => new { ohr.OfferID, ohr.RoomID });
             modelBuilder.Entity<OfferPicture>()
                .HasKey(op => op.PictureID);
+
+            //Relations for client tables
+            modelBuilder.Entity<ClientReservation>()
+               .HasOne<HotelRoom>()
+               .WithMany()
+               .HasForeignKey(cr => cr.RoomID)
+               .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<ClientReservation>()
+               .HasOne<HotelInfo>()
+               .WithMany()
+               .HasForeignKey(cr => cr.HotelID)
+               .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<ClientReservation>()
+               .HasOne<Offer>()
+               .WithMany()
+               .HasForeignKey(cr => cr.RoomID)
+               .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<ClientReservation>()
+               .HasOne<Client>()
+               .WithMany()
+               .HasForeignKey(cr => cr.ClientID)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ClientReview>()
+               .HasOne<Client>()
+               .WithMany()
+               .HasForeignKey(cr => cr.ClientID)
+               .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<ClientReview>()
+               .HasOne<Offer>()
+               .WithMany()
+               .HasForeignKey(cr => cr.OfferID)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            //Relations for offers tables
+            modelBuilder.Entity<Offer>()
+               .HasOne<HotelInfo>()
+               .WithMany()
+               .HasForeignKey(o => o.HotelID)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<OfferPicture>()
+               .HasOne<Offer>()
+               .WithMany()
+               .HasForeignKey(op => op.OfferID)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<OfferHotelRoom>()
+               .HasOne<Offer>()
+               .WithMany()
+               .HasForeignKey(ohr => ohr.OfferID)
+               .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<OfferHotelRoom>()
+               .HasOne<HotelRoom>()
+               .WithMany()
+               .HasForeignKey(ohr => ohr.RoomID)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            //Relations for hotel tables
+            modelBuilder.Entity<HotelPicture>()
+               .HasOne<HotelInfo>()
+               .WithMany()
+               .HasForeignKey(hp => hp.HotelID)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<HotelRoom>()
+               .HasOne<HotelInfo>()
+               .WithMany()
+               .HasForeignKey(hr => hr.HotelID)
+               .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
