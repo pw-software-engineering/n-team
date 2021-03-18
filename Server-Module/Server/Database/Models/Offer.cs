@@ -14,7 +14,7 @@ namespace Server.Database.Models
         public byte[] OfferPreviewPicture { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
-        public IEnumerable<(DateTime, DateTime)> AvalaibleTimeIntervals { get; set; }
+        //public IEnumerable<DateTime> AvalaibleTimeIntervals { get; set; }
         //OfferInfo Properties
         public double CostPerChild { get; set; }
         public double CostPerAdult { get; set; }
