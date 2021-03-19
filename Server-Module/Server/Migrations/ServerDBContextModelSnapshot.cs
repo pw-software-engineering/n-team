@@ -19,6 +19,29 @@ namespace Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.0");
 
+            modelBuilder.Entity("Server.Database.Models.AvalaibleTimeInterval", b =>
+                {
+                    b.Property<int>("TimeIntervalID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("FromTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("OfferID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ToTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("TimeIntervalID");
+
+                    b.HasIndex("OfferID");
+
+                    b.ToTable("AvalaibleTimeInterval");
+                });
+
             modelBuilder.Entity("Server.Database.Models.Client", b =>
                 {
                     b.Property<int>("ClientID")
@@ -265,6 +288,13 @@ namespace Server.Migrations
                     b.ToTable("OfferPictures");
                 });
 
+            modelBuilder.Entity("Server.Database.Models.AvalaibleTimeInterval", b =>
+                {
+                    b.HasOne("Server.Database.Models.Offer", null)
+                        .WithMany("AvalaibleTimeIntervals")
+                        .HasForeignKey("OfferID");
+                });
+
             modelBuilder.Entity("Server.Database.Models.ClientReservation", b =>
                 {
                     b.HasOne("Server.Database.Models.Client", null)
@@ -356,6 +386,11 @@ namespace Server.Migrations
                         .HasForeignKey("OfferID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Server.Database.Models.Offer", b =>
+                {
+                    b.Navigation("AvalaibleTimeIntervals");
                 });
 #pragma warning restore 612, 618
         }

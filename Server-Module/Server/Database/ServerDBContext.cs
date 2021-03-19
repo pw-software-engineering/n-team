@@ -52,6 +52,8 @@ namespace Server.Database
                .HasKey(ohr => new { ohr.OfferID, ohr.RoomID });
             modelBuilder.Entity<OfferPicture>()
                .HasKey(op => op.PictureID);
+            modelBuilder.Entity<AvalaibleTimeInterval>()
+               .HasKey(ati => ati.TimeIntervalID);
 
             //Relations for client tables
             modelBuilder.Entity<ClientReservation>()

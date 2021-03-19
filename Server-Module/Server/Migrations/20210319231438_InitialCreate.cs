@@ -107,6 +107,27 @@ namespace Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AvalaibleTimeInterval",
+                columns: table => new
+                {
+                    TimeIntervalID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FromTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ToTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OfferID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AvalaibleTimeInterval", x => x.TimeIntervalID);
+                    table.ForeignKey(
+                        name: "FK_AvalaibleTimeInterval_Offers_OfferID",
+                        column: x => x.OfferID,
+                        principalTable: "Offers",
+                        principalColumn: "OfferID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ClientReservations",
                 columns: table => new
                 {
@@ -215,6 +236,11 @@ namespace Server.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AvalaibleTimeInterval_OfferID",
+                table: "AvalaibleTimeInterval",
+                column: "OfferID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ClientReservations_ClientID",
                 table: "ClientReservations",
                 column: "ClientID");
@@ -267,6 +293,9 @@ namespace Server.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AvalaibleTimeInterval");
+
             migrationBuilder.DropTable(
                 name: "ClientReservations");
 
