@@ -1,0 +1,40 @@
+﻿body {
+    background-color: lightgray;
+}
+
+.col-flbox {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.col-flbox .col-flheader {
+    flex: 0 1 auto;
+}
+
+.col-flbox .col-flcontent {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.col-flbox .col-flfooter {
+    flex: 0 1 40px;
+}
+
+.row-flbox {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.row-flbox .row-flheader {
+    flex: 0 1 auto;
+}
+
+.row-flbox .row-flcontent {
+    flex: 1 1 auto;
+}
+
+.row-flbox .row-flfooter {
+    flex: 0 1 40px;
+}
