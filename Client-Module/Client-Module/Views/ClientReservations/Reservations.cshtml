@@ -3,3 +3,288 @@
 *@
 @{
 }
+
+<div class="w-100 border border-secondary rounded">
+    <div class="btn btn-info d-inline">Previous</div>
+</div>
+<br />
+<div class="card w-100 border-0" style="background-color: lightgray">
+    <ul class="list-group">
+        <li class="list-group-item rounded m-1 border-dark bg-light">
+            <div>
+                <p class="m-0"><b>Hotel:</b><i class="mx-3">Example hotel name</i><small>(Poland, Warsaw)</small></p>
+            </div>
+            <hr class="my-1 border-dark" />
+            <small class="d-block text-secondary my-1">(Offer ID: 42)</small>
+            <div class="d-flex flex-row">
+                <div class="flex-grow-0">
+                    <div class="d-block rounded" style="width: 140px; height: 140px; background-color: red"></div>
+                </div>
+                <div class="flex-grow-1 ml-2">
+                    <div class="d-flex flex-column">
+                        <div class="flex-grow-0">
+                            <p class="m-0 text-center">[Placeholder offer title]</p>
+                            <hr class="my-1" style="border-top: 1px dashed gray" />
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 container-fluid">
+                        <div class="row">
+                            <div class="col-md-3 d-flex">
+                                <div class="m-auto">
+                                    <button class="d-block btn btn-warning my-2 mx-auto">Edit review</button>
+                                    <button class="d-block btn btn-danger my-2 mx-auto">Delete review</button>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <table class="mx-auto">
+                                    <tr class="text-success border-bottom">
+                                        <td class="py-1 px-2">Pending reservations:</td>
+                                        <td><b>0</b></td>
+                                    </tr>
+                                    <tr class="text-danger border-bottom">
+                                        <td class="py-1 px-2">Current reservations:</td>
+                                        <td><b>0</b></td>
+                                    </tr>
+                                    <tr class="text-info my-1">
+                                        <td class="py-1 px-2">Finalized reservations:</td>
+                                        <td><b>0</b></td>
+                                    </tr>
+                                </table>
+                                <button class="d-block btn btn-secondary mx-auto">Hide details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-100 mt-1">
+                <hr class="my-1" style="border-top: 1px solid gray" />
+                <p class="my-1 text-center" style="background-color: rgba(0, 255, 0, 0.3)"><b><i>Pending reservations</i></b></p>
+                <ul class="p-0 mb-1 reservation-list">
+                    <li class="d-flex flex-row px-2 reservation-list-entry" style="background-color: rgba(0, 255, 0, 0.1)">
+                        <div class="flex-grow-1">
+                            <table class="mx-auto">
+                                <tr class="border-bottom">
+                                    <td class="py-1 px-2"><b>From:</b></td>
+                                    <td class="py-1 px-2 border-right">[from date]</td>
+                                    <td class="py-1 px-2"><b>Adults:</b></td>
+                                    <td class="py-1 px-2">[adult count]</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-1 px-2"><b>To:</b></td>
+                                    <td class="py-1 px-2 border-right">[to date]</td>
+                                    <td class="py-1 px-2"><b>Children:</b></td>
+                                    <td class="py-1 px-2">[children count]</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="flex-grow-0 my-auto">
+                            <button class="btn btn-danger">Cancel</button>
+                        </div>
+                    </li>
+                    <li class="d-flex flex-row px-2 reservation-list-entry" style="background-color: rgba(0, 255, 0, 0.1)">
+                        <div class="flex-grow-1">
+                            <table class="mx-auto">
+                                <tr class="border-bottom">
+                                    <td class="py-1 px-2"><b>From:</b></td>
+                                    <td class="py-1 px-2 border-right">[from date]</td>
+                                    <td class="py-1 px-2"><b>Adults:</b></td>
+                                    <td class="py-1 px-2">[adult count]</td>
+                                </tr>
+                                <tr class="border-bottom">
+                                    <td class="py-1 px-2"><b>To:</b></td>
+                                    <td class="py-1 px-2 border-right">[to date]</td>
+                                    <td class="py-1 px-2"><b>Children:</b></td>
+                                    <td class="py-1 px-2">[children count]</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="flex-grow-0 my-auto">
+                            <button class="btn btn-danger">Cancel</button>
+                        </div>
+                    </li>
+                </ul>
+
+                <hr class="my-1" style="border-top: 1px solid gray" />
+                <p class="my-1 text-center" style="background-color: rgba(255, 0, 0, 0.3)"><b><i>Current reservations</i></b></p>
+                <ul class="p-0 mb-1 reservation-list">
+                    <li class="d-block px-2 reservation-list-entry" style="background-color: rgba(255, 0, 0, 0.1)">
+                        <table class="mx-auto">
+                            <tr class="border-bottom">
+                                <td class="py-1 px-2"><b>From:</b></td>
+                                <td class="py-1 px-2 border-right">[from date]</td>
+                                <td class="py-1 px-2"><b>Adults:</b></td>
+                                <td class="py-1 px-2">[adult count]</td>
+                            </tr>
+                            <tr>
+                                <td class="py-1 px-2"><b>To:</b></td>
+                                <td class="py-1 px-2 border-right">[to date]</td>
+                                <td class="py-1 px-2"><b>Children:</b></td>
+                                <td class="py-1 px-2">[children count]</td>
+                            </tr>
+                        </table>
+                    </li>
+                </ul>
+
+                <hr class="my-1" style="border-top: 1px solid gray" />
+                <p class="my-1 text-center" style="background-color: rgba(0, 255, 255, 0.3)"><b><i>Finalized reservations</i></b></p>
+                <ul class="p-0 mb-1 reservation-list">
+                    <li class="d-block px-2 reservation-list-entry" style="background-color: rgba(0, 255, 255, 0.3)">
+                        <table class="mx-auto">
+                            <tr class="border-bottom">
+                                <td class="py-1 px-2"><b>From:</b></td>
+                                <td class="py-1 px-2 border-right">[from date]</td>
+                                <td class="py-1 px-2"><b>Adults:</b></td>
+                                <td class="py-1 px-2">[adult count]</td>
+                            </tr>
+                            <tr>
+                                <td class="py-1 px-2"><b>To:</b></td>
+                                <td class="py-1 px-2 border-right">[to date]</td>
+                                <td class="py-1 px-2"><b>Children:</b></td>
+                                <td class="py-1 px-2">[children count]</td>
+                            </tr>
+                        </table>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+        <li class="list-group-item rounded m-1 border-dark bg-light">
+            <div>
+                <p class="m-0"><b>Hotel:</b><i class="mx-3">Example hotel name</i><small>(Poland, Warsaw)</small></p>
+            </div>
+            <hr class="my-1 border-dark" />
+            <small class="d-block text-secondary my-1">(Offer ID: 42)</small>
+            <div class="d-flex flex-row">
+                <div class="flex-grow-0">
+                    <div class="d-block rounded" style="width: 140px; height: 140px; background-color: red"></div>
+                </div>
+                <div class="flex-grow-1 ml-2">
+                    <div class="d-flex flex-column">
+                        <div class="flex-grow-0">
+                            <p class="m-0 text-center">[Placeholder offer title]</p>
+                            <hr class="my-1" style="border-top: 1px dashed gray" />
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 container-fluid">
+                        <div class="row">
+                            <div class="col-md-3 d-flex">
+                                <div class="m-auto">
+                                    <button class="d-block btn btn-warning my-2 mx-auto">Edit review</button>
+                                    <button class="d-block btn btn-danger my-2 mx-auto">Delete review</button>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <table class="mx-auto">
+                                    <tr class="text-success border-bottom">
+                                        <td class="py-1 px-2">Pending reservations:</td>
+                                        <td><b>0</b></td>
+                                    </tr>
+                                    <tr class="text-danger border-bottom">
+                                        <td class="py-1 px-2">Current reservations:</td>
+                                        <td><b>0</b></td>
+                                    </tr>
+                                    <tr class="text-info my-1">
+                                        <td class="py-1 px-2">Finalized reservations:</td>
+                                        <td><b>0</b></td>
+                                    </tr>
+                                </table>
+                                <button class="d-block btn btn-secondary mx-auto">Show details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-100 mt-1" style="display: none">
+                <hr class="my-1" style="border-top: 1px solid gray" />
+                <p class="my-1 text-center" style="background-color: rgba(0, 255, 0, 0.3)"><b><i>Pending reservations</i></b></p>
+                <ul class="p-0 mb-1 reservation-list">
+                    <li class="d-flex flex-row px-2 reservation-list-entry" style="background-color: rgba(0, 255, 0, 0.1)">
+                        <div class="flex-grow-1">
+                            <table class="mx-auto">
+                                <tr class="border-bottom">
+                                    <td class="py-1 px-2"><b>From:</b></td>
+                                    <td class="py-1 px-2 border-right">[from date]</td>
+                                    <td class="py-1 px-2"><b>Adults:</b></td>
+                                    <td class="py-1 px-2">[adult count]</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-1 px-2"><b>To:</b></td>
+                                    <td class="py-1 px-2 border-right">[to date]</td>
+                                    <td class="py-1 px-2"><b>Children:</b></td>
+                                    <td class="py-1 px-2">[children count]</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="flex-grow-0 my-auto">
+                            <button class="btn btn-danger">Cancel</button>
+                        </div>
+                    </li>
+                    <li class="d-flex flex-row px-2 reservation-list-entry" style="background-color: rgba(0, 255, 0, 0.1)">
+                        <div class="flex-grow-1">
+                            <table class="mx-auto">
+                                <tr class="border-bottom">
+                                    <td class="py-1 px-2"><b>From:</b></td>
+                                    <td class="py-1 px-2 border-right">[from date]</td>
+                                    <td class="py-1 px-2"><b>Adults:</b></td>
+                                    <td class="py-1 px-2">[adult count]</td>
+                                </tr>
+                                <tr class="border-bottom">
+                                    <td class="py-1 px-2"><b>To:</b></td>
+                                    <td class="py-1 px-2 border-right">[to date]</td>
+                                    <td class="py-1 px-2"><b>Children:</b></td>
+                                    <td class="py-1 px-2">[children count]</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="flex-grow-0 my-auto">
+                            <button class="btn btn-danger">Cancel</button>
+                        </div>
+                    </li>
+                </ul>
+
+                <hr class="my-1" style="border-top: 1px solid gray" />
+                <p class="my-1 text-center" style="background-color: rgba(255, 0, 0, 0.3)"><b><i>Current reservations</i></b></p>
+                <ul class="p-0 mb-1 reservation-list">
+                    <li class="d-block px-2 reservation-list-entry" style="background-color: rgba(255, 0, 0, 0.1)">
+                        <table class="mx-auto">
+                            <tr class="border-bottom">
+                                <td class="py-1 px-2"><b>From:</b></td>
+                                <td class="py-1 px-2 border-right">[from date]</td>
+                                <td class="py-1 px-2"><b>Adults:</b></td>
+                                <td class="py-1 px-2">[adult count]</td>
+                            </tr>
+                            <tr>
+                                <td class="py-1 px-2"><b>To:</b></td>
+                                <td class="py-1 px-2 border-right">[to date]</td>
+                                <td class="py-1 px-2"><b>Children:</b></td>
+                                <td class="py-1 px-2">[children count]</td>
+                            </tr>
+                        </table>
+                    </li>
+                </ul>
+
+                <hr class="my-1" style="border-top: 1px solid gray" />
+                <p class="my-1 text-center" style="background-color: rgba(0, 255, 255, 0.3)"><b><i>Finalized reservations</i></b></p>
+                <ul class="p-0 mb-1 reservation-list">
+                    <li class="d-block px-2 reservation-list-entry" style="background-color: rgba(0, 255, 255, 0.3)">
+                        <table class="mx-auto">
+                            <tr class="border-bottom">
+                                <td class="py-1 px-2"><b>From:</b></td>
+                                <td class="py-1 px-2 border-right">[from date]</td>
+                                <td class="py-1 px-2"><b>Adults:</b></td>
+                                <td class="py-1 px-2">[adult count]</td>
+                            </tr>
+                            <tr>
+                                <td class="py-1 px-2"><b>To:</b></td>
+                                <td class="py-1 px-2 border-right">[to date]</td>
+                                <td class="py-1 px-2"><b>Children:</b></td>
+                                <td class="py-1 px-2">[children count]</td>
+                            </tr>
+                        </table>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>
+

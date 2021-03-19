@@ -38,3 +38,15 @@
 .row-flbox .row-flfooter {
     flex: 0 1 40px;
 }
+
+.reservation-list {
+    
+}
+
+.reservation-list-entry {
+    border-top: 1px dashed gray;
+}
+
+.reservation-list > .reservation-list-entry:last-child {
+    border-bottom: 1px dashed gray;
+}
