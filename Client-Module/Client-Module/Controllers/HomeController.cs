@@ -30,7 +30,7 @@ namespace Client_Module.Controllers
         [Route("/home")]
         public IActionResult Index()
         {
-            ViewData[LayoutTagID.NavSelectedBtnKey] = LayoutTagID.NavSearchBtnID;
+            ViewData[LayoutTagID.NavSelectedBtnKey] = LayoutTagID.NavHomeBtnID;
             return View();
         }
 

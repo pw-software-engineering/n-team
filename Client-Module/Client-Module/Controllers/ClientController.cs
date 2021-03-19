@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Client_Module.ViewsTagID.Layout;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,8 @@ namespace Client_Module.Controllers
         [Route("/account")]
         public IActionResult Account()
         {
-            return Ok("client info page");
+            ViewData[LayoutTagID.NavSelectedBtnKey] = LayoutTagID.NavAccountBtnID;
+            return View();
         }
     }
 }
