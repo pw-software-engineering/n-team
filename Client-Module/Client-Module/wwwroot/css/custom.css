@@ -47,6 +47,30 @@
     border-top: 1px dashed gray;
 }
 
+.reservation-list-header-pending {
+    background-color: rgba(0, 255, 0, 0.3);
+}
+
+.reservation-list-header-current {
+    background-color: rgba(255, 0, 0, 0.3);
+}
+
+.reservation-list-header-finalized {
+    background-color: rgba(0, 255, 255, 0.3);
+}
+
+.reservation-list-entry-pending {
+    background-color: rgba(0, 255, 0, 0.1);
+}
+
+.reservation-list-entry-current {
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+.reservation-list-entry-finalized {
+    background-color: rgba(0, 255, 255, 0.1);
+}
+
 .reservation-list > .reservation-list-entry:last-child {
     border-bottom: 1px dashed gray;
 }
