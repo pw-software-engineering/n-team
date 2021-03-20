@@ -4,18 +4,27 @@
 @{
 }
 
-<div class="w-100 border">
-    <div class="d-flex flex-row">
-        <button class="flex-grow-0 btn btn-outline-secondary" type="button">Previous</button>
-        <input type="text" class="flex-grow-0 form-control" style="width: 20px">
-        <button class="flex-grow-0 btn btn-outline-secondary" type="button">Next</button>
-        <div class="flex-grow-1">
-
+<div class="d-flex flex-row mt-1">
+    <div class="flex-grow-0 mx-auto form-inline">
+        @*flex-wrap: nowrap set in order to not wrap divs inside input-group*@
+        <div class="input-group" style="flex-wrap: nowrap">
+            <div class="input-group-prepend">
+                <button class="d-flex flex-row btn btn-outline-secondary bg-light text-secondary" type="button" style="width: 115px; align-items: center">
+                    <i class="fas fa-caret-left mx-1 flex-grow-0"></i>
+                    <span class="flex-grow-0 mx-auto">Previous</span>
+                </button>
+            </div>
+            <input type="text" class="form-control py-0 px-2 border-secondary border-right-0 border-left-0" style="width: 50px; text-align: center" />
+            <div class="input-group-append">
+                <button class="d-flex flex-row btn btn-outline-secondary bg-light text-secondary" type="button" style="width: 115px; align-items: center">
+                    <span class="flex-grow-0 mx-auto">Next</span>
+                    <i class="fas fa-caret-right mx-1 flex-grow-0"></i>
+                </button>
+            </div>
         </div>
     </div>
 </div>
-<br />
-<div class="card w-100 border-0" style="background-color: lightgray">
+<div class="card w-100 border-0 mt-3" style="background-color: lightgray">
     <ul class="list-group">
         @*<li> element responsible for listing an offer with all reservations*@
         <li class="list-group-item rounded m-1 border-dark bg-light">
