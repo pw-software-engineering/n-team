@@ -24,7 +24,12 @@ namespace Client_Module.Controllers
         [Route("/hotels")]
         public IActionResult Hotels()
         {
-            
+            return View();
+        }
+
+        [Route("/hotels/{hotelID}")]
+        public IActionResult DetailedHotel(int hotelID)
+        {
             return View();
         }
 
