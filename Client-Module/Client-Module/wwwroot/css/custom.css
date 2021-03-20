@@ -74,3 +74,7 @@
 .reservation-list > .reservation-list-entry:last-child {
     border-bottom: 1px dashed gray;
 }
+
+.form-control.clientinfo-input-error:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+}
