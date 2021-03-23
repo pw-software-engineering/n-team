@@ -10,7 +10,8 @@ jobs:
   build:
     name: Build Server Module
     runs-on: ubuntu-latest
-
+    env:
+      CSPROJ_PATH: ./Server-Module/Server/Server.csproj
     steps:
     - uses: actions/checkout@v2
     - name: Setup ASP.NET
@@ -18,8 +19,8 @@ jobs:
       with:
         dotnet-version: 3.1.x
     - name: Restore dependencies
-      run: dotnet restore ./Server-Module/Server/Server.csproj
+      run: dotnet restore CSPROJ_PATH
     - name: Build
-      run: dotnet build --no-restore ./Server-Module/Server/Server.csproj
+      run: dotnet build --no-restore CSPROJ_PATH
     - name: Test
-      run: dotnet test --no-build --verbosity normal ./Server-Module/Server/Server.csproj
+      run: dotnet test --no-build --verbosity normal CSPROJ_PATH
