@@ -2,16 +2,16 @@ name: ASP.NET CI
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ main, develop ]
   pull_request:
-    branches: [ develop ]
+    branches: [ main, develop ]
 
 jobs:
   build:
     name: Build Server Module
     runs-on: ubuntu-latest
     env:
-      CSPROJ_PATH: ./Server-Module/Server/Server.csproj
+      SERVER_CSPROJ_PATH: ./Server-Module/Server/Server.csproj
     steps:
     - uses: actions/checkout@v2
     - name: Setup ASP.NET
@@ -19,8 +19,8 @@ jobs:
       with:
         dotnet-version: 3.1.x
     - name: Restore dependencies
-      run: dotnet restore CSPROJ_PATH
+      run: dotnet restore SERVER_CSPROJ_PATH
     - name: Build
-      run: dotnet build --no-restore CSPROJ_PATH
+      run: dotnet build --no-restore SERVER_CSPROJ_PATH
     - name: Test
-      run: dotnet test --no-build --verbosity normal CSPROJ_PATH
+      run: dotnet test --no-build --verbosity normal SERVER_CSPROJ_PATH
