@@ -2,9 +2,9 @@ name: ASP.NET CI
 
 on:
   push:
-    branches: [ init-CI ]
+    branches: [ develop ]
   pull_request:
-    branches: [ init-CI ]
+    branches: [ develop ]
 
 jobs:
   build:
