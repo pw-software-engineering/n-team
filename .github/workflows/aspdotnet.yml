@@ -1,0 +1,25 @@
+name: ASP.NET CI
+
+on:
+  push:
+    branches: [ init-CI ]
+  pull_request:
+    branches: [ init-CI ]
+
+jobs:
+  build:
+    name: Build Server Module
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup ASP.NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    - name: Restore dependencies
+      run: dotnet restore ./Server-Module/Server/Server.csproj
+    - name: Build
+      run: dotnet build --no-restore ./Server-Module/Server/Server.csproj
+    - name: Test
+      run: dotnet test --no-build --verbosity normal ./Server-Module/Server/Server.csproj
