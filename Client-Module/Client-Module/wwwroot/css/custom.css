@@ -1,5 +1,5 @@
-﻿body {
-    background-color: lightgray;
+﻿body, .bg-website{
+    background-color: #e9e9e9;
 }
 
 .col-flbox {
@@ -44,7 +44,7 @@
 }
 
 .reservation-list-entry {
-    border-top: 1px dashed gray;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .reservation-list-header-pending {
@@ -69,10 +69,6 @@
 
 .reservation-list-entry-finalized {
     background-color: rgba(0, 255, 255, 0.1);
-}
-
-.reservation-list > .reservation-list-entry:last-child {
-    border-bottom: 1px dashed gray;
 }
 
 .form-control.clientinfo-input-error {
@@ -102,6 +98,10 @@
 
 .carousel-picture {
     max-height: 250px
+}
+
+.reservation-list-item {
+
 }
 
 @media only screen and (min-width: 576px) {

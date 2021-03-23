@@ -28,5 +28,10 @@ namespace Client_Module.Controllers
             //ViewData[LayoutTagID.NavSelectedBtnKey] = LayoutTagID.NavReservationsBtnID;
             return View();
         }
+
+        public IActionResult Reservation2()
+        {
+            return View();
+        }
     }
 }
