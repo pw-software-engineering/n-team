@@ -1,0 +1,142 @@
+﻿@{
+    ViewData["Title"] = "Reservations";
+}
+
+<h1>Reservations</h1>
+
+<div>
+    <form class="row" action="#">
+        <div class="form-row">
+            <div class="form-group m-3">
+                <input type="date" class="form-control" />
+                <label class="form-control-placeholder">After</label>
+            </div>
+            <div class="form-group m-3">
+                <input type="date" class="form-control" />
+                <label class="form-control-placeholder">Before</label>
+            </div>
+            <div class="form-group m-3">
+                <input type="text" class="form-control" />
+                <label class="form-control-placeholder">Guest name</label>
+            </div>
+<!--        <div class="form-group m-3">
+                <input type="number" min="0" class="form-control" />
+                <label class="form-control-placeholder">Adults</label>
+            </div>
+            <div class="form-group m-3">
+                <input type="number" min="0" class="form-control" />
+                <label class="form-control-placeholder">Children</label>
+            </div>
+-->
+            <div class="form-group m-3">
+                <input type="text" class="form-control" />
+                <label class="form-control-placeholder">Room</label>
+            </div>
+            <div class="form-group m-3">
+                <button type="submit" class="btn btn-success rounded">Apply</button>
+                @*<button type="submit" class="form-control btn btn-primary rounded submit px-3">Sign In</button>*@
+            </div>
+        </div>
+    </form>
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <td></td>
+                <td>
+                    <a class="btn btn-link float-left" id="dates-sort">
+                        Dates <span class="fa fa-sort-up"></span>
+                    </a>
+                </td>
+                <td>Guest</td>
+                <td>Adult guests</td>
+                <td>Children</td>
+                <td>Room</td>
+                <td>Offer</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="fa fa-bed"></span></td>
+                <td>20 Mar – 31 Mar</td>
+                <td>Robert Johnson</td>
+                <td>2</td>
+                <td>2</td>
+                <td>31</td>
+                <td><button class="btn btn-primary">Show offer</button></td>
+            </tr>
+            <tr>
+                <td><span class="fa fa-bed"></span></td>
+                <td>22 Mar – 30 Mar</td>
+                <td>Maria Smith</td>
+                <td>7</td>
+                <td>0</td>
+                <td>12</td>
+                <td><a class="btn btn-primary">Show offer</a></td>
+            </tr>
+            <tr>
+                <td><span class="fa fa-calendar-alt"></span></td>
+                <td>30 Mar – 4 Apr</td>
+                <td>Anita Hillman</td>
+                <td>1</td>
+                <td>0</td>
+                <td>99</td>
+                <td><a class="btn btn-primary">Show offer</a></td>
+            </tr>
+            <tr>
+                <td><span class="fa fa-calendar-alt"></span></td>
+                <td>4 Apr – 7 Apr</td>
+                <td>Mark Bobadilla</td>
+                <td>2</td>
+                <td>0</td>
+                <td>99</td>
+                <td><a class="btn btn-primary">Show offer</a></td>
+            </tr>
+            <tr>
+                <td><span class="fa fa-calendar-alt"></span></td>
+                <td>13 Nov – 14 Nov</td>
+                <td>Donna Burroughs</td>
+                <td>1</td>
+                <td>2</td>
+                <td>20</td>
+                <td><a class="btn btn-primary">Show offer</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<nav aria-label="Reservations pages">
+    <ul class="pagination justify-content-center">
+        <li class="page-item disabled">
+            <a class="page-link" href="#" aria-label="Previous">
+                <span class="fa fa-chevron-left"></span>
+            </a>
+        </li>
+        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next">
+                <span class="fa fa-chevron-right"></span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+@section Scripts {
+    <script type="text/javascript">
+        var datedirect = "asc";
+
+        $(document).ready(function () {
+            $('dates-sort').on('click', function () {
+                if (datedirect === "asc") {
+                    datedirect = "desc";
+                    document.querySelector('dates-sort').innerHTML = 'Dates <span class="fa fa-sort-down"></span>';
+                } else {
+                    datedirect = "asc";
+                    document.querySelector('dates-sort').innerHTML = 'Dates <span class="fa fa-sort-up"></span>';
+                }
+            });
+        });
+    </script>
+}
