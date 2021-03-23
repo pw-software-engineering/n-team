@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["Title"] = "Offers";
+}
+
+<h1>Your offers</h1>
+
+<table class="table table-striped">
+    <tbody>
+        <tr>
+            <td>
+                <div class="row align-items-center m-0">
+                    <div class="container-fluid col-sm-3">
+                        <img src="~/img/rooms/room1.jpg" class="img float-left rounded w-100" />
+                    </div>
+                    <div class="col-sm">
+                        <h3 class="m-0">Limitless offer</h3>
+                        <dl class="row" style="line-height: 15px">
+                            <dt class="col-sm-3">Adult</dt>
+                            <dd class="col-sm-9">120.00$</dd>
+                            <dt class="col-sm-3">Child</dt>
+                            <dd class="col-sm-9">100.00$</dd>
+                            <dt class="col-sm-3">Max guests</dt>
+                            <dd class="col-sm-9">3</dd>
+                        </dl>
+                    </div>
+                    <div class="btn-group-vertical btn-group-sm col-sm-2">
+                        <button class="btn btn-sm btn-outline-danger">Deactivate</button>
+                        <a class="btn btn-sm btn-primary" asp-controller="offers" asp-action="details">Details</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <div class="row align-items-center m-0">
+                    <div class="container-fluid col-sm-3">
+                        <img src="~/img/rooms/room2.jpg" class="img float-left rounded w-100" />
+                    </div>
+                    <div class="col-sm">
+                        <h3>Offer's Title</h3>
+                        <dl class="row" style="line-height: 15px">
+                            <dt class="col-sm-3">Adult</dt>
+                            <dd class="col-sm-9">50.00$</dd>
+                            <dt class="col-sm-3">Child</dt>
+                            <dd class="col-sm-9">10.00$</dd>
+                            <dt class="col-sm-3">Max guests</dt>
+                            <dd class="col-sm-9">5</dd>
+                        </dl>
+                    </div>
+                    <div class="btn-group-vertical btn-group-sm col-sm-2">
+                        <button class="btn btn-outline-danger">Deactivate</button>
+                        <button class="btn btn-primary">Details</button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <div class="row align-items-center m-0">
+                    <div class="container-fluid col-sm-3">
+                        <img src="~/img/rooms/room3.jpg" class="img float-left rounded w-100" />
+                    </div>
+                    <div class="col-sm">
+                        <h3>Boundless</h3>
+                        <dl class="row" style="line-height: 15px">
+                            <dt class="col-sm-3">Adult</dt>
+                            <dd class="col-sm-9">65.00$</dd>
+                            <dt class="col-sm-3">Child</dt>
+                            <dd class="col-sm-9">65.00$</dd>
+                            <dt class="col-sm-3">Max guests</dt>
+                            <dd class="col-sm-9">2</dd>
+                        </dl>
+                    </div>
+                    <div class="btn-group-vertical btn-group-sm col-sm-2">
+                        <button class="btn btn-outline-success">Activate</button>
+                        <button class="btn btn-primary">Details</button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<nav aria-label="Offers pages">
+    <ul class="pagination justify-content-center">
+        <li class="page-item disabled">
+            <a class="page-link" href="#" aria-label="Previous">
+                <span class="fa fa-chevron-left"></span>
+            </a>
+        </li>
+        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next">
+                <span class="fa fa-chevron-right"></span>
+            </a>
+        </li>
+    </ul>
+</nav>
