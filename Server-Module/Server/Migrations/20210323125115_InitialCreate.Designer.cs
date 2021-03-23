@@ -10,7 +10,7 @@ using Server.Database;
 namespace Server.Migrations
 {
     [DbContext(typeof(ServerDBContext))]
-    [Migration("20210319231438_InitialCreate")]
+    [Migration("20210323125115_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -81,10 +81,16 @@ namespace Server.Migrations
                     b.Property<int>("ClientID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ClientID1")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("FromTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("HotelID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("HotelID1")
                         .HasColumnType("int");
 
                     b.Property<long>("NumberOfAdults")
@@ -99,6 +105,9 @@ namespace Server.Migrations
                     b.Property<int>("RoomID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("RoomID1")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("ToTime")
                         .HasColumnType("datetime2");
 
@@ -106,9 +115,17 @@ namespace Server.Migrations
 
                     b.HasIndex("ClientID");
 
+                    b.HasIndex("ClientID1");
+
                     b.HasIndex("HotelID");
 
+                    b.HasIndex("HotelID1");
+
+                    b.HasIndex("OfferID");
+
                     b.HasIndex("RoomID");
+
+                    b.HasIndex("RoomID1");
 
                     b.ToTable("ClientReservations");
                 });
@@ -123,10 +140,16 @@ namespace Server.Migrations
                     b.Property<int>("ClientID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ClientID1")
+                        .HasColumnType("int");
+
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OfferID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OfferID1")
                         .HasColumnType("int");
 
                     b.Property<long>("Rating")
@@ -139,7 +162,11 @@ namespace Server.Migrations
 
                     b.HasIndex("ClientID");
 
+                    b.HasIndex("ClientID1");
+
                     b.HasIndex("OfferID");
+
+                    b.HasIndex("OfferID1");
 
                     b.ToTable("ClientReviews");
                 });
@@ -184,12 +211,17 @@ namespace Server.Migrations
                     b.Property<int>("HotelID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("HotelID1")
+                        .HasColumnType("int");
+
                     b.Property<byte[]>("Picture")
                         .HasColumnType("varbinary(max)");
 
                     b.HasKey("PictureID");
 
                     b.HasIndex("HotelID");
+
+                    b.HasIndex("HotelID1");
 
                     b.ToTable("HotelPictures");
                 });
@@ -204,12 +236,17 @@ namespace Server.Migrations
                     b.Property<int>("HotelID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("HotelID1")
+                        .HasColumnType("int");
+
                     b.Property<string>("HotelRoomNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("RoomID");
 
                     b.HasIndex("HotelID");
+
+                    b.HasIndex("HotelID1");
 
                     b.ToTable("HotelRooms");
                 });
@@ -233,6 +270,9 @@ namespace Server.Migrations
                     b.Property<int>("HotelID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("HotelID1")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -252,6 +292,8 @@ namespace Server.Migrations
 
                     b.HasIndex("HotelID");
 
+                    b.HasIndex("HotelID1");
+
                     b.ToTable("Offers");
                 });
 
@@ -263,9 +305,19 @@ namespace Server.Migrations
                     b.Property<int>("RoomID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("OfferID1")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RoomID1")
+                        .HasColumnType("int");
+
                     b.HasKey("OfferID", "RoomID");
 
+                    b.HasIndex("OfferID1");
+
                     b.HasIndex("RoomID");
+
+                    b.HasIndex("RoomID1");
 
                     b.ToTable("OfferHotelRooms");
                 });
@@ -280,6 +332,9 @@ namespace Server.Migrations
                     b.Property<int>("OfferID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("OfferID1")
+                        .HasColumnType("int");
+
                     b.Property<byte[]>("Picture")
                         .HasColumnType("varbinary(max)");
 
@@ -287,14 +342,18 @@ namespace Server.Migrations
 
                     b.HasIndex("OfferID");
 
+                    b.HasIndex("OfferID1");
+
                     b.ToTable("OfferPictures");
                 });
 
             modelBuilder.Entity("Server.Database.Models.AvalaibleTimeInterval", b =>
                 {
-                    b.HasOne("Server.Database.Models.Offer", null)
+                    b.HasOne("Server.Database.Models.Offer", "Offer")
                         .WithMany("AvalaibleTimeIntervals")
                         .HasForeignKey("OfferID");
+
+                    b.Navigation("Offer");
                 });
 
             modelBuilder.Entity("Server.Database.Models.ClientReservation", b =>
@@ -305,10 +364,24 @@ namespace Server.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("Server.Database.Models.Client", "Client")
+                        .WithMany("ClientReservations")
+                        .HasForeignKey("ClientID1");
+
                     b.HasOne("Server.Database.Models.HotelInfo", null)
                         .WithMany()
                         .HasForeignKey("HotelID")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Server.Database.Models.HotelInfo", "Hotel")
+                        .WithMany()
+                        .HasForeignKey("HotelID1");
+
+                    b.HasOne("Server.Database.Models.Offer", "Offer")
+                        .WithMany()
+                        .HasForeignKey("OfferID")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Server.Database.Models.Offer", null)
@@ -322,6 +395,18 @@ namespace Server.Migrations
                         .HasForeignKey("RoomID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("Server.Database.Models.HotelRoom", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomID1");
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Hotel");
+
+                    b.Navigation("Offer");
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("Server.Database.Models.ClientReview", b =>
@@ -332,11 +417,23 @@ namespace Server.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("Server.Database.Models.Client", "Client")
+                        .WithMany("ClientReviews")
+                        .HasForeignKey("ClientID1");
+
                     b.HasOne("Server.Database.Models.Offer", null)
                         .WithMany()
                         .HasForeignKey("OfferID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("Server.Database.Models.Offer", "Offer")
+                        .WithMany()
+                        .HasForeignKey("OfferID1");
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Offer");
                 });
 
             modelBuilder.Entity("Server.Database.Models.HotelPicture", b =>
@@ -346,6 +443,12 @@ namespace Server.Migrations
                         .HasForeignKey("HotelID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("Server.Database.Models.HotelInfo", "Hotel")
+                        .WithMany("HotelPictures")
+                        .HasForeignKey("HotelID1");
+
+                    b.Navigation("Hotel");
                 });
 
             modelBuilder.Entity("Server.Database.Models.HotelRoom", b =>
@@ -355,6 +458,12 @@ namespace Server.Migrations
                         .HasForeignKey("HotelID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("Server.Database.Models.HotelInfo", "Hotel")
+                        .WithMany()
+                        .HasForeignKey("HotelID1");
+
+                    b.Navigation("Hotel");
                 });
 
             modelBuilder.Entity("Server.Database.Models.Offer", b =>
@@ -364,6 +473,12 @@ namespace Server.Migrations
                         .HasForeignKey("HotelID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("Server.Database.Models.HotelInfo", "Hotel")
+                        .WithMany()
+                        .HasForeignKey("HotelID1");
+
+                    b.Navigation("Hotel");
                 });
 
             modelBuilder.Entity("Server.Database.Models.OfferHotelRoom", b =>
@@ -374,11 +489,23 @@ namespace Server.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("Server.Database.Models.Offer", "Offer")
+                        .WithMany()
+                        .HasForeignKey("OfferID1");
+
                     b.HasOne("Server.Database.Models.HotelRoom", null)
                         .WithMany()
                         .HasForeignKey("RoomID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("Server.Database.Models.HotelRoom", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomID1");
+
+                    b.Navigation("Offer");
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("Server.Database.Models.OfferPicture", b =>
@@ -388,11 +515,31 @@ namespace Server.Migrations
                         .HasForeignKey("OfferID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("Server.Database.Models.Offer", "Offer")
+                        .WithMany("OfferPictures")
+                        .HasForeignKey("OfferID1");
+
+                    b.Navigation("Offer");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.Client", b =>
+                {
+                    b.Navigation("ClientReservations");
+
+                    b.Navigation("ClientReviews");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.HotelInfo", b =>
+                {
+                    b.Navigation("HotelPictures");
                 });
 
             modelBuilder.Entity("Server.Database.Models.Offer", b =>
                 {
                     b.Navigation("AvalaibleTimeIntervals");
+
+                    b.Navigation("OfferPictures");
                 });
 #pragma warning restore 612, 618
         }

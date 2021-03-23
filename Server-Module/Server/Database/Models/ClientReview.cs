@@ -15,5 +15,8 @@ namespace Server.Database.Models
         public string Content { get; set; }
         public uint Rating { get; set; }
         public DateTime ReviewData { get; set; }
+        //Navigational Properties
+        public Offer Offer { get; set; }
+        public Client Client { get; set; }
     }
 }

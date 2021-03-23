@@ -12,6 +12,7 @@ namespace Server.Database
         public ServerDBContext(DbContextOptions<ServerDBContext> options) : base(options)
         {
         }
+        #region Tables
         //Client Tables
         public DbSet<Client> Clients { get; set; }
         public DbSet<ClientReservation> ClientReservations { get; set; }
@@ -24,11 +25,11 @@ namespace Server.Database
         public DbSet<Offer> Offers { get; set; }
         public DbSet<OfferHotelRoom> OfferHotelRooms { get; set; }
         public DbSet<OfferPicture> OfferPictures { get; set; }
-
-
+        #endregion
         //FluentAPI    
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            #region PrimaryKeys
             //Client PrimaryKeys
             modelBuilder.Entity<Client>()
                 .HasKey(c => c.ClientID);
@@ -54,7 +55,9 @@ namespace Server.Database
                .HasKey(op => op.PictureID);
             modelBuilder.Entity<AvalaibleTimeInterval>()
                .HasKey(ati => ati.TimeIntervalID);
+            #endregion
 
+            #region Relations
             //Relations for client tables
             modelBuilder.Entity<ClientReservation>()
                .HasOne<HotelRoom>()
@@ -124,6 +127,7 @@ namespace Server.Database
                .WithMany()
                .HasForeignKey(hr => hr.HotelID)
                .OnDelete(DeleteBehavior.NoAction);
+            #endregion
         }
     }
 }
