@@ -2,48 +2,15 @@
     background-color: #e9e9e9;
 }
 
-.col-flbox {
-    display: flex;
-    flex-flow: column;
-    height: 100%;
-}
-
-.col-flbox .col-flheader {
-    flex: 0 1 auto;
-}
-
-.col-flbox .col-flcontent {
-    flex: 1 1 auto;
-    min-height: 0;
-}
-
-.col-flbox .col-flfooter {
-    flex: 0 1 40px;
-}
-
-.row-flbox {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-}
-
-.row-flbox .row-flheader {
-    flex: 0 1 auto;
-}
-
-.row-flbox .row-flcontent {
-    flex: 1 1 auto;
-}
-
-.row-flbox .row-flfooter {
-    flex: 0 1 40px;
-}
-
 .reservation-list {
     
 }
 
-.reservation-list-entry {
+.text-align-center {
+    text-align: center !important;
+}
+
+.reservation-list-entry, .shadow-border {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
