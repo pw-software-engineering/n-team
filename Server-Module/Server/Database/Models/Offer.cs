@@ -21,16 +21,9 @@ namespace Server.Database.Models
         public string Description { get; set; }
         //Navigational Properties
         public HotelInfo Hotel { get; set; }
-        public IEnumerable<AvalaibleTimeInterval> AvalaibleTimeIntervals { get; set; }
-        public IEnumerable<OfferPicture> OfferPictures { get; set; }
-    }
-
-    public class AvalaibleTimeInterval
-    {
-        public int TimeIntervalID { get; set; }
-        public DateTime FromTime { get; set; }
-        public DateTime ToTime { get; set; }
-        //Navigational Properties
-        public Offer Offer { get; set; }
+        public List<AvalaibleTimeInterval> AvalaibleTimeIntervals { get; set; }
+        public List<OfferPicture> OfferPictures { get; set; }
+        public List<ClientReview> ClientReviews { get; set; }
+        public List<OfferHotelRoom> OfferHotelRooms { get; set; }
     }
 }

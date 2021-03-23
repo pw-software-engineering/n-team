@@ -15,7 +15,7 @@ namespace Server.Database.Models
         public string Password { get; set; }
         public string Email { get; set; }
         //Navigational Properties
-        public IEnumerable<ClientReservation> ClientReservations { get; set; }
-        public IEnumerable<ClientReview> ClientReviews { get; set; }
+        public List<ClientReservation> ClientReservations { get; set; }
+        public List<ClientReview> ClientReviews { get; set; }
     }
 }

@@ -13,6 +13,6 @@ namespace Server.Database.Models
         public string HotelRoomNumber { get; set; }
         //Navigational Properties
         public HotelInfo Hotel { get; set; }
-
+        public List<OfferHotelRoom> OfferHotelRooms { get; set; }
     }
 }

@@ -23,6 +23,7 @@ namespace Server.Database
         public DbSet<HotelRoom> HotelRooms { get; set; }
         //Offer Tables
         public DbSet<Offer> Offers { get; set; }
+        public DbSet<AvalaibleTimeInterval> AvalaibleTimeIntervals { get; set; }
         public DbSet<OfferHotelRoom> OfferHotelRooms { get; set; }
         public DbSet<OfferPicture> OfferPictures { get; set; }
         #endregion
@@ -37,7 +38,7 @@ namespace Server.Database
                .HasKey(cr => cr.ReservationID);
             modelBuilder.Entity<ClientReview>()
                .HasKey(cr => cr.ReviewID);
-            
+
             //Hotel PrimaryKeys
             modelBuilder.Entity<HotelInfo>()
                .HasKey(hi => hi.HotelID);
@@ -45,7 +46,7 @@ namespace Server.Database
                .HasKey(hp => hp.PictureID);
             modelBuilder.Entity<HotelRoom>()
                .HasKey(hr => hr.RoomID);
-            
+
             //Offer PrimaryKeys
             modelBuilder.Entity<Offer>()
                .HasKey(o => o.OfferID);
@@ -60,71 +61,77 @@ namespace Server.Database
             #region Relations
             //Relations for client tables
             modelBuilder.Entity<ClientReservation>()
-               .HasOne<HotelRoom>()
+               .HasOne(cr => cr.Room)
                .WithMany()
                .HasForeignKey(cr => cr.RoomID)
                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<ClientReservation>()
-               .HasOne<HotelInfo>()
+               .HasOne(cr => cr.Hotel)
                .WithMany()
                .HasForeignKey(cr => cr.HotelID)
                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<ClientReservation>()
-               .HasOne<Offer>()
+               .HasOne(cr => cr.Offer)
                .WithMany()
-               .HasForeignKey(cr => cr.RoomID)
+               .HasForeignKey(cr => cr.OfferID)
                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<ClientReservation>()
-               .HasOne<Client>()
-               .WithMany()
+               .HasOne(cr => cr.Client)
+               .WithMany(c => c.ClientReservations)
                .HasForeignKey(cr => cr.ClientID)
                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<ClientReview>()
-               .HasOne<Client>()
-               .WithMany()
+               .HasOne(cr => cr.Client)
+               .WithMany(c => c.ClientReviews)
                .HasForeignKey(cr => cr.ClientID)
                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<ClientReview>()
-               .HasOne<Offer>()
-               .WithMany()
+               .HasOne(cr => cr.Offer)
+               .WithMany(o => o.ClientReviews)
                .HasForeignKey(cr => cr.OfferID)
                .OnDelete(DeleteBehavior.NoAction);
 
             //Relations for offers tables
+            modelBuilder.Entity<AvalaibleTimeInterval>()
+               .HasOne(ati => ati.Offer)
+               .WithMany(o => o.AvalaibleTimeIntervals)
+               .HasForeignKey(ati => ati.OfferID)
+               .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<Offer>()
-               .HasOne<HotelInfo>()
-               .WithMany()
+               .HasOne(o => o.Hotel)
+               .WithMany(h => h.Offers)
                .HasForeignKey(o => o.HotelID)
                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<OfferPicture>()
-               .HasOne<Offer>()
-               .WithMany()
+               .HasOne(op => op.Offer)
+               .WithMany(o => o.OfferPictures)
                .HasForeignKey(op => op.OfferID)
                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<OfferHotelRoom>()
-               .HasOne<Offer>()
-               .WithMany()
+               .HasOne(ohr => ohr.Offer)
+               .WithMany(o => o.OfferHotelRooms)
                .HasForeignKey(ohr => ohr.OfferID)
                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<OfferHotelRoom>()
-               .HasOne<HotelRoom>()
-               .WithMany()
+               .HasOne(ohr => ohr.Room)
+               .WithMany(r => r.OfferHotelRooms)
                .HasForeignKey(ohr => ohr.RoomID)
                .OnDelete(DeleteBehavior.NoAction);
 
             //Relations for hotel tables
             modelBuilder.Entity<HotelPicture>()
-               .HasOne<HotelInfo>()
-               .WithMany()
+               .HasOne(hp => hp.Hotel)
+               .WithMany(hi => hi.HotelPictures)
                .HasForeignKey(hp => hp.HotelID)
                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<HotelRoom>()
-               .HasOne<HotelInfo>()
-               .WithMany()
+               .HasOne(hr => hr.Hotel)
+               .WithMany(h => h.HotelRooms)
                .HasForeignKey(hr => hr.HotelID)
                .OnDelete(DeleteBehavior.NoAction);
             #endregion
