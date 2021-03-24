@@ -1,0 +1,25 @@
+name: ASP.NET CI
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        csproj: [ ./Server-Module/Server/Server.csproj, ./Client-Module/Client-Module/Client-Module.csproj, ./Hotel-Module/Hotel/Hotel.csproj ]
+    name: Build and test all modules
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup ASP.NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    - name: Restore dependencies
+      run: dotnet restore ${{ matrix.csproj }}
+    - name: Build
+      run: dotnet build --no-restore ${{ matrix.csproj }}
+    - name: Test
+      run: dotnet test --no-build --verbosity normal ${{ matrix.csproj }}
