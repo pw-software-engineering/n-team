@@ -1,0 +1,70 @@
+﻿@using Client_Module.ViewsTagID.Layout;
+
+@{ 
+    string navSelectedBtnID = LayoutTagID.NavHomeBtnID;
+    if (ViewData.ContainsKey("nav-selected-btn"))
+    {
+        navSelectedBtnID = (string)ViewData["nav-selected-btn"];
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Client_Module</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/fontawesome.css" />
+    <link rel="stylesheet" href="~/css/custom.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-dark navbar-expand-lg navbar-toggleable-lg bg-dark border-bottom mb-3">
+            <div class="container">
+                <a class="navbar-brand text-warning" asp-area="" asp-controller="Home" asp-action="Index">MINI Hotel</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-lg-inline-flex">
+                    <ul class="navbar-nav flex-grow-1">
+                        @{ string selectedBtnType = "btn-danger"; } 
+                        <li class="nav-item">
+                            <a class="btn text-light mx-2 @(navSelectedBtnID == LayoutTagID.NavHomeBtnID ? selectedBtnType : "")" id="@LayoutTagID.NavHomeBtnID" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn text-light mx-2 @(navSelectedBtnID == LayoutTagID.NavAccountBtnID ? selectedBtnType : "")" id="@LayoutTagID.NavAccountBtnID" asp-controller="Client" asp-action="Account">My account</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn text-light mx-2 @(navSelectedBtnID == LayoutTagID.NavSearchBtnID ? selectedBtnType : "")" id="@LayoutTagID.NavSearchBtnID" asp-controller="Search" asp-action="Hotels">Search offers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn text-light mx-2 @(navSelectedBtnID == LayoutTagID.NavReservationsBtnID ? selectedBtnType : "")" id="@LayoutTagID.NavReservationsBtnID" asp-controller="ClientReservations" asp-action="Reservations">My reservations</a>
+                        </li>
+                    </ul>
+                    <div class="flex-grow-0">
+                        <a class="btn btn-success text-light mx-2" id="@LayoutTagID.NavLogInBtnID" asp-controller="Client" asp-action="LogIn">Log in</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @*<footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - Client_Module - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>*@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
