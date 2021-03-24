@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Client_Module.ViewsTagID.Layout;
@@ -34,7 +35,7 @@ namespace Client_Module.Controllers
         }
 
         [Route("/hotels/{hotelID}/offers")]
-        public IActionResult HotelOffers(int hotelID)
+        public IActionResult HotelOffers(int hotelID, HotelOffersModel hotelOffersModel)
         {
             return View();
         }

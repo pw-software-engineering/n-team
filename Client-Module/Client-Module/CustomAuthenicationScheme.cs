@@ -1,5 +1,6 @@
 ﻿using Client_Module.Controllers;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 
 namespace Client_Module
 {
@@ -38,6 +40,10 @@ namespace Client_Module
             var identity = new ClaimsIdentity(claims, ClientTokenCookieDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, ClientTokenCookieDefaults.AuthenticationScheme);
+
+            //this.Context.Request.RouteValues
+
+            
 
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }

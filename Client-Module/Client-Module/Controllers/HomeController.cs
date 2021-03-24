@@ -14,6 +14,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.IO;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Client_Module.ViewsTagID.Layout;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace Client_Module.Controllers
 {
@@ -31,12 +34,7 @@ namespace Client_Module.Controllers
         public IActionResult Index()
         {
             ViewData[LayoutTagID.NavSelectedBtnKey] = LayoutTagID.NavHomeBtnID;
-            return View();
-        }
 
-        [Authorize(Roles = "SDSD")]
-        public IActionResult Privacy()
-        {
             return View();
         }
 
