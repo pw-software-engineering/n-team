@@ -1,4 +1,8 @@
-﻿<div class="w-100 shadow-border bg-light p-4">
+﻿@{
+    ViewData["Title"] = "Offer details";
+}
+
+<div class="w-100 shadow-border bg-light p-4">
     <div class="text-center">
         <h1 class="display-5" style="font-weight: 400"><i>[Offer title]</i></h1>
     </div>
@@ -23,7 +27,12 @@
     <p class="m-0 px-4 mt-4 text-justify">
         [a long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long description]
     </p>
-    <p class="flex-grow-1 mb-2 mt-3 text-align-center" style="font-size: 19px"><b>Max. number of guests: </b><span class="mx-2">4</span></p>
+    <br />
+    <br />
+    <p class="flex-grow-1 mb-2 text-align-center" style="font-size: 19px">
+        <b class="mx-1">Max. number of guests: </b>
+        <span class="mx-1">4</span>
+    </p>
     <ul class="mt-2 p-0" style="list-style-type: none; font-size: 20px">
         <li class="m-2 text-align-center">
             <i class="fas fa-user-tie mx-2"></i>
@@ -34,9 +43,131 @@
             <span class="m-0"><span style="color: gray">Children:</span><span class="mx-3">67 zł / child</span></span>
         </li>
     </ul>
-
-
     <hr class="my-3" />
-    <button class="d-block mx-auto w-50 my-2 btn btn-success shadow-border font-weight-bold">Create reservation<i class="ml-2 fas fa-chevron-right"></i></button>
+    <p class="text-center" style="font-size: 18px">
+        <span style="font-weight: 500">Offer status:</span>
+        <span class="text-success mx-2"><i class="far fa-check-circle" style="color: green"></i> Active</span>
+        <br />
+        <span class="text-secondary">Press the button below and book a room!</span>
+    </p>
+    <button class="d-block mx-auto w-50 mt-2 mb-4 btn btn-success shadow-border font-weight-bold" data-toggle="modal" data-target="#reservationModal" style="font-size: 18px">Create reservation<i class="ml-2 fas fa-chevron-right"></i></button>
     <hr class="my-3" />
+    <div class="text-center">
+        <h1 class="font-weight-light">Offer reviews</h1>
+    </div>
+
+    <ul class="pagination justify-content-center my-3">
+        <li class="page-item">
+            <a class="page-link" href="" aria-label="Previous">
+                <i class="fas fa-chevron-left text-dark"></i>
+            </a>
+        </li>
+        <li class="page-item text-dark font-weight-bold"><a class="page-link text-dark font-weight-bold">10</a></li>
+        <li class="page-item">
+            <a class="page-link" href="" aria-label="Next">
+                <i class="fas fa-chevron-right text-dark"></i>
+            </a>
+        </li>
+    </ul>
+
+    <ul class="list-unstyled offer-reviews-list w-75 m-0 py-2 mx-auto">
+        <li class="offer-review p-3">
+            <div class="d-flex w-100 flex-row-reverse flex-wrap">
+                <div class="align-self-start text-nowrap">
+                    <b class="text-secondary">Rating: </b>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="far fa-star text-warning"></i>
+                    <i class="far fa-star text-warning"></i>
+                </div>
+                <div class="mr-auto">
+                    <i class="fas fa-user mr-2"></i>
+                    <span class="text-secondary">[Username]</span>
+                    <br />
+                    <i class="fas fa-bed mr-2"></i>
+                    <span class="text-secondary">[Date from] &mdash; [Date to]</span>
+                </div>
+            </div>
+            <hr class="my-2" style="border-top: 1px dashed lightgray" />
+            <p class="px-3 m-0">[Review content that can be really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long ]</p>
+            <hr class="my-2" style="border-top: 1px dashed lightgray" />
+        </li>
+
+        <li class="offer-review p-3">
+            <div class="d-flex w-100 flex-row-reverse flex-wrap">
+                <div class="align-self-start text-nowrap">
+                    <b class="text-secondary">Rating: </b>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="far fa-star text-warning"></i>
+                    <i class="far fa-star text-warning"></i>
+                </div>
+                <div class="mr-auto">
+                    <i class="fas fa-user mr-2"></i>
+                    <span class="text-secondary">[Username]</span>
+                    <br />
+                    <i class="fas fa-bed mr-2"></i>
+                    <span class="text-secondary">[Date from] &mdash; [Date to]</span>
+                </div>
+            </div>
+            <hr class="my-2" style="border-top: 1px dashed lightgray" />
+            <p class="px-3 m-0">[Review content that can be really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long ]</p>
+            <hr class="my-2" style="border-top: 1px dashed lightgray" />
+        </li>
+
+        <li class="offer-review p-3">
+            <div class="d-flex w-100 flex-row-reverse flex-wrap">
+                <div class="align-self-start text-nowrap">
+                    <b class="text-secondary">Rating: </b>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="far fa-star text-warning"></i>
+                    <i class="far fa-star text-warning"></i>
+                </div>
+                <div class="mr-auto">
+                    <i class="fas fa-user mr-2"></i>
+                    <span class="text-secondary">[Username]</span>
+                    <br />
+                    <i class="fas fa-bed mr-2"></i>
+                    <span class="text-secondary">[Date from] &mdash; [Date to]</span>
+                </div>
+            </div>
+            <hr class="my-2" style="border-top: 1px dashed lightgray" />
+            <p class="px-3 m-0">[Review content that can be really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long ]</p>
+            <hr class="my-2" style="border-top: 1px dashed lightgray" />
+        </li>
+    </ul>
+
+    <div class="pagination w-75 mx-auto my-3 flex-nowrap">
+        <div class="page-item ml-auto">
+            <a class="page-link" href="" aria-label="Previous">
+                <i class="fas fa-chevron-left text-dark"></i>
+            </a>
+        </div>
+        <div class="page-item text-dark font-weight-bold"><a class="page-link text-dark font-weight-bold">10</a></div>
+        <div class="page-item">
+            <a class="page-link" href="" aria-label="Next">
+                <i class="fas fa-chevron-right text-dark"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="reservationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myLargeModalLabel">Large modal</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
 </div>
