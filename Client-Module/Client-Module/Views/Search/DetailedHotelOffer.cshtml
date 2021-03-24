@@ -50,7 +50,7 @@
         <br />
         <span class="text-secondary">Press the button below and book a room!</span>
     </p>
-    <button class="d-block mx-auto w-50 mt-2 mb-4 btn btn-success shadow-border font-weight-bold" data-toggle="modal" data-target="#reservationModal" style="font-size: 18px">Create reservation<i class="ml-2 fas fa-chevron-right"></i></button>
+    <button class="d-block mx-auto w-50 mt-2 mb-4 btn btn-success shadow-border font-weight-bold" onclick="ShowReservationModal()" style="font-size: 18px">Create reservation<i class="ml-2 fas fa-chevron-right"></i></button>
     <hr class="my-3" />
     <div class="text-center">
         <h1 class="font-weight-light">Offer reviews</h1>
@@ -161,7 +161,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="myLargeModalLabel">Large modal</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" onclick="HideReservationModal()">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
@@ -171,3 +171,29 @@
         </div>
     </div>
 </div>
+
+@section Scripts { 
+<script>
+    var modalJQ = $("#reservationModal");
+    // Disallow closing modal window by clicking anywhere outside
+    var lockModal = true;
+
+    function ShowReservationModal() {
+        modalJQ.modal("show");
+    }
+
+    function HideReservationModal() {
+        // Unlock modal, as immidiatelly after this function returns, a "hide" event will be fires
+        lockModal = false;
+        modalJQ.modal("hide");
+    }
+
+    modalJQ.on("hide.bs.modal", function (e) {
+        if (lockModal) {
+            e.preventDefault();
+        }
+        // if HideReservationModal was fired, reset lockModal back to true
+        lockModal = true;
+    });
+</script>
+}
