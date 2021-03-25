@@ -11,7 +11,7 @@ namespace Server.Database.Models
         //Properties
         public int OfferID { get; set; }
         public int HotelID { get; set; }
-        public string Title { get; set; }
+        public string OfferTitle { get; set; }
         public string OfferPreviewPicture { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }       
@@ -26,5 +26,17 @@ namespace Server.Database.Models
         public List<OfferPictureDb> OfferPictures { get; set; }
         public List<ClientReviewDb> ClientReviews { get; set; }
         public List<OfferHotelRoomDb> OfferHotelRooms { get; set; }
+        public OfferDb(Offer offer, int hotelID)
+        {
+            HotelID = hotelID;
+            OfferTitle = offer.offerTitle;
+            OfferPreviewPicture = offer.offerPreviewPicture;
+            IsActive = offer.isActive;
+            IsDeleted = false;
+            CostPerChild = offer.costPerChild;
+            CostPerAdult = offer.costPerAdult;
+            MaxGuests = offer.maxGuests;
+            Description = offer.description;
+        }
     }
 }

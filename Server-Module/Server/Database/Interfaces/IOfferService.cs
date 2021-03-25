@@ -11,7 +11,7 @@ namespace Server.Database.Interfaces
     {
         #region /offers
         public List<OfferPreview> GetHotelOffers(int hotelID);
-        public int AddOffer(Offer offer);
+        public int AddOffer(Offer offer, int hotelID);
         #endregion
 
         #region /offers/{offerID}

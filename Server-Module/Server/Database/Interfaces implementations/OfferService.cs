@@ -15,10 +15,14 @@ namespace Server.Database.Interfaces_implementations
         {
             this.db = db;
         }
-        public int AddOffer(Offer offer)
+        public int AddOffer(Offer offer, int hotelID)
         {
-            OfferDb offerDb = new OfferDb(offer);
+            OfferDb offerDb = new OfferDb(offer, hotelID);
             db.Offers.Add(offerDb);
+
+            foreach (string picture in offer.pictures)
+                db.OfferPictures.Add(new OfferPictureDb(picture, offerDb.OfferID));
+            
             db.SaveChanges();
             return offerDb.OfferID;
         }
@@ -52,19 +56,15 @@ namespace Server.Database.Interfaces_implementations
             OfferDb offer = db.Offers.Find(offerID);
             if(offer!=null)
             {
-                if (isActive.HasValue)
-                    offer.IsActive = isActive.Value;  
-                if (offerTitle==null)
-                    offer.Title = offerTitle;
-                if (description == null)
-                    offer.Description = description;
-                if (offerPreviewPicture == null)
-                    offer.OfferPreviewPicture = offerPreviewPicture;
+                offer.IsActive = isActive ?? offer.IsActive;
+                offer.OfferTitle = offerTitle ?? offer.OfferTitle;
+                offer.Description = description ?? offer.Description;
+                offer.OfferPreviewPicture = offerPreviewPicture ?? offer.OfferPreviewPicture;
                 if (offerPictures == null)
                 {
                     offer.OfferPictures.RemoveAll(op => op.OfferID == offerID);
                     foreach (string picture in offerPictures)
-                        offer.OfferPictures.Add(new OfferPictureDb { OfferID = offerID, Picture = picture });
+                        offer.OfferPictures.Add(new OfferPictureDb(picture, offerID));
                 }
                 db.SaveChanges();
                 return true;

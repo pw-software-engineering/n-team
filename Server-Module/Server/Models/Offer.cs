@@ -20,7 +20,7 @@ namespace Server.Models
         public Offer(OfferDb offer)
         {
             isActive = offer.IsActive;
-            offerTitle = offer.Title;
+            offerTitle = offer.OfferTitle;
             costPerChild = offer.CostPerChild;
             costPerAdult = offer.CostPerAdult;
             maxGuests = offer.MaxGuests;
