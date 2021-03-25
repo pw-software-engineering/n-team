@@ -27,19 +27,19 @@
                             </div>
                         </div>
                         <hr />
-                        <form action="#">
+                        <form asp-controller="Client" asp-action="LogIn">
                             <div class="form-group mt-3">
-                                <label class="form-control-placeholder" for="username">Username</label>
-                                <input type="text" class="form-control" required>
+                                <label class="m-0 text-muted" for="username">Username</label>
+                                <input name="username" type="text" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-control-placeholder" for="password">Password</label>
-                                <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
-                                <input id="password-field" type="password" class="form-control" required>
+                                <label class="m-0 text-muted" for="password">Password</label>
+                                <span toggle="#password-input" id="password-toggle-btn" class="fa fa-fw fa-eye text-muted"></span>
+                                <input name="password" id="password-input" type="password" class="form-control" required>
                             </div>
-                            <hr />
-                            <div class="form-group">
-                                <a class="form-control btn btn-primary rounded submit px-3" asp-controller="profile" asp-action="index">Sign In</a>
+                            <hr class="mb-3"/>
+                            <div class="form-group m-0">
+                                <button type="submit" class="form-control btn btn-primary rounded submit px-3" asp-controller="profile" asp-action="index">Sign In</button>
                             </div>
                         </form>
                     </div>
@@ -57,7 +57,7 @@
 
             "use strict";
 
-            $(".toggle-password").click(function () {
+            $("#password-toggle-btn").click(function () {
 
                 $(this).toggleClass("fa-eye fa-eye-slash");
                 var input = $($(this).attr("toggle"));

@@ -16,22 +16,21 @@ namespace Client_Module.Controllers
             _logger = logger;
         }
 
-        [Route("/login")]
-        [HttpGet]
+        [HttpGet("/login")]
         public IActionResult LogIn()
         {
             return View();
         }
 
-        [HttpGet]
         public IActionResult LogOut()
         {
             return Ok("Logout GET");
         }
 
-        [HttpPost]
-        public IActionResult LogIn(int nouse)
+        [HttpPost("/login")]
+        public IActionResult LogIn(string username, string password, int nouse)
         {
+            Console.WriteLine($"{username} | {password}");
             return Ok("Login POST");
         }
 

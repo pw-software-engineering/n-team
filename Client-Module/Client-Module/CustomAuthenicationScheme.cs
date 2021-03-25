@@ -30,7 +30,7 @@ namespace Client_Module
         }
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            //Console.WriteLine("AUTHENTICATE");
+            Console.WriteLine("AUTHENTICATE");
             if (!Request.Cookies.ContainsKey(_cookieName))
             {
                 return Task.FromResult(AuthenticateResult.NoResult());
@@ -40,11 +40,6 @@ namespace Client_Module
             var identity = new ClaimsIdentity(claims, ClientTokenCookieDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, ClientTokenCookieDefaults.AuthenticationScheme);
-
-            //this.Context.Request.RouteValues
-
-            
-
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }
 
