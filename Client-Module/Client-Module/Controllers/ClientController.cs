@@ -1,4 +1,5 @@
 ﻿using Client_Module.ViewsTagID.Layout;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -31,7 +32,10 @@ namespace Client_Module.Controllers
         public IActionResult LogIn(string username, string password)
         {
             Console.WriteLine($"{username} | {password}");
-            return Ok("Login POST");
+
+            CookieOptions options = new CookieOptions();
+            Response.Cookies.Append(ClientTokenCookieDefaults.AuthCookieName, "value2", options);
+            return Redirect("/");
         }
 
         [HttpGet]
