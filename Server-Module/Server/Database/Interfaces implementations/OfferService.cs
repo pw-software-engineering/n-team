@@ -17,13 +17,14 @@ namespace Server.Database.Interfaces_implementations
         }
         public int AddOffer(Offer offer)
         {
-            db.Offers.Add(offer);
+            OfferDb offerDb = new OfferDb(offer);
+            db.Offers.Add(offerDb);
             db.SaveChanges();
-            return offer.OfferID;
+            return offerDb.OfferID;
         }
         public bool DeleteOffer(int offerID)
         {
-            Offer offer = db.Offers.Find(offerID);
+            OfferDb offer = db.Offers.Find(offerID);
             if (offer != null)
             {
                 offer.IsDeleted = true;
@@ -33,19 +34,22 @@ namespace Server.Database.Interfaces_implementations
             return false;
         }
 
-        public List<Offer> GetHotelOffers(int hotelID)
+        public List<OfferPreview> GetHotelOffers(int hotelID)
         {
-            return db.Offers.Where(o => o.HotelID == hotelID).ToList();
+            List<OfferPreview> offerPreviews = new List<OfferPreview>();
+            foreach (OfferDb offer in db.Offers.Where(o => o.HotelID == hotelID).ToList())
+                offerPreviews.Add(new OfferPreview(offer));
+            return offerPreviews; 
         }
 
         public Offer GetOffer(int offerID)
         {
-            return db.Offers.Find(offerID);
+            return new Offer(db.Offers.Find(offerID));
         }
 
         public bool UpdateOffer(int offerID, bool? isActive, string offerTitle, string description, string offerPreviewPicture, List<string> offerPictures)
         {
-            Offer offer = db.Offers.Find(offerID);
+            OfferDb offer = db.Offers.Find(offerID);
             if(offer!=null)
             {
                 if (isActive.HasValue)
@@ -60,7 +64,7 @@ namespace Server.Database.Interfaces_implementations
                 {
                     offer.OfferPictures.RemoveAll(op => op.OfferID == offerID);
                     foreach (string picture in offerPictures)
-                        offer.OfferPictures.Add(new OfferPicture { OfferID = offerID, Picture = picture });
+                        offer.OfferPictures.Add(new OfferPictureDb { OfferID = offerID, Picture = picture });
                 }
                 db.SaveChanges();
                 return true;

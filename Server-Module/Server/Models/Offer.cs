@@ -24,7 +24,14 @@ namespace Server.Models
             costPerChild = offer.CostPerChild;
             costPerAdult = offer.CostPerAdult;
             maxGuests = offer.MaxGuests;
+            description = offer.Description;
             offerPreviewPicture = offer.OfferPreviewPicture;
+            pictures = new List<string>();
+            foreach (OfferPictureDb picture in offer.OfferPictures)
+                pictures.Add(picture.Picture);
+            rooms = new List<string>();
+            foreach (OfferHotelRoomDb room in offer.OfferHotelRooms)
+                rooms.Add(room.Room.HotelRoomNumber);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Server.Database.Interfaces
     interface IOfferService
     {
         #region /offers
-        public List<Offer> GetHotelOffers(int hotelID);
+        public List<OfferPreview> GetHotelOffers(int hotelID);
         public int AddOffer(Offer offer);
         #endregion
 
