@@ -6,8 +6,24 @@
     
 }
 
+.offer-reviews-list {
+    
+}
+
+.offer-review {
+    background-color: #f7f7f7;
+}
+
+.offer-reviews-list > .offer-review:nth-child(2n+1) {
+    background-color: #f2f2f2;
+}
+
 .text-align-center {
     text-align: center !important;
+}
+
+.text-gray {
+    color: gray !important;
 }
 
 .flex-wrap-nowrap {
