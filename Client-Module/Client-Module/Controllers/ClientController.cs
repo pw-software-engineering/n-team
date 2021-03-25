@@ -16,10 +16,11 @@ namespace Client_Module.Controllers
             _logger = logger;
         }
 
+        [Route("/login")]
         [HttpGet]
         public IActionResult LogIn()
         {
-            return Ok("Login GET");
+            return View();
         }
 
         [HttpGet]
