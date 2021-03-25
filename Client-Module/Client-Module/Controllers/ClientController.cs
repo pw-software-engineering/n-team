@@ -28,7 +28,7 @@ namespace Client_Module.Controllers
         }
 
         [HttpPost("/login")]
-        public IActionResult LogIn(string username, string password, int nouse)
+        public IActionResult LogIn(string username, string password)
         {
             Console.WriteLine($"{username} | {password}");
             return Ok("Login POST");
