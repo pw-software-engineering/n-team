@@ -373,3 +373,12 @@ h1, h2, h3, h4, h5,
                 background: #01d28e;
                 color: #fff;
             }
+
+.gallery-img {
+    height: 50px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    opacity: 85%;
+    margin: 1px;
+}

@@ -1,7 +1,88 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Edit your profile</h1>
+<hr />
+<br />
 
+<form>
+    <!-- Title -->
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Hotel's name" />
+        <label class="form-control-placeholder">Name</label>
+    </div>
+    <hr /><br />
+
+    <!-- Desc -->
+    <div class="form-group">
+        <textarea class="form-control" rows="4">Hotel's description description description description description description description description description description</textarea>
+        <label class="form-control-placeholder">Description</label>
+    </div>
+    <hr /><br />
+
+    <!-- Preview PIC -->
+    <div class="form-group">
+        <label>
+            <input type="checkbox" class="" />
+            Change preview picture
+        </label>
+        <div class="form-row">
+            <input id="previewFile" class="form-control col-sm-4" type="file" onchange="previewImg()" />
+            <label class="form-control-placeholder">Preview picture</label>
+            <img id="previewImage" class="gallery-img" src="~/img/bristol-bg.jpg" />
+        </div>
+    </div>
+    <hr /><br />
+
+    <!-- Additional PICS-->
+    <div class="form-group">
+        <label>
+            <input type="checkbox" />
+            Change additional pictures
+        </label>
+        <div class="form-row">
+            <input id="additionalFiles" class="form-control col-sm-4" type="file" multiple onchange="previewMultiple(event)" />
+            <label class="form-control-placeholder">Additional pictures</label>
+            <div id="gallery"></div>
+        </div>
+    </div>
+    <hr />
+
+    <button class="btn btn-success">Save</button>
+</form>
+
+@section Scripts {
+    <script type="text/javascript">
+
+        // preview of the selected preview image
+        function previewImg() {
+            var preview = document.getElementById('previewImage');
+            var file = document.getElementById('previewFile').files[0];
+            var reader = new FileReader();
+
+            reader.onloadend = function () {
+                preview.src = reader.result;
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
+            }
+        }
+
+        // preview of the selected additional images
+        function previewMultiple(event) {
+            var input = document.getElementById("additionalFiles");
+            var count = input.files.length;
+
+            document.getElementById("gallery").innerHTML = "";
+            for (i = 0; i < count; i++) {
+                var urls = URL.createObjectURL(event.target.files[i]);
+                document.getElementById("gallery").innerHTML +=
+                    `<img src="` + urls + `" class="gallery-img" />`;
+            }
+        }
+    </script>
+}
