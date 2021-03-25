@@ -10,5 +10,8 @@ namespace Server.Database.Models
         //Properties
         public int OfferID { get; set; }
         public int RoomID { get; set; }
+        //Navigational Properties
+        public Offer Offer { get; set; }
+        public HotelRoom Room { get; set; }
     }
 }

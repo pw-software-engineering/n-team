@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Limitless offer";
+}
+
+<h1>Limitless offer</h1>
+
+<div>
+    <div class="img d-block rounded" style="width: 100%; height: 300px; background-image: url(../img/rooms/room1.jpg)">
+        @*<img class="img d-block rounded" style="height: 300px;" src="~/img/rooms/room1.jpg" />*@
+    </div>
+
+    <div>
+        <small>Offer description description description description description description description description description description</small>
+    </div>
+</div>
+<hr />
+
+<dl class="row" style="line-height: 15px">
+    <dt class="col-sm-3">Active</dt>
+    <dd class="col-sm-9">Yes</dd>
+    <dt class="col-sm-3">Adult</dt>
+    <dd class="col-sm-9">65.00$</dd>
+    <dt class="col-sm-3">Child</dt>
+    <dd class="col-sm-9">65.00$</dd>
+    <dt class="col-sm-3">Max guests</dt>
+    <dd class="col-sm-9">2</dd>
+</dl>
+<hr />
+<div>
+    <h2 class="heading-section">Photos</h2>
+
+    <div class="row">
+        <div class="col-sm-3">
+            <a href="~/img/cats/cat1.jpg">
+                <img class="img-thumbnail" src="~/img/cats/cat1.jpg">
+            </a>
+        </div>
+        <div class="col-sm-3">
+            <a href="~/img/cats/cat2.jpg">
+                <img class="img-thumbnail" src="~/img/cats/cat2.jpg" />
+            </a>
+        </div>
+        <div class="col-sm-3">
+            <a href="~/img/cats/cat3.jpg">
+                <img class="img-thumbnail" src="~/img/cats/cat3.jpg" />
+            </a>
+        </div>
+        <div class="col-sm-3">
+            <a href="~/img/cats/cat4.jpg">
+                <img class="img-thumbnail" src="~/img/cats/cat4.jpg" />
+            </a>
+        </div>
+        <div class="col-sm-3">
+            <a href="~/img/cats/cat5.jpg">
+                <img class="img-thumbnail" src="~/img/cats/cat5.jpg" />
+            </a>
+        </div>
+    </div>
+</div>
+<hr />
+
+<div>
+    <a class="btn btn-primary" asp-controller="offers" asp-action="edit">Edit offer</a>
+    <a class="btn btn-danger">Remove offer</a>
+</div>

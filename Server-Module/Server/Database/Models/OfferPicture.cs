@@ -11,5 +11,7 @@ namespace Server.Database.Models
         public int OfferID { get; set; }
         public int PictureID { get; set; }
         public byte[] Picture { get; set; }
+        //Navigational Properties
+        public Offer Offer { get; set; }
     }
 }

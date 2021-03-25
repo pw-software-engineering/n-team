@@ -107,24 +107,23 @@ namespace Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AvalaibleTimeInterval",
+                name: "AvalaibleTimeIntervals",
                 columns: table => new
                 {
                     TimeIntervalID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FromTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ToTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OfferID = table.Column<int>(type: "int", nullable: true)
+                    OfferID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AvalaibleTimeInterval", x => x.TimeIntervalID);
+                    table.PrimaryKey("PK_AvalaibleTimeIntervals", x => x.TimeIntervalID);
                     table.ForeignKey(
-                        name: "FK_AvalaibleTimeInterval_Offers_OfferID",
+                        name: "FK_AvalaibleTimeIntervals_Offers_OfferID",
                         column: x => x.OfferID,
                         principalTable: "Offers",
-                        principalColumn: "OfferID",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "OfferID");
                 });
 
             migrationBuilder.CreateTable(
@@ -161,8 +160,8 @@ namespace Server.Migrations
                         principalTable: "HotelRooms",
                         principalColumn: "RoomID");
                     table.ForeignKey(
-                        name: "FK_ClientReservations_Offers_RoomID",
-                        column: x => x.RoomID,
+                        name: "FK_ClientReservations_Offers_OfferID",
+                        column: x => x.OfferID,
                         principalTable: "Offers",
                         principalColumn: "OfferID");
                 });
@@ -177,7 +176,7 @@ namespace Server.Migrations
                     OfferID = table.Column<int>(type: "int", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Rating = table.Column<long>(type: "bigint", nullable: false),
-                    ReviewData = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ReviewDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -236,8 +235,8 @@ namespace Server.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AvalaibleTimeInterval_OfferID",
-                table: "AvalaibleTimeInterval",
+                name: "IX_AvalaibleTimeIntervals_OfferID",
+                table: "AvalaibleTimeIntervals",
                 column: "OfferID");
 
             migrationBuilder.CreateIndex(
@@ -249,6 +248,11 @@ namespace Server.Migrations
                 name: "IX_ClientReservations_HotelID",
                 table: "ClientReservations",
                 column: "HotelID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClientReservations_OfferID",
+                table: "ClientReservations",
+                column: "OfferID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClientReservations_RoomID",
@@ -294,7 +298,7 @@ namespace Server.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AvalaibleTimeInterval");
+                name: "AvalaibleTimeIntervals");
 
             migrationBuilder.DropTable(
                 name: "ClientReservations");

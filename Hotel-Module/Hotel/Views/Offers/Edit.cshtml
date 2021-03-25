@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Limitless offer";
+}
+
+<h1>Edit Limitless offer</h1>
+
+<form id="editForm">
+    <div class="form-group">
+        <input type="checkbox" checked />
+        <label>Active</label>
+    </div>
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Limitless offer" />
+        <label class="form-control-placeholder">Title</label>
+    </div>
+    <hr /><br />
+
+    <div class="form-group">
+        <textarea class="form-control" rows="4" form="editForm">Offer description description description description description description description description description description</textarea>
+        <label class="form-control-placeholder">Description</label>
+    </div>
+    <hr /><br />
+
+    <div class="form-group">
+        <input type="checkbox" />
+        <label>Change picture</label>
+        <input type="file" class="form-control" />
+        <label class="form-control-placeholder">Preview picture</label>
+    </div>
+    <hr /><br />
+
+    <div class="form-group">
+        <input type="checkbox" />
+        <label>Change pictures</label>
+        <input type="file" multiple class="form-control" />
+        <label class="form-control-placeholder">Offer pictures</label>
+    </div>
+    <hr />
+    <div class="form-group">
+        <button class="btn btn-primary">Save</button>
+    </div>
+</form>

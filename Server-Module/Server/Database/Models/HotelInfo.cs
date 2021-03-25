@@ -15,5 +15,9 @@ namespace Server.Database.Models
         public string HotelName { get; set; }
         public string HotelDesc { get; set; }
         public string AccessToken { get; set; }
+        //Navigational Properties
+        public List<HotelPicture> HotelPictures { get; set; }
+        public List<Offer> Offers { get; set; }
+        public List<HotelRoom> HotelRooms { get; set; }
     }
 }

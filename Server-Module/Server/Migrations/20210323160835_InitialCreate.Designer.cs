@@ -10,7 +10,7 @@ using Server.Database;
 namespace Server.Migrations
 {
     [DbContext(typeof(ServerDBContext))]
-    [Migration("20210319231438_InitialCreate")]
+    [Migration("20210323160835_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,7 +31,7 @@ namespace Server.Migrations
                     b.Property<DateTime>("FromTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("OfferID")
+                    b.Property<int>("OfferID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ToTime")
@@ -41,7 +41,7 @@ namespace Server.Migrations
 
                     b.HasIndex("OfferID");
 
-                    b.ToTable("AvalaibleTimeInterval");
+                    b.ToTable("AvalaibleTimeIntervals");
                 });
 
             modelBuilder.Entity("Server.Database.Models.Client", b =>
@@ -108,6 +108,8 @@ namespace Server.Migrations
 
                     b.HasIndex("HotelID");
 
+                    b.HasIndex("OfferID");
+
                     b.HasIndex("RoomID");
 
                     b.ToTable("ClientReservations");
@@ -132,7 +134,7 @@ namespace Server.Migrations
                     b.Property<long>("Rating")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("ReviewData")
+                    b.Property<DateTime>("ReviewDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("ReviewID");
@@ -292,107 +294,162 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Database.Models.AvalaibleTimeInterval", b =>
                 {
-                    b.HasOne("Server.Database.Models.Offer", null)
+                    b.HasOne("Server.Database.Models.Offer", "Offer")
                         .WithMany("AvalaibleTimeIntervals")
-                        .HasForeignKey("OfferID");
+                        .HasForeignKey("OfferID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Offer");
                 });
 
             modelBuilder.Entity("Server.Database.Models.ClientReservation", b =>
                 {
-                    b.HasOne("Server.Database.Models.Client", null)
-                        .WithMany()
+                    b.HasOne("Server.Database.Models.Client", "Client")
+                        .WithMany("ClientReservations")
                         .HasForeignKey("ClientID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Server.Database.Models.HotelInfo", null)
+                    b.HasOne("Server.Database.Models.HotelInfo", "Hotel")
                         .WithMany()
                         .HasForeignKey("HotelID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Server.Database.Models.Offer", null)
+                    b.HasOne("Server.Database.Models.Offer", "Offer")
+                        .WithMany()
+                        .HasForeignKey("OfferID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Server.Database.Models.HotelRoom", "Room")
                         .WithMany()
                         .HasForeignKey("RoomID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Server.Database.Models.HotelRoom", null)
-                        .WithMany()
-                        .HasForeignKey("RoomID")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.Navigation("Client");
+
+                    b.Navigation("Hotel");
+
+                    b.Navigation("Offer");
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("Server.Database.Models.ClientReview", b =>
                 {
-                    b.HasOne("Server.Database.Models.Client", null)
-                        .WithMany()
+                    b.HasOne("Server.Database.Models.Client", "Client")
+                        .WithMany("ClientReviews")
                         .HasForeignKey("ClientID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Server.Database.Models.Offer", null)
-                        .WithMany()
+                    b.HasOne("Server.Database.Models.Offer", "Offer")
+                        .WithMany("ClientReviews")
                         .HasForeignKey("OfferID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Offer");
                 });
 
             modelBuilder.Entity("Server.Database.Models.HotelPicture", b =>
                 {
-                    b.HasOne("Server.Database.Models.HotelInfo", null)
-                        .WithMany()
+                    b.HasOne("Server.Database.Models.HotelInfo", "Hotel")
+                        .WithMany("HotelPictures")
                         .HasForeignKey("HotelID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Hotel");
                 });
 
             modelBuilder.Entity("Server.Database.Models.HotelRoom", b =>
                 {
-                    b.HasOne("Server.Database.Models.HotelInfo", null)
-                        .WithMany()
+                    b.HasOne("Server.Database.Models.HotelInfo", "Hotel")
+                        .WithMany("HotelRooms")
                         .HasForeignKey("HotelID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Hotel");
                 });
 
             modelBuilder.Entity("Server.Database.Models.Offer", b =>
                 {
-                    b.HasOne("Server.Database.Models.HotelInfo", null)
-                        .WithMany()
+                    b.HasOne("Server.Database.Models.HotelInfo", "Hotel")
+                        .WithMany("Offers")
                         .HasForeignKey("HotelID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Hotel");
                 });
 
             modelBuilder.Entity("Server.Database.Models.OfferHotelRoom", b =>
                 {
-                    b.HasOne("Server.Database.Models.Offer", null)
-                        .WithMany()
+                    b.HasOne("Server.Database.Models.Offer", "Offer")
+                        .WithMany("OfferHotelRooms")
                         .HasForeignKey("OfferID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Server.Database.Models.HotelRoom", null)
-                        .WithMany()
+                    b.HasOne("Server.Database.Models.HotelRoom", "Room")
+                        .WithMany("OfferHotelRooms")
                         .HasForeignKey("RoomID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Offer");
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("Server.Database.Models.OfferPicture", b =>
                 {
-                    b.HasOne("Server.Database.Models.Offer", null)
-                        .WithMany()
+                    b.HasOne("Server.Database.Models.Offer", "Offer")
+                        .WithMany("OfferPictures")
                         .HasForeignKey("OfferID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Offer");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.Client", b =>
+                {
+                    b.Navigation("ClientReservations");
+
+                    b.Navigation("ClientReviews");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.HotelInfo", b =>
+                {
+                    b.Navigation("HotelPictures");
+
+                    b.Navigation("HotelRooms");
+
+                    b.Navigation("Offers");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.HotelRoom", b =>
+                {
+                    b.Navigation("OfferHotelRooms");
                 });
 
             modelBuilder.Entity("Server.Database.Models.Offer", b =>
                 {
                     b.Navigation("AvalaibleTimeIntervals");
+
+                    b.Navigation("ClientReviews");
+
+                    b.Navigation("OfferHotelRooms");
+
+                    b.Navigation("OfferPictures");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,135 @@
+﻿body, .bg-website{
+    background-color: #e9e9e9;
+}
+
+.reservation-list {
+    
+}
+
+.offer-reviews-list {
+    
+}
+
+.offer-review {
+    background-color: #f7f7f7;
+}
+
+.offer-reviews-list > .offer-review:nth-child(2n+1) {
+    background-color: #f2f2f2;
+}
+
+.text-align-center {
+    text-align: center !important;
+}
+
+.text-gray {
+    color: gray !important;
+}
+
+.flex-wrap-nowrap {
+    flex-wrap: nowrap !important;
+}
+
+.reservation-list-entry, .shadow-border {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.reservation-list-header-pending {
+    background-color: rgba(0, 255, 0, 0.3);
+}
+
+.reservation-list-header-current {
+    background-color: rgba(255, 0, 0, 0.3);
+}
+
+.reservation-list-header-finalized {
+    background-color: rgba(0, 255, 255, 0.3);
+}
+
+.reservation-list-entry-pending {
+    background-color: rgba(0, 255, 0, 0.1);
+}
+
+.reservation-list-entry-current {
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+.reservation-list-entry-finalized {
+    background-color: rgba(0, 255, 255, 0.1);
+}
+
+.form-control.clientinfo-input-error {
+    color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+.form-control.clientinfo-input-error:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+}
+
+.rounded-left-0 {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.rounded-right-0 {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.picture-carousel-display {
+    background-color: lightgray;
+    width: 100%;
+    height: 250px;
+}
+
+.carousel-picture {
+    max-height: 250px
+}
+
+.reservation-list-item {
+
+}
+
+@media only screen and (min-width: 576px) {
+    .picture-carousel-display {
+        width: 100%;
+        height: 275px;
+    }
+    .carousel-picture {
+        max-height: 275px
+    }
+}
+
+
+@media only screen and (min-width: 768px) {
+    .picture-carousel-display {
+        width: 100%;
+        height: 350px;
+    }
+    .carousel-picture {
+        max-height: 350px
+    }
+}
+
+
+@media only screen and (min-width: 992px) {
+    .picture-carousel-display {
+        width: 75%;
+        height: 350px;
+    }
+    .carousel-picture {
+        max-height: 350px
+    }
+}
+
+
+@media only screen and (min-width: 1200px) {
+    .picture-carousel-display {
+        width: 75%;
+        height: 450px;
+    }
+    .carousel-picture {
+        max-height: 450px
+    }
+}
