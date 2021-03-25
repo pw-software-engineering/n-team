@@ -5,16 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Controllers
+namespace Server.Controllers.Client
 {
     [ApiController]
     //[Route("[controller]")]
-    public class AccountControler : ControllerBase
+    public class ClientAccountController : ControllerBase
     {
         
-        private readonly ILogger<AccountControler> _logger;
+        private readonly ILogger<ClientAccountController> _logger;
 
-        public AccountControler(ILogger<AccountControler> logger)
+        public ClientAccountController(ILogger<ClientAccountController> logger)
         {
             _logger = logger;
         }
