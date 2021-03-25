@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Server.Database.Models
 {
-    public class ClientReview
+    public class ClientReviewDb
     {
         //Properties
         public int ReviewID { get; set; }
@@ -16,7 +16,7 @@ namespace Server.Database.Models
         public uint Rating { get; set; }
         public DateTime ReviewDate { get; set; }
         //Navigational Properties
-        public Offer Offer { get; set; }
-        public Client Client { get; set; }
+        public OfferDb Offer { get; set; }
+        public ClientDb Client { get; set; }
     }
 }

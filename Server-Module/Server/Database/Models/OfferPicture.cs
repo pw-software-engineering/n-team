@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace Server.Database.Models
 {
-    public class OfferPicture
+    public class OfferPictureDb
     {
         //Properties
         public int OfferID { get; set; }
         public int PictureID { get; set; }
-        public byte[] Picture { get; set; }
+        public string Picture { get; set; }
         //Navigational Properties
-        public Offer Offer { get; set; }
+        public OfferDb Offer { get; set; }
     }
 }

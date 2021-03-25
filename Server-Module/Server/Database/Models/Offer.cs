@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace Server.Database.Models
 {
-    public class Offer
+    public class OfferDb
     {
         //Properties
         public int OfferID { get; set; }
         public int HotelID { get; set; }
         public string Title { get; set; }
-        public byte[] OfferPreviewPicture { get; set; }
+        public string OfferPreviewPicture { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }       
         //OfferInfo Properties
@@ -20,10 +20,10 @@ namespace Server.Database.Models
         public uint MaxGuests { get; set; }
         public string Description { get; set; }
         //Navigational Properties
-        public HotelInfo Hotel { get; set; }
-        public List<AvalaibleTimeInterval> AvalaibleTimeIntervals { get; set; }
-        public List<OfferPicture> OfferPictures { get; set; }
-        public List<ClientReview> ClientReviews { get; set; }
-        public List<OfferHotelRoom> OfferHotelRooms { get; set; }
+        public HotelInfoDb Hotel { get; set; }
+        public List<AvalaibleTimeIntervalDb> AvalaibleTimeIntervals { get; set; }
+        public List<OfferPictureDb> OfferPictures { get; set; }
+        public List<ClientReviewDb> ClientReviews { get; set; }
+        public List<OfferHotelRoomDb> OfferHotelRooms { get; set; }
     }
 }

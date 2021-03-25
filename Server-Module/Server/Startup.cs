@@ -28,8 +28,8 @@ namespace Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<ServerDBContext>(options =>           
-                options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext")));
+            services.AddDbContext<ServerDbContext>(options =>           
+                options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext")));            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

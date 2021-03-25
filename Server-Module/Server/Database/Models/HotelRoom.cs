@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace Server.Database.Models
 {
-    public class HotelRoom
+    public class HotelRoomDb
     {
         //Properties
         public int RoomID { get; set; }
         public int HotelID { get; set; }
         public string HotelRoomNumber { get; set; }
         //Navigational Properties
-        public HotelInfo Hotel { get; set; }
-        public List<OfferHotelRoom> OfferHotelRooms { get; set; }
+        public HotelInfoDb Hotel { get; set; }
+        public List<OfferHotelRoomDb> OfferHotelRooms { get; set; }
     }
 }
