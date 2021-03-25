@@ -9,12 +9,12 @@ namespace Server.Controllers
 {
     [ApiController]
     //[Route("[controller]")]
-    public class ClientLoginControler : ControllerBase
+    public class AccountControler : ControllerBase
     {
         
-        private readonly ILogger<ClientLoginControler> _logger;
+        private readonly ILogger<AccountControler> _logger;
 
-        public ClientLoginControler(ILogger<ClientLoginControler> logger)
+        public AccountControler(ILogger<AccountControler> logger)
         {
             _logger = logger;
         }
