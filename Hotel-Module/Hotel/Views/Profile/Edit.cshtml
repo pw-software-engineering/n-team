@@ -24,12 +24,12 @@
     <!-- Preview PIC -->
     <div class="form-group">
         <label>
-            <input type="checkbox" class="" />
+            <input type="checkbox" id="previewPicCheckbox" onclick="switchDisability('previewPicCheckbox', 'previewFile')" />
             Change preview picture
         </label>
         <div class="form-row">
-            <input id="previewFile" class="form-control col-sm-4" type="file" onchange="previewImg()" />
-            <label class="form-control-placeholder">Preview picture</label>
+            <input id="previewFile" class="form-control col-sm-4" type="file" disabled onchange="previewImg()" />
+            <label class="form-control-placeholder-file">Preview picture</label>
             <img id="previewImage" class="gallery-img" src="~/img/bristol-bg.jpg" />
         </div>
     </div>
@@ -38,12 +38,12 @@
     <!-- Additional PICS-->
     <div class="form-group">
         <label>
-            <input type="checkbox" />
+            <input type="checkbox" id="additionalPicsCheckbox" onclick="switchDisability('additionalPicsCheckbox', 'additionalFiles')" />
             Change additional pictures
         </label>
         <div class="form-row">
-            <input id="additionalFiles" class="form-control col-sm-4" type="file" multiple onchange="previewMultiple(event)" />
-            <label class="form-control-placeholder">Additional pictures</label>
+            <input id="additionalFiles" class="form-control col-sm-4" type="file" multiple disabled onchange="previewMultiple(event)" />
+            <label class="form-control-placeholder-file">Additional pictures</label>
             <div id="gallery"></div>
         </div>
     </div>
@@ -82,6 +82,18 @@
                 var urls = URL.createObjectURL(event.target.files[i]);
                 document.getElementById("gallery").innerHTML +=
                     `<img src="` + urls + `" class="gallery-img" />`;
+            }
+        }
+
+        // checkbox controlling element's enabled/disabled attribute
+        function switchDisability(checkboxId, elementId) {
+            var checkbox = document.getElementById(checkboxId);
+            var input = document.getElementById(elementId);
+
+            if (checkbox.checked == false) {
+                input.disabled = true;
+            } else {
+                input.disabled = false;
             }
         }
     </script>

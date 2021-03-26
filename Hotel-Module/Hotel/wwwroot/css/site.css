@@ -242,6 +242,19 @@ h1, h2, h3, h4, h5,
     font-weight: 700;
 }
 
+.form-control-placeholder-file {
+    position: absolute;
+    -webkit-transform: translate3d(0, -260%, 0);
+    transform: translate3d(0, -260%, 0);
+    padding: 7px 0 0 0;
+    opacity: 1;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: #01d28e;
+    font-weight: 700;
+}
+
 .social-media {
     position: relative;
     width: 100%;
