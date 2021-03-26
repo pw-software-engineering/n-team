@@ -7,10 +7,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Server.Authentication;
 using Server.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Server
@@ -30,6 +32,13 @@ namespace Server
             services.AddControllers();
             services.AddDbContext<ServerDBContext>(options =>           
                 options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext")));
+
+            //te dwa nie wiem czy potrzebne
+            var tokenKey = Configuration.GetValue<string>("TokenKey");
+            var key = Encoding.ASCII.GetBytes(tokenKey);
+
+            services.AddAuthentication("Basic").AddScheme<BasicAuthenticationOptions, HotelAuthenticationHandler>("Basic", null);
+            services.AddSingleton<ICustomAuthenticationManager, HotelAutenticationManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
