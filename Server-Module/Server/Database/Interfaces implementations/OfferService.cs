@@ -60,7 +60,7 @@ namespace Server.Database.Interfaces_implementations
                 offer.OfferTitle = offerTitle ?? offer.OfferTitle;
                 offer.Description = description ?? offer.Description;
                 offer.OfferPreviewPicture = offerPreviewPicture ?? offer.OfferPreviewPicture;
-                if (offerPictures == null)
+                if (offerPictures != null)
                 {
                     offer.OfferPictures.RemoveAll(op => op.OfferID == offerID);
                     foreach (string picture in offerPictures)
