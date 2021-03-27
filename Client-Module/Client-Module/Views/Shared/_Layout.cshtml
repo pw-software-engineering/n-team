@@ -30,22 +30,37 @@
                 </button>
                 <div class="navbar-collapse collapse d-lg-inline-flex">
                     <ul class="navbar-nav flex-grow-1">
-                        @{ string selectedBtnType = "btn-danger"; } 
-                        <li class="nav-item">
-                            <a class="btn text-light mx-2 @(navSelectedBtnID == LayoutTagID.NavHomeBtnID ? selectedBtnType : "")" id="@LayoutTagID.NavHomeBtnID" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn text-light mx-2 @(navSelectedBtnID == LayoutTagID.NavAccountBtnID ? selectedBtnType : "")" id="@LayoutTagID.NavAccountBtnID" asp-controller="Client" asp-action="Account">My account</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn text-light mx-2 @(navSelectedBtnID == LayoutTagID.NavSearchBtnID ? selectedBtnType : "")" id="@LayoutTagID.NavSearchBtnID" asp-controller="Search" asp-action="Hotels">Search offers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn text-light mx-2 @(navSelectedBtnID == LayoutTagID.NavReservationsBtnID ? selectedBtnType : "")" id="@LayoutTagID.NavReservationsBtnID" asp-controller="ClientReservations" asp-action="Reservations">My reservations</a>
-                        </li>
+                        @{
+                            string selectedBtnType = "btn-danger";
+                            if (User.Identity.IsAuthenticated)
+                            {
+                                <li class="nav-item">
+                                    <a class="btn text-light mx-2 @(navSelectedBtnID == LayoutTagID.NavHomeBtnID ? selectedBtnType : "")" id="@LayoutTagID.NavHomeBtnID" asp-controller="Home" asp-action="Index">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="btn text-light mx-2 @(navSelectedBtnID == LayoutTagID.NavAccountBtnID ? selectedBtnType : "")" id="@LayoutTagID.NavAccountBtnID" asp-controller="Client" asp-action="Account">My account</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="btn text-light mx-2 @(navSelectedBtnID == LayoutTagID.NavSearchBtnID ? selectedBtnType : "")" id="@LayoutTagID.NavSearchBtnID" asp-controller="Search" asp-action="Hotels">Search offers</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="btn text-light mx-2 @(navSelectedBtnID == LayoutTagID.NavReservationsBtnID ? selectedBtnType : "")" id="@LayoutTagID.NavReservationsBtnID" asp-controller="ClientReservations" asp-action="Reservations">My reservations</a>
+                                </li>
+                            }
+                        }
                     </ul>
                     <div class="flex-grow-0">
-                        <a class="btn btn-success text-light mx-2" id="@LayoutTagID.NavLogInBtnID" asp-controller="Client" asp-action="LogIn">Log in</a>
+                        @{
+                            if (User.Identity.IsAuthenticated)
+                            {
+                                <a class="btn btn-success text-light mx-2" id="@LayoutTagID.NavLogOutBtnID" asp-controller="Client" asp-action="LogOut">Log out</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-success text-light mx-2" id="@LayoutTagID.NavLogInBtnID" asp-controller="Client" asp-action="LogIn">Log in</a>
+                            }
+                        }
+
                     </div>
                 </div>
             </div>
