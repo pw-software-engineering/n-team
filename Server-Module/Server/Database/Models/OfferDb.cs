@@ -26,6 +26,7 @@ namespace Server.Database.Models
         public List<OfferPictureDb> OfferPictures { get; set; }
         public List<ClientReviewDb> ClientReviews { get; set; }
         public List<OfferHotelRoomDb> OfferHotelRooms { get; set; }
+        public OfferDb() { }
         public OfferDb(Offer offer, int hotelID)
         {
             HotelID = hotelID;
