@@ -52,7 +52,7 @@ namespace Server.Database.Interfaces_implementations
         }
 
         public bool UpdateOffer(int offerID, bool? isActive, string offerTitle, string description, string offerPreviewPicture, List<string> offerPictures)
-        {
+        {         
             OfferDb offer = db.Offers.Find(offerID);
             if(offer!=null)
             {
