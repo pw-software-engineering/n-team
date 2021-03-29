@@ -395,3 +395,14 @@ h1, h2, h3, h4, h5,
     opacity: 85%;
     margin: 1px;
 }
+
+.room-text {
+    color: black;
+    font-size: 20px;
+    background: #018BD0;
+    padding: 0 10px;
+    margin: 2px;
+    display: inline-block;
+    border-radius: 800px;
+    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
