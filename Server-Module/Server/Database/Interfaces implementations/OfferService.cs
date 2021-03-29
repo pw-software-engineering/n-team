@@ -70,9 +70,9 @@ namespace Server.Database.Interfaces_implementations
         public void CheckExceptions(OfferDb offer, int hotelID)
         {
             if (offer == null)
-                throw new NotFound();
+                throw new NotFoundException();
             if (offer.HotelID != hotelID)
-                throw new NotOwner();
+                throw new NotOwnerException();
         }
     }
 }
