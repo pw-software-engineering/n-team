@@ -22,4 +22,4 @@ jobs:
     - name: Build
       run: dotnet build --no-restore ${{ matrix.csproj }}
     - name: Test
-      run: dotnet test --no-build --verbosity normal ${{ matrix.csproj }}
+      run: dotnet test --no-build --verbosity normal /p:IncludeTestAssembly=true /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./TestResults/" ${{ matrix.csproj }}
