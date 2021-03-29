@@ -1,4 +1,5 @@
-﻿using Server.Database.Interfaces;
+﻿using Server.Database.Exceptions;
+using Server.Database.Interfaces;
 using Server.Database.Models;
 using Server.Models;
 using System;
@@ -26,16 +27,12 @@ namespace Server.Database.Interfaces_implementations
             db.SaveChanges();
             return offerDb.OfferID;
         }
-        public bool DeleteOffer(int offerID)
+        public void DeleteOffer(int offerID, int hotelID)
         {
             OfferDb offer = db.Offers.Find(offerID);
-            if (offer != null)
-            {
-                offer.IsDeleted = true;
-                db.SaveChanges();
-                return true;
-            }
-            return false;
+            CheckExceptions(offer, hotelID);
+            offer.IsDeleted = true;
+            db.SaveChanges();
         }
 
         public List<OfferPreview> GetHotelOffers(int hotelID)
@@ -46,30 +43,36 @@ namespace Server.Database.Interfaces_implementations
             return offerPreviews; 
         }
 
-        public Offer GetOffer(int offerID)
+        public Offer GetOffer(int offerID, int hotelID)
         {
-            return new Offer(db.Offers.Find(offerID));
+            OfferDb offer = db.Offers.Find(offerID);
+            CheckExceptions(offer, hotelID);
+            return new Offer(offer);
         }
 
-        public bool UpdateOffer(int offerID, bool? isActive, string offerTitle, string description, string offerPreviewPicture, List<string> offerPictures)
+        public void UpdateOffer(int offerID, int hotelID, bool? isActive, string offerTitle, string description, string offerPreviewPicture, List<string> offerPictures)
         {         
             OfferDb offer = db.Offers.Find(offerID);
-            if(offer!=null)
+            CheckExceptions(offer, hotelID);
+
+            offer.IsActive = isActive ?? offer.IsActive;
+            offer.OfferTitle = offerTitle ?? offer.OfferTitle;
+            offer.Description = description ?? offer.Description;
+            offer.OfferPreviewPicture = offerPreviewPicture ?? offer.OfferPreviewPicture;
+            if (offerPictures != null)
             {
-                offer.IsActive = isActive ?? offer.IsActive;
-                offer.OfferTitle = offerTitle ?? offer.OfferTitle;
-                offer.Description = description ?? offer.Description;
-                offer.OfferPreviewPicture = offerPreviewPicture ?? offer.OfferPreviewPicture;
-                if (offerPictures != null)
-                {
-                    offer.OfferPictures.RemoveAll(op => op.OfferID == offerID);
-                    foreach (string picture in offerPictures)
-                        offer.OfferPictures.Add(new OfferPictureDb(picture, offerID));
-                }
-                db.SaveChanges();
-                return true;
+                offer.OfferPictures.RemoveAll(op => op.OfferID == offerID);
+                foreach (string picture in offerPictures)
+                    offer.OfferPictures.Add(new OfferPictureDb(picture, offerID));
             }
-            return false;
+            db.SaveChanges();
+        }
+        public void CheckExceptions(OfferDb offer, int hotelID)
+        {
+            if (offer == null)
+                throw new NotFound();
+            if (offer.HotelID != hotelID)
+                throw new NotOwner();
         }
     }
 }

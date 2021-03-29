@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Server.Database.Exceptions
 {
-    public class NotOwner:
+    public class NotOwner:Exception
     {
 
     }

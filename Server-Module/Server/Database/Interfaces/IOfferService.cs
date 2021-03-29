@@ -15,9 +15,9 @@ namespace Server.Database.Interfaces
         #endregion
 
         #region /offers/{offerID}
-        public bool DeleteOffer(int offerID);
-        public bool UpdateOffer(int offerID, bool? isActive, string offerTitle, string description, string offerPreviewPicture, List<string> offerPictures);
-        public Offer GetOffer(int offerID);
+        public void DeleteOffer(int offerID, int hotelID);
+        public void UpdateOffer(int offerID, int hotelID, bool? isActive, string offerTitle, string description, string offerPreviewPicture, List<string> offerPictures);
+        public Offer GetOffer(int offerID, int hotelID);
         #endregion
     }
 }
