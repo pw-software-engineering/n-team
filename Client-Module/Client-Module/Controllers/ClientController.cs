@@ -1,4 +1,5 @@
 ﻿using Client_Module.ViewsTagID.Layout;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -16,22 +17,27 @@ namespace Client_Module.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpGet("/login")]
         public IActionResult LogIn()
         {
-            return Ok("Login GET");
+            return View();
         }
 
-        [HttpGet]
+        [HttpGet("/logout")]
         public IActionResult LogOut()
         {
-            return Ok("Logout GET");
+            this.Response.Cookies.Delete(ClientTokenCookieDefaults.AuthCookieName);
+            return Redirect("/");
         }
 
-        [HttpPost]
-        public IActionResult LogIn(int nouse)
+        [HttpPost("/login")]
+        public IActionResult LogIn(string username, string password)
         {
-            return Ok("Login POST");
+            Console.WriteLine($"{username} | {password}");
+
+            CookieOptions options = new CookieOptions();
+            Response.Cookies.Append(ClientTokenCookieDefaults.AuthCookieName, "value2", options);
+            return Redirect("/");
         }
 
         [HttpGet]

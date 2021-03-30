@@ -91,6 +91,19 @@
 
 }
 
+.offer-availability-list {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.offer-availability-list-item {
+    background-color: #fafafa;
+}
+
+.offer-availability-list > .offer-availability-list-item:nth-child(2n+1) {
+    background-color: #f5f5f5;
+}
+
 @media only screen and (min-width: 576px) {
     .picture-carousel-display {
         width: 100%;

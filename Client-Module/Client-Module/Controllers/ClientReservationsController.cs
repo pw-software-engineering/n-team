@@ -12,7 +12,7 @@ namespace Client_Module.Controllers
     {
         public ClientReservationsController()
         {
-            //ViewData[LayoutTagID.NavSelectedBtnKey] = LayoutTagID.NavReservationsBtnID;
+            
         }
 
         public override void OnActionExecuting(ActionExecutingContext context)

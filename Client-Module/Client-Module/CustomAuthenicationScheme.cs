@@ -11,13 +11,13 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Client_Module
 {
     public class ClientTokenCookieScheme
         : AuthenticationHandler<ClientTokenCookieSchemeOptions>
     {
-        private readonly string _cookieName = "clientTokenCookieASPNET";
         private ClientTokenCookieSchemeOptions _options;
         public ClientTokenCookieScheme(
             IOptionsMonitor<ClientTokenCookieSchemeOptions> options,
@@ -30,26 +30,25 @@ namespace Client_Module
         }
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            //Console.WriteLine("AUTHENTICATE");
-            if (!Request.Cookies.ContainsKey(_cookieName))
+            Console.WriteLine("AUTHENTICATE");
+            //LinkGenerator urlGenerator = Context.RequestServices.GetService(typeof(LinkGenerator)) as LinkGenerator;
+            //Console.WriteLine($"{urlGenerator.GetPathByAction("LogIn", "Client")}");
+            if (!Request.Cookies.ContainsKey(ClientTokenCookieDefaults.AuthCookieName))
             {
                 return Task.FromResult(AuthenticateResult.NoResult());
             }
-            string clientToken = Request.Cookies[_cookieName];
+            string clientToken = Request.Cookies[ClientTokenCookieDefaults.AuthCookieName];
             var claims = new[] { new Claim("clientToken", clientToken) };
             var identity = new ClaimsIdentity(claims, ClientTokenCookieDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, ClientTokenCookieDefaults.AuthenticationScheme);
-
-            //this.Context.Request.RouteValues
-
-            
-
+            Console.WriteLine("User logged in");
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }
 
         protected override Task HandleChallengeAsync(AuthenticationProperties properties)
         {
+            
             Console.WriteLine($"CHALLANGE: {Response.StatusCode}");
             //Response.Redirect(_options.ChallangeRedirectUrl, false);
             //return Task.CompletedTask;
@@ -67,12 +66,13 @@ namespace Client_Module
 
     public class ClientTokenCookieSchemeOptions
         : AuthenticationSchemeOptions
-    {
-        public string ChallangeRedirectUrl { get; set; } = "/Home/Page";
+    { 
+
     }
 
     public static class ClientTokenCookieDefaults
     {
         public static string AuthenticationScheme { get; } = "ClientTokenCookieScheme";
+        public static string AuthCookieName { get; set; } = "clientTokenCookieASPNET";
     }
 }

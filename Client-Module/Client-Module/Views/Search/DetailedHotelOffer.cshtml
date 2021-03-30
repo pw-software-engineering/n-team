@@ -50,7 +50,7 @@
         <br />
         <span class="text-secondary">Press the button below and book a room!</span>
     </p>
-    <button class="d-block mx-auto w-50 mt-2 mb-4 btn btn-success shadow-border font-weight-bold" onclick="ShowReservationModal()" style="font-size: 18px">Create reservation<i class="ml-2 fas fa-chevron-right"></i></button>
+    <button class="d-block mx-auto w-50 mt-2 mb-4 btn btn-success shadow-border font-weight-bold" data-toggle="modal" data-target="#reservationModal" style="font-size: 18px">Create reservation<i class="ml-2 fas fa-chevron-right"></i></button>
     <hr class="my-3" />
     <div class="text-center">
         <h1 class="font-weight-light">Offer reviews</h1>
@@ -156,17 +156,40 @@
     </div>
 </div>
 
-<div class="modal fade bd-example-modal-lg" id="reservationModal" tabindex="-1" role="dialog">
+<div class="modal fade bd-example-modal-lg"  id="reservationModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myLargeModalLabel">Large modal</h4>
-                <button type="button" class="close" onclick="HideReservationModal()">
+            <div class="modal-header bg-light">
+                <button type="button" class="close p-2 px-3" data-dismiss="modal">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body py-0">
+                <h3 class="font-weight-normal text-center mt-3 mb-1">Offer availability</h3>
+                <small class="text-muted d-block w-75 mx-auto text-center mb-3">You can make a reservation for a period of time within the range of any time interval below</small>
+                <ul class="list-unstyled text-center offer-availability-list">
+                    <li class="offer-availability-list-item p-2">20.09.2020<span class="text-secondary mx-3">&mdash;</span>23.10.2020</li>
+                    <li class="offer-availability-list-item p-2">20.09.2020<span class="text-secondary mx-3">&mdash;</span>23.10.2020</li>
+                    <li class="offer-availability-list-item p-2">20.09.2020<span class="text-secondary mx-3">&mdash;</span>23.10.2020</li>
+                    <li class="offer-availability-list-item p-2">20.09.2020<span class="text-secondary mx-3">&mdash;</span>23.10.2020</li>
+                    <li class="offer-availability-list-item p-2">20.09.2020<span class="text-secondary mx-3">&mdash;</span>23.10.2020</li>
+                    <li class="offer-availability-list-item p-2">20.09.2020<span class="text-secondary mx-3">&mdash;</span>23.10.2020</li>
+                </ul>
 
+                <hr />
+                <h3 class="font-weight-normal text-center mb-3">Choose reservation period</h3>
+                <div class="d-flex flex-row flex-wrap">
+                    <div class="flex-grow-1 mx-3">
+                        <p class="text-muted my-0 mx-2">From:</p>
+                        <input class="form-control flex-grow-1 w-100" type="date" />
+                    </div>
+                    <div class="flex-grow-1 mx-3">
+                        <p class="text-muted my-0 mx-2">To:</p>
+                        <input class="form-control flex-grow-1 w-100" type="date" />
+                    </div>
+                </div>
+                <hr />
+                <button class="d-block btn btn-success w-50 mx-auto my-4 font-weight-bold" style="font-size: 18px; min-width: 150px">Create reservation</button>
             </div>
         </div>
     </div>
@@ -174,26 +197,28 @@
 
 @section Scripts { 
 <script>
-    var modalJQ = $("#reservationModal");
-    // Disallow closing modal window by clicking anywhere outside
-    var lockModal = true;
+    // data-backdrop="static"
+    
+    //var modalJQ = $("#reservationModal");
+    //// Disallow closing modal window by clicking anywhere outside
+    //var lockModal = true;
 
-    function ShowReservationModal() {
-        modalJQ.modal("show");
-    }
+    //function ShowReservationModal() {
+    //    modalJQ.modal("show");
+    //}
 
-    function HideReservationModal() {
-        // Unlock modal, as immidiatelly after this function returns, a "hide" event will be fires
-        lockModal = false;
-        modalJQ.modal("hide");
-    }
+    //function HideReservationModal() {
+    //    // Unlock modal, as immidiatelly after this function returns, a "hide" event will be fires
+    //    lockModal = false;
+    //    modalJQ.modal("hide");
+    //}
 
-    modalJQ.on("hide.bs.modal", function (e) {
-        if (lockModal) {
-            e.preventDefault();
-        }
-        // if HideReservationModal was fired, reset lockModal back to true
-        lockModal = true;
-    });
+    //modalJQ.on("hide.bs.modal", function (e) {
+    //    if (lockModal) {
+    //        e.preventDefault();
+    //    }
+    //    // if HideReservationModal was fired, reset lockModal back to true
+    //    lockModal = true;
+    //});
 </script>
 }
