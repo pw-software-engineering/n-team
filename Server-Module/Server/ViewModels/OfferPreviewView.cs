@@ -14,14 +14,5 @@ namespace Server.ViewModels
         public double costPerAdult { get; set; }
         public uint maxGuests { get; set; }
         public string offerPreviewPicture { get; set; }
-        public OfferPreviewView(OfferDb offer)
-        {
-            isActive = offer.IsActive;
-            offerTitle = offer.OfferTitle;
-            costPerChild = offer.CostPerChild;
-            costPerAdult = offer.CostPerAdult;
-            maxGuests = offer.MaxGuests;
-            offerPreviewPicture = offer.OfferPreviewPicture;
-        }
     }
 }

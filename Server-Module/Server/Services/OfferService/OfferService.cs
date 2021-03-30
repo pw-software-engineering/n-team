@@ -26,18 +26,16 @@ namespace Server.Services.OfferService
         {
             Offer offer = _mapper.Map<Offer>(offerView);
             offer.HotelID = hotelID;
-
-            return _dataAccess.AddOffer(offer);
+            int offerID = _dataAccess.AddOffer(offer);
+            _dataAccess.AddOfferPictures(offer.Pictures, offerID);
+            return offerID;
         }
 
         /// <exception cref="NotOwnerException" cref="NotFoundException"></exception>
         public void DeleteOffer(int offerID, int hotelID)
         {
-            Offer offer = _dataAccess.GetOffer(offerID);
-            CheckExceptions(offer, hotelID);
-            offer.IsDeleted = true;
-
-            _dataAccess.UpdateOffer();
+            CheckExceptions(_dataAccess.FindOfferAndGetOwner(offerID), hotelID);
+            _dataAccess.DeleteOffer(offerID);
         }
 
         public List<OfferPreviewView> GetHotelOffers(int hotelID)
@@ -48,35 +46,22 @@ namespace Server.Services.OfferService
         /// <exception cref="NotOwnerException" cref="NotFoundException"></exception>
         public OfferView GetOffer(int offerID, int hotelID)
         {
-            Offer offer = _dataAccess.GetOffer(offerID);
-            CheckExceptions(offer, hotelID);
-            return _mapper.Map<OfferView>(offer);
+            CheckExceptions(_dataAccess.FindOfferAndGetOwner(offerID), hotelID);
+            return _mapper.Map<OfferView>(_dataAccess.GetOffer(offerID));
         }
 
         /// <exception cref="NotOwnerException" cref="NotFoundException"></exception>
-        public void UpdateOffer(int offerID, int hotelID, bool? isActive, string offerTitle, string description, string offerPreviewPicture, List<string> offerPictures)
+        public void UpdateOffer(int offerID, int hotelID, OfferUpdateInfo offerUpdateInfo)
         {
-            Offer offer = _dataAccess.GetOffer(offerID);
-            CheckExceptions(offer, hotelID);
-
-            offer.IsActive = isActive ?? offer.IsActive;
-            offer.OfferTitle = offerTitle ?? offer.OfferTitle;
-            offer.Description = description ?? offer.Description;
-            offer.OfferPreviewPicture = offerPreviewPicture ?? offer.OfferPreviewPicture;
-
-            if (offerPictures != null)
-            {
-                offer.OfferPictures.RemoveAll(op => op.OfferID == offerID);
-                foreach (string picture in offerPictures)
-                    offer.OfferPictures.Add(new OfferPictureDb(picture, offerID));
-            }
+            CheckExceptions(_dataAccess.FindOfferAndGetOwner(offerID), hotelID);
+            _dataAccess.UpdateOffer(offerID, offerUpdateInfo);
         }
         /// <exception cref="NotOwnerException" cref="NotFoundException"></exception>
-        public void CheckExceptions(Offer offer, int hotelID)
+        public void CheckExceptions(int? ownerID, int hotelID)
         {
-            if (offer == null)
+            if (ownerID == null)
                 throw new NotFoundException();
-            if (offer.HotelID != hotelID)
+            if (ownerID != hotelID)
                 throw new NotOwnerException();
         }
     }

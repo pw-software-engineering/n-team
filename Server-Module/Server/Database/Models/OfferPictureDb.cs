@@ -13,5 +13,12 @@ namespace Server.Database.Models
         public string Picture { get; set; }
         //Navigational Properties
         public OfferDb Offer { get; set; }
+        //Constructors
+        public OfferPictureDb() { }
+        public OfferPictureDb(string picture, int offerID)
+        {
+            OfferID = offerID;
+            Picture = picture;
+        }
     }
 }

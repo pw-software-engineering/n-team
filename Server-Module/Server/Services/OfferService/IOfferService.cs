@@ -17,7 +17,7 @@ namespace Server.Services.OfferService
 
         #region /offers/{offerID}
         public void DeleteOffer(int offerID, int hotelID);
-        public void UpdateOffer(int offerID, int hotelID, bool? isActive, string offerTitle, string description, string offerPreviewPicture, List<string> offerPictures);
+        public void UpdateOffer(int offerID, int hotelID, OfferUpdateInfo offerUpdateInfo);
         public OfferView GetOffer(int offerID, int hotelID);
         #endregion
     }

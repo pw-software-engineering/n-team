@@ -31,8 +31,8 @@ namespace Server
         {
             services.AddControllers();
             services.AddAutoMapper(typeof(Startup));
-            services.AddScoped<IOfferService, OfferService>();
-            services.AddScoped<IDataAccess, DataAccess>();
+            services.AddTransient<IOfferService, OfferService>();
+            services.AddTransient<IDataAccess, DataAccess>();
             services.AddDbContext<ServerDbContext>(options =>           
                 options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext")));            
         }
