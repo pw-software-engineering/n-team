@@ -12,8 +12,8 @@ namespace Server.AutoMapper
     {
         public AutoMapperProfile()
         {
-            CreateMap<Offer, OfferDb>();
-            CreateMap<OfferDb, Offer>();
+            CreateMap<OfferView, OfferDb>();
+            CreateMap<OfferDb, OfferView>();
         }
     }
 }

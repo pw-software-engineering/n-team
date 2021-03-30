@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.Models
 {
-    public class OfferPreview
+    public class OfferPreviewView
     {
         public bool isActive { get; set; }
         public string offerTitle { get; set; }
@@ -14,7 +14,7 @@ namespace Server.Models
         public double costPerAdult { get; set; }
         public uint maxGuests { get; set; }
         public string offerPreviewPicture { get; set; }
-        public OfferPreview(OfferDb offer)
+        public OfferPreviewView(OfferDb offer)
         {
             isActive = offer.IsActive;
             offerTitle = offer.OfferTitle;

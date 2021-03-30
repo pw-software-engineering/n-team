@@ -17,7 +17,7 @@ namespace Server.Services.OfferService
             this.db = db;
         }
         
-        public int AddOffer(Offer offer, int hotelID)
+        public int AddOffer(OfferView offer, int hotelID)
         {
             OfferDb offerDb = new OfferDb(offer, hotelID);
             db.Offers.Add(offerDb);
@@ -37,19 +37,19 @@ namespace Server.Services.OfferService
             db.SaveChanges();
         }
 
-        public List<OfferPreview> GetHotelOffers(int hotelID)
+        public List<OfferPreviewView> GetHotelOffers(int hotelID)
         {
-            List<OfferPreview> offerPreviews = new List<OfferPreview>();
+            List<OfferPreviewView> offerPreviews = new List<OfferPreviewView>();
             foreach (OfferDb offer in db.Offers.Where(o => o.HotelID == hotelID).ToList())
-                offerPreviews.Add(new OfferPreview(offer));
+                offerPreviews.Add(new OfferPreviewView(offer));
             return offerPreviews; 
         }
         /// <exception cref="NotOwnerException" cref="NotFoundException"></exception>
-        public Offer GetOffer(int offerID, int hotelID)
+        public OfferView GetOffer(int offerID, int hotelID)
         {
             OfferDb offer = db.Offers.Find(offerID);
             CheckExceptions(offer, hotelID);
-            return new Offer(offer);
+            return new OfferView(offer);
         }
         /// <exception cref="NotOwnerException" cref="NotFoundException"></exception>
         public void UpdateOffer(int offerID, int hotelID, bool? isActive, string offerTitle, string description, string offerPreviewPicture, List<string> offerPictures)

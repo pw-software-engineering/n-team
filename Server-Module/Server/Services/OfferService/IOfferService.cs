@@ -10,14 +10,14 @@ namespace Server.Services.OfferService
     interface IOfferService
     {
         #region /offers
-        public List<OfferPreview> GetHotelOffers(int hotelID);
-        public int AddOffer(Offer offer, int hotelID);
+        public List<OfferPreviewView> GetHotelOffers(int hotelID);
+        public int AddOffer(OfferView offer, int hotelID);
         #endregion
 
         #region /offers/{offerID}
         public void DeleteOffer(int offerID, int hotelID);
         public void UpdateOffer(int offerID, int hotelID, bool? isActive, string offerTitle, string description, string offerPreviewPicture, List<string> offerPictures);
-        public Offer GetOffer(int offerID, int hotelID);
+        public OfferView GetOffer(int offerID, int hotelID);
         #endregion
     }
 }
