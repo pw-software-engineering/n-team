@@ -6,11 +6,6 @@ namespace SeleniumTests
 {
     public partial class SeleniumTester
     {
-        public class ClientBaseUrl
-        {
-            public static string WebApp { get; } = "https://localhost:5001";
-            public static string Api { get; } = "https://localhost:6001";
-        }
 
         [SetUpFixture]
         public class SeleniumChromeDriverSetUp

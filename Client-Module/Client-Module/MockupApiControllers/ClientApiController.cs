@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.IO;
+using Newtonsoft.Json.Serialization;
 
 namespace Client_Module.MockupApiControllers
 {
@@ -19,15 +21,28 @@ namespace Client_Module.MockupApiControllers
         [HttpPost("login")]
         public IActionResult LogIn()
         {
-            if(!Request.Form.ContainsKey("login"))
+            ClientSecrets secrets;
+            StreamReader sr = null;
+            try
             {
-                return BadRequest(new { error = "Request body must contain a login property" });
+                sr = new StreamReader(Request.Body);
+                string bodyContent = sr.ReadToEndAsync().Result;
+                Console.WriteLine(bodyContent);
+                secrets = JsonSerializer.Deserialize<ClientSecrets>(
+                    bodyContent,
+                    new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
+                );
             }
-            if(!Request.Form.ContainsKey("password"))
+            catch(Exception e)
             {
-                return BadRequest(new { error = "Request body must contain a password property" });
+                return BadRequest(new { error = e.Message });
             }
-            if(Request.Form["login"] != "TestUser" || Request.Form["password"] != "password123")
+            finally
+            {
+                sr.Dispose();
+            }
+            //Console.WriteLine($"Login: {secrets.Login} ({secrets.Login == null})\nPassword: {secrets.Password} ({secrets.Password == null})");
+            if(secrets.Login != "TestUser" || secrets.Password != "password123")
             {
                 return Unauthorized(new { error = "Provided credentials are incorrect" });
             }
@@ -50,7 +65,10 @@ namespace Client_Module.MockupApiControllers
             ClientToken token;
             try
             {
-                token = JsonSerializer.Deserialize<ClientToken>(Request.Headers["x-client-token"]);
+                token = JsonSerializer.Deserialize<ClientToken>(
+                    Request.Headers["x-client-token"],
+                    new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+                );
             }
             catch(Exception e)
             {
@@ -65,10 +83,13 @@ namespace Client_Module.MockupApiControllers
             {
                 Name = "Jan",
                 Surname = "Kowalski",
-                Username = "j.kowalski99",
+                Username = "jkowalski99",
                 Email = "jan.kowalski@mailing.net"
             };
-            return new JsonResult(client);
+            return new JsonResult(
+                client, 
+                new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
+            );
         }
 
         [HttpPatch("")]
@@ -83,7 +104,11 @@ namespace Client_Module.MockupApiControllers
             return Ok();
         }
     }
-
+    class ClientSecrets
+    {
+        public string Login { get; set; }
+        public string Password { get; set; }
+    }
     public class ClientToken
     {
         public int ID { get; set; }
@@ -102,5 +127,21 @@ namespace Client_Module.MockupApiControllers
     {
         public string Username { get; set; }
         public string Email { get; set; }
+    }
+}
+
+public class CustomContractResolver : DefaultContractResolver
+{
+    public CustomContractResolver() { }
+
+    protected override string ResolvePropertyName(string propertyName)
+    {
+        string jsonPropertyName = "";
+        jsonPropertyName += char.ToUpper(propertyName[0]);
+        if (propertyName.Length > 1)
+        {
+            jsonPropertyName += propertyName.Substring(1);
+        }
+        return jsonPropertyName;
     }
 }
