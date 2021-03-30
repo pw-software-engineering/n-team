@@ -33,12 +33,7 @@ namespace Server
             services.AddDbContext<ServerDBContext>(options =>           
                 options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext")));
 
-            //te dwa nie wiem czy potrzebne
-            var tokenKey = Configuration.GetValue<string>("TokenKey");
-            var key = Encoding.ASCII.GetBytes(tokenKey);
-
-            services.AddAuthentication("Basic").AddScheme<BasicAuthenticationOptions, HotelAuthenticationHandler>("Basic", null);
-            services.AddSingleton<ICustomAuthenticationManager, HotelAutenticationManager>();
+            services.AddAuthentication("Basic").AddScheme<HotellTokenCookieSchemeOptions, HotellTokenCookieScheme>("Basic", null);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

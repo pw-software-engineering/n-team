@@ -10,75 +10,64 @@ using System.Threading.Tasks;
 
 namespace Server.Authentication
 {
-
-    public class BasicAuthenticationOptions : AuthenticationSchemeOptions
+    public class HotellTokenCookieScheme
+        : AuthenticationHandler<HotellTokenCookieSchemeOptions>
     {
-    }
-
-    public class HotelAuthenticationHandler : AuthenticationHandler<BasicAuthenticationOptions>
-    {
-        private readonly ICustomAuthenticationManager customAuthenticationManager;
-
-        public HotelAuthenticationHandler(
-            IOptionsMonitor<BasicAuthenticationOptions> options,
+        private HotellTokenCookieSchemeOptions _options;
+        public HotellTokenCookieScheme(
+            IOptionsMonitor<HotellTokenCookieSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
-            ISystemClock clock,
-            ICustomAuthenticationManager customAuthenticationManager)
+            ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
-            this.customAuthenticationManager = customAuthenticationManager;
+            _options = options.CurrentValue;
         }
-
-        protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
+        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            if (!Request.Headers.ContainsKey("Authorization"))
-                return AuthenticateResult.Fail("Unauthorized");
-
-            string authorizationHeader = Request.Headers["Authorization"];
-            if (string.IsNullOrEmpty(authorizationHeader))
+            Console.WriteLine("AUTHENTICATE");
+            //LinkGenerator urlGenerator = Context.RequestServices.GetService(typeof(LinkGenerator)) as LinkGenerator;
+            //Console.WriteLine($"{urlGenerator.GetPathByAction("LogIn", "Client")}");
+            if (!Request.Cookies.ContainsKey(HotellTokenCookieDefaults.AuthCookieName))
             {
-                return AuthenticateResult.NoResult();
+                return Task.FromResult(AuthenticateResult.NoResult());
             }
-
-            if (!authorizationHeader.StartsWith("bearer", StringComparison.OrdinalIgnoreCase))
-            {
-                return AuthenticateResult.Fail("Unauthorized");
-            }
-
-            string token = authorizationHeader.Substring("bearer".Length).Trim();
-
-            if (string.IsNullOrEmpty(token))
-            {
-                return AuthenticateResult.Fail("Unauthorized");
-            }
-
-            try
-            {
-                return validateToken(token);
-            }
-            catch (Exception ex)
-            {
-                return AuthenticateResult.Fail(ex.Message);
-            }
+            string clientToken = Request.Cookies[HotellTokenCookieDefaults.AuthCookieName];
+            var claims = new[] { new Claim("clientToken", clientToken) };
+            var identity = new ClaimsIdentity(claims, HotellTokenCookieDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+            var ticket = new AuthenticationTicket(principal, HotellTokenCookieDefaults.AuthenticationScheme);
+            Console.WriteLine("User logged in");
+            return Task.FromResult(AuthenticateResult.Success(ticket));
         }
 
-        private AuthenticateResult validateToken(string token)
+        protected override Task HandleChallengeAsync(AuthenticationProperties properties)
         {
-            var validatedToken = customAuthenticationManager.Tokens.FirstOrDefault(t => t.Key == token);
-            if (validatedToken.Key == null)
-            {
-                return AuthenticateResult.Fail("Unauthorized");
-            }
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, validatedToken.Value),
-            };
 
-            var identity = new ClaimsIdentity(claims, Scheme.Name);
-            var principal = new System.Security.Principal.GenericPrincipal(identity, null);
-            var ticket = new AuthenticationTicket(principal, Scheme.Name);
-            return AuthenticateResult.Success(ticket);
+            Console.WriteLine($"CHALLANGE: {Response.StatusCode}");
+            //Response.Redirect(_options.ChallangeRedirectUrl, false);
+            //return Task.CompletedTask;
+            return base.HandleChallengeAsync(properties);
         }
+
+        protected override Task HandleForbiddenAsync(AuthenticationProperties properties)
+        {
+            Console.WriteLine($"FORBIDDEN: {Response.StatusCode}");
+            //Response.Redirect(_options.ChallangeRedirectUrl, false);
+            //return Task.CompletedTask;
+            return base.HandleForbiddenAsync(properties);
+        }
+    }
+
+    public class HotellTokenCookieSchemeOptions
+        : AuthenticationSchemeOptions
+    {
+
+    }
+
+    public static class HotellTokenCookieDefaults
+    {
+        public static string AuthenticationScheme { get; } = "HotellTokenCookieScheme";
+        public static string AuthCookieName { get; set; } = "hotellTokenCookieASPNET";
     }
 }

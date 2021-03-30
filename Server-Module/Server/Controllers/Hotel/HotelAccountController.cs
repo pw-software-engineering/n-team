@@ -15,12 +15,10 @@ namespace Server.Controllers.Hotel
     [ApiController]
     public class HotelAccountController : ControllerBase
     {
-        private readonly ICustomAuthenticationManager customAuthenticationManager;
         private readonly ILogger<HotelAccountController> _logger;
 
-        public HotelAccountController(ILogger<HotelAccountController> logger, ICustomAuthenticationManager customAuthenticationManager)
+        public HotelAccountController(ILogger<HotelAccountController> logger)
         {
-            this.customAuthenticationManager = customAuthenticationManager;
             _logger = logger;
         }
 
