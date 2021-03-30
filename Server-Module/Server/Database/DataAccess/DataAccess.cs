@@ -18,20 +18,20 @@ namespace Server.Database.DataAccess
             _dbContext = dbContext;
         }
 
-        public void AddOffer(OfferUpdateInfo offer)
+        public void AddOffer(Offer offer)
         {
             _dbContext.Offers.Add(_mapper.Map<OfferDb>(offer));
             _dbContext.SaveChanges();
         }
 
-        public List<OfferUpdateInfo> GetHotelOffers(int hotelID)
+        public List<Offer> GetHotelOffers(int hotelID)
         {
-            return _mapper.Map<List<OfferUpdateInfo>>(_dbContext.Offers.Where(o => o.HotelID == hotelID).ToList());
+            return _mapper.Map<List<Offer>>(_dbContext.Offers.Where(o => o.HotelID == hotelID).ToList());
         }
 
-        public OfferUpdateInfo GetOffer(int offerID)
+        public Offer GetOffer(int offerID)
         {
-            return _mapper.Map<OfferUpdateInfo>(_dbContext.Offers.Find(offerID));
+            return _mapper.Map<Offer>(_dbContext.Offers.Find(offerID));
         }
 
         public void UpdateOffer(OfferUpdateInfo offer)//Visitor?

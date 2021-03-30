@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.Models
 {
-    public class OfferUpdateInfo
+    public class Offer
     {
         public int OfferID { get; set; }
         public int HotelID { get; set; }
@@ -18,5 +18,6 @@ namespace Server.Models
         public double CostPerAdult { get; set; }
         public uint MaxGuests { get; set; }
         public string Description { get; set; }
+        public List<string> Pictures { get; set; }
     }
 }

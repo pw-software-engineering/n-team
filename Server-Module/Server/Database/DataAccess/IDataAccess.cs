@@ -9,9 +9,9 @@ namespace Server.Database.DataAccess
     public interface IDataAccess
     {
         #region Offer
-        void AddOffer(OfferUpdateInfo offer);
-        List<OfferUpdateInfo> GetHotelOffers(int hotelID);
-        OfferUpdateInfo GetOffer(int offerID);
+        void AddOffer(Offer offer);
+        List<Offer> GetHotelOffers(int hotelID);
+        Offer GetOffer(int offerID);
         void UpdateOffer(OfferUpdateInfo offer);
         #endregion
 

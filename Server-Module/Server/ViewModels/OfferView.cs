@@ -17,21 +17,5 @@ namespace Server.ViewModels
         public string offerPreviewPicture { get; set; }
         public List<string> pictures { get; set; }
         public List<string> rooms { get; set; }
-        public OfferView(OfferDb offer)
-        {
-            isActive = offer.IsActive;
-            offerTitle = offer.OfferTitle;
-            costPerChild = offer.CostPerChild;
-            costPerAdult = offer.CostPerAdult;
-            maxGuests = offer.MaxGuests;
-            description = offer.Description;
-            offerPreviewPicture = offer.OfferPreviewPicture;
-            pictures = new List<string>();
-            foreach (OfferPictureDb picture in offer.OfferPictures)
-                pictures.Add(picture.Picture);
-            rooms = new List<string>();
-            foreach (OfferHotelRoomDb room in offer.OfferHotelRooms)
-                rooms.Add(room.Room.HotelRoomNumber);
-        }
     }
 }
