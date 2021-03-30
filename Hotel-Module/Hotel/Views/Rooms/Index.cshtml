@@ -15,56 +15,84 @@
 <hr />
 
 <ul class="list-inline">
-    <li class="list-inline-item"><a href="#" class="room-text">12</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">13</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">14</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">15</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">16</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">17</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">18</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">19</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">20</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">21</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">22</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">23</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">24</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">25</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">26</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">27</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">28</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">29</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">30</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">31</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">32</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">33</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">34</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">35</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">36</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">37</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">38</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">39</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">40</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">41</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">42</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">43</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">44</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">45</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">46</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">47</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">48</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">49</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">50</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">51</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">52</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">53</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">54</a></li>
-    <li class="list-inline-item"><a href="#" class="room-text">55</a></li>
+    <li class="list-inline-item"><button type="button" id="test" class="room-text btn btn-link" data-toggle="modal" data-target="#roomOffersModal" data-offers='[1, 2, 3, 4]'>12</button></li>
+    <li class="list-inline-item"><button type="button" class="room-text btn btn-link">13</button></li>
+    <li class="list-inline-item"><button type="button" class="room-text btn btn-link">14</button></li>
+    <li class="list-inline-item"><button type="button" class="room-text btn btn-link">15</button></li>
 </ul>
+<hr />
+
+<form>
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Room number</span>
+            </div>
+            <input type="text" class="form-control" />
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary">Add new room</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- MODAL -->
+<div class="modal fade" id="roomOffersModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Room</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <table class="table table-striped">
+                    <tbody id="offersBody">
+                        <!-- offers -->
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger">
+                    <span class="fa fa-trash"></span>
+                    Delete this room
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
-<script type="text/javascript">
-    $(".toggle-sort").click(function () {
-        $(this).toggleClass("fa-sort-alpha-up fa-sort-alpha-down");
-    });
-</script>
+    <script type="text/javascript">
+        $(".toggle-sort").click(function () {
+            $(this).toggleClass("fa-sort-alpha-up fa-sort-alpha-down");
+        });
+
+
+        $('#roomOffersModal').on('show.bs.modal', function (event) {
+            var a = $(event.relatedTarget);
+            var roomNr = a.text();
+            var offerIDs = a.data('offers');
+            var modal = $(this);
+            var offersBody = modal.find('#offersBody');
+
+            modal.find('.modal-title').text('Room ' + roomNr);
+
+            // AJAX each offer and add table row inside #offersBody
+            offerIDs.forEach(function (offerID, index) {
+
+                $.ajax({
+                    url: "/rooms/offerRowPartial",
+                    data: offerID,
+                    success: function (partial) {
+                        offersBody.append(partial);
+                    }
+                });
+            });
+        });
+    </script>
 }
