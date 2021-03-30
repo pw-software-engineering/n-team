@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess
 {
-    public class DataAccess
+    public class DataAccess:IDataAccess
     {
         private readonly IMapper _mapper;
         public DataAccess(IMapper mapper)

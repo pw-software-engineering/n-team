@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess
 {
-    interface IDataAccess
+    public interface IDataAccess
     {
+
     }
 }
