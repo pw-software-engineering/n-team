@@ -26,18 +26,5 @@ namespace Server.Database.Models
         public List<OfferPictureDb> OfferPictures { get; set; }
         public List<ClientReviewDb> ClientReviews { get; set; }
         public List<OfferHotelRoomDb> OfferHotelRooms { get; set; }
-        public OfferDb() { }
-        public OfferDb(OfferView offer, int hotelID)
-        {
-            HotelID = hotelID;
-            OfferTitle = offer.offerTitle;
-            OfferPreviewPicture = offer.offerPreviewPicture;
-            IsActive = offer.isActive;
-            IsDeleted = false;
-            CostPerChild = offer.costPerChild;
-            CostPerAdult = offer.costPerAdult;
-            MaxGuests = offer.maxGuests;
-            Description = offer.description;
-        }
     }
 }

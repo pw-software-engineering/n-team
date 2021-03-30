@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Database.Models
+namespace Server.Models
 {
-    public class OfferPictureDb
+    public class OfferPicture
     {
-        //Properties
         public int OfferID { get; set; }
         public int PictureID { get; set; }
         public string Picture { get; set; }
-        //Navigational Properties
-        public OfferDb Offer { get; set; }
     }
 }

@@ -9,17 +9,14 @@ namespace Server.Database.DataAccess
     public interface IDataAccess
     {
         #region Offer
-        void AddOffer(Offer offer, int hotelID);
-        List<OfferPreview> GetHotelOffers(int hotelID);
-        Offer GetOffer(int offerID);
-        void DeleteOffer(int offerID);
-        void UpdateOffer(int offerID, Offer offer);
+        void AddOffer(OfferUpdateInfo offer);
+        List<OfferUpdateInfo> GetHotelOffers(int hotelID);
+        OfferUpdateInfo GetOffer(int offerID);
+        void UpdateOffer(OfferUpdateInfo offer);
         #endregion
 
         #region OfferPictures
-        void AddOfferPicture(string pictrue);
+        void AddOfferPicture(OfferPicture pictrue);
         #endregion
-
-
     }
 }

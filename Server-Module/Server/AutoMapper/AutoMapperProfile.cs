@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Server.Database.Models;
 using Server.Models;
+using Server.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,15 @@ namespace Server.AutoMapper
     {
         public AutoMapperProfile()
         {
-            CreateMap<OfferView, OfferDb>();
-            CreateMap<OfferDb, OfferView>();
+            #region Db -> Model -> Db
+            CreateMap<OfferUpdateInfo, OfferDb>();
+            CreateMap<OfferDb, OfferUpdateInfo>();
+            #endregion
+
+            #region Model -> ViewModel -> Model
+            CreateMap<OfferUpdateInfo, OfferView>();
+            CreateMap<OfferView, OfferUpdateInfo>();
+            #endregion
         }
     }
 }
