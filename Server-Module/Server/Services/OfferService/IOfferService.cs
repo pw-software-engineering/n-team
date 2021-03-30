@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Database.Interfaces
+namespace Server.Services.OfferService
 {
     interface IOfferService
     {

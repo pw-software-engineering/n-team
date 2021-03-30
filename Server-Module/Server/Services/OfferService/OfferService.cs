@@ -1,4 +1,5 @@
-﻿using Server.Database.Exceptions;
+﻿using Server.Database;
+using Server.Database.Exceptions;
 using Server.Database.Interfaces;
 using Server.Database.Models;
 using Server.Models;
@@ -7,8 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Database.Interfaces_implementations
-{
+namespace Server.Services.OfferService
+{   
     public class OfferService : IOfferService
     {
         private ServerDbContext db;
@@ -16,6 +17,7 @@ namespace Server.Database.Interfaces_implementations
         {
             this.db = db;
         }
+        
         public int AddOffer(Offer offer, int hotelID)
         {
             OfferDb offerDb = new OfferDb(offer, hotelID);
@@ -27,6 +29,7 @@ namespace Server.Database.Interfaces_implementations
             db.SaveChanges();
             return offerDb.OfferID;
         }
+        /// <exception cref="NotOwnerException" cref="NotFoundException"></exception>
         public void DeleteOffer(int offerID, int hotelID)
         {
             OfferDb offer = db.Offers.Find(offerID);
@@ -42,14 +45,14 @@ namespace Server.Database.Interfaces_implementations
                 offerPreviews.Add(new OfferPreview(offer));
             return offerPreviews; 
         }
-
+        /// <exception cref="NotOwnerException" cref="NotFoundException"></exception>
         public Offer GetOffer(int offerID, int hotelID)
         {
             OfferDb offer = db.Offers.Find(offerID);
             CheckExceptions(offer, hotelID);
             return new Offer(offer);
         }
-
+        /// <exception cref="NotOwnerException" cref="NotFoundException"></exception>
         public void UpdateOffer(int offerID, int hotelID, bool? isActive, string offerTitle, string description, string offerPreviewPicture, List<string> offerPictures)
         {         
             OfferDb offer = db.Offers.Find(offerID);
@@ -67,6 +70,7 @@ namespace Server.Database.Interfaces_implementations
             }
             db.SaveChanges();
         }
+        /// <exception cref="NotOwnerException" cref="NotFoundException"></exception>
         public void CheckExceptions(OfferDb offer, int hotelID)
         {
             if (offer == null)
