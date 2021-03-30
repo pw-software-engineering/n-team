@@ -14,7 +14,6 @@ namespace Hotel.Controllers
             return View();
         }
 
-        [HttpGet]
         public PartialViewResult OfferRowPartial(uint offerID)
         {
             // get data from server
