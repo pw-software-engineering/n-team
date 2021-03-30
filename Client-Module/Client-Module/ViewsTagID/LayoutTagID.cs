@@ -12,6 +12,7 @@ namespace Client_Module.ViewsTagID.Layout
         public static string NavSearchBtnID { get; } = "search-btn";
         public static string NavReservationsBtnID { get; } = "reservations-btn";
         public static string NavLogInBtnID { get; } = "login-btn";
+        public static string NavLogOutBtnID { get; } = "logout-btn";
 
 
         public static string NavSelectedBtnKey { get; } = "nav-selected-btn";

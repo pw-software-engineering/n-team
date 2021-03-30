@@ -23,9 +23,11 @@ namespace Client_Module.Controllers
             return View();
         }
 
+        [HttpGet("/logout")]
         public IActionResult LogOut()
         {
-            return Ok("Logout GET");
+            this.Response.Cookies.Delete(ClientTokenCookieDefaults.AuthCookieName);
+            return Redirect("/");
         }
 
         [HttpPost("/login")]
