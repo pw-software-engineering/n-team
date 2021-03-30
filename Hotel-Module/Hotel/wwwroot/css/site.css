@@ -219,6 +219,16 @@ h1, h2, h3, h4, h5,
     color: rgba(0, 0, 0, 0.3);
 }
 
+.fcp {
+    padding: 7px 0 0 0;
+    opacity: 1;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: #01d28e;
+    font-weight: 700;
+}
+
 .form-control-placeholder {
     position: absolute;
     top: 2px;
