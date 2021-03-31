@@ -6,71 +6,68 @@
     <h1 class="display-4">Your reservations</h1>
 </div>
 <hr class="mt-1 mb-3" />
-<div class="d-flex flex-row mt-1">
-    <div class="flex-grow-0 mx-auto form-inline">
-        @*flex-wrap: nowrap set in order to not wrap divs inside input-group*@
-        <div class="input-group" style="flex-wrap: nowrap">
-            <div class="input-group-prepend">
-                <button class="d-flex flex-row btn btn-outline-secondary bg-light text-secondary" type="button" style="width: 115px; align-items: center">
-                    <i class="fas fa-caret-left mx-1 flex-grow-0"></i>
-                    <span class="flex-grow-0 mx-auto">Previous</span>
-                </button>
-            </div>
-            <input type="text" class="form-control py-0 px-2 border-secondary border-right-0 border-left-0" style="width: 50px; text-align: center" />
-            <div class="input-group-append">
-                <button class="d-flex flex-row btn btn-outline-secondary bg-light text-secondary" type="button" style="width: 115px; align-items: center">
-                    <span class="flex-grow-0 mx-auto">Next</span>
-                    <i class="fas fa-caret-right mx-1 flex-grow-0"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<ul class="pagination justify-content-center my-3">
+    <li class="page-item">
+        <button class="page-link" href="" aria-label="Previous">
+            <i class="fas fa-chevron-left text-dark"></i>
+        </button>
+    </li>
+    <li class="page-item">
+        <input class="page-link text-dark text-center font-weight-bold p-2" style="width: 60px" type="number" min="1" value="1" />
+    </li>
+    <li class="page-item">
+        <button class="page-link" href="" aria-label="Next">
+            <i class="fas fa-chevron-right text-dark"></i>
+        </button>
+    </li>
+</ul>
 <hr class="my-3" />
-<div class="card w-100 border-0 mt-3" style="background-color: lightgray">
+<div class="card w-100 border-0 mt-3 bg-website">
     <ul class="list-group bg-website reservation-list">
-        @*<li> element responsible for listing an offer with all reservations*@
         <li class="list-group-item rounded-0 m-1 mb-3 bg-light reservation-list-entry">
-            <div>
-                <p class="m-0"><span style="font-size: 22px"><b>Hotel:</b><i class="mx-3">Example hotel name</i></span><small>(Poland, Warsaw)</small></p>
+            <div class="d-flex flex-row-reverse align-items-center flex-wrap">
+                <button class="btn btn-danger ml-auto"><span style="font-weight: 500">Cancel reservation</span></button>
+                <p class="m-0 mr-auto">
+                    <span style="font-size: 22px">
+                        <span style="font-weight: 600">Hotel:</span><i class="mx-3">Example hotel name</i>
+                    </span>
+                    <small>(Poland, Warsaw)</small>
+                </p>
             </div>
-            <hr class="my-1 border-secondary" />
+            <hr class="my-2 border-secondary" />
 
-            <small class="d-block text-secondary my-1">(Offer ID: 42)</small>
-            @*justify-content: center to horizontally center flex items after they're wrapped*@
             <div class="d-flex flex-row" style="flex-wrap: wrap; justify-content: center">
                 <div class="flex-grow-0">
+                    <small class="d-block text-secondary my-1">(Offer ID: 42)</small>
                     <div class="d-block rounded mx-auto" style="width: 230px; height: 180px; background-color: red"></div>
                 </div>
                 <div class="flex-grow-1 ml-2 d-flex flex-column">
                     <div class="flex-grow-0">
                         <p class="m-0 p-1 text-center" style="font-size: 18px">[Placeholder offer title]</p>
-                        <hr class="my-1" style="border-top: 1px dashed gray" />
+                        <hr class="my-1" />
                     </div>
-                    <div class="flex-grow-1 container-fluid">
-                        @*Without h-100 my-auto doesn't work - weird behaviour as height: 100% shouldn't even do anything (unless it overrides default row height and only that)*@
-                        <div class="row h-100">
-                            <div class="col-md-3 d-flex">
-                                @*<div> responsible for displaying buttons responsible for creating/deleting or editing a review*@
-                                <div class="w-100 my-auto" style="min-width: 75px">
-                                    <button class="d-block btn btn-warning my-2 w-100" data-toggle="modal" data-target="#reviewModal">Edit review</button>
-                                    <button class="d-block btn btn-danger my-2 w-100">Delete review</button>
-                                </div>
-                            </div>
-                            <div class="col-md-9 py-1 my-auto">
-                                <div class="d-flex flex-row" style="align-items: center">
-                                    <i class="flex-grow-0 far fa-calendar-minus mx-2"></i>
-                                    <p class="flex-grow-1 m-0"><span style="color: gray">Reservation period:</span><span class="mx-3">22.12.2020 &mdash; 14.02.2021</span></p>
-                                </div>
-                                <div class="d-flex flex-row" style="align-items: center">
-                                    <i class="flex-grow-0 fas fa-user-tie mx-2"></i>
-                                    <p class="flex-grow-1 m-0"><span style="color: gray">Number of adults:</span><span class="mx-3">2</span></p>
-                                </div>
-                                <div class="d-flex flex-row" style="align-items: center">
-                                    <i class="flex-grow-0 fas fa-child mx-2"></i>
-                                    <p class="flex-grow-1 m-0"><span style="color: gray">Number of children:</span><span class="mx-3">1</span></p>
-                                </div>
-                            </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex flex-row pl-2 mb-2 align-items-center">
+                            <span class="mr-3" style="font-size: 18px; font-weight: 600">Reservation status:</span>
+                            <span class="text-success" style="font-size: 18px; font-weight: 600">Pending</span>
+                        </div>
+                        <div class="d-flex flex-row pl-3 align-items-center">
+                            <i class="flex-grow-0 far fa-calendar-minus mx-2"></i>
+                            <p class="flex-grow-1 m-0"><span style="color: gray">Reservation period:</span><span class="mx-3">22.12.2020 &mdash; 14.02.2021</span></p>
+                        </div>
+                        <div class="d-flex flex-row pl-3 align-items-center">
+                            <i class="flex-grow-0 fas fa-user-tie mx-2"></i>
+                            <p class="flex-grow-1 m-0"><span style="color: gray">Number of adults:</span><span class="mx-3">2</span></p>
+                        </div>
+                        <div class="d-flex flex-row pl-3 mb-3 align-items-center">
+                            <i class="flex-grow-0 fas fa-child mx-2"></i>
+                            <p class="flex-grow-1 m-0"><span style="color: gray">Number of children:</span><span class="mx-3">1</span></p>
+                        </div>
+                        <hr class="my-2" />
+                        <div class="d-flex flex-row flex-wrap pl-2" style="align-items: center">
+                            <span class="flex-grow-0 mr-4" style="font-size: 18px; font-weight: 600">Your reservation review:</span>
+                            <button class="btn btn-sm btn-warning mr-4" data-toggle="modal" data-target="#reviewModal">Edit<i class="far fa-edit ml-2"></i></button>
+                            <button class="btn btn-sm btn-danger">Delete<i class="far fa-trash-alt ml-2"></i></button>
                         </div>
                     </div>
                 </div>
@@ -82,49 +79,70 @@
 
 
         <li class="list-group-item rounded-0 m-1 mb-3 bg-light reservation-list-entry">
-            <div>
-                <p class="m-0"><span style="font-size: 22px"><b>Hotel:</b><i class="mx-3">Example hotel name</i></span><small>(Poland, Warsaw)</small></p>
+            <div class="d-flex flex-row-reverse align-items-center flex-wrap">
+                <button class="btn btn-danger ml-auto"><span style="font-weight: 500">Cancel reservation</span></button>
+                <p class="m-0 mr-auto">
+                    <span style="font-size: 22px">
+                        <span style="font-weight: 600">Hotel:</span><i class="mx-3">Example hotel name</i>
+                    </span>
+                    <small>(Poland, Warsaw)</small>
+                </p>
             </div>
-            <hr class="my-1 border-secondary" />
+            <hr class="my-2 border-secondary" />
 
-            <small class="d-block text-secondary my-1">(Offer ID: 42)</small>
             <div class="d-flex flex-row" style="flex-wrap: wrap; justify-content: center">
                 <div class="flex-grow-0">
+                    <small class="d-block text-secondary my-1">(Offer ID: 42)</small>
                     <div class="d-block rounded mx-auto" style="width: 230px; height: 180px; background-color: red"></div>
                 </div>
                 <div class="flex-grow-1 ml-2 d-flex flex-column">
                     <div class="flex-grow-0">
                         <p class="m-0 p-1 text-center" style="font-size: 18px">[Placeholder offer title]</p>
-                        <hr class="my-1" style="border-top: 1px dashed gray" />
-                    </div>
-                    <div class="flex-grow-1 container-fluid">
-                        <div class="row h-100">
-                            <div class="col-md-3 d-flex">
-                                @*<div> responsible for displaying buttons responsible for creating/deleting or editing a review*@
-                                <div class="w-100 my-auto" style="min-width: 75px">
-                                    <button class="d-block btn btn-success my-2 w-100" data-toggle="modal" data-target="#reviewModal">Create review</button>
-                                </div>
-                            </div>
-                            <div class="col-md-9 py-1 my-auto">
-                                <div class="d-flex flex-row" style="align-items: center">
-                                    <i class="flex-grow-0 far fa-calendar-minus mx-2"></i>
-                                    <p class="flex-grow-1 m-0"><span style="color: gray">Reservation period:</span><span class="mx-3">22.12.2020 &mdash; 14.02.2021</span></p>
-                                </div>
-                                <div class="d-flex flex-row" style="align-items: center">
-                                    <i class="flex-grow-0 fas fa-user-tie mx-2"></i>
-                                    <p class="flex-grow-1 m-0"><span style="color: gray">Number of adults:</span><span class="mx-3">2</span></p>
-                                </div>
-                                <div class="d-flex flex-row" style="align-items: center">
-                                    <i class="flex-grow-0 fas fa-child mx-2"></i>
-                                    <p class="flex-grow-1 m-0"><span style="color: gray">Number of children:</span><span class="mx-3">1</span></p>
-                                </div>
-                            </div>
+                        <hr class="my-1" />
+                    </div> 
+                    <div class="flex-grow-1">
+                        <div class="d-flex flex-row pl-2 mb-2 align-items-center">
+                            <span class="mr-3" style="font-size: 18px; font-weight: 600">Reservation status:</span>
+                            <span class="text-success" style="font-size: 18px; font-weight: 600">Pending</span>
+                        </div>
+                        <div class="d-flex flex-row pl-3 align-items-center">
+                            <i class="flex-grow-0 far fa-calendar-minus mx-2"></i>
+                            <p class="flex-grow-1 m-0"><span style="color: gray">Reservation period:</span><span class="mx-3">22.12.2020 &mdash; 14.02.2021</span></p>
+                        </div>
+                        <div class="d-flex flex-row pl-3 align-items-center">
+                            <i class="flex-grow-0 fas fa-user-tie mx-2"></i>
+                            <p class="flex-grow-1 m-0"><span style="color: gray">Number of adults:</span><span class="mx-3">2</span></p>
+                        </div>
+                        <div class="d-flex flex-row pl-3 mb-3 align-items-center">
+                            <i class="flex-grow-0 fas fa-child mx-2"></i>
+                            <p class="flex-grow-1 m-0"><span style="color: gray">Number of children:</span><span class="mx-3">1</span></p>
+                        </div>
+                        <hr class="my-2"/>
+                        <div class="d-flex flex-row flex-wrap pl-2" style="align-items: center">
+                            <span class="flex-grow-0 mr-4" style="font-size: 18px; font-weight: 600">Your reservation review:</span>
+                            <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#reviewModal">Create<i class="far fa-comment-dots ml-2"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
         </li>
 
+    </ul>
+
+    <ul class="pagination justify-content-center mx-auto w-100 my-3">
+        <li class="page-item ml-auto">
+            <button class="page-link" href="" aria-label="Previous">
+                <i class="fas fa-chevron-left text-dark"></i>
+            </button>
+        </li>
+        <li class="page-item">
+            <input class="page-link text-dark text-center font-weight-bold p-2" style="width: 60px" type="number" min="1" value="1" />
+        </li>
+        <li class="page-item">
+            <button class="page-link" href="" aria-label="Next">
+                <i class="fas fa-chevron-right text-dark"></i>
+            </button>
+        </li>
     </ul>
 </div>
 
@@ -154,3 +172,74 @@
         </div>
     </div>
 </div>
+
+@section Scripts{ 
+    <script>
+    $(document).ready(function () {
+        function GetReservations(pageNumber, pageSize) {
+            $.ajax({
+                method: "GET",
+                url: `@ServerApiConfig.BaseUrl/api/client/reservations?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+                headers: {
+                    "@ServerApiConfig.TokenHeaderName": getCookie("@ClientTokenCookieDefaults.AuthCookieName")
+                },
+                success: (data, textStatus, jqXHR) => {
+
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    if (textStatus === "timeout") {
+                        ShowServerErrorBox("Operation timed out");
+                        return;
+                    }
+
+                }
+            });
+        }
+
+        function CreateReservationEntry(reservationData) {
+            return 
+            `<li class="list-group-item rounded-0 m-1 mb-3 bg-light reservation-list-entry" data-hotelID="${reservationData.hotelInfoPreview.hotelID}" data-reservationID="${reservationData.reservationInfo.reservationID}">
+                <div>
+                    <p class="m-0"><span style="font-size: 22px"><b>Hotel:</b><i class="mx-3">${reservationData.hotelInfoPreview.hotelName}</i></span><small>(Poland, Warsaw)</small></p>
+                </div>
+                <hr class="my-1 border-secondary" />
+                <small class="d-block text-secondary my-1">(Offer ID: 42)</small>
+                <div class="d-flex flex-row" style="flex-wrap: wrap; justify-content: center">
+                    <div class="flex-grow-0">
+                        <div class="d-block rounded mx-auto" style="width: 230px; height: 180px; background-color: red"></div>
+                    </div>
+                    <div class="flex-grow-1 ml-2 d-flex flex-column">
+                        <div class="flex-grow-0">
+                            <p class="m-0 p-1 text-center" style="font-size: 18px">[Placeholder offer title]</p>
+                            <hr class="my-1" style="border-top: 1px dashed gray" />
+                        </div>
+                        <div class="flex-grow-1 container-fluid">
+                            <div class="row h-100">
+                                <div class="col-md-3 d-flex">
+                                    <div class="w-100 my-auto" style="min-width: 75px">
+                                        <button class="d-block btn btn-success my-2 w-100" data-toggle="modal" data-target="#reviewModal">Create review</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-9 py-1 my-auto">
+                                    <div class="d-flex flex-row" style="align-items: center">
+                                        <i class="flex-grow-0 far fa-calendar-minus mx-2"></i>
+                                        <p class="flex-grow-1 m-0"><span style="color: gray">Reservation period:</span><span class="mx-3">22.12.2020 &mdash; 14.02.2021</span></p>
+                                    </div>
+                                    <div class="d-flex flex-row" style="align-items: center">
+                                        <i class="flex-grow-0 fas fa-user-tie mx-2"></i>
+                                        <p class="flex-grow-1 m-0"><span style="color: gray">Number of adults:</span><span class="mx-3">2</span></p>
+                                    </div>
+                                    <div class="d-flex flex-row" style="align-items: center">
+                                        <i class="flex-grow-0 fas fa-child mx-2"></i>
+                                        <p class="flex-grow-1 m-0"><span style="color: gray">Number of children:</span><span class="mx-3">1</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>`;
+        }
+    });
+    </script>
+}

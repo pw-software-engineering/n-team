@@ -45,148 +45,148 @@
 </div>
 
 @section Scripts{
-    <script>
-        $(document).ready(function () {
-            function GetClientInfo() {
-                function FillClientInfo(data) {
-                    $("#@AccountTagID.InputClientNameID").val(data.name);
-                    $("#@AccountTagID.InputClientSurnameID").val(data.surname);
-                    $("#@AccountTagID.InputClientUsernameID").val(data.username);
-                    $("#@AccountTagID.InputClientEmailID").val(data.email);
-                }
-                $.ajax({
-                    method: "GET",
-                    url: "@ServerApiConfig.BaseUrl/api/client",
-                    headers: {
-                        "@ServerApiConfig.TokenHeaderName": getCookie("@ClientTokenCookieDefaults.AuthCookieName")
-                    },
-                    success: (data, textStatus, jqXHR) => {
-                        console.log(data);
-                        FillClientInfo(data);
-                    },
-                    error: (jqXHR, textStatus, errorThrown) => {
-                        if (textStatus === "timeout") {
-                            alert("Operation timed out");
-                            return;
-                        }
-                        alert(`Response status: ${jqXHR.responseJSON.error}`);
+<script>
+    $(document).ready(function () {
+        function GetClientInfo() {
+            function FillClientInfo(data) {
+                $("#@AccountTagID.InputClientNameID").val(data.name);
+                $("#@AccountTagID.InputClientSurnameID").val(data.surname);
+                $("#@AccountTagID.InputClientUsernameID").val(data.username);
+                $("#@AccountTagID.InputClientEmailID").val(data.email);
+            }
+            $.ajax({
+                method: "GET",
+                url: "@ServerApiConfig.BaseUrl/api/client",
+                headers: {
+                    "@ServerApiConfig.TokenHeaderName": getCookie("@ClientTokenCookieDefaults.AuthCookieName")
+                },
+                success: (data, textStatus, jqXHR) => {
+                    console.log(data);
+                    FillClientInfo(data);
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    if (textStatus === "timeout") {
+                        alert("Operation timed out");
+                        return;
                     }
-                });
-            }
-
-            GetClientInfo();
-
-            function InputValidator(inputHandle, errorBoxHandle, inputValidator) {
-                this.inputHandle = inputHandle;
-                this.errorBoxHandle = errorBoxHandle;
-                this.inputValidator = inputValidator;
-            }
-
-            InputValidator.prototype.GetInputHandle = function () {
-                return this.inputHandle;
-            }
-
-            InputValidator.prototype.IsInputValid = function () {
-                return this.inputValidator(this.inputHandle.val());
-            }
-
-            InputValidator.prototype.HideValidationError = function () {
-                this.errorBoxHandle.addClass("d-none");
-                this.inputHandle.removeClass("clientinfo-input-error");
-            }
-
-            InputValidator.prototype.ShowValidationError = function (errorText) {
-                this.errorBoxHandle.removeClass("d-none");
-                this.errorBoxHandle.text(errorText);
-                this.inputHandle.addClass("clientinfo-input-error");
-            }
-
-            function ShowServerError(error) {
-                var serverError = $("#@AccountTagID.ServerErrorBoxID");
-                serverError.removeClass("d-none");
-                serverError.text(error);
-            }
-
-            function HideServerError() {
-                var serverError = $("#@AccountTagID.ServerErrorBoxID");
-                serverError.addClass("d-none");
-            }
-
-            function ToggleServerSuccessMessage(isVisible) {
-                var serverSuccessBox = $("#@AccountTagID.ServerSuccessBoxID");
-                if (isVisible) {
-                    serverSuccessBox.removeClass("d-none");
-                } else {
-                    serverSuccessBox.addClass("d-none");
+                    alert(`Response status: ${jqXHR.responseJSON.error}`);
                 }
+            });
+        }
+
+        GetClientInfo();
+
+        function InputValidator(inputHandle, errorBoxHandle, inputValidator) {
+            this.inputHandle = inputHandle;
+            this.errorBoxHandle = errorBoxHandle;
+            this.inputValidator = inputValidator;
+        }
+
+        InputValidator.prototype.GetInputHandle = function () {
+            return this.inputHandle;
+        }
+
+        InputValidator.prototype.IsInputValid = function () {
+            return this.inputValidator(this.inputHandle.val());
+        }
+
+        InputValidator.prototype.HideValidationError = function () {
+            this.errorBoxHandle.addClass("d-none");
+            this.inputHandle.removeClass("clientinfo-input-error");
+        }
+
+        InputValidator.prototype.ShowValidationError = function (errorText) {
+            this.errorBoxHandle.removeClass("d-none");
+            this.errorBoxHandle.text(errorText);
+            this.inputHandle.addClass("clientinfo-input-error");
+        }
+
+        function ShowServerError(error) {
+            var serverError = $("#@AccountTagID.ServerErrorBoxID");
+            serverError.removeClass("d-none");
+            serverError.text(error);
+        }
+
+        function HideServerError() {
+            var serverError = $("#@AccountTagID.ServerErrorBoxID");
+            serverError.addClass("d-none");
+        }
+
+        function ToggleServerSuccessMessage(isVisible) {
+            var serverSuccessBox = $("#@AccountTagID.ServerSuccessBoxID");
+            if (isVisible) {
+                serverSuccessBox.removeClass("d-none");
+            } else {
+                serverSuccessBox.addClass("d-none");
             }
+        }
 
-            var clientEmailValidator = new InputValidator(
-                $("#@AccountTagID.InputClientEmailID"),
-                $("#@AccountTagID.ClientEmailValidationBoxID"),
-                (inputValue) => {
-                    var emailRegexp = /^[a-zA-Z]([a-zA-Z0-9]|[\.-_]){0,50}@@[a-z]{1,10}\.[a-z]{1,10}$/;
-                    return emailRegexp.test(inputValue);
-                });
+        var clientEmailValidator = new InputValidator(
+            $("#@AccountTagID.InputClientEmailID"),
+            $("#@AccountTagID.ClientEmailValidationBoxID"),
+            (inputValue) => {
+                var emailRegexp = /^[a-zA-Z]([a-zA-Z0-9]|[\.-_]){0,50}@@[a-z]{1,10}\.[a-z]{1,10}$/;
+                return emailRegexp.test(inputValue);
+            });
 
-            var clientUsernameValidator = new InputValidator(
-                $("#@AccountTagID.InputClientUsernameID"),
-                $("#@AccountTagID.ClientUsernameValidationBoxID"),
-                (inputValue) => {
-                    var usernameRegexp = /^[a-zA-Z][a-zA-Z0-9]{5,30}$/;
-                    return usernameRegexp.test(inputValue);
-                });
+        var clientUsernameValidator = new InputValidator(
+            $("#@AccountTagID.InputClientUsernameID"),
+            $("#@AccountTagID.ClientUsernameValidationBoxID"),
+            (inputValue) => {
+                var usernameRegexp = /^[a-zA-Z][a-zA-Z0-9]{5,30}$/;
+                return usernameRegexp.test(inputValue);
+            });
 
-            var isPendingUpdateRequest = false;
-            $("#@AccountTagID.ApplyChangesBtnID").click(function () {
-                var areAllValid = true;
-                clientEmailValidator.HideValidationError();
-                clientUsernameValidator.HideValidationError();
-                HideServerError();
-                ToggleServerSuccessMessage(false);
-                if (!clientEmailValidator.IsInputValid()) {
-                    areAllValid = false;
-                    clientEmailValidator.ShowValidationError("Email format is incorrect");
-                }
-                if (!clientUsernameValidator.IsInputValid()) {
-                    areAllValid = false;
-                    clientUsernameValidator.ShowValidationError("Username must consist of at least 5 and at most 30 alphanumeric symbols");
-                }
-                console.log(areAllValid);
-                if (!areAllValid) {
-                    return;
-                }
-                if (isPendingUpdateRequest) {
-                    ShowServerError("Another client profile update request is already pending");
-                    return;
-                }
-                isPendingUpdateRequest = true;
-                $.ajax({
-                    method: "PATCH",
-                    url: "@ServerApiConfig.BaseUrl/api/client",
-                    headers: {
-                        "@ServerApiConfig.TokenHeaderName": getCookie("@ClientTokenCookieDefaults.AuthCookieName")
-                    },
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        username: clientUsernameValidator.GetInputHandle().val(),
-                        email: clientEmailValidator.GetInputHandle().val()
-                    }),
-                    success: (data, textStatus, jqXHR) => {
-                        //console.log(data);
-                        ToggleServerSuccessMessage(true);
-                        isPendingUpdateRequest = false;
-                    },
-                    error: (jqXHR, textStatus, errorThrown) => {
-                        if (textStatus === "timeout") {
-                            ShowServerErrorBox("Operation timed out");
-                            return;
-                        }
-                        ShowServerError(`${jqXHR.responseJSON.error}`);
-                        isPendingUpdateRequest = false;
+        var isPendingUpdateRequest = false;
+        $("#@AccountTagID.ApplyChangesBtnID").click(function () {
+            var areAllValid = true;
+            clientEmailValidator.HideValidationError();
+            clientUsernameValidator.HideValidationError();
+            HideServerError();
+            ToggleServerSuccessMessage(false);
+            if (!clientEmailValidator.IsInputValid()) {
+                areAllValid = false;
+                clientEmailValidator.ShowValidationError("Email format is incorrect");
+            }
+            if (!clientUsernameValidator.IsInputValid()) {
+                areAllValid = false;
+                clientUsernameValidator.ShowValidationError("Username must consist of only alphanumeric symbols (at least 5 and at most 30)");
+            }
+            console.log(areAllValid);
+            if (!areAllValid) {
+                return;
+            }
+            if (isPendingUpdateRequest) {
+                ShowServerError("Another client profile update request is already pending");
+                return;
+            }
+            isPendingUpdateRequest = true;
+            $.ajax({
+                method: "PATCH",
+                url: "@ServerApiConfig.BaseUrl/api/client",
+                headers: {
+                    "@ServerApiConfig.TokenHeaderName": getCookie("@ClientTokenCookieDefaults.AuthCookieName")
+                },
+                contentType: "application/json",
+                data: JSON.stringify({
+                    username: clientUsernameValidator.GetInputHandle().val(),
+                    email: clientEmailValidator.GetInputHandle().val()
+                }),
+                success: (data, textStatus, jqXHR) => {
+                    //console.log(data);
+                    ToggleServerSuccessMessage(true);
+                    isPendingUpdateRequest = false;
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    if (textStatus === "timeout") {
+                        ShowServerErrorBox("Operation timed out");
+                        return;
                     }
-                });
+                    ShowServerError(`${jqXHR.responseJSON.error}`);
+                    isPendingUpdateRequest = false;
+                }
             });
         });
-    </script>
+    });
+</script>
 }

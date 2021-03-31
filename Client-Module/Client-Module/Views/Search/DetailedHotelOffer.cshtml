@@ -62,7 +62,9 @@
                 <i class="fas fa-chevron-left text-dark"></i>
             </a>
         </li>
-        <li class="page-item text-dark font-weight-bold"><a class="page-link text-dark font-weight-bold">10</a></li>
+        <li class="page-item">
+            <input class="page-link text-dark text-center font-weight-bold p-2" style="width: 60px" type="number" min="1" value="1" />
+        </li>
         <li class="page-item">
             <a class="page-link" href="" aria-label="Next">
                 <i class="fas fa-chevron-right text-dark"></i>
@@ -141,19 +143,21 @@
         </li>
     </ul>
 
-    <div class="pagination w-75 mx-auto my-3 flex-nowrap">
-        <div class="page-item ml-auto">
+    <ul class="pagination justify-content-center mx-auto w-75 my-3">
+        <li class="page-item ml-auto">
             <a class="page-link" href="" aria-label="Previous">
                 <i class="fas fa-chevron-left text-dark"></i>
             </a>
-        </div>
-        <div class="page-item text-dark font-weight-bold"><a class="page-link text-dark font-weight-bold">10</a></div>
-        <div class="page-item">
+        </li>
+        <li class="page-item">
+            <input class="page-link text-dark text-center font-weight-bold p-2" style="width: 60px" type="number" min="1" value="1" />
+        </li>
+        <li class="page-item">
             <a class="page-link" href="" aria-label="Next">
                 <i class="fas fa-chevron-right text-dark"></i>
             </a>
-        </div>
-    </div>
+        </li>
+    </ul>
 </div>
 
 <div class="modal fade bd-example-modal-lg"  id="reservationModal" tabindex="-1" role="dialog">
