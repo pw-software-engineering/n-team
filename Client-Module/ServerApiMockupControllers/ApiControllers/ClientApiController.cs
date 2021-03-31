@@ -8,9 +8,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.IO;
-using Newtonsoft.Json.Serialization;
 
-namespace Client_Module.MockupApiControllers
+namespace ServerApiMockup.MockupApiControllers
 {
     [Route("api/client")]
     [ApiController]
@@ -33,7 +32,7 @@ namespace Client_Module.MockupApiControllers
                     new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
                 );
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return BadRequest(new { error = e.Message });
             }
@@ -42,7 +41,7 @@ namespace Client_Module.MockupApiControllers
                 sr.Dispose();
             }
             //Console.WriteLine($"Login: {secrets.Login} ({secrets.Login == null})\nPassword: {secrets.Password} ({secrets.Password == null})");
-            if(secrets.Login != "TestUser" || secrets.Password != "password123")
+            if (secrets.Login != "TestUser" || secrets.Password != "password123")
             {
                 return Unauthorized(new { error = "Provided credentials are incorrect" });
             }
@@ -53,11 +52,11 @@ namespace Client_Module.MockupApiControllers
             };
             return new JsonResult(token);
         }
-        
+
         [HttpGet("")]
         public IActionResult ClientInfo()
         {
-            if(!Request.Headers.ContainsKey("x-client-token"))
+            if (!Request.Headers.ContainsKey("x-client-token"))
             {
                 Response.StatusCode = StatusCodes.Status401Unauthorized;
                 return new JsonResult(new { error = "No client token header in HTTP request" });
@@ -70,15 +69,15 @@ namespace Client_Module.MockupApiControllers
                     new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
                 );
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Unauthorized(new { error = $"Provided authentication token is malformed\n{e.Message}" });
             }
-            if(token.ID != -1)
+            if (token.ID != -1)
             {
                 return Unauthorized(new { error = "Invalid authentication token (illegal value)" });
             }
-            
+
             ClientInfo client = new ClientInfo()
             {
                 Name = "Jan",
@@ -87,7 +86,7 @@ namespace Client_Module.MockupApiControllers
                 Email = "jan.kowalski@mailing.net"
             };
             return new JsonResult(
-                client, 
+                client,
                 new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
             );
         }
@@ -97,7 +96,7 @@ namespace Client_Module.MockupApiControllers
         {
             Regex emailRegex = new Regex("^[a-zA-Z]([a-zA-Z]|[\\.-]|[0-9])+@[a-z]{1,20}\\.[a-z]{1,10}$");
             Regex usernameRegex = new Regex("^[a-zA-Z][a-zA-Z0-9]{1, 50}$");
-            if(editInfo.Username == "UsernameAlreadyTaken")
+            if (editInfo.Username == "UsernameAlreadyTaken")
             {
                 return BadRequest(new { error = "This username is already in use." });
             }
@@ -130,18 +129,18 @@ namespace Client_Module.MockupApiControllers
     }
 }
 
-public class CustomContractResolver : DefaultContractResolver
-{
-    public CustomContractResolver() { }
+//public class CustomContractResolver : DefaultContractResolver
+//{
+//    public CustomContractResolver() { }
 
-    protected override string ResolvePropertyName(string propertyName)
-    {
-        string jsonPropertyName = "";
-        jsonPropertyName += char.ToUpper(propertyName[0]);
-        if (propertyName.Length > 1)
-        {
-            jsonPropertyName += propertyName.Substring(1);
-        }
-        return jsonPropertyName;
-    }
-}
+//    protected override string ResolvePropertyName(string propertyName)
+//    {
+//        string jsonPropertyName = "";
+//        jsonPropertyName += char.ToUpper(propertyName[0]);
+//        if (propertyName.Length > 1)
+//        {
+//            jsonPropertyName += propertyName.Substring(1);
+//        }
+//        return jsonPropertyName;
+//    }
+//}

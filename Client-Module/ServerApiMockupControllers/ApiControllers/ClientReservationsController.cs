@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Client_Module.MockupApiControllers
+namespace ServerApiMockup.MockupApiControllers
 {
     [Route("api/client")]
     [ApiController]
@@ -34,7 +35,9 @@ namespace Client_Module.MockupApiControllers
                 NumberOfAdults = 2,
                 NumberOfChildren = 2
             };
-            byte[] imgRaw = System.IO.File.ReadAllBytes("./picture.png");
+            //Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            //Console.WriteLine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            byte[] imgRaw = System.IO.File.ReadAllBytes($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Resources/picture.png");
             reservationData.OfferInfoPreview = new OfferInfoPreview()
             {
                 OfferID = 2,

@@ -18,4 +18,8 @@
     <Folder Include="wwwroot\resources\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ServerApiMockupControllers\ServerApiMockupControllers.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client-Module", "Client-Module\Client-Module.csproj", "{2E3CED79-52CB-4330-9A9F-B56F70DC40C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeleniumTests", "SeleniumTests\SeleniumTests.csproj", "{FDD86CF2-7D0A-43E2-BEBB-3295F98620D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeleniumTests", "SeleniumTests\SeleniumTests.csproj", "{FDD86CF2-7D0A-43E2-BEBB-3295F98620D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerApiMockupControllers", "ServerApiMockupControllers\ServerApiMockupControllers.csproj", "{587B344D-BB1E-4D10-A800-318D03E59EC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{FDD86CF2-7D0A-43E2-BEBB-3295F98620D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDD86CF2-7D0A-43E2-BEBB-3295F98620D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDD86CF2-7D0A-43E2-BEBB-3295F98620D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{587B344D-BB1E-4D10-A800-318D03E59EC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{587B344D-BB1E-4D10-A800-318D03E59EC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{587B344D-BB1E-4D10-A800-318D03E59EC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{587B344D-BB1E-4D10-A800-318D03E59EC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
