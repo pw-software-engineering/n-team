@@ -15,5 +15,6 @@ namespace Client_Module.ViewsTagID.Client
         public static string ClientEmailValidationBoxID { get; set; } = "client-email-validation";
         public static string ApplyChangesBtnID { get; set; } = "apply-changes-btn";
         public static string ServerErrorBoxID { get; set; } = "server-error";
+        public static string ServerSuccessBoxID { get; set; } = "server-success";
     }
 }
