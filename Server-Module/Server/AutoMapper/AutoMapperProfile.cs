@@ -21,6 +21,8 @@ namespace Server.AutoMapper
             #endregion
 
             #region Model -> ViewModel -> Model
+            CreateMap<Offer, OfferView>();
+            CreateMap<OfferView, Offer>();
             CreateMap<OfferPreview, OfferPreviewView>();
             CreateMap<OfferPreviewView, OfferPreview>();
             #endregion
