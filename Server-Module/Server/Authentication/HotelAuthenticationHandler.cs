@@ -33,10 +33,16 @@ namespace Server.Authentication
         }
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var myToken = this.Context.Request.Headers["x-hotel-token"][0];
+            string myToken;
+            try
+            {
+                myToken = this.Context.Request.Headers["x-hotel-token"][0];
+            }
+            catch(Exception e)
+            {
+                return Task.FromResult(AuthenticateResult.Fail(e));
+            }
 
-            //LinkGenerator urlGenerator = Context.RequestServices.GetService(typeof(LinkGenerator)) as LinkGenerator;
-            //Console.WriteLine($"{urlGenerator.GetPathByAction("LogIn", "Client")}");
             bool niejest = true;
             foreach(var tok in TokenList)
             {

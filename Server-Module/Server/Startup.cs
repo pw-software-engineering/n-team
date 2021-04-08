@@ -36,10 +36,11 @@ namespace Server
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<IOfferService, OfferService>();
             services.AddTransient<IDataAccess, DataAccess>();
+            services.AddTransient<IHotellTokenDataAcess, HotellTokenDataAcess>();
             services.AddDbContext<ServerDbContext>(options =>           
                 options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext"))); 
-			services.AddAuthentication("HotellBasic").AddScheme<HotellTokenSchemeOptions, HotellTokenScheme>("HotellBasic", null);
-
+			//services.AddAuthentication("HotellBasic").AddScheme<HotellTokenSchemeOptions, HotellTokenScheme>("HotellBasic", null);
+            services.AddAuthentication().AddScheme<HotellTokenSchemeOptions, HotellTokenScheme>(HotellTokenDefaults.AuthenticationScheme, (HotellTokenSchemeOptions options) => { options.ClaimsIssuer = "HotellBasic"; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Server.Controllers.Hotel
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "HotellTokenScheme")]
     //[Route("api/[controller]")]
     [ApiController]
     public class HotelAccountController : ControllerBase
