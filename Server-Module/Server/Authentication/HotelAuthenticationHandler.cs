@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Server.Database;
+using Server.Database.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace Server.Authentication
     public class HotellTokenScheme
         : AuthenticationHandler<HotellTokenSchemeOptions>
     {
-        private List<(string token, int id)> TokenList = new List<(string token, int id)>();
+        private IHotellTokenDataAcess hotellTokenDataAcess;
         private HotellTokenSchemeOptions _options;
         public HotellTokenScheme(
             IOptionsMonitor<HotellTokenSchemeOptions> options,
@@ -24,11 +24,8 @@ namespace Server.Authentication
             ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
-            var b = (ServerDbContext)Context.RequestServices.GetService(typeof(ServerDbContext));
-            foreach(var h in b.HotelInfos)
-            {
-                TokenList.Add((h.AccessToken, h.HotelID));
-            }
+            hotellTokenDataAcess = (IHotellTokenDataAcess)Context.RequestServices.GetService(typeof(IHotellTokenDataAcess));
+           // this.hotellTokenDataAcess = hotellTokenDataAcess;
             _options = options.CurrentValue;
         }
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -43,16 +40,8 @@ namespace Server.Authentication
                 return Task.FromResult(AuthenticateResult.Fail(e));
             }
 
-            bool niejest = true;
-            foreach(var tok in TokenList)
-            {
-                if(myToken == tok.token)
-                {
-                    niejest = !niejest;
-                    break;
-                }
-            }
-            if ( niejest )
+            int? wynik = hotellTokenDataAcess.GetMyId(myToken);
+            if ( !wynik.HasValue )
             {
                 return Task.FromResult(AuthenticateResult.NoResult());
             }
