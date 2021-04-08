@@ -17,7 +17,7 @@ namespace Server.Authentication
     {
         private IHotelTokenDataAccess hotelTokenDataAcess;
         private HotelTokenSchemeOptions _options;
-        public HotelTokenScheme(IHotelTokenDataAccess hotellTokenDataAcess,
+        public HotelTokenScheme(IHotelTokenDataAccess hotelTokenDataAcess,
             IOptionsMonitor<HotelTokenSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
