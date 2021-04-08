@@ -419,3 +419,7 @@ h1, h2, h3, h4, h5,
     .room-text:hover {
         color: #01d28e;
     }
+
+#login-bg-img {
+    background-image: url(../img/bristol-bg.jpg)
+}
