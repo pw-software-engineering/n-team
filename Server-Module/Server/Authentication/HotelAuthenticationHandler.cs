@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Server.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,33 +12,48 @@ using System.Threading.Tasks;
 
 namespace Server.Authentication
 {
-    public class HotellTokenCookieScheme
-        : AuthenticationHandler<HotellTokenCookieSchemeOptions>
+    public class HotellTokenScheme
+        : AuthenticationHandler<HotellTokenSchemeOptions>
     {
-        private HotellTokenCookieSchemeOptions _options;
-        public HotellTokenCookieScheme(
-            IOptionsMonitor<HotellTokenCookieSchemeOptions> options,
+        private List<(string token, int id)> TokenList = new List<(string token, int id)>();
+        private HotellTokenSchemeOptions _options;
+        public HotellTokenScheme(
+            IOptionsMonitor<HotellTokenSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
+            var b = (ServerDBContext)Context.RequestServices.GetService(typeof(ServerDBContext));
+            foreach(var h in b.HotelInfos)
+            {
+                TokenList.Add((h.AccessToken, h.HotelID));
+            }
             _options = options.CurrentValue;
         }
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            Console.WriteLine("AUTHENTICATE");
+            var myToken = this.Context.Request.Headers["x-hotel-token"][0];
+
             //LinkGenerator urlGenerator = Context.RequestServices.GetService(typeof(LinkGenerator)) as LinkGenerator;
             //Console.WriteLine($"{urlGenerator.GetPathByAction("LogIn", "Client")}");
-            if (!Request.Cookies.ContainsKey(HotellTokenCookieDefaults.AuthCookieName))
+            bool niejest = true;
+            foreach(var tok in TokenList)
+            {
+                if(myToken == tok.token)
+                {
+                    niejest = !niejest;
+                    break;
+                }
+            }
+            if ( niejest )
             {
                 return Task.FromResult(AuthenticateResult.NoResult());
             }
-            string clientToken = Request.Cookies[HotellTokenCookieDefaults.AuthCookieName];
-            var claims = new[] { new Claim("clientToken", clientToken) };
-            var identity = new ClaimsIdentity(claims, HotellTokenCookieDefaults.AuthenticationScheme);
+            var claims = new[] { new Claim("clientToken", myToken) };
+            var identity = new ClaimsIdentity(claims, HotellTokenDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
-            var ticket = new AuthenticationTicket(principal, HotellTokenCookieDefaults.AuthenticationScheme);
+            var ticket = new AuthenticationTicket(principal, HotellTokenDefaults.AuthenticationScheme);
             Console.WriteLine("User logged in");
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }
@@ -59,15 +76,15 @@ namespace Server.Authentication
         }
     }
 
-    public class HotellTokenCookieSchemeOptions
+    public class HotellTokenSchemeOptions
         : AuthenticationSchemeOptions
     {
 
     }
 
-    public static class HotellTokenCookieDefaults
+    public static class HotellTokenDefaults
     {
-        public static string AuthenticationScheme { get; } = "HotellTokenCookieScheme";
-        public static string AuthCookieName { get; set; } = "hotellTokenCookieASPNET";
+        public static string AuthenticationScheme { get; } = "HotellTokenScheme";
+        public static string AuthCookieName { get; set; } = "hotellTokenASPNET";
     }
 }
