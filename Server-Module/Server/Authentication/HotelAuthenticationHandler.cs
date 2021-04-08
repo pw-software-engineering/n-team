@@ -15,37 +15,38 @@ namespace Server.Authentication
     public class HotellTokenScheme
         : AuthenticationHandler<HotellTokenSchemeOptions>
     {
-        private IHotellTokenDataAcess hotellTokenDataAcess;
+        private IHotelTokenDataAccess hotellTokenDataAcess;
         private HotellTokenSchemeOptions _options;
-        public HotellTokenScheme(
+        public HotellTokenScheme(IHotelTokenDataAccess hotellTokenDataAcess,
             IOptionsMonitor<HotellTokenSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
-            hotellTokenDataAcess = (IHotellTokenDataAcess)Context.RequestServices.GetService(typeof(IHotellTokenDataAcess));
+            this.hotellTokenDataAcess = hotellTokenDataAcess;
            // this.hotellTokenDataAcess = hotellTokenDataAcess;
             _options = options.CurrentValue;
         }
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            string myToken;
+            string HotelToken;
             try
             {
-                myToken = this.Context.Request.Headers["x-hotel-token"][0];
+                HotelToken = this.Context.Request.Headers["x-hotel-token"][0];
             }
-            catch(Exception e)
+            catch(Exception)
             {
-                return Task.FromResult(AuthenticateResult.Fail(e));
+                return Task.FromResult(AuthenticateResult.NoResult());
+                //return Task.FromResult(AuthenticateResult.Fail(e));
             }
 
-            int? wynik = hotellTokenDataAcess.GetMyId(myToken);
-            if ( !wynik.HasValue )
+            int? HotelId = hotellTokenDataAcess.GetHotelIdFromToken(HotelToken);
+            if ( !HotelId.HasValue )
             {
                 return Task.FromResult(AuthenticateResult.NoResult());
             }
-            var claims = new[] { new Claim("clientToken", myToken) };
+            var claims = new[] { new Claim("clientToken", HotelId.Value.ToString()) };
             var identity = new ClaimsIdentity(claims, HotellTokenDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, HotellTokenDefaults.AuthenticationScheme);

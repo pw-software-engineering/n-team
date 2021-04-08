@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess
 {
-    interface IHotellTokenDataAcess
+    public interface IHotelTokenDataAccess
     {
-        int? GetMyId(string myToken);
+        int? GetHotelIdFromToken(string myToken);
     }
 }

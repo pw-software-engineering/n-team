@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess
 {
-    public class HotellTokenDataAcess : IHotellTokenDataAcess
+    public class HotelTokenDataAccess : IHotelTokenDataAccess
     {
         private readonly IMapper _mapper;
         private readonly ServerDbContext _dbContext;
-        public HotellTokenDataAcess(IMapper mapper, ServerDbContext dbContext)
+        public HotelTokenDataAccess(IMapper mapper, ServerDbContext dbContext)
         {
             _mapper = mapper;
             _dbContext = dbContext;
         }
 
-        public int? GetMyId(string myToken)
+        public int? GetHotelIdFromToken(string myToken)
         {
             // Exceptions:
             //   T:System.ArgumentNullException:
@@ -30,7 +30,7 @@ namespace Server.Database.DataAccess
             {
                 id = _dbContext.HotelInfos.First(x => x.AccessToken == myToken).HotelID;
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 return null;
             }
