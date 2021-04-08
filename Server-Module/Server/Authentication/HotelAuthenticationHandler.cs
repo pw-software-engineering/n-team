@@ -24,7 +24,7 @@ namespace Server.Authentication
             ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
-            var b = (ServerDBContext)Context.RequestServices.GetService(typeof(ServerDBContext));
+            var b = (ServerDbContext)Context.RequestServices.GetService(typeof(ServerDbContext));
             foreach(var h in b.HotelInfos)
             {
                 TokenList.Add((h.AccessToken, h.HotelID));
