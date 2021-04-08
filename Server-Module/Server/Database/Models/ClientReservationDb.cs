@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Server.Database.Models
 {
-    public class ClientReservation
+    public class ClientReservationDb
     {
         //Properties
         public int ReservationID { get; set; }
@@ -19,9 +19,9 @@ namespace Server.Database.Models
         public uint NumberOfChildren { get; set; }
         public uint NumberOfAdults { get; set; }
         //Navigational Properties
-        public HotelInfo Hotel { get; set; }
-        public Offer Offer { get; set; }
-        public Client Client { get; set; }
-        public HotelRoom Room { get; set; }
+        public HotelInfoDb Hotel { get; set; }
+        public OfferDb Offer { get; set; }
+        public ClientDb Client { get; set; }
+        public HotelRoomDb Room { get; set; }
     }
 }

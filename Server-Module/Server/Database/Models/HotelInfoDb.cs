@@ -5,19 +5,19 @@ using System.Threading.Tasks;
 
 namespace Server.Database.Models
 {
-    public class HotelInfo
+    public class HotelInfoDb
     {
         //Properties
         public int HotelID { get; set; }
         public string Country { get; set; }
         public string City { get; set; }
-        public byte[] HotelPreviewPicture { get; set; }
+        public string HotelPreviewPicture { get; set; }
         public string HotelName { get; set; }
         public string HotelDesc { get; set; }
         public string AccessToken { get; set; }
         //Navigational Properties
-        public List<HotelPicture> HotelPictures { get; set; }
-        public List<Offer> Offers { get; set; }
-        public List<HotelRoom> HotelRooms { get; set; }
+        public List<HotelPictureDb> HotelPictures { get; set; }
+        public List<OfferDb> Offers { get; set; }
+        public List<HotelRoomDb> HotelRooms { get; set; }
     }
 }

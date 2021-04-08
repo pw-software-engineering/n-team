@@ -219,6 +219,16 @@ h1, h2, h3, h4, h5,
     color: rgba(0, 0, 0, 0.3);
 }
 
+.fcp {
+    padding: 7px 0 0 0;
+    opacity: 1;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: #01d28e;
+    font-weight: 700;
+}
+
 .form-control-placeholder {
     position: absolute;
     top: 2px;
@@ -233,6 +243,19 @@ h1, h2, h3, h4, h5,
 .form-control:valid + .form-control-placeholder {
     -webkit-transform: translate3d(0, -120%, 0);
     transform: translate3d(0, -120%, 0);
+    padding: 7px 0 0 0;
+    opacity: 1;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: #01d28e;
+    font-weight: 700;
+}
+
+.form-control-placeholder-file {
+    position: absolute;
+    -webkit-transform: translate3d(0, -260%, 0);
+    transform: translate3d(0, -260%, 0);
     padding: 7px 0 0 0;
     opacity: 1;
     text-transform: uppercase;
@@ -373,3 +396,26 @@ h1, h2, h3, h4, h5,
                 background: #01d28e;
                 color: #fff;
             }
+
+.gallery-img {
+    height: 50px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    opacity: 85%;
+    margin: 1px;
+}
+
+.room-text {
+    color: black;
+    font-size: 20px;
+    background: #018BD0;
+    padding: 0 10px;
+    margin: 2px;
+    display: inline-block;
+    border-radius: 800px;
+    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
+    .room-text:hover {
+        color: #01d28e;
+    }

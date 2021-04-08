@@ -1,7 +1,53 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Edit your profile</h1>
+<hr />
+<br />
 
+<form>
+    <!-- Title -->
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Hotel's name" />
+        <label class="form-control-placeholder">Name</label>
+    </div>
+    <hr /><br />
+
+    <!-- Desc -->
+    <div class="form-group">
+        <textarea class="form-control" rows="4">Hotel's description description description description description description description description description description</textarea>
+        <label class="form-control-placeholder">Description</label>
+    </div>
+    <hr /><br />
+
+    <!-- Preview PIC -->
+    <div class="form-group">
+        <label>
+            <input type="checkbox" id="previewPicCheckbox" onclick="switchDisability('previewPicCheckbox', 'previewFile')" />
+            Change preview picture
+        </label>
+        <div class="form-row">
+            <input id="previewFile" class="form-control col-sm-4" type="file" disabled onchange="previewImg()" />
+            <label class="form-control-placeholder-file">Preview picture</label>
+            <img id="previewImage" class="gallery-img" src="~/img/bristol-bg.jpg" />
+        </div>
+    </div>
+    <hr /><br />
+
+    <!-- Additional PICS-->
+    <div class="form-group">
+        <label>
+            <input type="checkbox" id="additionalPicsCheckbox" onclick="switchDisability('additionalPicsCheckbox', 'additionalFiles')" />
+            Change additional pictures
+        </label>
+        <div class="form-row">
+            <input id="additionalFiles" class="form-control col-sm-4" type="file" multiple disabled onchange="previewMultiple(event)" />
+            <label class="form-control-placeholder-file">Additional pictures</label>
+            <div id="gallery"></div>
+        </div>
+    </div>
+    <hr />
+
+    <button class="btn btn-success">Save</button>
+</form>
