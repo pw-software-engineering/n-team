@@ -12,19 +12,19 @@ using System.Threading.Tasks;
 
 namespace Server.Authentication
 {
-    public class HotellTokenScheme
-        : AuthenticationHandler<HotellTokenSchemeOptions>
+    public class HotelTokenScheme
+        : AuthenticationHandler<HotelTokenSchemeOptions>
     {
-        private IHotelTokenDataAccess hotellTokenDataAcess;
-        private HotellTokenSchemeOptions _options;
-        public HotellTokenScheme(IHotelTokenDataAccess hotellTokenDataAcess,
-            IOptionsMonitor<HotellTokenSchemeOptions> options,
+        private IHotelTokenDataAccess hotelTokenDataAcess;
+        private HotelTokenSchemeOptions _options;
+        public HotelTokenScheme(IHotelTokenDataAccess hotellTokenDataAcess,
+            IOptionsMonitor<HotelTokenSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
-            this.hotellTokenDataAcess = hotellTokenDataAcess;
+            this.hotelTokenDataAcess = hotelTokenDataAcess;
            // this.hotellTokenDataAcess = hotellTokenDataAcess;
             _options = options.CurrentValue;
         }
@@ -41,15 +41,15 @@ namespace Server.Authentication
                 //return Task.FromResult(AuthenticateResult.Fail(e));
             }
 
-            int? HotelId = hotellTokenDataAcess.GetHotelIdFromToken(HotelToken);
+            int? HotelId = hotelTokenDataAcess.GetHotelIdFromToken(HotelToken);
             if ( !HotelId.HasValue )
             {
                 return Task.FromResult(AuthenticateResult.NoResult());
             }
             var claims = new[] { new Claim("clientToken", HotelId.Value.ToString()) };
-            var identity = new ClaimsIdentity(claims, HotellTokenDefaults.AuthenticationScheme);
+            var identity = new ClaimsIdentity(claims, HotelTokenDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
-            var ticket = new AuthenticationTicket(principal, HotellTokenDefaults.AuthenticationScheme);
+            var ticket = new AuthenticationTicket(principal, HotelTokenDefaults.AuthenticationScheme);
             Console.WriteLine("User logged in");
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }
@@ -72,15 +72,14 @@ namespace Server.Authentication
         }
     }
 
-    public class HotellTokenSchemeOptions
+    public class HotelTokenSchemeOptions
         : AuthenticationSchemeOptions
     {
 
     }
 
-    public static class HotellTokenDefaults
+    public static class HotelTokenDefaults
     {
         public static string AuthenticationScheme { get; } = "HotellTokenScheme";
-        public static string AuthCookieName { get; set; } = "hotellTokenASPNET";
     }
 }

@@ -40,7 +40,7 @@ namespace Server
             services.AddDbContext<ServerDbContext>(options =>           
                 options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext"))); 
 			//services.AddAuthentication("HotellBasic").AddScheme<HotellTokenSchemeOptions, HotellTokenScheme>("HotellBasic", null);
-            services.AddAuthentication().AddScheme<HotellTokenSchemeOptions, HotellTokenScheme>(HotellTokenDefaults.AuthenticationScheme, (HotellTokenSchemeOptions options) => { options.ClaimsIssuer = "HotellBasic"; });
+            services.AddAuthentication().AddScheme<HotelTokenSchemeOptions, HotelTokenScheme>(HotelTokenDefaults.AuthenticationScheme, (HotelTokenSchemeOptions options) => { options.ClaimsIssuer = "HotelBasic"; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

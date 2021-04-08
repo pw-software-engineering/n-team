@@ -16,7 +16,7 @@ namespace Server.Database.DataAccess
             _dbContext = dbContext;
         }
 
-        public int? GetHotelIdFromToken(string myToken)
+        public int? GetHotelIdFromToken(string HotelToken)
         {
             // Exceptions:
             //   T:System.ArgumentNullException:
@@ -28,7 +28,7 @@ namespace Server.Database.DataAccess
             int id;
             try
             {
-                id = _dbContext.HotelInfos.First(x => x.AccessToken == myToken).HotelID;
+                id = _dbContext.HotelInfos.First(x => x.AccessToken == HotelToken).HotelID;
             }
             catch(Exception)
             {
