@@ -9,7 +9,7 @@
 <form>
     <!-- Title -->
     <div class="form-group">
-        <input type="text" class="form-control" placeholder="Hotel's name" />
+        <input type="text" class="form-control" placeholder="Hotel name" value="Hotel's name" />
         <label class="form-control-placeholder">Name</label>
     </div>
     <hr /><br />
@@ -24,13 +24,13 @@
     <!-- Preview PIC -->
     <div class="form-group">
         <label>
-            <input type="checkbox" id="previewPicCheckbox" onclick="switchDisability('previewPicCheckbox', 'previewFile')" />
+            <input type="checkbox" onclick="switchEnabled(this, 'previewFile')" />
             Change preview picture
         </label>
         <div class="form-row">
-            <input id="previewFile" class="form-control col-sm-4" type="file" disabled onchange="previewImg()" />
+            <input id="previewFile" class="form-control col-sm-4" type="file" disabled onchange="previewGallery(this, 'previewGallery')" />
             <label class="form-control-placeholder-file">Preview picture</label>
-            <img id="previewImage" class="gallery-img" src="~/img/bristol-bg.jpg" />
+            <div id="previewGallery"></div>
         </div>
     </div>
     <hr /><br />
@@ -38,16 +38,16 @@
     <!-- Additional PICS-->
     <div class="form-group">
         <label>
-            <input type="checkbox" id="additionalPicsCheckbox" onclick="switchDisability('additionalPicsCheckbox', 'additionalFiles')" />
+            <input type="checkbox" onclick="switchEnabled(this, 'additionalFiles')" />
             Change additional pictures
         </label>
         <div class="form-row">
-            <input id="additionalFiles" class="form-control col-sm-4" type="file" multiple disabled onchange="previewMultiple(event)" />
+            <input id="additionalFiles" class="form-control col-sm-4" type="file" multiple disabled onchange="previewGallery(this, 'additionalGallery')" />
             <label class="form-control-placeholder-file">Additional pictures</label>
-            <div id="gallery"></div>
+            <div id="additionalGallery"></div>
         </div>
     </div>
     <hr />
 
-    <button class="btn btn-success">Save</button>
+    <button type="submit" class="btn btn-success">Save</button>
 </form>
