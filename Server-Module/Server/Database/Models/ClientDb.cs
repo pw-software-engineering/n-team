@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Server.Database.Models
 {
-    public class Client
+    public class ClientDb
     {
         //Properties
         public int ClientID { get; set; }
@@ -15,7 +15,7 @@ namespace Server.Database.Models
         public string Password { get; set; }
         public string Email { get; set; }
         //Navigational Properties
-        public List<ClientReservation> ClientReservations { get; set; }
-        public List<ClientReview> ClientReviews { get; set; }
+        public List<ClientReservationDb> ClientReservations { get; set; }
+        public List<ClientReviewDb> ClientReviews { get; set; }
     }
 }

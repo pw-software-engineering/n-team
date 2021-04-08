@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Server.Database;
+using Server.Database.DataAccess;
+using Server.Services.OfferService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,8 +30,11 @@ namespace Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<ServerDBContext>(options =>           
-                options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext")));
+            services.AddAutoMapper(typeof(Startup));
+            services.AddTransient<IOfferService, OfferService>();
+            services.AddTransient<IDataAccess, DataAccess>();
+            services.AddDbContext<ServerDbContext>(options =>           
+                options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext")));            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
