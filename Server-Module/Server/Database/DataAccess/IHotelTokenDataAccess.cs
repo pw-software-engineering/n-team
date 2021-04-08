@@ -7,6 +7,6 @@ namespace Server.Database.DataAccess
 {
     public interface IHotelTokenDataAccess
     {
-        int? GetHotelIdFromToken(string HotelToken);
+        int? GetHotelIdFromToken(string hotelToken);
     }
 }

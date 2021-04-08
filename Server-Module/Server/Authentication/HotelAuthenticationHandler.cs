@@ -30,10 +30,10 @@ namespace Server.Authentication
         }
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            string HotelToken;
+            string hotelToken;
             try
             {
-                HotelToken = this.Context.Request.Headers["x-hotel-token"][0];
+                hotelToken = this.Context.Request.Headers["x-hotel-token"][0];
             }
             catch(Exception)
             {
@@ -41,12 +41,12 @@ namespace Server.Authentication
                 //return Task.FromResult(AuthenticateResult.Fail(e));
             }
 
-            int? HotelId = hotelTokenDataAcess.GetHotelIdFromToken(HotelToken);
-            if ( !HotelId.HasValue )
+            int? hotelId = hotelTokenDataAcess.GetHotelIdFromToken(hotelToken);
+            if ( !hotelId.HasValue )
             {
                 return Task.FromResult(AuthenticateResult.NoResult());
             }
-            var claims = new[] { new Claim("clientToken", HotelId.Value.ToString()) };
+            var claims = new[] { new Claim("clientToken", hotelId.Value.ToString()) };
             var identity = new ClaimsIdentity(claims, HotelTokenDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, HotelTokenDefaults.AuthenticationScheme);
