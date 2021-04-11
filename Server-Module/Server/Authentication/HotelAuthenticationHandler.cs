@@ -80,6 +80,6 @@ namespace Server.Authentication
 
     public static class HotelTokenDefaults
     {
-        public static string AuthenticationScheme { get; } = "HotellTokenScheme";
+        public static string AuthenticationScheme { get; } = "HotelTokenScheme";
     }
 }
