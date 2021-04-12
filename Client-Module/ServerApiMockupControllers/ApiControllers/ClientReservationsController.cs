@@ -43,15 +43,18 @@ namespace ServerApiMockup.MockupApiControllers
                 OfferID = 2,
                 OfferTitle = "Best offer",
                 //data:image/png;base64,iVBORw0KGgoA
-                OfferPreviewPicture = Convert.ToBase64String(imgRaw)
+                //OfferPreviewPicture = Convert.ToBase64String(imgRaw)
             };
             List<ReservationData> reservations = new List<ReservationData>();
             reservations.Add(reservationData);
             reservations.Add(reservationData);
             reservations.Add(reservationData);
-            return Ok(JsonSerializer.Serialize(
-                reservations, 
-                new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+            reservations[1].ReservationInfo.ReviewID = 3;
+            reservations[2].ReservationInfo.From = new DateTime(1980, 12, 12);
+            reservations[2].ReservationInfo.To = new DateTime(1980, 12, 28);
+            return new JsonResult(
+                reservations,
+                new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         }
     }
 

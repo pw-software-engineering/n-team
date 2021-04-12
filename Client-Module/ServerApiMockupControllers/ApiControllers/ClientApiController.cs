@@ -26,7 +26,7 @@ namespace ServerApiMockup.MockupApiControllers
             {
                 sr = new StreamReader(Request.Body);
                 string bodyContent = sr.ReadToEndAsync().Result;
-                Console.WriteLine(bodyContent);
+                //Console.WriteLine(bodyContent);
                 secrets = JsonSerializer.Deserialize<ClientSecrets>(
                     bodyContent,
                     new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }

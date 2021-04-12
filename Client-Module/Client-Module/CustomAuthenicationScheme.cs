@@ -30,7 +30,7 @@ namespace Client_Module
         }
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            Console.WriteLine("AUTHENTICATE");
+            //Console.WriteLine("AUTHENTICATE");
             //LinkGenerator urlGenerator = Context.RequestServices.GetService(typeof(LinkGenerator)) as LinkGenerator;
             //Console.WriteLine($"{urlGenerator.GetPathByAction("LogIn", "Client")}");
             if (!Request.Cookies.ContainsKey(ClientTokenCookieDefaults.AuthCookieName))
@@ -53,8 +53,9 @@ namespace Client_Module
         {
             Console.WriteLine($"CHALLANGE: {Response.StatusCode}");
             LinkGenerator urlGenerator = Context.RequestServices.GetService(typeof(LinkGenerator)) as LinkGenerator;
-            Console.WriteLine($"{urlGenerator.GetPathByAction("LogIn", "Client")}");
-            return base.HandleChallengeAsync(properties);
+            //Console.WriteLine($"{urlGenerator.GetPathByAction("LogIn", "Client")}");
+            Context.Response.Redirect(urlGenerator.GetPathByAction("LogIn", "Client"));
+            return Task.CompletedTask;
         }
 
         protected override Task HandleForbiddenAsync(AuthenticationProperties properties)
