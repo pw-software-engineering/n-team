@@ -5,10 +5,54 @@
 <h1>Edit Limitless offer</h1>
 <hr />
 
+<div>
+    <label class="form-control-placeholder-static">Rooms</label>
+    <ul class="list-group">
+
+        <!-- rooms -->
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            13
+            <a href="#" class="ml-4 text-danger" data-toggle="tooltip" title="Detach room from this offer">
+                <span class="badge badge-pill">
+                    <i class="fa fa-sm fa-unlink"></i>
+                    Detach
+                </span>
+            </a>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            14
+            <a href="#" class="ml-4 text-danger" data-toggle="tooltip" title="Detach room from this offer">
+                <span class="badge badge-pill">
+                    <i class="fa fa-sm fa-unlink"></i>
+                    Detach
+                </span>
+            </a>
+        </li>
+    </ul>
+    <hr/>
+
+    <form>
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Room number</span>
+                </div>
+                <input type="text" class="form-control" />
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">Add new room</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<hr />
+
 <form id="editForm">
-    <div class="form-group">
-        <input type="checkbox" checked />
-        <label>Active</label>
+    <!-- Active -->
+    <div class="form-group custom-control custom-checkbox">
+        <input type="checkbox" id="activeCheckbox" class="custom-control-input" checked disabled />
+        <label class="custom-control-label" for="activeCheckbox">Active
+        </label>
     </div>
 
     <!-- Title -->
@@ -27,10 +71,10 @@
 
     <!-- Preview PIC -->
     <div class="form-group">
-        <label>
-            <input type="checkbox" id="previewPicCheckbox" onclick="switchEnabled(this, 'previewFile')" />
-            Change preview picture
-        </label>
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" id="previewPicCheckbox" class="custom-control-input" onclick="switchEnabled(this, 'previewFile')" />
+            <label class="custom-control-label" for="previewPicCheckbox">Change preview picture</label>
+        </div>
         <div class="form-row">
             <input id="previewFile" class="form-control col-sm-4" type="file" disabled onchange="previewGallery(this, 'previewGallery')" />
             <label class="form-control-placeholder-file">Preview picture</label>
@@ -41,10 +85,10 @@
 
     <!-- Additinal PICS-->
     <div class="form-group">
-        <label>
-            <input type="checkbox" onclick="switchEnabled(this, 'additionalFiles')" />
-            Change additional pictures
-        </label>
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" id="additionalPicsCheckbox" class="custom-control-input" onclick="switchEnabled(this, 'additionalFiles')" />
+            <label class="custom-control-label" for="additionalPicsCheckbox">Change additional pictures</label>
+        </div>
         <div class="form-row">
             <input id="additionalFiles" class="form-control col-sm-4" type="file" multiple disabled onchange="previewGallery(this, 'additionalGallery')" />
             <label class="form-control-placeholder-file">Additional pictures</label>
@@ -53,33 +97,9 @@
     </div>
     <hr />
 
-    <label class="fcp">Rooms</label>
-    <ul class="list-group" style="background: #f8f9fd">
-        <!-- rooms -->
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            13
-            <a href="#" class="ml-4" data-toggle="tooltip" title="Detach room from this offer" style="color: red;">
-                <span class="badge badge-pill">
-                    <i class="fa fa-sm fa-unlink"></i>
-                    Detach
-                </span>
-            </a>
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            14
-            <a href="#" class="ml-4" data-toggle="tooltip" title="Detach room from this offer" style="color: red;">
-                <span class="badge badge-pill">
-                    <i class="fa fa-sm fa-unlink"></i>
-                    Detach
-                </span>
-            </a>
-        </li>
-    </ul>
-    <button class="btn btn-outline-success my-2">Add room</button>
-
-    <hr />
-
-    <div class="form-group">
-        <button class="btn btn-primary">Save</button>
+    <div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-outline-danger">Deactivate</button>
+        <button type="button" class="btn btn-danger float-right">Remove offer</button>
     </div>
 </form>

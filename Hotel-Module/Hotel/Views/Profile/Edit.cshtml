@@ -23,24 +23,25 @@
 
     <!-- Preview PIC -->
     <div class="form-group">
-        <label>
-            <input type="checkbox" onclick="switchEnabled(this, 'previewFile')" />
-            Change preview picture
-        </label>
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" id="previewPicCheckbox" class="custom-control-input" onclick="switchEnabled(this, 'previewFile')" />
+            <label class="custom-control-label" for="previewPicCheckbox">Change preview picture</label>
+        </div>
         <div class="form-row">
             <input id="previewFile" class="form-control col-sm-4" type="file" disabled onchange="previewGallery(this, 'previewGallery')" />
             <label class="form-control-placeholder-file">Preview picture</label>
             <div id="previewGallery"></div>
         </div>
+        <a href="~/img/dubai.jpg">Current picture</a>
     </div>
     <hr /><br />
 
     <!-- Additional PICS-->
     <div class="form-group">
-        <label>
-            <input type="checkbox" onclick="switchEnabled(this, 'additionalFiles')" />
-            Change additional pictures
-        </label>
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" id="additionalPicsCheckbox" class="custom-control-input" onclick="switchEnabled(this, 'additionalFiles')" />
+            <label class="custom-control-label" for="additionalPicsCheckbox">Change additional pictures</label>
+        </div>
         <div class="form-row">
             <input id="additionalFiles" class="form-control col-sm-4" type="file" multiple disabled onchange="previewGallery(this, 'additionalGallery')" />
             <label class="form-control-placeholder-file">Additional pictures</label>
