@@ -18,22 +18,16 @@ jobs:
       with:
         dotnet-version: 3.1.x
     - run: |
-        export CSPROJ=./Server-Module/Server/Server.csproj
-        export TESTCOV=./Server-Module/Server.Tests/cobertura.xml
-        echo "::set-env name=CSPROJ::$CSPROJ"
-        echo "::set-env name=TESTCOV::$TESTCOV"
+        echo "CSPROJ=./Server-Module/Server/Server.csproj" >> $GITHUB_ENV
+        echo "TESTCOV=./Server-Module/Server.Tests/cobertura.xml" >> $GITHUB_ENV
       if: ${{ matrix.module }} == "Server"
     - run: |
-        export CSPROJ=./Client-Module/Client-Module/Client-Module.csproj
-        export TESTCOV=./Client-Module/Client-Module.Tests/cobertura.xml
-        echo "::set-env name=CSPROJ::$CSPROJ"
-        echo "::set-env name=TESTCOV::$TESTCOV"
+        echo "CSPROJ=./Client-Module/Client-Module/Client-Module.csproj" >> $GITHUB_ENV
+        echo "TESTCOV=./Client-Module/Client-Module.Tests/cobertura.xml" >> $GITHUB_ENV
       if: ${{ matrix.module }} == "Client"
     - run: |
-        export CSPROJ=./Hotel-Module/Hotel/Hotel.csproj
-        export TESTCOV=./Hotel-Module/Hotel.Tests/cobertura.xml
-        echo "::set-env name=CSPROJ::$CSPROJ"
-        echo "::set-env name=TESTCOV::$TESTCOV"
+        echo "CSPROJ=./Hotel-Module/Hotel/Hotel.csproj" >> $GITHUB_ENV
+        echo "TESTCOV=./Hotel-Module/Hotel.Tests/cobertura.xml" >> $GITHUB_ENV
       if: ${{ matrix.module }} == "Hotel"
     - name: Restore dependencies
       run: dotnet restore ${{ env.CSPROJ }}
