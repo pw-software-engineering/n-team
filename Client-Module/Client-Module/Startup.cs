@@ -26,7 +26,7 @@ namespace Client_Module
         {
             //services.AddTransient<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
             services.AddControllersWithViews();
-            services.AddRazorPages();
+            services.AddHttpClient();
             services.AddAuthentication(ClientTokenCookieDefaults.AuthenticationScheme)
                 .AddScheme<ClientTokenCookieSchemeOptions, ClientTokenCookieScheme>(
                 ClientTokenCookieDefaults.AuthenticationScheme,
