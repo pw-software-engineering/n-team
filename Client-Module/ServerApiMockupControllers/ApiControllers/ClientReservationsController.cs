@@ -31,7 +31,7 @@ namespace ServerApiMockup.MockupApiControllers
             {
                 ReservationID = 11,
                 From = DateTime.Now.AddDays(-10),
-                To = DateTime.Now,
+                To = DateTime.Now.AddDays(10),
                 NumberOfAdults = 2,
                 NumberOfChildren = 2
             };
@@ -46,15 +46,23 @@ namespace ServerApiMockup.MockupApiControllers
                 //OfferPreviewPicture = Convert.ToBase64String(imgRaw)
             };
             List<ReservationData> reservations = new List<ReservationData>();
-            reservations.Add(reservationData);
-            reservations.Add(reservationData);
-            reservations.Add(reservationData);
-            reservations[1].ReservationInfo.ReviewID = 3;
+            reservations.Add(reservationData.Clone());
+            reservations.Add(reservationData.Clone());
+            reservations.Add(reservationData.Clone());
+            reservations.Add(reservationData.Clone());
+            reservations[0].ReservationInfo.From = DateTime.Now.AddDays(10);
+            reservations[0].ReservationInfo.To = DateTime.Now.AddDays(20);
             reservations[2].ReservationInfo.From = new DateTime(1980, 12, 12);
             reservations[2].ReservationInfo.To = new DateTime(1980, 12, 28);
+            reservations[3].ReservationInfo.From = new DateTime(1980, 12, 12);
+            reservations[3].ReservationInfo.To = new DateTime(1980, 12, 28);
+            reservations[3].ReservationInfo.ReviewID = 3;
             return new JsonResult(
                 reservations,
-                new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                new JsonSerializerOptions() {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    IgnoreNullValues = true
+                });
         }
     }
 
@@ -63,6 +71,16 @@ namespace ServerApiMockup.MockupApiControllers
         public HotelInfoPreview HotelInfoPreview { get; set; }
         public ReservationInfo ReservationInfo { get; set; }
         public OfferInfoPreview OfferInfoPreview { get; set; }
+
+        public ReservationData Clone()
+        {
+            return new ReservationData()
+            {
+                HotelInfoPreview = HotelInfoPreview.Clone(),
+                ReservationInfo = ReservationInfo.Clone(),
+                OfferInfoPreview = OfferInfoPreview.Clone()
+            };
+        }
     }
 
     public class HotelInfoPreview
@@ -71,6 +89,17 @@ namespace ServerApiMockup.MockupApiControllers
         public string HotelName { get; set; }
         public string Country { get; set; }
         public string City { get; set; }
+
+        public HotelInfoPreview Clone()
+        {
+            return new HotelInfoPreview()
+            {
+                HotelID = HotelID,
+                HotelName = HotelName,
+                Country = Country,
+                City = City
+            };
+        }
     }
 
     public class ReservationInfo
@@ -81,6 +110,19 @@ namespace ServerApiMockup.MockupApiControllers
         public int NumberOfChildren { get; set; }
         public int NumberOfAdults { get; set; }
         public int? ReviewID { get; set; }
+
+        public ReservationInfo Clone()
+        {
+            return new ReservationInfo()
+            {
+                ReservationID = ReservationID,
+                From = From,
+                To = To,
+                NumberOfChildren = NumberOfChildren,
+                NumberOfAdults = NumberOfAdults,
+                ReviewID = ReviewID
+            };
+        }
     }
 
     public class OfferInfoPreview
@@ -88,5 +130,15 @@ namespace ServerApiMockup.MockupApiControllers
         public int OfferID { get; set; }
         public string OfferTitle { get; set; }
         public string OfferPreviewPicture { get; set; }
+
+        public OfferInfoPreview Clone()
+        {
+            return new OfferInfoPreview()
+            {
+                OfferID = OfferID,
+                OfferTitle = OfferTitle,
+                OfferPreviewPicture = OfferPreviewPicture
+            };
+        }
     }
 }
