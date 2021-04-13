@@ -22,19 +22,19 @@ jobs:
         export TESTCOV=./Server-Module/Server.Tests/cobertura.xml
         echo "::set-env name=CSPROJ::$CSPROJ"
         echo "::set-env name=TESTCOV::$TESTCOV"
-      if: matrix.module == "Server"
+      if: ${{ matrix.module }} == "Server"
     - run: |
         export CSPROJ=./Client-Module/Client-Module/Client-Module.csproj
         export TESTCOV=./Client-Module/Client-Module.Tests/cobertura.xml
         echo "::set-env name=CSPROJ::$CSPROJ"
         echo "::set-env name=TESTCOV::$TESTCOV"
-      if: matrix.module == "Client"
+      if: ${{ matrix.module }} == "Client"
     - run: |
         export CSPROJ=./Hotel-Module/Hotel/Hotel.csproj
         export TESTCOV=./Hotel-Module/Hotel.Tests/cobertura.xml
         echo "::set-env name=CSPROJ::$CSPROJ"
         echo "::set-env name=TESTCOV::$TESTCOV"
-      if: matrix.module == "Hotel"
+      if: ${{ matrix.module }} == "Hotel"
     - name: Restore dependencies
       run: dotnet restore ${{ env.CSPROJ }}
     - name: Build
