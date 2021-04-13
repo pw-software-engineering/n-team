@@ -17,15 +17,15 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
-    - if: ${{ matrix.module }} == 'Client'
+    - if: matrix.module == 'Client'
       run: |
         echo "CSPROJ=./Server-Module/Server/Server.csproj" >> $GITHUB_ENV
         echo "TESTCOV=./Server-Module/Server.Tests/cobertura.xml" >> $GITHUB_ENV
-    - if: ${{ matrix.module }} == 'Server'
+    - if: matrix.module == 'Server'
       run: |
         echo "CSPROJ=./Client-Module/Client-Module/Client-Module.csproj" >> $GITHUB_ENV
         echo "TESTCOV=./Client-Module/Client-Module.Tests/cobertura.xml" >> $GITHUB_ENV
-    - if: ${{ matrix.module }} == 'Hotel'
+    - if: matrix.module == 'Hotel'
       run: |
         echo "CSPROJ=./Hotel-Module/Hotel/Hotel.csproj" >> $GITHUB_ENV
         echo "TESTCOV=./Hotel-Module/Hotel.Tests/cobertura.xml" >> $GITHUB_ENV
