@@ -34,7 +34,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore ${{ env.CSPROJ }}
     - name: Test
-      run: dotnet test --no-build --verbosity normal /p:IncludeTestAssembly=true /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="cobertura.xml" ${{ env.CSPROJ }}
+      run: dotnet test --no-build --verbosity normal /p:IncludeTestAssembly=true /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="${{ env.TESTCOV }}" ${{ env.CSPROJ }}
     - name: Cobertura report upload to GitHub
       uses: 5monkeys/cobertura-action@v8
       with:
