@@ -5,9 +5,7 @@
 <h1>Limitless offer</h1>
 
 <div>
-    <div class="img d-block rounded" style="width: 100%; height: 300px; background-image: url(../img/rooms/room1.jpg)">
-        @*<img class="img d-block rounded" style="height: 300px;" src="~/img/rooms/room1.jpg" />*@
-    </div>
+    <img class="img rounded preview-img" src="~/img/rooms/room1.jpg" /> <!--src="data:image/png;base64,<base64-string>"-->
 
     <div>
         <small>Offer description description description description description description description description description description</small>
@@ -16,47 +14,27 @@
 <hr />
 
 <div class="flex">
-    <dl class="row" style="line-height: 15px">
+    <dl class="row dl-compact">
         <dt class="col-sm-3">Active</dt>
         <dd class="col-sm-9">Yes</dd>
         <dt class="col-sm-3">Adult</dt>
-        <dd class="col-sm-9">65.00$</dd>
+        <dd class="col-sm-9">65.00 PLN</dd>
         <dt class="col-sm-3">Child</dt>
-        <dd class="col-sm-9">65.00$</dd>
+        <dd class="col-sm-9">65.00 PLN</dd>
         <dt class="col-sm-3">Max guests</dt>
         <dd class="col-sm-9">2</dd>
     </dl>
 
-    <dl class="row" style="line-height: 15px">
+    <dl class="row dl-compact">
         <dt class="col-sm-12 mb-2">Rooms</dt>
         <dd class="col-sm-auto">
-            <ul class="list-group" style="background: #f8f9fd">
-                
-                <!-- rooms -->
-                <li class="list-group-item d-flex justify-content-between align-items-center" style="background-color: inherit">
-                    13
-                    <a href="#" class="ml-4" data-toggle="tooltip" title="Detach room from this offer" style="color: red;">
-                        <span class="badge badge-pill">
-                            <i class="fa fa-sm fa-unlink"></i>
-                            Detach
-                        </span>
-                    </a>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center" style="background-color: inherit">
-                    14
-                    <a href="#" class="ml-4" data-toggle="tooltip" title="Detach room from this offer" style="color: red;">
-                        <span class="badge badge-pill">
-                            <i class="fa fa-sm fa-unlink"></i>
-                            Detach
-                        </span>
-                    </a>
-                </li>
+            <ul class="list-inline">
+                <li class="list-inline-item">13</li>
+                <li class="list-inline-item">14</li>
             </ul>
-
         </dd>
     </dl>
 </div>
-
 <hr />
 
 <div>
@@ -92,7 +70,4 @@
 </div>
 <hr />
 
-<div>
-    <a class="btn btn-primary" asp-controller="offers" asp-action="edit">Edit offer</a>
-    <a class="btn btn-outline-danger">Remove offer</a>
-</div>
+<a class="btn btn-primary" asp-controller="offers" asp-action="edit">Edit offer</a>

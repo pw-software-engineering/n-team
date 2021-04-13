@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Add offer";
+}
+
+<h1>Add new offer</h1>
+<hr />
+
+<form>
+    <!-- Active -->
+    <div class="form-group custom-control custom-checkbox">
+        <input type="checkbox" id="activeCheckbox" class="custom-control-input" checked disabled />
+        <label class="custom-control-label" for="activeCheckbox">
+            Active
+        </label>
+    </div>
+
+    <!-- Title -->
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Offer name" />
+        <label class="form-control-placeholder">Title</label>
+    </div>
+    <hr /><br />
+
+    <!-- Description -->
+    <div class="form-group">
+        <textarea class="form-control" rows="4" placeholder="The best offer in the universe!"></textarea>
+        <label class="form-control-placeholder">Description</label>
+    </div>
+    <hr /><br />
+
+    <div class="form-row">
+        <!-- Adult cost -->
+        <div class="form-group col-sm-4">
+            <input type="number" min="0.01" step="0.01" class="form-control no-spinner" value="10.00" required />
+            <label class="form-control-placeholder-file">Cost per adult</label>
+            <span class="field-icon">PLN</span>
+        </div>
+        <!-- Child cost -->
+        <div class="form-group col-sm-4">
+            <input type="number" min="0.01" step="0.01" class="form-control no-spinner" value="10.00" required />
+            <label class="form-control-placeholder-file">Cost per child</label>
+            <span class="field-icon">PLN</span>
+        </div>
+        <!-- Max guests -->
+        <div class="form-group col-sm-4">
+            <input type="number" min="1" step="1" class="form-control" value="1" required />
+            <label class="form-control-placeholder-file">Max guests</label>
+            <span class="fa fa-user-tie field-icon mr-4"></span>
+        </div>
+    </div>
+    <hr /><br />
+
+    <!-- Rooms -->
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Comma-delimited list of room numbers" />
+        <label class="form-control-placeholder">List of rooms</label>
+    </div>
+    <hr /><br />
+
+    <!-- Preview PIC -->
+    <div class="form-group form-row">
+        <input class="form-control col-sm-4" type="file" onchange="previewGallery(this, 'previewGallery')" />
+        <label class="form-control-placeholder">Preview picture</label>
+        <div id="previewGallery"></div>
+    </div>
+    <hr /><br />
+
+    <!-- Additinal PICS-->
+    <div class="form-group form-row">
+        <input class="form-control col-sm-4" type="file" multiple onchange="previewGallery(this, 'additionalGallery')" />
+        <label class="form-control-placeholder">Additional pictures</label>
+        <div id="additionalGallery"></div>
+    </div>
+    <hr />
+
+    <button type="submit" class="btn btn-primary">Add offer</button>
+</form>
