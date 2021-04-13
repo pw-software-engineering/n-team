@@ -452,3 +452,9 @@ img.preview-img {
 .custom-control-input:checked:disabled ~ .custom-control-label::before {
     background-color: darkgray !important;
 }
+
+/* no up-down spinner in input[type=number] field */
+input[type=number].no-spinner::-webkit-inner-spin-button,
+input[type=number].no-spinner::-webkit-outer-spin-button {
+    appearance: none;
+}
