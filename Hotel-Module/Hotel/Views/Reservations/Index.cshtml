@@ -3,19 +3,34 @@
 
     // data managed and passed to view by controller
     ViewData["PageNo"] = 1;
-    ViewData["FilterSelection"] = "all"; // "all", "current" or "pending"
-    ViewData["Room"] = null;
+    ViewData["FilterSelection"] = "all"; // "all" or "current"
+    ViewData["RoomNo"] = "13A";
+
+    string filter = ViewData["FilterSelection"].ToString();
+    string rnr;
+    if (!(ViewData["RoomNo"] is null))
+        rnr = ViewData["RoomNo"].ToString();
+    else
+        rnr = "";
 }
 
 <h1>Reservations</h1>
 
 <div>
-    <form>
+    <form onsubmit="return validateForm();">
         <div class="form-row">
             <div class="form-group m-3">
                 <select class="form-control">
-                    <option selected>All reservations</option>
-                    <option>Under service only</option>
+                    @if (filter == "all")
+                    {
+                        <option selected>All reservations</option>
+                        <option>Under service only</option>
+                    }
+                    else
+                    {
+                        <option>All reservations</option>
+                        <option selected>Under service only</option>
+                    }
                 </select>
                 <label class="form-control-placeholder">Filter</label>
             </div>
@@ -46,7 +61,7 @@
             </div>
 -->
             <div class="form-group m-3">
-                <input type="text" class="form-control" />
+                <input id="roomNr" type="text" class="form-control" value="@rnr" />
                 <label class="form-control-placeholder">Room</label>
             </div>
             <div class="form-group m-3">
@@ -144,6 +159,38 @@
 
 @section Scripts {
     <script type="text/javascript">
+        //var hotelRooms = null;
+        var hotelRooms = [
+            {
+                roomID: 1,
+                hotelRoomNumber: "13A",
+                offerID: [1, 2, 3]
+            }
+        ];
 
+        function validateForm() {
+            var roomNo = $("#roomNr").val();
+            if (roomNo == null || roomNo == "")
+                return true;
+            else if (!validateRoom(roomNo)) {
+                alert("Room with this number does not exist.")
+                return false;
+            }
+        };
+
+        // check for existency of hotelRoomNr in hotel
+        function validateRoom(hotelRoomNr) {
+            if (hotelRooms == null) {
+                //$.ajax({
+                //    // API /rooms GET
+                //    success: function (response) {
+                //        hotelRooms = response;
+                //    }
+                //})
+            }
+            return hotelRooms.some(function (room) {
+                return room.hotelRoomNumber == hotelRoomNr;
+            });
+        };
     </script>
 }
