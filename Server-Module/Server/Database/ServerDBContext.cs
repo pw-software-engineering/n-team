@@ -195,7 +195,8 @@ namespace Server.Database
                 new AvalaibleTimeIntervalDb { TimeIntervalID = -1, OfferID = -2, FromTime = new DateTime(2001, 1, 1), ToTime = new DateTime(2001, 2, 2) },
                 new AvalaibleTimeIntervalDb { TimeIntervalID = -2, OfferID = -3, FromTime = new DateTime(2001, 2, 2), ToTime = new DateTime(2001, 3, 3) },
                 new AvalaibleTimeIntervalDb { TimeIntervalID = -3, OfferID = -3, FromTime = new DateTime(2001, 3, 3), ToTime = new DateTime(2001, 4, 4) });
-                #endregion
+
+            #endregion
         }
     }
 }
