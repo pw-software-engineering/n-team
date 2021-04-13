@@ -32,7 +32,7 @@ namespace Server.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HotelPreviewPicture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    HotelPreviewPicture = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HotelName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HotelDesc = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AccessToken = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -49,7 +49,7 @@ namespace Server.Migrations
                     PictureID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     HotelID = table.Column<int>(type: "int", nullable: false),
-                    Picture = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
+                    Picture = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -87,8 +87,8 @@ namespace Server.Migrations
                     OfferID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     HotelID = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OfferPreviewPicture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    OfferTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OfferPreviewPicture = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CostPerChild = table.Column<double>(type: "float", nullable: false),
@@ -222,7 +222,7 @@ namespace Server.Migrations
                     PictureID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OfferID = table.Column<int>(type: "int", nullable: false),
-                    Picture = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
+                    Picture = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

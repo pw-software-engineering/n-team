@@ -9,8 +9,8 @@ using Server.Database;
 
 namespace Server.Migrations
 {
-    [DbContext(typeof(ServerDBContext))]
-    [Migration("20210323160835_InitialCreate")]
+    [DbContext(typeof(ServerDbContext))]
+    [Migration("20210328174601_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.0");
 
-            modelBuilder.Entity("Server.Database.Models.AvalaibleTimeInterval", b =>
+            modelBuilder.Entity("Server.Database.Models.AvalaibleTimeIntervalDb", b =>
                 {
                     b.Property<int>("TimeIntervalID")
                         .ValueGeneratedOnAdd()
@@ -44,7 +44,7 @@ namespace Server.Migrations
                     b.ToTable("AvalaibleTimeIntervals");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.Client", b =>
+            modelBuilder.Entity("Server.Database.Models.ClientDb", b =>
                 {
                     b.Property<int>("ClientID")
                         .ValueGeneratedOnAdd()
@@ -71,7 +71,7 @@ namespace Server.Migrations
                     b.ToTable("Clients");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.ClientReservation", b =>
+            modelBuilder.Entity("Server.Database.Models.ClientReservationDb", b =>
                 {
                     b.Property<int>("ReservationID")
                         .ValueGeneratedOnAdd()
@@ -115,7 +115,7 @@ namespace Server.Migrations
                     b.ToTable("ClientReservations");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.ClientReview", b =>
+            modelBuilder.Entity("Server.Database.Models.ClientReviewDb", b =>
                 {
                     b.Property<int>("ReviewID")
                         .ValueGeneratedOnAdd()
@@ -146,7 +146,7 @@ namespace Server.Migrations
                     b.ToTable("ClientReviews");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.HotelInfo", b =>
+            modelBuilder.Entity("Server.Database.Models.HotelInfoDb", b =>
                 {
                     b.Property<int>("HotelID")
                         .ValueGeneratedOnAdd()
@@ -168,15 +168,15 @@ namespace Server.Migrations
                     b.Property<string>("HotelName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("HotelPreviewPicture")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("HotelPreviewPicture")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("HotelID");
 
                     b.ToTable("HotelInfos");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.HotelPicture", b =>
+            modelBuilder.Entity("Server.Database.Models.HotelPictureDb", b =>
                 {
                     b.Property<int>("PictureID")
                         .ValueGeneratedOnAdd()
@@ -186,8 +186,8 @@ namespace Server.Migrations
                     b.Property<int>("HotelID")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("Picture")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("Picture")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PictureID");
 
@@ -196,7 +196,7 @@ namespace Server.Migrations
                     b.ToTable("HotelPictures");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.HotelRoom", b =>
+            modelBuilder.Entity("Server.Database.Models.HotelRoomDb", b =>
                 {
                     b.Property<int>("RoomID")
                         .ValueGeneratedOnAdd()
@@ -216,7 +216,7 @@ namespace Server.Migrations
                     b.ToTable("HotelRooms");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.Offer", b =>
+            modelBuilder.Entity("Server.Database.Models.OfferDb", b =>
                 {
                     b.Property<int>("OfferID")
                         .ValueGeneratedOnAdd()
@@ -244,10 +244,10 @@ namespace Server.Migrations
                     b.Property<long>("MaxGuests")
                         .HasColumnType("bigint");
 
-                    b.Property<byte[]>("OfferPreviewPicture")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("OfferPreviewPicture")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("OfferTitle")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OfferID");
@@ -257,7 +257,7 @@ namespace Server.Migrations
                     b.ToTable("Offers");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.OfferHotelRoom", b =>
+            modelBuilder.Entity("Server.Database.Models.OfferHotelRoomDb", b =>
                 {
                     b.Property<int>("OfferID")
                         .HasColumnType("int");
@@ -272,7 +272,7 @@ namespace Server.Migrations
                     b.ToTable("OfferHotelRooms");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.OfferPicture", b =>
+            modelBuilder.Entity("Server.Database.Models.OfferPictureDb", b =>
                 {
                     b.Property<int>("PictureID")
                         .ValueGeneratedOnAdd()
@@ -282,8 +282,8 @@ namespace Server.Migrations
                     b.Property<int>("OfferID")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("Picture")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("Picture")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PictureID");
 
@@ -292,9 +292,9 @@ namespace Server.Migrations
                     b.ToTable("OfferPictures");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.AvalaibleTimeInterval", b =>
+            modelBuilder.Entity("Server.Database.Models.AvalaibleTimeIntervalDb", b =>
                 {
-                    b.HasOne("Server.Database.Models.Offer", "Offer")
+                    b.HasOne("Server.Database.Models.OfferDb", "Offer")
                         .WithMany("AvalaibleTimeIntervals")
                         .HasForeignKey("OfferID")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -303,27 +303,27 @@ namespace Server.Migrations
                     b.Navigation("Offer");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.ClientReservation", b =>
+            modelBuilder.Entity("Server.Database.Models.ClientReservationDb", b =>
                 {
-                    b.HasOne("Server.Database.Models.Client", "Client")
+                    b.HasOne("Server.Database.Models.ClientDb", "Client")
                         .WithMany("ClientReservations")
                         .HasForeignKey("ClientID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Server.Database.Models.HotelInfo", "Hotel")
+                    b.HasOne("Server.Database.Models.HotelInfoDb", "Hotel")
                         .WithMany()
                         .HasForeignKey("HotelID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Server.Database.Models.Offer", "Offer")
+                    b.HasOne("Server.Database.Models.OfferDb", "Offer")
                         .WithMany()
                         .HasForeignKey("OfferID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Server.Database.Models.HotelRoom", "Room")
+                    b.HasOne("Server.Database.Models.HotelRoomDb", "Room")
                         .WithMany()
                         .HasForeignKey("RoomID")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -338,15 +338,15 @@ namespace Server.Migrations
                     b.Navigation("Room");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.ClientReview", b =>
+            modelBuilder.Entity("Server.Database.Models.ClientReviewDb", b =>
                 {
-                    b.HasOne("Server.Database.Models.Client", "Client")
+                    b.HasOne("Server.Database.Models.ClientDb", "Client")
                         .WithMany("ClientReviews")
                         .HasForeignKey("ClientID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Server.Database.Models.Offer", "Offer")
+                    b.HasOne("Server.Database.Models.OfferDb", "Offer")
                         .WithMany("ClientReviews")
                         .HasForeignKey("OfferID")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -357,9 +357,9 @@ namespace Server.Migrations
                     b.Navigation("Offer");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.HotelPicture", b =>
+            modelBuilder.Entity("Server.Database.Models.HotelPictureDb", b =>
                 {
-                    b.HasOne("Server.Database.Models.HotelInfo", "Hotel")
+                    b.HasOne("Server.Database.Models.HotelInfoDb", "Hotel")
                         .WithMany("HotelPictures")
                         .HasForeignKey("HotelID")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -368,9 +368,9 @@ namespace Server.Migrations
                     b.Navigation("Hotel");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.HotelRoom", b =>
+            modelBuilder.Entity("Server.Database.Models.HotelRoomDb", b =>
                 {
-                    b.HasOne("Server.Database.Models.HotelInfo", "Hotel")
+                    b.HasOne("Server.Database.Models.HotelInfoDb", "Hotel")
                         .WithMany("HotelRooms")
                         .HasForeignKey("HotelID")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -379,9 +379,9 @@ namespace Server.Migrations
                     b.Navigation("Hotel");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.Offer", b =>
+            modelBuilder.Entity("Server.Database.Models.OfferDb", b =>
                 {
-                    b.HasOne("Server.Database.Models.HotelInfo", "Hotel")
+                    b.HasOne("Server.Database.Models.HotelInfoDb", "Hotel")
                         .WithMany("Offers")
                         .HasForeignKey("HotelID")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -390,15 +390,15 @@ namespace Server.Migrations
                     b.Navigation("Hotel");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.OfferHotelRoom", b =>
+            modelBuilder.Entity("Server.Database.Models.OfferHotelRoomDb", b =>
                 {
-                    b.HasOne("Server.Database.Models.Offer", "Offer")
+                    b.HasOne("Server.Database.Models.OfferDb", "Offer")
                         .WithMany("OfferHotelRooms")
                         .HasForeignKey("OfferID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Server.Database.Models.HotelRoom", "Room")
+                    b.HasOne("Server.Database.Models.HotelRoomDb", "Room")
                         .WithMany("OfferHotelRooms")
                         .HasForeignKey("RoomID")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -409,9 +409,9 @@ namespace Server.Migrations
                     b.Navigation("Room");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.OfferPicture", b =>
+            modelBuilder.Entity("Server.Database.Models.OfferPictureDb", b =>
                 {
-                    b.HasOne("Server.Database.Models.Offer", "Offer")
+                    b.HasOne("Server.Database.Models.OfferDb", "Offer")
                         .WithMany("OfferPictures")
                         .HasForeignKey("OfferID")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -420,14 +420,14 @@ namespace Server.Migrations
                     b.Navigation("Offer");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.Client", b =>
+            modelBuilder.Entity("Server.Database.Models.ClientDb", b =>
                 {
                     b.Navigation("ClientReservations");
 
                     b.Navigation("ClientReviews");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.HotelInfo", b =>
+            modelBuilder.Entity("Server.Database.Models.HotelInfoDb", b =>
                 {
                     b.Navigation("HotelPictures");
 
@@ -436,12 +436,12 @@ namespace Server.Migrations
                     b.Navigation("Offers");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.HotelRoom", b =>
+            modelBuilder.Entity("Server.Database.Models.HotelRoomDb", b =>
                 {
                     b.Navigation("OfferHotelRooms");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.Offer", b =>
+            modelBuilder.Entity("Server.Database.Models.OfferDb", b =>
                 {
                     b.Navigation("AvalaibleTimeIntervals");
 

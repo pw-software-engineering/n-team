@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace Server.Database.Models
 {
-    public class AvalaibleTimeInterval
+    public class OfferHotelRoomDb
     {
-        public int TimeIntervalID { get; set; }
-        public DateTime FromTime { get; set; }
-        public DateTime ToTime { get; set; }
+        //Properties
         public int OfferID { get; set; }
+        public int RoomID { get; set; }
         //Navigational Properties
-        public Offer Offer { get; set; }
+        public OfferDb Offer { get; set; }
+        public HotelRoomDb Room { get; set; }
     }
 }

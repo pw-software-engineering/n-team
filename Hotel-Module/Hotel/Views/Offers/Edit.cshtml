@@ -3,39 +3,82 @@
 }
 
 <h1>Edit Limitless offer</h1>
+<hr />
 
 <form id="editForm">
     <div class="form-group">
         <input type="checkbox" checked />
         <label>Active</label>
     </div>
+
+    <!-- Title -->
     <div class="form-group">
         <input type="text" class="form-control" placeholder="Limitless offer" />
         <label class="form-control-placeholder">Title</label>
     </div>
     <hr /><br />
 
+    <!-- Description -->
     <div class="form-group">
         <textarea class="form-control" rows="4" form="editForm">Offer description description description description description description description description description description</textarea>
         <label class="form-control-placeholder">Description</label>
     </div>
     <hr /><br />
 
+    <!-- Preview PIC -->
     <div class="form-group">
-        <input type="checkbox" />
-        <label>Change picture</label>
-        <input type="file" class="form-control" />
-        <label class="form-control-placeholder">Preview picture</label>
+        <label>
+            <input type="checkbox" id="previewPicCheckbox" onclick="switchDisability('previewPicCheckbox', 'previewFile')" />
+            Change preview picture
+        </label>
+        <div class="form-row">
+            <input id="previewFile" class="form-control col-sm-4" type="file" disabled onchange="previewImg()" />
+            <label class="form-control-placeholder-file">Preview picture</label>
+            <img id="previewImage" class="gallery-img" src="~/img/rooms/room1.jpg" />
+        </div>
     </div>
     <hr /><br />
 
+    <!-- Additinal PICS-->
     <div class="form-group">
-        <input type="checkbox" />
-        <label>Change pictures</label>
-        <input type="file" multiple class="form-control" />
-        <label class="form-control-placeholder">Offer pictures</label>
+        <label>
+            <input type="checkbox" id="additionalPicsCheckbox" onclick="switchDisability('additionalPicsCheckbox', 'additionalFiles')" />
+            Change additional pictures
+        </label>
+        <div class="form-row">
+            <input id="additionalFiles" class="form-control col-sm-4" type="file" multiple disabled onchange="previewMultiple(event)" />
+            <label class="form-control-placeholder-file">Additional pictures</label>
+            <div id="gallery"></div>
+        </div>
     </div>
     <hr />
+
+    <label class="fcp">Rooms</label>
+    <ul class="list-group" style="background: #f8f9fd">
+        <!-- rooms -->
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            13
+            <a href="#" class="ml-4" data-toggle="tooltip" title="Detach room from this offer" style="color: red;">
+                <span class="badge badge-pill">
+                    <i class="fa fa-sm fa-unlink"></i>
+                    Detach
+                </span>
+            </a>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            14
+            <a href="#" class="ml-4" data-toggle="tooltip" title="Detach room from this offer" style="color: red;">
+                <span class="badge badge-pill">
+                    <i class="fa fa-sm fa-unlink"></i>
+                    Detach
+                </span>
+            </a>
+        </li>
+    </ul>
+    <button class="btn btn-outline-success my-2">Add room</button>
+
+    <hr />
+
     <div class="form-group">
         <button class="btn btn-primary">Save</button>
     </div>

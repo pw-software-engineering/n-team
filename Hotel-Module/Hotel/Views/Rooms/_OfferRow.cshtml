@@ -1,0 +1,29 @@
+﻿@model Hotel.Models.Offer
+
+<tr>
+    <td>
+        <div class="row align-items-center m-0">
+            <div class="container-fluid col-sm-3">
+                <img src="data:image/png;base64,@Model.PreviewPicture" class="img float-left rounded w-100" />
+            </div>
+            <div class="col-sm">
+                <h3 class="m-0">@Model.Title</h3>
+                <dl class="row" style="line-height: 15px">
+                    <dt class="col-sm-3">Adult</dt>
+                    <dd class="col-sm-9">@Model.CostPerAdult$</dd>
+                    <dt class="col-sm-3">Child</dt>
+                    <dd class="col-sm-9">@Model.CostPerChild$</dd>
+                    <dt class="col-sm-3">Max guests</dt>
+                    <dd class="col-sm-9">@Model.MaxGuests</dd>
+                </dl>
+            </div>
+            <div class="btn-group-vertical btn-group-sm col-sm-2">
+                <button class="btn btn-sm btn-outline-danger">
+                    <span class="fa fa-unlink"></span>
+                    Detach from offer
+                </button>
+                <a class="btn btn-sm btn-primary" asp-controller="offers" asp-action="details">Details</a>
+            </div>
+        </div>
+    </td>
+</tr>
