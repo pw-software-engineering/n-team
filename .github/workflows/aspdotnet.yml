@@ -46,7 +46,7 @@ jobs:
       with:
         reports: ${{ env.TESTCOV }}
         targetdir: 'coverage'
-        reporttypes: 'HtmlSummary'
+        reporttypes: 'Html'
         sourcedirs: ${{ env.SRCDIR }}
         verbosity: 'Warning'
         title: ${{ matrix.module }} test coverage report
