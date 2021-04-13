@@ -35,10 +35,14 @@ jobs:
       run: dotnet build --no-restore ${{ env.CSPROJ }}
     - name: Test
       run: dotnet test --no-build --verbosity normal /p:IncludeTestAssembly=true /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="${{ env.TESTCOV }}" ${{ env.CSPROJ }}
-    - name: Cobertura report upload to GitHub
-      uses: 5monkeys/cobertura-action@v8
+    - name: Test reporter
+      uses: zyborg/dotnet-tests-report@v1
       with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        report_name: Test coverage report
-        minimum_coverage: 90
+        project_path: ${{ env.CSPROJ }}
+        report_name: ${{ matrix.module }} tests
+        report_title: ${{ matrix.module }} tests
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.module }} tests
         path: ${{ env.TESTCOV }}
