@@ -2,9 +2,14 @@
     ViewData["Title"] = "Reservations";
 
     // data managed and passed to view by controller
-    ViewData["PageNo"] = 1;
+    ViewData["PageNo"] = 2;
+    ViewData["EntrPerPage"] = 10;
+    int pageNr = int.Parse(ViewData["PageNo"].ToString());
+    int entries = int.Parse(ViewData["EntrPerPage"].ToString());
+
     ViewData["FilterSelection"] = "all"; // "all" or "current"
     ViewData["RoomNo"] = "13A";
+
 
     string filter = ViewData["FilterSelection"].ToString();
     string rnr;
@@ -17,58 +22,83 @@
 <h1>Reservations</h1>
 
 <div>
-    <form onsubmit="return validateForm();">
-        <div class="form-row">
-            <div class="form-group m-3">
-                <select class="form-control">
-                    @if (filter == "all")
-                    {
-                        <option selected>All reservations</option>
-                        <option>Under service only</option>
-                    }
-                    else
-                    {
-                        <option>All reservations</option>
-                        <option selected>Under service only</option>
-                    }
-                </select>
-                <label class="form-control-placeholder">Filter</label>
-            </div>
+    <div class="row">
+        <form onsubmit="return validateForm();">
+            <div class="form-row">
+                <div class="form-group m-3">
+                    <select class="form-control">
+                        @if (filter == "current")
+                        {
+                            <option>All reservations</option>
+                            <option selected>Under service only</option>
+                        }
+                        else
+                        {
+                            <option selected>All reservations</option>
+                            <option>Under service only</option>
+                        }
+                    </select>
+                    <label class="form-control-placeholder">Filter</label>
+                </div>
 
-            <!-- Do potencjalnego zaimplementowania w przyszłości, Could-Have -->
-<!--
-            <div class="form-group m-3">
-                <input type="date" class="form-control" />
-                <label class="form-control-placeholder">After</label>
+                <!-- Do potencjalnego zaimplementowania w przyszłości, Could-Have -->
+                <!--
+                            <div class="form-group m-3">
+                                <input type="date" class="form-control" />
+                                <label class="form-control-placeholder">After</label>
+                            </div>
+                            <div class="form-group m-3">
+                                <input type="date" class="form-control" />
+                                <label class="form-control-placeholder">Before</label>
+                            </div>
+                            <div class="form-group m-3">
+                                <input type="text" class="form-control" />
+                                <label class="form-control-placeholder">Guest name</label>
+                            </div>
+                -->
+                <!--        <div class="form-group m-3">
+                                <input type="number" min="0" class="form-control" />
+                                <label class="form-control-placeholder">Adults</label>
+                            </div>
+                            <div class="form-group m-3">
+                                <input type="number" min="0" class="form-control" />
+                                <label class="form-control-placeholder">Children</label>
+                            </div>
+                -->
+                <div class="form-group m-3">
+                    <input id="roomNr" type="text" class="form-control" value="@rnr" />
+                    <label class="form-control-placeholder">Room</label>
+                </div>
+                <div class="form-group m-3">
+                    <button type="submit" class="btn btn-primary rounded">Apply</button>
+                </div>
             </div>
-            <div class="form-group m-3">
-                <input type="date" class="form-control" />
-                <label class="form-control-placeholder">Before</label>
-            </div>
-            <div class="form-group m-3">
-                <input type="text" class="form-control" />
-                <label class="form-control-placeholder">Guest name</label>
-            </div>
--->
-
-<!--        <div class="form-group m-3">
-                <input type="number" min="0" class="form-control" />
-                <label class="form-control-placeholder">Adults</label>
-            </div>
-            <div class="form-group m-3">
-                <input type="number" min="0" class="form-control" />
-                <label class="form-control-placeholder">Children</label>
-            </div>
--->
-            <div class="form-group m-3">
-                <input id="roomNr" type="text" class="form-control" value="@rnr" />
-                <label class="form-control-placeholder">Room</label>
-            </div>
-            <div class="form-group m-3">
-                <button type="submit" class="btn btn-primary rounded">Apply</button>
-            </div>
+        </form>
+        <div class="form-group ml-auto col-sm-2 m-3">
+            <select class="form-control">
+                @if (entries == 50)
+                {
+                    <option>10</option>
+                    <option>20</option>
+                    <option selected>50</option>
+                }
+                else if (entries == 20)
+                {
+                    <option>10</option>
+                    <option selected>20</option>
+                    <option>50</option>
+                }
+                else
+                {
+                    <option selected>10</option>
+                    <option>20</option>
+                    <option>50</option>
+                }
+            </select>
+            <label class="form-control-placeholder">Entries per page</label>
         </div>
-    </form>
+    </div>
+
 
     <table class="table table-striped table-hover">
         <thead>
@@ -141,14 +171,23 @@
 
 <nav aria-label="Reservations pages">
     <ul class="pagination justify-content-center">
-        <li class="page-item disabled">
-            <a class="page-link" href="#" aria-label="Previous">
-                <span class="fa fa-chevron-left"></span>
-            </a>
-        </li>
-        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        @if (pageNr <= 1)
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span class="fa fa-chevron-left"></span>
+                </a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span class="fa fa-chevron-left"></span>
+                </a>
+            </li>
+        }
+        <li class="page-item"><a class="page-link">@pageNr.ToString()</a></li>
         <li class="page-item">
             <a class="page-link" href="#" aria-label="Next">
                 <span class="fa fa-chevron-right"></span>

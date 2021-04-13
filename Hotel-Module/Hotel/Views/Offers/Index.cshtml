@@ -1,8 +1,59 @@
 ﻿@{
     ViewData["Title"] = "Offers";
+
+    // data managed and passed to view by controller
+    ViewData["PageNo"] = 1;
+    ViewData["EntrPerPage"] = 10;
+    int pageNr = int.Parse(ViewData["PageNo"].ToString());
+    int entries = int.Parse(ViewData["EntrPerPage"].ToString());
+
+    ViewData["FilterSelection"] = "all"; // "all" or "current"
+    string filter = ViewData["FilterSelection"].ToString();
 }
 
-<h1>Your offers</h1>
+<div class="row">
+    <h1 class="ml-4 col-sm-auto">Your offers</h1>
+    <div class="row col-sm-5 ml-auto">
+        <div class="form-group col-sm-6 m-3">
+            <select class="form-control">
+                @if (filter == "current")
+                {
+                    <option>All reservations</option>
+                    <option selected>Under service only</option>
+                }
+                else
+                {
+                    <option selected>All reservations</option>
+                    <option>Under service only</option>
+                }
+            </select>
+            <label class="form-control-placeholder">Filter</label>
+        </div>
+        <div class="form-group col-sm-4 m-3">
+            <select class="form-control">
+                @if (entries == 50)
+                {
+                    <option>10</option>
+                    <option>20</option>
+                    <option selected>50</option>
+                }
+                else if (entries == 20)
+                {
+                    <option>10</option>
+                    <option selected>20</option>
+                    <option>50</option>
+                }
+                else
+                {
+                    <option selected>10</option>
+                    <option>20</option>
+                    <option>50</option>
+                }
+            </select>
+            <label class="form-control-placeholder">Entries per page</label>
+        </div>
+    </div>
+</div>
 
 <table class="table table-striped">
     <tbody>
@@ -21,6 +72,8 @@
                             <dd class="col-sm-9">100.00$</dd>
                             <dt class="col-sm-3">Max guests</dt>
                             <dd class="col-sm-9">3</dd>
+                            <dt class="col-sm-3">Active</dt>
+                            <dd class="col-sm-9">Yes</dd>
                         </dl>
                     </div>
                     <div class="btn-group-vertical btn-group-sm col-sm-2">
@@ -46,6 +99,8 @@
                             <dd class="col-sm-9">10.00$</dd>
                             <dt class="col-sm-3">Max guests</dt>
                             <dd class="col-sm-9">5</dd>
+                            <dt class="col-sm-3">Active</dt>
+                            <dd class="col-sm-9">Yes</dd>
                         </dl>
                     </div>
                     <div class="btn-group-vertical btn-group-sm col-sm-2">
@@ -71,6 +126,8 @@
                             <dd class="col-sm-9">65.00$</dd>
                             <dt class="col-sm-3">Max guests</dt>
                             <dd class="col-sm-9">2</dd>
+                            <dt class="col-sm-3">Active</dt>
+                            <dd class="col-sm-9">No</dd>
                         </dl>
                     </div>
                     <div class="btn-group-vertical btn-group-sm col-sm-2">
@@ -85,14 +142,23 @@
 
 <nav aria-label="Offers pages">
     <ul class="pagination justify-content-center">
-        <li class="page-item disabled">
-            <a class="page-link" href="#" aria-label="Previous">
-                <span class="fa fa-chevron-left"></span>
-            </a>
-        </li>
-        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        @if (pageNr <= 1)
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span class="fa fa-chevron-left"></span>
+                </a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span class="fa fa-chevron-left"></span>
+                </a>
+            </li>
+        }
+        <li class="page-item"><a class="page-link">@pageNr.ToString()</a></li>
         <li class="page-item">
             <a class="page-link" href="#" aria-label="Next">
                 <span class="fa fa-chevron-right"></span>
