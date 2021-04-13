@@ -8,8 +8,8 @@ jobs:
   build:
     strategy:
       matrix:
-        csproj: [ ./Server-Module/Server/Server.csproj, ./Client-Module/Client-Module/Client-Module.csproj, ./Hotel-Module/Hotel/Hotel.csproj ]
-    name: Build and test all modules
+        module: [ Server, Client, Hotel ]
+    name: Build and test ${{ matrix.module }} module
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -17,9 +17,40 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
+    - if: matrix.module == 'Server'
+      run: |
+        echo "SRCDIR=./Server-Module/Server" >> $GITHUB_ENV
+        echo "CSPROJ=./Server-Module/Server/Server.csproj" >> $GITHUB_ENV
+        echo "TESTPROJ=./Server-Module/Server.Tests/Server.Tests.csproj" >> $GITHUB_ENV
+        echo "TESTCOV=./Server-Module/Server.Tests/cobertura.xml" >> $GITHUB_ENV
+    - if: matrix.module == 'Client'
+      run: |
+        echo "SRCDIR=./Client-Module/Client-Module" >> $GITHUB_ENV
+        echo "CSPROJ=./Client-Module/Client-Module/Client-Module.csproj" >> $GITHUB_ENV
+        echo "TESTPROJ=./Client-Module/Client-Module.Tests/Client-Module.Tests.csproj" >> $GITHUB_ENV
+        echo "TESTCOV=./Client-Module/Client-Module.Tests/cobertura.xml" >> $GITHUB_ENV
+    - if: matrix.module == 'Hotel'
+      run: |
+        echo "SRCDIR=./Hotel-Module/Hotel" >> $GITHUB_ENV
+        echo "CSPROJ=./Hotel-Module/Hotel/Hotel.csproj" >> $GITHUB_ENV
+        echo "TESTPROJ=./Hotel-Module/Hotel.Tests/Hotel.Tests.csproj" >> $GITHUB_ENV
+        echo "TESTCOV=./Hotel-Module/Hotel.Tests/cobertura.xml" >> $GITHUB_ENV
     - name: Restore dependencies
-      run: dotnet restore ${{ matrix.csproj }}
+      run: dotnet restore ${{ env.CSPROJ }}
     - name: Build
-      run: dotnet build --no-restore ${{ matrix.csproj }}
+      run: dotnet build --no-restore ${{ env.CSPROJ }}
     - name: Test
-      run: dotnet test --no-build --verbosity normal /p:IncludeTestAssembly=true /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./TestResults/" ${{ matrix.csproj }}
+      run: dotnet test --verbosity normal /p:IncludeTestAssembly=true /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="cobertura.xml" ${{ env.TESTPROJ }}
+    - name: Generate report
+      uses: danielpalme/ReportGenerator-GitHub-Action@4.8.7
+      with:
+        reports: ${{ env.TESTCOV }}
+        targetdir: 'coverage'
+        reporttypes: 'Html'
+        sourcedirs: ${{ env.SRCDIR }}
+        verbosity: 'Warning'
+        title: ${{ matrix.module }} test coverage report
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.module }} test report
+        path: './coverage/*'
