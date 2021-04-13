@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         csproj: [ ./Server-Module/Server/Server.csproj, ./Client-Module/Client-Module/Client-Module.csproj, ./Hotel-Module/Hotel/Hotel.csproj ]
-    name: Build and test all modules
+    name: Build all modules
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -21,6 +21,14 @@ jobs:
       run: dotnet restore ${{ matrix.csproj }}
     - name: Build
       run: dotnet build --no-restore ${{ matrix.csproj }}
+  test:
+    needs: build
+    strategy:
+      matrix:
+        test: [ ./Server-Module/Server.Tests, ./Client-Module/Client-Module.Tests, ./Hotel-Module/Hotel.Tests ]
+    name: Test all modules
+    runs-on: ubuntu-latest
+    steps:
     - name: Test
       run: dotnet test --no-build --verbosity normal /p:IncludeTestAssembly=true /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="cobertura.xml" ${{ matrix.csproj }}
     - name: Cobertura report generation
@@ -29,4 +37,4 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         report_name: Test coverage report
         minimum_coverage: 90
-        path: ./cobertura.xml
+        path: ${{matrix.test}}/cobertura.xml
