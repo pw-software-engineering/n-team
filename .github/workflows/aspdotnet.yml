@@ -22,11 +22,11 @@ jobs:
     - name: Build
       run: dotnet build --no-restore ${{ matrix.csproj }}
     - name: Test
-      run: dotnet test --no-build --verbosity normal /p:IncludeTestAssembly=true /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./TestResults/" ${{ matrix.csproj }}
+      run: dotnet test --no-build --verbosity normal /p:IncludeTestAssembly=true /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="cobertura.xml" ${{ matrix.csproj }}
     - name: Cobertura report generation
       uses: 5monkeys/cobertura-action@v8
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         report_name: Test coverage report
         minimum_coverage: 90
-        path: ./TestResults/${{ matrix.csproj }}
+        path: ./cobertura.xml
