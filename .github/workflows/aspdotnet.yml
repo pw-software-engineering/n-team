@@ -20,28 +20,24 @@ jobs:
     - if: matrix.module == 'Client'
       run: |
         echo "CSPROJ=./Server-Module/Server/Server.csproj" >> $GITHUB_ENV
+        echo "TESTPROJ=./Server-Module/Server.Tests/Server.Tests.csproj" >> $GITHUB_ENV
         echo "TESTCOV=./Server-Module/Server.Tests/cobertura.xml" >> $GITHUB_ENV
     - if: matrix.module == 'Server'
       run: |
         echo "CSPROJ=./Client-Module/Client-Module/Client-Module.csproj" >> $GITHUB_ENV
+        echo "TESTPROJ=./Client-Module/Client-Module.Tests/Client-Module.Tests.csproj" >> $GITHUB_ENV
         echo "TESTCOV=./Client-Module/Client-Module.Tests/cobertura.xml" >> $GITHUB_ENV
     - if: matrix.module == 'Hotel'
       run: |
         echo "CSPROJ=./Hotel-Module/Hotel/Hotel.csproj" >> $GITHUB_ENV
+        echo "TESTPROJ=./Client-Module/Client.Tests/Client.Tests.csproj" >> $GITHUB_ENV
         echo "TESTCOV=./Hotel-Module/Hotel.Tests/cobertura.xml" >> $GITHUB_ENV
     - name: Restore dependencies
       run: dotnet restore ${{ env.CSPROJ }}
     - name: Build
       run: dotnet build --no-restore ${{ env.CSPROJ }}
     - name: Test
-      run: dotnet test --no-build --verbosity normal /p:IncludeTestAssembly=true /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="${{ env.TESTCOV }}" ${{ env.CSPROJ }}
-    - name: Test reporter
-      uses: zyborg/dotnet-tests-report@v1
-      with:
-        project_path: ${{ env.CSPROJ }}
-        report_name: ${{ matrix.module }} tests
-        report_title: ${{ matrix.module }} tests
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      run: dotnet test --verbosity normal /p:IncludeTestAssembly=true /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="${{ env.TESTCOV }}" ${{ env.TESTPROJ }}
     - uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.module }} tests
