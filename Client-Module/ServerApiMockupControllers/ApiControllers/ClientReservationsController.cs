@@ -86,7 +86,42 @@ namespace ServerApiMockup.MockupApiControllers
         [HttpGet("{reservationID}/review")]
         public IActionResult GetReservationReview(int reservationID)
         {
-            throw new NotImplementedException();
+            JsonSerializerOptions serializerSettings = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                IgnoreNullValues = true
+            };
+            if (!(reservationID == 4 || reservationID == 3))
+            {
+                return NotFound(new { error = "This reservation is not completed" });
+            }
+            ReviewInfo reviewInfo = new ReviewInfo()
+            {
+                Content = "This is some sample review content that can be very very very very very very very very very very very very very very very very very very very very very very very very very very very very long",
+                ReviewID = 1,
+                CreationDate = DateTime.Now,
+                Rating = 4,
+                ReviewerUsername = "jankowalski99"
+            };
+            return new JsonResult(reviewInfo, serializerSettings);
+        }
+
+        [HttpPut("{reservationID}/review")]
+        public IActionResult EditReservationReview(int reservationID)
+        {
+            if (!(reservationID == 4 || reservationID == 3))
+            {
+                return NotFound(new { error = "This reservation is not completed" });
+            }
+            Thread.Sleep(2000);
+            return new JsonResult(new { reviewID = 5 });
+        }
+
+        [HttpDelete("{reservationID}/review")]
+        public IActionResult DeleteReservationReview(int reservationID)
+        {
+            Thread.Sleep(2000);
+            return Ok();
         }
     }
 
@@ -164,5 +199,14 @@ namespace ServerApiMockup.MockupApiControllers
                 OfferPreviewPicture = OfferPreviewPicture
             };
         }
+    }
+
+    public class ReviewInfo
+    {
+        public int ReviewID { get; set; }
+        public string Content { get; set; }
+        public int Rating { get; set; }
+        public DateTime CreationDate { get; set; }
+        public string ReviewerUsername { get; set; }
     }
 }

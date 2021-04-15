@@ -1,6 +1,7 @@
 ﻿@using Client_Module.ViewsTagID.ClientReservations; 
 @{
     ViewData["Title"] = "Reservations";
+    ClientReservationsTagID tagIDs = new ClientReservationsTagID();
 }
 
 <div class="text-center">
@@ -9,43 +10,43 @@
 <hr class="mt-1 mb-3" />
 <ul class="pagination justify-content-center my-3">
     <li class="page-item">
-        <button class="page-link" href="" id="@ClientReservationsTagID.TopPagerPreviousBtnID">
+        <button class="page-link" href="" id="@tagIDs.TopPagerPreviousBtnID">
             <i class="fas fa-chevron-left text-dark"></i>
         </button>
     </li>
     <li class="page-item">
-        <input class="page-link text-dark text-center font-weight-bold p-2" id="@ClientReservationsTagID.TopPagerInputID" style="width: 60px" type="number" min="1" value="1" />
+        <input class="page-link text-dark text-center font-weight-bold p-2" id="@tagIDs.TopPagerInputID" style="width: 60px" type="number" min="1" value="1" />
     </li>
     <li class="page-item">
-        <button class="page-link" href="" id="@ClientReservationsTagID.TopPagerNextBtnID">
+        <button class="page-link" href="" id="@tagIDs.TopPagerNextBtnID">
             <i class="fas fa-chevron-right text-dark"></i>
         </button>
     </li>
 </ul>
 <hr class="my-3" />
 <div class="card w-100 border-0 mt-3 bg-website">
-    <ul class="list-group bg-website reservation-list" id="@ClientReservationsTagID.ReservationsListID">
+    <ul class="list-group bg-website reservation-list" id="@tagIDs.ReservationsListID">
 
     </ul>
 
     <ul class="pagination justify-content-center mx-auto w-100 my-3">
         <li class="page-item ml-auto">
-            <button class="page-link" href="" id="@ClientReservationsTagID.BottomPagerPreviousBtnID">
+            <button class="page-link" href="" id="@tagIDs.BottomPagerPreviousBtnID">
                 <i class="fas fa-chevron-left text-dark"></i>
             </button>
         </li>
         <li class="page-item">
-            <input class="page-link text-dark text-center font-weight-bold p-2" id="@ClientReservationsTagID.BottomPagerInputID" style="width: 60px" type="number" min="1" value="1" />
+            <input class="page-link text-dark text-center font-weight-bold p-2" id="@tagIDs.BottomPagerInputID" style="width: 60px" type="number" min="1" value="1" />
         </li>
         <li class="page-item">
-            <button class="page-link" href="" id="@ClientReservationsTagID.BottomPagerNextBtnID">
+            <button class="page-link" href="" id="@tagIDs.BottomPagerNextBtnID">
                 <i class="fas fa-chevron-right text-dark"></i>
             </button>
         </li>
     </ul>
 </div>
 
-<div class="modal fade" id="@ClientReservationsTagID.ModalReservationReviewID" tabindex="-1" role="dialog">
+<div class="modal fade" id="@tagIDs.ModalReservationReviewID" data-backdrop="static" tabindex="-1">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -57,7 +58,7 @@
             <div class="modal-body">
                 <div class="d-flex flex-row w-100">
                     <label for="review-rating" class="col-form-label flex-grow-0">Rating:</label>
-                    <input type="number" class="form-control flex-grow-1 ml-3" id="review-rating">
+                    <input type="number" value="1" min="1" max="5" class="form-control flex-grow-1 ml-3" id="review-rating">
                 </div>
                 <hr class="mt-3 mb-0" />
                 <div class="form-group">
@@ -65,137 +66,122 @@
                     <textarea class="form-control" id="review-content" style="min-height: 150px"></textarea>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-warning">Create review/Edit review</button>
+            <div class="modal-footer d-block">
+                <div class="review-status-box">
+                    <h5 class="text-center">
+                        <img src="~/resources/loading.gif" class="my-0 mb-2" style="width: 30px; height: 30px" />
+                        <span>Processing...</span>
+                    </h5>
+                </div>
+                <button type="button" class="btn btn-danger float-right ml-3" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-warning review-update-btn float-right">Edit review</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="@ClientReservationsTagID.ModalCancelReservationID" data-backdrop="static" tabindex="-1" role="dialog">
+<div class="modal fade" id="@tagIDs.ModalCancelReservationID" data-backdrop="static" tabindex="-1">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-light p-2 align-items-center">
                 <button type="button" class="close m-0 ml-auto p-0" data-dismiss="modal">×</button>
             </div>
             <div class="modal-body">
+                <div class="popup-output">
 
+                </div>
+                <div class="d-flex justify-content-center popup-input">
+                    <button class="btn btn-success mx-2 popup-confirm">Confirm</button>
+                    <button class="btn btn-danger mx-2 popup-cancel">Cancel</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts{ 
+@section Scripts{
+    <script src="~/js/Reservations/modalConfirmPopup.js"></script>
+    <script src="~/js/Reservations/reviewManager.js"></script>
+    <script src="~/js/Reservations/modalReviewPopup.js"></script>
+    <script src="~/js/Reservations/reservationEntry.js"></script>
+    <script src="~/js/Reservations/reservationManager.js"></script>
+    <script src="~/js/Reservations/reservationPresenter.js"></script>
+    <script src="~/js/Reservations/pager.js"></script>
     <script>
         $(document).ready(function () {
-
-            var reservationEntries = {};
-
-            function GetReservations(pageNumber, pageSize) {
-                return $.ajax({
-                    method: "GET",
-                    url: `@ServerApiConfig.BaseUrl/api/client/reservations?pageNumber=${pageNumber}&pageSize=${pageSize}`,
-                    headers: {
-                        "@ServerApiConfig.TokenHeaderName": getCookie("@ClientTokenCookieDefaults.AuthCookieName")
-                    }
-                }).then(
-                    (data, textStatus, jqXHR) => {
-                        console.log(data);
-                        return data;
-                    },
-                    (jqXHR, textStatus, errorThrown) => {
-                        alert(textStatus);
-                        throw Error(`GetReservation failed - ${textStatus}`);
-                    }
-                );
+            var apiConfig = {
+                apiBaseUrl: "@ServerApiConfig.BaseUrl",
+                apiTokenCookieName: "@ClientTokenCookieDefaults.AuthCookieName",
+                apiTokenHeaderName: "@ServerApiConfig.TokenHeaderName"
             }
 
-            function AppendReservation(reservationData) {
-                var entry = new ReservationEntry(reservationData);
-                reservationEntries[entry.reservationID] = entry;
-                $("#@ClientReservationsTagID.ReservationsListID").append(entry.createComponent());
+            var modalReviewPopup = new ModalReviewPopup({
+                modal: $("#@tagIDs.ModalReservationReviewID")
+            });
+
+            var modalConfirmPopup = new ModalConfirmPopup({
+                modal: $("#@tagIDs.ModalCancelReservationID")
+            });
+
+            var reviewManager = new ReviewManager({
+                apiConfig: apiConfig,
+                modalReviewPopup: modalReviewPopup,
+                modalConfirmPopup: modalConfirmPopup
+            });
+
+            var reservationPresenter = new ReservationPresenter({
+                reservationListDisplay: $("#@tagIDs.ReservationsListID")
+            });
+
+            var pager = new Pager();
+            pager.onPageChange = async function (pageNumber, pageSize) {
+                await reservationManager.loadReservationEntries(pageNumber, pageSize);
             }
 
-            function LoadReservations(pageNumber, pageSize) {
-                GetReservations(pageNumber, pageSize).then(
-                    (reservationsData) => {
-                        reservationEntries = {};
-                        if (reservationsData.length === 0) {
-                            $("#@ClientReservationsTagID.ReservationsListID").append(
-                                $("<li>").append(
-                                    $(`<h2 class="text-center text-secondary">`)
-                                        .attr("class", "text-center text-secondary font-weight-normal")
-                                        .text("There are no reservations on this page")
-                                )
-                            )
-                            return;
-                        }
-                        for (var i = 0; i < reservationsData.length; i++) {
-                            AppendReservation(reservationsData[i]);
-                        }
-                    }
-                );
-            }
+            pager.addPageNumberInput($("#@tagIDs.BottomPagerInputID"));
+            pager.addPageNumberInput($("#@tagIDs.TopPagerInputID"));
 
-            // ------------ Paging ---------------
-            function ReservationPager() {
-                this.pageNumber = -1;
-                this.pageSize = 10;
-                this.pageNumberInputs = [];
-            }
-
-            ReservationPager.prototype.setPageNumber = function (number) {
-                if (number <= 0) {
-                    number = 1;
-                }
-                var loadNewPage = this.pageNumber !== number
-                this.pageNumber = number;
-                for (var i = 0; i < this.pageNumberInputs.length; i++) {
-                    this.pageNumberInputs[i].val(this.pageNumber);
-                }
-                if (!loadNewPage) {
-                    return;
-                }
-                $("#@ClientReservationsTagID.ReservationsListID").empty();
-                LoadReservations(this.pageNumber, this.pageSize);
-            }
-
-            var reservationPager = new ReservationPager();
-            reservationPager.pageNumberInputs.push(
-                $("#@ClientReservationsTagID.BottomPagerInputID"),
-                $("#@ClientReservationsTagID.TopPagerInputID")
-            );
-            reservationPager.setPageNumber(1);
-
-            $("#@ClientReservationsTagID.BottomPagerNextBtnID").on("click", function () {
-                var pageInput = $("#@ClientReservationsTagID.BottomPagerInputID");
-                reservationPager.setPageNumber(Number(pageInput.val()) + 1);
+            $("#@tagIDs.BottomPagerNextBtnID").on("click", function () {
+                var pageInput = $("#@tagIDs.BottomPagerInputID");
+                pager.setPageNumber(Number(pageInput.val()) + 1);
             });
-            $("#@ClientReservationsTagID.BottomPagerPreviousBtnID").on("click", function () {
-                var pageInput = $("#@ClientReservationsTagID.BottomPagerInputID");
-                reservationPager.setPageNumber(Number(pageInput.val()) - 1);
+            $("#@tagIDs.BottomPagerPreviousBtnID").on("click", function () {
+                var pageInput = $("#@tagIDs.BottomPagerInputID");
+                pager.setPageNumber(Number(pageInput.val()) - 1);
             });
-            $("#@ClientReservationsTagID.BottomPagerInputID").on("change", function () {
-                reservationPager.setPageNumber($(this).val());
+            $("#@tagIDs.BottomPagerInputID").on("change", function () {
+                pager.setPageNumber($(this).val());
             });
 
-            $("#@ClientReservationsTagID.TopPagerNextBtnID").on("click", function () {
-                var pageInput = $("#@ClientReservationsTagID.TopPagerInputID");
-                reservationPager.setPageNumber(Number(pageInput.val()) + 1);
+            $("#@tagIDs.TopPagerNextBtnID").on("click", function () {
+                var pageInput = $("#@tagIDs.TopPagerInputID");
+                pager.setPageNumber(Number(pageInput.val()) + 1);
             });
-            $("#@ClientReservationsTagID.TopPagerPreviousBtnID").on("click", function () {
-                var pageInput = $("#@ClientReservationsTagID.TopPagerInputID");
-                reservationPager.setPageNumber(Number(pageInput.val()) - 1);
+            $("#@tagIDs.TopPagerPreviousBtnID").on("click", function () {
+                var pageInput = $("#@tagIDs.TopPagerInputID");
+                pager.setPageNumber(Number(pageInput.val()) - 1);
             });
-            $("#@ClientReservationsTagID.TopPagerInputID").on("change", function () {
-                reservationPager.setPageNumber($(this).val());
+            $("#@tagIDs.TopPagerInputID").on("change", function () {
+                pager.setPageNumber($(this).val());
             });
+
+            var reservationManager = new ReservationManager({
+                apiConfig: apiConfig,
+                reviewManager: reviewManager,
+                reservationPresenter: reservationPresenter,
+                modalConfirmPopup: modalConfirmPopup,
+                pager: pager
+            });
+
+            pager.setPageNumber(1);
+
+            @*
 
             // -------------- Cancellation management --------------------
 
             var currentCancelReservationRequestID = 0;
 
-            $("#@ClientReservationsTagID.ModalCancelReservationID").on('show.bs.modal', function (e) {
+            $("#@tagIDs.ModalCancelReservationID").on('show.bs.modal', function (e) {
                 var cancelReservationModal = $(this);
                 var requestID = ++currentCancelReservationRequestID;
                 var modalContent = cancelReservationModal.find(".modal-body");
@@ -242,17 +228,7 @@
                                     .attr("class", "text-center text-success")
                                     .text("Reservation has been successfully cancelled")
                             );
-                            LoadReservations(reservationPager.pageNumber, reservationPager.pageSize);
-                            //reservationEntries[cancelReservationContext.reservationID].reservationComponent.remove();
-                            //delete reservationEntries[cancelReservationContext.reservationID];
-                            //GetReservations(reservationPager.pageNumber * reservationPager.pageSize, 1).then(
-                            //    (reservationsData) => {
-                            //        if (reservationsData.length === 0) {
-                            //            return;
-                            //        }
-                            //        AppendReservation(reservationsData[0]);
-                            //    }
-                            //);
+                            loadReservationEntries(Pager.pageNumber, Pager.pageSize);
                         },
                         error: (jqXHR, textStatus, errorThrown) => {
                             if (requestID !== currentCancelReservationRequestID) {
@@ -269,220 +245,7 @@
                         }
                     });
                 });
-            });
-
-            // ------------ Reservation component generation -------------------
-
-            const ReservationState = Object.freeze({
-                "Pending": 1,
-                "Ongoing": 2,
-                "Completed": 3,
-                "getLiteral": function (stateNumber) {
-                    for (const state in this) {
-                        if (this[state] === stateNumber) {
-                            return state;
-                        }
-                    }
-                }
-            });
-
-            function ReservationEntry(reservationData) {
-                this.reservationData = reservationData;
-                this.reservationID = reservationData.reservationInfo.reservationID;
-                var from = new Date(reservationData.reservationInfo.from).getTime();
-                var to = new Date(reservationData.reservationInfo.to).getTime();
-                var now = Date.now();
-                if (from - now > 0) {
-                    this.reservationState = ReservationState.Pending;
-                } else if (to - now > 0) {
-                    this.reservationState = ReservationState.Ongoing;
-                } else {
-                    this.reservationState = ReservationState.Completed;
-                }
-                this.reservationComponent = null;
-            }
-
-            ReservationEntry.prototype.createComponent = CreateReservationComponent;
-
-            function CreateTitleHeaderComponent() {
-                var reservationData = this.reservationData;
-                var titleHeaderComponent = $("<div>").addClass("d-flex align-items-center");
-
-                if (this.reservationState === ReservationState.Pending) {
-                    titleHeaderComponent.addClass("flex-row-reverse flex-wrap");
-                    var cancelButton = $("<button>").addClass("btn btn-danger ml-auto btn-reservation-cancel").append(
-                        $("<span>").attr("style", "font-weight: 500").text("Cancel reservation")
-                    );
-                    cancelButton.on("click", function () {
-                        var cancelReservationModal = $("#@ClientReservationsTagID.ModalCancelReservationID");
-                        cancelReservationModal.data("cancel-context", {
-                            reservationID: reservationData.reservationInfo.reservationID
-                        });
-                        cancelReservationModal.modal("show");
-                    });
-                    titleHeaderComponent.append(cancelButton);
-                }
-
-                titleHeaderComponent.append(
-                    $("<p>").addClass("m-0 mr-auto").append(
-                        $("<span>").attr("style", "font-size: 22px").append(
-                            $("<span>").attr("style", "font-weight: 600").text("Hotel:"),
-                            $("<i>").addClass("mx-3").text(reservationData.hotelInfoPreview.hotelName)
-                        ),
-                        $("<small>").text(`(${reservationData.hotelInfoPreview.country}, ${reservationData.hotelInfoPreview.city})`)
-                    )
-                );
-                return titleHeaderComponent;
-            }
-
-            function CreateReservationReviewComponent() {
-                var reservationData = this.reservationData;
-                var reviewComponent = $("<div>").attr("class", "d-flex flex-row flex-wrap align-items-center");
-                reviewComponent.append(
-                    $("<span>")
-                        .attr("class", "flex-grow-0")
-                        .attr("style", "font-size: 18px; font-weight: 600")
-                        .text("Your reservation review:")
-                );
-
-                switch (this.reservationState) {
-                    case ReservationState.Pending:
-                    case ReservationState.Ongoing: {
-                        reviewComponent.append(
-                            $("<span>")
-                                .attr("class", "flex-grow-0 ml-4")
-                                .attr("style", "font-size: 15px; font-weight: 400; color: gray")
-                                .text("Your reservation must be completed in order to create a review")
-                        );
-                        break;
-                    }
-                    case ReservationState.Completed: {
-                        if (this.reservationData.reservationInfo.hasOwnProperty('reviewID')) {
-                            var createReviewButton = $("<button>")
-                                .attr("class", "btn btn-sm btn-success ml-3")
-                                .attr("data-toggle", "modal")
-                                .attr("data-target", "#@ClientReservationsTagID.ModalReservationReviewID")
-                                .text("Create");
-                            createReviewButton.append($(`<i class="far fa-comment-dots ml-2">`));
-                            createReviewButton.on("click", function () {
-                                console.log("Create reservation clicked");
-                            });
-                            reviewComponent.append(createReviewButton);
-                        } else {
-                            var editReviewButton = $("<button>")
-                                .attr("class", "btn btn-sm btn-warning ml-3")
-                                .attr("data-toggle", "modal")
-                                .attr("data-target", "#@ClientReservationsTagID.ModalReservationReviewID")
-                                .text("Edit");
-                            editReviewButton.append($(`<i class="far fa-edit ml-2">`));
-                            editReviewButton.on("click", function () {
-                                console.log("Edit reservation clicked");
-                            });
-                            var deleteReviewButton = $("<button>")
-                                .attr("class", "btn btn-sm btn-danger ml-3")
-                                .attr("data-toggle", "modal")
-                                .attr("data-target", "#@ClientReservationsTagID.ModalReservationReviewID")
-                                .text("Delete");
-                            deleteReviewButton.append($(`<i class="far fa-trash-alt ml-2">`));
-                            deleteReviewButton.on("click", function () {
-                                console.log("Delete reservation clicked");
-                            });
-                            reviewComponent.append(editReviewButton, deleteReviewButton);
-                        }
-                        break;
-                    }
-                }
-                return reviewComponent;
-            }
-
-            function CreateReservationInfoComponent() {
-                var reservationData = this.reservationData;
-                var reservationInfoComponent = $(`<div>`).attr("class", "d-flex flex-column");
-
-                reservationInfoComponent.append(
-                    $("<div>").attr("class", "flex-grow-0").append(
-                        $("<p>").attr("class", "m-0 p-1 text-center")
-                            .attr("style", "font-size: 18px")
-                            .text(reservationData.offerInfoPreview.offerTitle)
-                    )
-                );
-                reservationInfoComponent.append($("<hr>").attr("class", "my-1 w-100"));
-
-                var reservationStatusComponent = $("<div>").attr("class", "flex-grow-1");
-                var textClassStateMapper = {};
-                textClassStateMapper[ReservationState.Pending] = "text-warning";
-                textClassStateMapper[ReservationState.Ongoing] = "text-danger";
-                textClassStateMapper[ReservationState.Completed] = "text-success";
-                reservationStatusComponent.append(
-                    $("<div>").attr("class", "d-flex flex-row pl-2 mb-2 align-items-center").append(
-                        $("<span>").attr("class", "mr-3")
-                            .attr("style", "font-size: 18px; font-weight: 600")
-                            .text("Reservation status:"),
-                        $("<span>")
-                            .attr("class", textClassStateMapper[this.reservationState])
-                            .attr("style", "font-size: 18px; font-weight: 600")
-                            .text(ReservationState.getLiteral(this.reservationState))
-                    )
-                );
-
-                reservationStatusComponent.append(
-                    $("<div>").attr("class", "d-flex flex-row pl-3 align-items-center").append(
-                        $("<i>").attr("class", "flex-grow-0 far fa-calendar-minus mx-2"),
-                        $("<p>").attr("class", "flex-grow-1 m-0").append(
-                            $("<span>").attr("style", "color: gray").text("Reservation period:"),
-                            $("<span>").attr("class", "mx-3").text(`${new Date(reservationData.reservationInfo.from).toDateString()} — ${new Date(reservationData.reservationInfo.to).toDateString()}`)
-                        )
-                    )
-                );
-
-                reservationStatusComponent.append(
-                    $("<div>").attr("class", "d-flex flex-row pl-3 align-items-center").append(
-                        $("<i>").attr("class", "flex-grow-0 fas fa-user-tie mx-2"),
-                        $("<p>").attr("class", "flex-grow-1 m-0").append(
-                            $("<span>").attr("style", "color: gray").text("Number of adults:"),
-                            $("<span>").attr("class", "mx-3").text(`${reservationData.reservationInfo.numberOfAdults}`)
-                        )
-                    )
-                );
-
-                reservationStatusComponent.append(
-                    $("<div>").attr("class", "d-flex flex-row pl-3 mb-0 align-items-center").append(
-                        $("<i>").attr("class", "flex-grow-0 fas fa-child mx-2"),
-                        $("<p>").attr("class", "flex-grow-1 m-0").append(
-                            $("<span>").attr("style", "color: gray").text("Number of children:"),
-                            $("<span>").attr("class", "mx-3").text(`${reservationData.reservationInfo.numberOfChildren}`)
-                        )
-                    )
-                );
-
-                reservationInfoComponent.append(reservationStatusComponent);
-                reservationInfoComponent.append($("<hr>").attr("class", "my-2 w-100"));
-                reservationInfoComponent.append(CreateReservationReviewComponent.call(this).addClass("flex-grow-0 pl-2"));
-
-                return reservationInfoComponent;
-            }
-
-            function CreateReservationComponent() {
-                var reservationComponent = $("<li>").attr("class", "list-group-item rounded-0 m-1 mb-3 bg-light reservation-list-entry");
-                this.reservationComponent = reservationComponent;
-
-                reservationComponent.append(CreateTitleHeaderComponent.call(this));
-                reservationComponent.append($("<hr>").attr("class", "my-2 border-secondary"));
-
-                reservationComponent.append(
-                    $("<div>").attr("class", "d-flex flex-row flex-wrap justify-content-center").append(
-                        $("<div>").attr("class", "flex-grow-0 my-2").append(
-                            $("<img>")
-                                .attr("class", "d-block rounded mx-auto")
-                                .attr("style", "width: 230px; height: 180px; background-color: red")
-                                .attr("src", this.reservationData.offerInfoPreview.offerPreviewPicture)
-                        ),
-                        CreateReservationInfoComponent.call(this).addClass("flex-grow-1 ml-2")
-                    )
-                );
-
-                return reservationComponent;
-            }
+            });*@
 
         });
     </script>
