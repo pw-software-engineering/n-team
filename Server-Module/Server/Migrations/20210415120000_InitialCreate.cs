@@ -252,9 +252,9 @@ namespace Server.Migrations
                 columns: new[] { "ClientID", "Email", "Name", "Password", "Surname", "Username" },
                 values: new object[,]
                 {
-                    { -1, "TestEmail1", "TestName1", "TestPassword1", "TestSurname1", "TestUsername1" },
-                    { -2, "TestEmail2", "TestName2", "TestPassword2", "TestSurname2", "TestUsername2" },
-                    { -3, "TestEmail3", "TestName3", "TestPassword3", "TestSurname3", "TestUsername3" }
+                    { 1, "TestEmail1", "TestName1", "TestPassword1", "TestSurname1", "TestUsername1" },
+                    { 2, "TestEmail2", "TestName2", "TestPassword2", "TestSurname2", "TestUsername2" },
+                    { 3, "TestEmail3", "TestName3", "TestPassword3", "TestSurname3", "TestUsername3" }
                 });
 
             migrationBuilder.InsertData(
@@ -262,9 +262,9 @@ namespace Server.Migrations
                 columns: new[] { "HotelID", "AccessToken", "City", "Country", "HotelDesc", "HotelName", "HotelPreviewPicture" },
                 values: new object[,]
                 {
-                    { -1, "TestAccessToken1", "TestCity1", "TestCountry1", "TestHotelDesc1", "TestHotelName1", "TestHotelPreviewPicture1" },
-                    { -2, "TestAccessToken2", "TestCity2", "TestCountry2", "TestHotelDesc2", "TestHotelName2", "TestHotelPreviewPicture2" },
-                    { -3, "TestAccessToken3", "TestCity3", "TestCountry3", "TestHotelDesc3", "TestHotelName3", "TestHotelPreviewPicture3" }
+                    { 1, "TestAccessToken1", "TestCity1", "TestCountry1", "TestHotelDesc1", "TestHotelName1", "TestHotelPreviewPicture1" },
+                    { 2, "TestAccessToken2", "TestCity2", "TestCountry2", "TestHotelDesc2", "TestHotelName2", "TestHotelPreviewPicture2" },
+                    { 3, "TestAccessToken3", "TestCity3", "TestCountry3", "TestHotelDesc3", "TestHotelName3", "TestHotelPreviewPicture3" }
                 });
 
             migrationBuilder.InsertData(
@@ -272,9 +272,9 @@ namespace Server.Migrations
                 columns: new[] { "PictureID", "HotelID", "Picture" },
                 values: new object[,]
                 {
-                    { -1, -2, "TestPicture1" },
-                    { -2, -3, "TestPicture2" },
-                    { -3, -3, "TestPicture3" }
+                    { 1, 2, "TestPicture1" },
+                    { 2, 3, "TestPicture2" },
+                    { 3, 3, "TestPicture3" }
                 });
 
             migrationBuilder.InsertData(
@@ -282,9 +282,9 @@ namespace Server.Migrations
                 columns: new[] { "RoomID", "HotelID", "HotelRoomNumber" },
                 values: new object[,]
                 {
-                    { -1, -2, "TestHotelRoomNumber1" },
-                    { -2, -3, "TestHotelRoomNumber2" },
-                    { -3, -3, "TestHotelRoomNumber3" }
+                    { 1, 2, "TestHotelRoomNumber1" },
+                    { 2, 3, "TestHotelRoomNumber2" },
+                    { 3, 3, "TestHotelRoomNumber3" }
                 });
 
             migrationBuilder.InsertData(
@@ -292,9 +292,9 @@ namespace Server.Migrations
                 columns: new[] { "OfferID", "CostPerAdult", "CostPerChild", "Description", "HotelID", "IsActive", "IsDeleted", "MaxGuests", "OfferPreviewPicture", "OfferTitle" },
                 values: new object[,]
                 {
-                    { -1, 11.0, 10.0, "TestDescription1", -2, true, false, 1L, "TestOfferPreviewPicture1", "TestOfferTitle1" },
-                    { -2, 22.0, 20.0, "TestDescription2", -3, true, false, 2L, "TestOfferPreviewPicture2", "TestOfferTitle2" },
-                    { -3, 33.0, 30.0, "TestDescription3", -3, false, true, 3L, "TestOfferPreviewPicture3", "TestOfferTitle3" }
+                    { 1, 11.0, 10.0, "TestDescription1", 2, true, false, 1L, "TestOfferPreviewPicture1", "TestOfferTitle1" },
+                    { 2, 22.0, 20.0, "TestDescription2", 3, true, false, 2L, "TestOfferPreviewPicture2", "TestOfferTitle2" },
+                    { 3, 33.0, 30.0, "TestDescription3", 3, false, true, 3L, "TestOfferPreviewPicture3", "TestOfferTitle3" }
                 });
 
             migrationBuilder.InsertData(
@@ -302,9 +302,9 @@ namespace Server.Migrations
                 columns: new[] { "TimeIntervalID", "FromTime", "OfferID", "ToTime" },
                 values: new object[,]
                 {
-                    { -1, new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), -2, new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { -2, new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), -3, new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { -3, new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), -3, new DateTime(2001, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2001, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
@@ -312,9 +312,9 @@ namespace Server.Migrations
                 columns: new[] { "ReservationID", "ClientID", "FromTime", "HotelID", "NumberOfAdults", "NumberOfChildren", "OfferID", "ReviewID", "RoomID", "ToTime" },
                 values: new object[,]
                 {
-                    { -1, -2, new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), -2, 1L, 0L, -2, -1, -2, new DateTime(2001, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { -2, -3, new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), -3, 1L, 1L, -3, -2, -2, new DateTime(2001, 2, 4, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { -3, -3, new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), -3, 1L, 2L, -3, -3, -3, new DateTime(2001, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, 2, new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 1L, 0L, 2, 1, 2, new DateTime(2001, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, 3, new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 1L, 1L, 3, 2, 2, new DateTime(2001, 2, 4, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, 3, new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 1L, 2L, 3, 3, 3, new DateTime(2001, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
@@ -322,10 +322,10 @@ namespace Server.Migrations
                 columns: new[] { "OfferID", "RoomID" },
                 values: new object[,]
                 {
-                    { -1, -1 },
-                    { -2, -2 },
-                    { -3, -2 },
-                    { -3, -3 }
+                    { 1, 1 },
+                    { 2, 2 },
+                    { 3, 2 },
+                    { 3, 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -333,25 +333,25 @@ namespace Server.Migrations
                 columns: new[] { "PictureID", "OfferID", "Picture" },
                 values: new object[,]
                 {
-                    { -1, -2, "TestPicture1" },
-                    { -2, -3, "TestPicture2" },
-                    { -3, -3, "TestPicture3" }
+                    { 1, 2, "TestPicture1" },
+                    { 2, 3, "TestPicture2" },
+                    { 3, 3, "TestPicture3" }
                 });
 
             migrationBuilder.InsertData(
                 table: "ClientReviews",
                 columns: new[] { "ReviewID", "ClientID", "Content", "HotelID", "OfferID", "Rating", "ReviewDate" },
-                values: new object[] { -1, -2, "TestContent1", -2, -2, 1L, new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+                values: new object[] { 1, 2, "TestContent1", 2, 2, 1L, new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
 
             migrationBuilder.InsertData(
                 table: "ClientReviews",
                 columns: new[] { "ReviewID", "ClientID", "Content", "HotelID", "OfferID", "Rating", "ReviewDate" },
-                values: new object[] { -2, -3, "TestContent2", -3, -3, 2L, new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+                values: new object[] { 2, 3, "TestContent2", 3, 3, 2L, new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) });
 
             migrationBuilder.InsertData(
                 table: "ClientReviews",
                 columns: new[] { "ReviewID", "ClientID", "Content", "HotelID", "OfferID", "Rating", "ReviewDate" },
-                values: new object[] { -3, -3, "TestContent3", -3, -3, 3L, new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+                values: new object[] { 3, 3, "TestContent3", 3, 3, 3L, new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AvalaibleTimeIntervals_OfferID",

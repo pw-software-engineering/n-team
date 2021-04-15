@@ -44,23 +44,23 @@ namespace Server.Migrations
                     b.HasData(
                         new
                         {
-                            TimeIntervalID = -1,
+                            TimeIntervalID = 1,
                             FromTime = new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OfferID = -2,
+                            OfferID = 2,
                             ToTime = new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            TimeIntervalID = -2,
+                            TimeIntervalID = 2,
                             FromTime = new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OfferID = -3,
+                            OfferID = 3,
                             ToTime = new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            TimeIntervalID = -3,
+                            TimeIntervalID = 3,
                             FromTime = new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OfferID = -3,
+                            OfferID = 3,
                             ToTime = new DateTime(2001, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -94,7 +94,7 @@ namespace Server.Migrations
                     b.HasData(
                         new
                         {
-                            ClientID = -1,
+                            ClientID = 1,
                             Email = "TestEmail1",
                             Name = "TestName1",
                             Password = "TestPassword1",
@@ -103,7 +103,7 @@ namespace Server.Migrations
                         },
                         new
                         {
-                            ClientID = -2,
+                            ClientID = 2,
                             Email = "TestEmail2",
                             Name = "TestName2",
                             Password = "TestPassword2",
@@ -112,7 +112,7 @@ namespace Server.Migrations
                         },
                         new
                         {
-                            ClientID = -3,
+                            ClientID = 3,
                             Email = "TestEmail3",
                             Name = "TestName3",
                             Password = "TestPassword3",
@@ -170,41 +170,41 @@ namespace Server.Migrations
                     b.HasData(
                         new
                         {
-                            ReservationID = -1,
-                            ClientID = -2,
+                            ReservationID = 1,
+                            ClientID = 2,
                             FromTime = new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            HotelID = -2,
+                            HotelID = 2,
                             NumberOfAdults = 1L,
                             NumberOfChildren = 0L,
-                            OfferID = -2,
-                            ReviewID = -1,
-                            RoomID = -2,
+                            OfferID = 2,
+                            ReviewID = 1,
+                            RoomID = 2,
                             ToTime = new DateTime(2001, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ReservationID = -2,
-                            ClientID = -3,
+                            ReservationID = 2,
+                            ClientID = 3,
                             FromTime = new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            HotelID = -3,
+                            HotelID = 3,
                             NumberOfAdults = 1L,
                             NumberOfChildren = 1L,
-                            OfferID = -3,
-                            ReviewID = -2,
-                            RoomID = -2,
+                            OfferID = 3,
+                            ReviewID = 2,
+                            RoomID = 2,
                             ToTime = new DateTime(2001, 2, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ReservationID = -3,
-                            ClientID = -3,
+                            ReservationID = 3,
+                            ClientID = 3,
                             FromTime = new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            HotelID = -3,
+                            HotelID = 3,
                             NumberOfAdults = 1L,
                             NumberOfChildren = 2L,
-                            OfferID = -3,
-                            ReviewID = -3,
-                            RoomID = -3,
+                            OfferID = 3,
+                            ReviewID = 3,
+                            RoomID = 3,
                             ToTime = new DateTime(2001, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -245,31 +245,31 @@ namespace Server.Migrations
                     b.HasData(
                         new
                         {
-                            ReviewID = -1,
-                            ClientID = -2,
+                            ReviewID = 1,
+                            ClientID = 2,
                             Content = "TestContent1",
-                            HotelID = -2,
-                            OfferID = -2,
+                            HotelID = 2,
+                            OfferID = 2,
                             Rating = 1L,
                             ReviewDate = new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ReviewID = -2,
-                            ClientID = -3,
+                            ReviewID = 2,
+                            ClientID = 3,
                             Content = "TestContent2",
-                            HotelID = -3,
-                            OfferID = -3,
+                            HotelID = 3,
+                            OfferID = 3,
                             Rating = 2L,
                             ReviewDate = new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ReviewID = -3,
-                            ClientID = -3,
+                            ReviewID = 3,
+                            ClientID = 3,
                             Content = "TestContent3",
-                            HotelID = -3,
-                            OfferID = -3,
+                            HotelID = 3,
+                            OfferID = 3,
                             Rating = 3L,
                             ReviewDate = new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
@@ -307,7 +307,7 @@ namespace Server.Migrations
                     b.HasData(
                         new
                         {
-                            HotelID = -1,
+                            HotelID = 1,
                             AccessToken = "TestAccessToken1",
                             City = "TestCity1",
                             Country = "TestCountry1",
@@ -317,7 +317,7 @@ namespace Server.Migrations
                         },
                         new
                         {
-                            HotelID = -2,
+                            HotelID = 2,
                             AccessToken = "TestAccessToken2",
                             City = "TestCity2",
                             Country = "TestCountry2",
@@ -327,7 +327,7 @@ namespace Server.Migrations
                         },
                         new
                         {
-                            HotelID = -3,
+                            HotelID = 3,
                             AccessToken = "TestAccessToken3",
                             City = "TestCity3",
                             Country = "TestCountry3",
@@ -359,20 +359,20 @@ namespace Server.Migrations
                     b.HasData(
                         new
                         {
-                            PictureID = -1,
-                            HotelID = -2,
+                            PictureID = 1,
+                            HotelID = 2,
                             Picture = "TestPicture1"
                         },
                         new
                         {
-                            PictureID = -2,
-                            HotelID = -3,
+                            PictureID = 2,
+                            HotelID = 3,
                             Picture = "TestPicture2"
                         },
                         new
                         {
-                            PictureID = -3,
-                            HotelID = -3,
+                            PictureID = 3,
+                            HotelID = 3,
                             Picture = "TestPicture3"
                         });
                 });
@@ -399,20 +399,20 @@ namespace Server.Migrations
                     b.HasData(
                         new
                         {
-                            RoomID = -1,
-                            HotelID = -2,
+                            RoomID = 1,
+                            HotelID = 2,
                             HotelRoomNumber = "TestHotelRoomNumber1"
                         },
                         new
                         {
-                            RoomID = -2,
-                            HotelID = -3,
+                            RoomID = 2,
+                            HotelID = 3,
                             HotelRoomNumber = "TestHotelRoomNumber2"
                         },
                         new
                         {
-                            RoomID = -3,
-                            HotelID = -3,
+                            RoomID = 3,
+                            HotelID = 3,
                             HotelRoomNumber = "TestHotelRoomNumber3"
                         });
                 });
@@ -460,11 +460,11 @@ namespace Server.Migrations
                     b.HasData(
                         new
                         {
-                            OfferID = -1,
+                            OfferID = 1,
                             CostPerAdult = 11.0,
                             CostPerChild = 10.0,
                             Description = "TestDescription1",
-                            HotelID = -2,
+                            HotelID = 2,
                             IsActive = true,
                             IsDeleted = false,
                             MaxGuests = 1L,
@@ -473,11 +473,11 @@ namespace Server.Migrations
                         },
                         new
                         {
-                            OfferID = -2,
+                            OfferID = 2,
                             CostPerAdult = 22.0,
                             CostPerChild = 20.0,
                             Description = "TestDescription2",
-                            HotelID = -3,
+                            HotelID = 3,
                             IsActive = true,
                             IsDeleted = false,
                             MaxGuests = 2L,
@@ -486,11 +486,11 @@ namespace Server.Migrations
                         },
                         new
                         {
-                            OfferID = -3,
+                            OfferID = 3,
                             CostPerAdult = 33.0,
                             CostPerChild = 30.0,
                             Description = "TestDescription3",
-                            HotelID = -3,
+                            HotelID = 3,
                             IsActive = false,
                             IsDeleted = true,
                             MaxGuests = 3L,
@@ -516,23 +516,23 @@ namespace Server.Migrations
                     b.HasData(
                         new
                         {
-                            OfferID = -1,
-                            RoomID = -1
+                            OfferID = 1,
+                            RoomID = 1
                         },
                         new
                         {
-                            OfferID = -2,
-                            RoomID = -2
+                            OfferID = 2,
+                            RoomID = 2
                         },
                         new
                         {
-                            OfferID = -3,
-                            RoomID = -2
+                            OfferID = 3,
+                            RoomID = 2
                         },
                         new
                         {
-                            OfferID = -3,
-                            RoomID = -3
+                            OfferID = 3,
+                            RoomID = 3
                         });
                 });
 
@@ -558,20 +558,20 @@ namespace Server.Migrations
                     b.HasData(
                         new
                         {
-                            PictureID = -1,
-                            OfferID = -2,
+                            PictureID = 1,
+                            OfferID = 2,
                             Picture = "TestPicture1"
                         },
                         new
                         {
-                            PictureID = -2,
-                            OfferID = -3,
+                            PictureID = 2,
+                            OfferID = 3,
                             Picture = "TestPicture2"
                         },
                         new
                         {
-                            PictureID = -3,
-                            OfferID = -3,
+                            PictureID = 3,
+                            OfferID = 3,
                             Picture = "TestPicture3"
                         });
                 });

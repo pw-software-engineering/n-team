@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Server.Database.Models;
 using Server.Models;
 using System;
@@ -20,15 +21,23 @@ namespace Server.Database.DataAccess
 
         public void DeleteOffer(int offerID)
         {
-            OfferDb offer = _dbContext.Offers.Find(offerID);
-            offer.IsDeleted = true;
-            _dbContext.SaveChanges();
+            using (var transaction = _dbContext.Database.BeginTransaction())
+            {
+                OfferDb offer = _dbContext.Offers.Find(offerID);
+                offer.IsDeleted = true;
+                _dbContext.SaveChanges();
+                transaction.Commit();
+            }
         }
         public int AddOffer(Offer offer)
         {
             OfferDb offerDb = _mapper.Map<OfferDb>(offer);
-            _dbContext.Offers.Add(offerDb);
-            _dbContext.SaveChanges();
+            using (var transaction = _dbContext.Database.BeginTransaction())
+            {
+                _dbContext.Offers.Add(offerDb);
+                _dbContext.SaveChanges();
+                transaction.Commit();
+            }
             return offerDb.OfferID;
         }
 
@@ -50,24 +59,33 @@ namespace Server.Database.DataAccess
         }
         public void UpdateOffer(int offerID, OfferUpdateInfo offerUpdateInfo)
         {
-            OfferDb offer = _dbContext.Offers.Find(offerID);
-            offer.IsActive = offerUpdateInfo.IsActive ?? offer.IsActive;
-            offer.OfferTitle = offerUpdateInfo.OfferTitle ?? offer.OfferTitle;
-            offer.Description = offerUpdateInfo.Description ?? offer.Description;
-            offer.OfferPreviewPicture = offerUpdateInfo.OfferPreviewPicture ?? offer.OfferPreviewPicture;
-            if (offerUpdateInfo.OfferPictures != null)
+            using (var transaction = _dbContext.Database.BeginTransaction())
             {
-                offer.OfferPictures.RemoveAll(op => op.OfferID == offerID);
-                foreach (string picture in offerUpdateInfo.OfferPictures)
-                    offer.OfferPictures.Add(new OfferPictureDb(picture, offerID));
+                OfferDb offer = _dbContext.Offers.Find(offerID);
+                offer.IsActive = offerUpdateInfo.IsActive ?? offer.IsActive;
+                offer.OfferTitle = offerUpdateInfo.OfferTitle ?? offer.OfferTitle;
+                offer.Description = offerUpdateInfo.Description ?? offer.Description;
+                offer.OfferPreviewPicture = offerUpdateInfo.OfferPreviewPicture ?? offer.OfferPreviewPicture;
+                if (offerUpdateInfo.OfferPictures != null)
+                {
+                    offer.OfferPictures.RemoveAll(op => op.OfferID == offerID);
+                    foreach (string picture in offerUpdateInfo.OfferPictures)
+                        offer.OfferPictures.Add(new OfferPictureDb(picture, offerID));
+                }
+                _dbContext.SaveChanges();
+                transaction.Commit();
             }
-            _dbContext.SaveChanges();
         }
 
         public void AddOfferPicture(string picture, int offerID)
         {
-            _dbContext.OfferPictures.Add(new OfferPictureDb(picture, offerID));
-            _dbContext.SaveChanges();
+            using (var transaction = _dbContext.Database.BeginTransaction())
+            {
+                OfferPictureDb offerPicture = new OfferPictureDb { Picture = picture, OfferID = offerID };
+                _dbContext.OfferPictures.Add(offerPicture);
+                _dbContext.SaveChanges();
+                transaction.Commit();
+            }
         }
 
         public void AddOfferPictures(List<string> pictures, int offerID)
@@ -75,8 +93,13 @@ namespace Server.Database.DataAccess
             List<OfferPictureDb> picturesDb = new List<OfferPictureDb>();
             foreach (string picture in pictures)
                 picturesDb.Add(new OfferPictureDb(picture, offerID));
-            _dbContext.AddRange(picturesDb);
-            _dbContext.SaveChanges();
+
+            using (var transaction = _dbContext.Database.BeginTransaction())
+            {
+                _dbContext.OfferPictures.AddRange(picturesDb);
+                _dbContext.SaveChanges();
+                transaction.Commit();
+            }
         }
     }
 }
