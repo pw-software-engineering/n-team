@@ -125,7 +125,7 @@ ReviewManager.prototype.onDeleteReview = async function (reservationEntry) {
     if (await this.modalConfirmPopup.getModalInput()) {
         this.modalConfirmPopup.displayProcessing();
         try {
-            await this.deleteReview(reservationEntry.getReviewID());
+            await this.deleteReview(reservationEntry.getReservationID());
         } catch (ajaxError) {
             this.modalConfirmPopup.displayError(`Could not delete the review - ${ajaxError.textStatus}`);
             return;

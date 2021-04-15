@@ -6,17 +6,43 @@
     this.onCurrentOperationResolve = null;
     this.onCurrentOperationReject = null;
 
+    this.contentValidBox = this.modal.find(".content-valid-box");
+    this.ratingValidBox = this.modal.find(".rating-valid-box");
+
     this.modal.find("button.review-update-btn").on("click", () => {
-        if (this.onCurrentOperationResolve !== null) {
-            console.log("YES BTN");
-            this.onCurrentOperationResolve(true);
+        if (this.onCurrentOperationResolve === null) {
+            return;
         }
+        var isValid = true;
+        if (this.getReviewContent().trim().length == 0) {
+            this.contentValidBox
+                .removeClass("d-none")
+                .text("Review content must consist of at least 1 non-whitespace character");
+            isValid = false;
+        } else {
+            this.contentValidBox.addClass("d-none");
+        }
+        if (!this.getRating() || this.getRating() < 1 || this.getRating() > 5) {
+            this.ratingValidBox
+                .removeClass("d-none")
+                .text("Rating must include a number between 1 and 5");
+            isValid = false;
+        } else {
+            this.ratingValidBox.addClass("d-none");
+        }
+        if (!isValid) {
+            return;
+        }
+        this.onCurrentOperationResolve(true);
+        this.onCurrentOperationResolve = null;
     });
 
     this.modal.find("button.close").on("click", () => {
-        if (this.onCurrentOperationResolve !== null) {
-            this.onCurrentOperationResolve(false);
+        if (this.onCurrentOperationResolve === null) {
+            return;
         }
+        this.onCurrentOperationResolve(false);
+        this.onCurrentOperationResolve = null;
     });
 
     this.modal.on("show.bs.modal", () => {
@@ -50,7 +76,6 @@ ModalReviewPopup.prototype.getReviewContent = function () {
 
 ModalReviewPopup.prototype.setReviewContent = function (content) {
     var contentTextarea = this.modal.find("textarea");
-    // check for validation errors
     contentTextarea.val(content);
 }
 
@@ -83,11 +108,12 @@ ModalReviewPopup.prototype.hideModal = function () {
 }
 
 ModalReviewPopup.prototype.clearDisplay = function () {
-    console.log("SDSDSD");
     this.onCurrentOperationReject = null;
     this.onCurrentOperationResolve = null;
     this.setRating(null);
     this.setReviewContent("");
+    this.contentValidBox.addClass("d-none");
+    this.ratingValidBox.addClass("d-none");
     var reviewStatusBox = this.modal.find(".review-status-box");
     reviewStatusBox.empty();
     var updateBtn = this.modal.find(".review-update-btn");

@@ -56,6 +56,7 @@
                 </button>
             </div>
             <div class="modal-body">
+                <p class="text-danger small mb-1 rating-valid-box text-center w-100 d-none">Rating field include a number between 1 and 5</p>
                 <div class="d-flex flex-row w-100">
                     <label for="review-rating" class="col-form-label flex-grow-0">Rating:</label>
                     <input type="number" value="1" min="1" max="5" class="form-control flex-grow-1 ml-3" id="review-rating">
@@ -63,6 +64,7 @@
                 <hr class="mt-3 mb-0" />
                 <div class="form-group">
                     <label for="review-content" class="col-form-label">Review content:</label>
+                    <p class="text-danger small mb-1 text-center content-valid-box d-none"></p>
                     <textarea class="form-control" id="review-content" style="min-height: 150px"></textarea>
                 </div>
             </div>
