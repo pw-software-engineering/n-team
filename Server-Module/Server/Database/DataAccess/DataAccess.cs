@@ -40,7 +40,6 @@ namespace Server.Database.DataAccess
             }
             return offerDb.OfferID;
         }
-
         public List<OfferPreview> GetHotelOffers(int hotelID)
         {
             return _mapper.Map<List<OfferPreview>>(_dbContext.Offers.Where(o => o.HotelID == hotelID).ToList());
