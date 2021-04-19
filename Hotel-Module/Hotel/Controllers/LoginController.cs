@@ -14,6 +14,7 @@ namespace Hotel.Controllers
     public class LoginController : Controller
     {
         private readonly ILogger<LoginController> _logger;
+        private HttpClient httpClient;
 
         public LoginController(ILogger<LoginController> logger, HttpClient httpClient)
         {
