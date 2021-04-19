@@ -13,9 +13,9 @@ namespace ServerApiMockup.MockupApiControllers
 {
     [Route("api/client/reservations")]
     [ApiController]
-    public class ClientReservationsController : ControllerBase
+    public class ClientApiReservationsController : ControllerBase
     {
-        public ClientReservationsController() { }
+        public ClientApiReservationsController() { }
 
         [HttpGet("")]
         public IActionResult GetClientReservations(int pageNumber = 1, int pageSize = 10)

@@ -102,13 +102,13 @@
 </div>
 
 @section Scripts{
-    <script src="~/js/Reservations/modalConfirmPopup.js"></script>
+    <script src="~/js/Shared/modalConfirmPopup.js"></script>
     <script src="~/js/Reservations/reviewManager.js"></script>
     <script src="~/js/Reservations/modalReviewPopup.js"></script>
     <script src="~/js/Reservations/reservationEntry.js"></script>
     <script src="~/js/Reservations/reservationManager.js"></script>
     <script src="~/js/Reservations/reservationPresenter.js"></script>
-    <script src="~/js/Reservations/pager.js"></script>
+    <script src="~/js/Shared/pager.js"></script>
     <script>
         $(document).ready(function () {
             var apiConfig = {
@@ -176,79 +176,6 @@
             });
 
             pager.setPageNumber(1);
-
-            @*
-
-            // -------------- Cancellation management --------------------
-
-            var currentCancelReservationRequestID = 0;
-
-            $("#@tagIDs.ModalCancelReservationID").on('show.bs.modal', function (e) {
-                var cancelReservationModal = $(this);
-                var requestID = ++currentCancelReservationRequestID;
-                var modalContent = cancelReservationModal.find(".modal-body");
-                modalContent.empty();
-                var confirmBtn = $("<button>").attr("class", "btn btn-success mx-2").text("Confirm");
-                modalContent.append(
-                    $("<p>")
-                        .attr("class", "text-center font-weight-bold")
-                        .text("Are you sure you want to cancel your reservation?"),
-                    $("<div>").attr("class", "d-flex justify-content-center").append(
-                        confirmBtn,
-                        $("<button>")
-                            .attr("class", "btn btn-danger mx-2")
-                            .attr("type", "button")
-                            .attr("data-dismiss", "modal")
-                            .text("Cancel")
-                    )
-                );
-                confirmBtn.on("click", function () {
-                    var cancelReservationContext = cancelReservationModal.data("cancel-context");
-                    modalContent.empty();
-                    modalContent.append(
-                        $("<h5>")
-                            .attr("class", "text-center")
-                            .text("Processing..."),
-                        $("<img>")
-                            .attr("src", "/resources/loading.gif")
-                            .attr("style", "width: 50px; height: 50px")
-                            .attr("class", "d-block ml-auto mr-auto")
-                    );
-                    $.ajax({
-                        method: "DELETE",
-                        url: `@ServerApiConfig.BaseUrl/api/client/reservations/${cancelReservationContext.reservationID}`,
-                        headers: {
-                            "@ServerApiConfig.TokenHeaderName": getCookie("@ClientTokenCookieDefaults.AuthCookieName")
-                        },
-                        success: (data, textStatus, jqXHR) => {
-                            if (requestID !== currentCancelReservationRequestID) {
-                                return;
-                            }
-                            modalContent.empty();
-                            modalContent.append(
-                                $("<h5>")
-                                    .attr("class", "text-center text-success")
-                                    .text("Reservation has been successfully cancelled")
-                            );
-                            loadReservationEntries(Pager.pageNumber, Pager.pageSize);
-                        },
-                        error: (jqXHR, textStatus, errorThrown) => {
-                            if (requestID !== currentCancelReservationRequestID) {
-                                return;
-                            }
-                            modalContent.empty();
-                            var errorInfo = $("<h5>")
-                                .attr("class", "text-center font-weight-bold text-danger");
-                            if (textStatus === "timeout") {
-                                errorInfo.text("Operation timed out");
-                                return;
-                            }
-                            errorInfo.text("Error - please refresh the page");
-                        }
-                    });
-                });
-            });*@
-
         });
     </script>
 }

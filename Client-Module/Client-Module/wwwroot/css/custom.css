@@ -63,6 +63,11 @@
     border-color: #dc3545 !important;
 }
 
+.input-validation-error {
+    color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
 .form-control.clientinfo-input-error:focus {
     box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
 }
