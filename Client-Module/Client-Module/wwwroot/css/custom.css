@@ -3,7 +3,7 @@
 }
 
 .reservation-list {
-    
+    list-style-type: none;
 }
 
 .offer-reviews-list {
@@ -59,6 +59,11 @@
 }
 
 .form-control.clientinfo-input-error {
+    color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+.input-validation-error {
     color: #dc3545 !important;
     border-color: #dc3545 !important;
 }
