@@ -3,44 +3,26 @@
 
 // Write your JavaScript code.
 
-// preview of the selected preview image
-function previewImg() {
-    var preview = document.getElementById('previewImage');
-    var file = document.getElementById('previewFile').files[0];
-    var reader = new FileReader();
+// preview selected images in gallery
+function previewGallery(inputFileElement, galleryId) {
+    var count = inputFileElement.files.length;
+    var gallery = document.getElementById(galleryId);
 
-    reader.onloadend = function () {
-        preview.src = reader.result;
-    }
-
-    if (file) {
-        reader.readAsDataURL(file);
-    } else {
-        preview.src = "";
-    }
-}
-
-// preview of the selected additional images
-function previewMultiple(event) {
-    var input = document.getElementById("additionalFiles");
-    var count = input.files.length;
-
-    document.getElementById("gallery").innerHTML = "";
+    gallery.innerHTML = "";
     for (i = 0; i < count; i++) {
-        var urls = URL.createObjectURL(event.target.files[i]);
-        document.getElementById("gallery").innerHTML +=
+        var urls = URL.createObjectURL(inputFileElement.files[i]);
+        gallery.innerHTML +=
             `<img src="` + urls + `" class="gallery-img" />`;
     }
 }
 
 // checkbox controlling element's enabled/disabled attribute
-function switchDisability(checkboxId, elementId) {
-    var checkbox = document.getElementById(checkboxId);
-    var input = document.getElementById(elementId);
+function switchEnabled(checkbox, elementId) {
+    var element = document.getElementById(elementId);
 
     if (checkbox.checked == false) {
-        input.disabled = true;
+        element.disabled = true;
     } else {
-        input.disabled = false;
+        element.disabled = false;
     }
 }

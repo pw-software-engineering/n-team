@@ -13,6 +13,11 @@ namespace Hotel.Controllers
             return View();
         }
 
+        public IActionResult Add()
+        {
+            return View();
+        }
+
         public IActionResult Details(int id)
         {
             return View();

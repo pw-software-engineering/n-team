@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Client_Module.ViewsTagID.Client;
+@{
     ViewData["Title"] = "Client account";
 }
 
@@ -9,31 +10,183 @@
     <div class="form-group row">
         <label for="client-name" class="col-sm-2 col-form-label">Name</label>
         <div class="col-sm-10">
-            <input readonly type="password" class="form-control" id="client-name" placeholder="Client-Name">
+            <input readonly type="text" class="form-control" id="@AccountTagID.InputClientNameID">
         </div>
     </div>
     <div class="form-group row">
         <label for="client-surname" class="col-sm-2 col-form-label">Surname</label>
         <div class="col-sm-10">
-            <input readonly type="password" class="form-control" id="client-surname" placeholder="Client-Surname">
+            <input readonly type="text" class="form-control" id="@AccountTagID.InputClientSurnameID">
         </div>
     </div>
     <hr class="mt-1 mb-3" />
+    <p class="my-2 text-danger text-center d-none" id="@AccountTagID.ServerErrorBoxID"></p>
+    <p class="my-2 text-success text-center d-none" id="@AccountTagID.ServerSuccessBoxID">Client information successfully changed!</p>
     <div class="form-group row">
         <div class="col-sm-2 mt-auto">
-            <label for="client-username" class="col-form-label text-danger">Username</label>
+            <label for="client-username" class="col-form-label">Username</label>
         </div>
         <div class="col-sm-10">
-            <small class="m-0 text-danger">Some long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long validation error</small>
-            <input type="text" class="form-control clientinfo-input-error" id="client-username">
+            <small class="m-0 text-danger d-none" id="@AccountTagID.ClientUsernameValidationBoxID"></small>
+            <input type="text" class="form-control" id="@AccountTagID.InputClientUsernameID">
         </div>
     </div>
     <div class="form-group row">
-        <label for="client-email" class="col-sm-2 col-form-label">E-mail</label>
+        <div class="col-sm-2 mt-auto">
+            <label for="client-email" class="col-form-label">E-mail</label>
+        </div>
         <div class="col-sm-10">
-            <input type="email" class="form-control" id="user-email">
+            <small class="m-0 text-danger d-none" id="@AccountTagID.ClientEmailValidationBoxID"></small>
+            <input type="email" class="form-control" id="@AccountTagID.InputClientEmailID">
         </div>
     </div>
     <hr class="mt-1 " />
-    <button class="btn btn-primary">Apply changes</button>
+    <button class="btn btn-primary" id="@AccountTagID.ApplyChangesBtnID">Apply changes</button>
 </div>
+
+@section Scripts{
+<script>
+    $(document).ready(function () {
+        function GetClientInfo() {
+            function FillClientInfo(data) {
+                $("#@AccountTagID.InputClientNameID").val(data.name);
+                $("#@AccountTagID.InputClientSurnameID").val(data.surname);
+                $("#@AccountTagID.InputClientUsernameID").val(data.username);
+                $("#@AccountTagID.InputClientEmailID").val(data.email);
+            }
+            $.ajax({
+                method: "GET",
+                url: "@ServerApiConfig.BaseUrl/api/client",
+                headers: {
+                    "@ServerApiConfig.TokenHeaderName": getCookie("@ClientTokenCookieDefaults.AuthCookieName")
+                },
+                success: (data, textStatus, jqXHR) => {
+                    console.log(data);
+                    FillClientInfo(data);
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    if (textStatus === "timeout") {
+                        alert("Operation timed out");
+                        return;
+                    }
+                    alert(`Response status: ${jqXHR.responseJSON.error}`);
+                }
+            });
+        }
+
+        GetClientInfo();
+
+        function InputValidator(inputHandle, errorBoxHandle, inputValidator) {
+            this.inputHandle = inputHandle;
+            this.errorBoxHandle = errorBoxHandle;
+            this.inputValidator = inputValidator;
+        }
+
+        InputValidator.prototype.GetInputHandle = function () {
+            return this.inputHandle;
+        }
+
+        InputValidator.prototype.IsInputValid = function () {
+            return this.inputValidator(this.inputHandle.val());
+        }
+
+        InputValidator.prototype.HideValidationError = function () {
+            this.errorBoxHandle.addClass("d-none");
+            this.inputHandle.removeClass("clientinfo-input-error");
+        }
+
+        InputValidator.prototype.ShowValidationError = function (errorText) {
+            this.errorBoxHandle.removeClass("d-none");
+            this.errorBoxHandle.text(errorText);
+            this.inputHandle.addClass("clientinfo-input-error");
+        }
+
+        function ShowServerError(error) {
+            var serverError = $("#@AccountTagID.ServerErrorBoxID");
+            serverError.removeClass("d-none");
+            serverError.text(error);
+        }
+
+        function HideServerError() {
+            var serverError = $("#@AccountTagID.ServerErrorBoxID");
+            serverError.addClass("d-none");
+        }
+
+        function ToggleServerSuccessMessage(isVisible) {
+            var serverSuccessBox = $("#@AccountTagID.ServerSuccessBoxID");
+            if (isVisible) {
+                serverSuccessBox.removeClass("d-none");
+            } else {
+                serverSuccessBox.addClass("d-none");
+            }
+        }
+
+        var clientEmailValidator = new InputValidator(
+            $("#@AccountTagID.InputClientEmailID"),
+            $("#@AccountTagID.ClientEmailValidationBoxID"),
+            (inputValue) => {
+                var emailRegexp = /^[a-zA-Z]([a-zA-Z0-9]|[\.-_]){0,50}@@[a-z]{1,10}\.[a-z]{1,10}$/;
+                return emailRegexp.test(inputValue);
+            });
+
+        var clientUsernameValidator = new InputValidator(
+            $("#@AccountTagID.InputClientUsernameID"),
+            $("#@AccountTagID.ClientUsernameValidationBoxID"),
+            (inputValue) => {
+                var usernameRegexp = /^[a-zA-Z][a-zA-Z0-9]{5,30}$/;
+                return usernameRegexp.test(inputValue);
+            });
+
+        var isPendingUpdateRequest = false;
+        $("#@AccountTagID.ApplyChangesBtnID").click(function () {
+            var areAllValid = true;
+            clientEmailValidator.HideValidationError();
+            clientUsernameValidator.HideValidationError();
+            HideServerError();
+            ToggleServerSuccessMessage(false);
+            if (!clientEmailValidator.IsInputValid()) {
+                areAllValid = false;
+                clientEmailValidator.ShowValidationError("Email format is incorrect");
+            }
+            if (!clientUsernameValidator.IsInputValid()) {
+                areAllValid = false;
+                clientUsernameValidator.ShowValidationError("Username must consist of only alphanumeric symbols (at least 5 and at most 30)");
+            }
+            console.log(areAllValid);
+            if (!areAllValid) {
+                return;
+            }
+            if (isPendingUpdateRequest) {
+                ShowServerError("Another client profile update request is already pending");
+                return;
+            }
+            isPendingUpdateRequest = true;
+            $.ajax({
+                method: "PATCH",
+                url: "@ServerApiConfig.BaseUrl/api/client",
+                headers: {
+                    "@ServerApiConfig.TokenHeaderName": getCookie("@ClientTokenCookieDefaults.AuthCookieName")
+                },
+                contentType: "application/json",
+                data: JSON.stringify({
+                    username: clientUsernameValidator.GetInputHandle().val(),
+                    email: clientEmailValidator.GetInputHandle().val()
+                }),
+                success: (data, textStatus, jqXHR) => {
+                    //console.log(data);
+                    ToggleServerSuccessMessage(true);
+                    isPendingUpdateRequest = false;
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    if (textStatus === "timeout") {
+                        ShowServerErrorBox("Operation timed out");
+                        return;
+                    }
+                    ShowServerError(`${jqXHR.responseJSON.error}`);
+                    isPendingUpdateRequest = false;
+                }
+            });
+        });
+    });
+</script>
+}

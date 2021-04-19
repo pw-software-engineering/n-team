@@ -1,4 +1,6 @@
-﻿@{
+﻿@using Client_Module.Models;
+@model LogInViewModel
+@{
     Layout = null;
 }
 
@@ -28,6 +30,12 @@
                         </div>
                         <hr />
                         <form asp-controller="Client" asp-action="LogIn">
+                            @{
+                                if (Model.ServerLogInError != null)
+                                {
+                                    <p class="text-danger text-center">@Model.ServerLogInError</p>
+                                }
+                            }
                             <div class="form-group mt-3">
                                 <label class="m-0 text-muted" for="username">Username</label>
                                 <input name="username" type="text" class="form-control" required>
@@ -37,7 +45,7 @@
                                 <span toggle="#password-input" id="password-toggle-btn" class="fa fa-fw fa-eye text-muted"></span>
                                 <input name="password" id="password-input" type="password" class="form-control" required>
                             </div>
-                            <hr class="mb-3"/>
+                            <hr class="mb-3" />
                             <div class="form-group m-0">
                                 <button type="submit" class="form-control btn btn-primary rounded submit px-3" asp-controller="profile" asp-action="index">Sign In</button>
                             </div>

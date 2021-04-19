@@ -219,7 +219,7 @@ h1, h2, h3, h4, h5,
     color: rgba(0, 0, 0, 0.3);
 }
 
-.fcp {
+.form-control-placeholder-static {
     padding: 7px 0 0 0;
     opacity: 1;
     text-transform: uppercase;
@@ -419,3 +419,42 @@ h1, h2, h3, h4, h5,
     .room-text:hover {
         color: #01d28e;
     }
+
+#login-bg-img {
+    background-image: url(../img/bristol-bg.jpg)
+}
+
+img.preview-img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.dl-compact {
+    line-height: 15px;
+}
+
+/* custom checkbox styles - created for cool coloring */
+/* color when checked */
+.custom-control-input:checked ~ .custom-control-label:before {
+    color: #01d28e;
+    background-color: #01d28e;
+    border: none;
+}
+
+/* border when focused */
+.custom-checkbox .custom-control-input:focus ~ .custom-control-label::before {
+    box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem #01d28e;
+    border-color: darkgray;
+}
+
+/* color when disabled*/
+.custom-control-input:checked:disabled ~ .custom-control-label::before {
+    background-color: darkgray !important;
+}
+
+/* no up-down spinner in input[type=number] field */
+input[type=number].no-spinner::-webkit-inner-spin-button,
+input[type=number].no-spinner::-webkit-outer-spin-button {
+    appearance: none;
+}
