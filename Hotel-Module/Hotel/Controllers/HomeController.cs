@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Hotel.Controllers
@@ -13,9 +15,13 @@ namespace Hotel.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private HttpClient httpClient;
+        public HomeController(ILogger<HomeController> logger, HttpClient httpClient)
         {
             _logger = logger;
+            this.httpClient = httpClient;
+            //wysłanie zapytania
+            var t = httpClient.GetAsync("endpoint");
         }
 
         public IActionResult Index()
@@ -24,7 +30,7 @@ namespace Hotel.Controllers
         }
 
         public IActionResult Privacy()
-        {
+        { 
             return View();
         }
 

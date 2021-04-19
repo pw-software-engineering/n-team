@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Hotel
@@ -23,6 +25,11 @@ namespace Hotel
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            HttpClient httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("scheme", "nasz super tajny token");
+            httpClient.BaseAddress = new Uri("https://192.168.8.195:49153/");
+            services.AddSingleton<HttpClient>(httpClient);
+
             services.AddControllersWithViews();
         }
 
