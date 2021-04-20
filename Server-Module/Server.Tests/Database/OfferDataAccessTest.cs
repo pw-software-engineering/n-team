@@ -20,9 +20,10 @@ using Xunit;
 
 namespace Server.Tests.Database
 {
-    public class DataAccessTest
+    public class OfferDataAccessTest : IDisposable
     {
-        public DataAccessTest()
+        #region TestsSetup
+        public OfferDataAccessTest()
         {
             var serviceProvider = new ServiceCollection()
             .AddEntityFrameworkSqlServer()
@@ -35,7 +36,7 @@ namespace Server.Tests.Database
             _context = new ServerDbContext(builder.Options);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
-            if(!_context.HotelInfos.Any())
+            if (!_context.HotelInfos.Any())
                 Seed();
 
             var config = new MapperConfiguration(opts =>
@@ -44,11 +45,8 @@ namespace Server.Tests.Database
             });
             _mapper = config.CreateMapper();
 
-            _dataAccess = new DataAccess(_mapper, _context);
+            _dataAccess = new OfferDataAccess(_mapper, _context);
         }
-        private ServerDbContext _context;
-        private IMapper _mapper;
-        private DataAccess _dataAccess;
         private void Seed()
         {
             using (var transaction = _context.Database.BeginTransaction())
@@ -76,12 +74,18 @@ namespace Server.Tests.Database
                     new OfferPictureDb { PictureID = 3, OfferID = 3, Picture = "TestPicture3" });
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT OfferPictures OFF;");
-                
+
                 transaction.Commit();
             }
         }
+        #endregion
+
+        private ServerDbContext _context;
+        private IMapper _mapper;
+        private OfferDataAccess _dataAccess;
+
         [Fact]
-        public void Can_DeleteOffer()
+        public void DeleteOffer_ChangesDeletetionMark()
         {
             int OfferID = 1;
 
@@ -91,7 +95,7 @@ namespace Server.Tests.Database
             Assert.True(offer.IsDeleted);
         }
         [Fact]
-        public void Can_GetOffer()
+        public void GetOffer_ReturnsValidOfferObject()
         {
             int OfferID = 1;
 
@@ -110,7 +114,7 @@ namespace Server.Tests.Database
             Assert.Equal(offer.CostPerAdult, offerTest.CostPerAdult);
         }
         [Fact]
-        public void Can_GetHotelOffers()
+        public void GetHotelOffers_ReturnsListOfValidOfferPreviewsObjects()
         {
             int hotelID = 1;
 
@@ -133,7 +137,7 @@ namespace Server.Tests.Database
             }
         }
         [Fact]
-        public void Can_FindOfferAndGetOwner_No_Offer()
+        public void FindOfferAndGetOwner_NotFound_ReturnsNull()
         {
             int offerID = -4;
 
@@ -142,7 +146,7 @@ namespace Server.Tests.Database
             Assert.Null(owner);
         }
         [Fact]
-        public void Can_FindOfferAndGetOwner()
+        public void FindOfferAndGetOwner_AssertsValidOwnerIsReturned()
         {
             int offerID = 3;
 
@@ -153,10 +157,14 @@ namespace Server.Tests.Database
         }
 
         [Fact]
-        public void Can_AddOfferPicture()
+        public void AddOfferPicture_OfferPictureIsAdded()
         {
             int offerID = 1;
-            OfferPictureDb picture = new OfferPictureDb { OfferID = offerID, Picture = "TESTPICTURE" };
+            OfferPictureDb picture = new OfferPictureDb 
+            { 
+                OfferID = offerID, 
+                Picture = "TESTPICTURE" 
+            };
 
             int offerPicturesCount = _context.OfferPictures.Where(op => op.OfferID == offerID).Count();
             _dataAccess.AddOfferPicture(picture.Picture, picture.OfferID);
@@ -169,9 +177,20 @@ namespace Server.Tests.Database
             Assert.Equal(offerPicture.OfferID, offerID);
         }
         [Fact]
-        public void Can_AddOffer()
+        public void AddOffer_OfferIsAdded()
         {
-            Offer offer = new Offer { HotelID = 2, OfferTitle = "TestOfferTitle4", OfferPreviewPicture = "TestOfferPreviewPicture4", IsActive = true, IsDeleted = false, CostPerChild = 40, CostPerAdult = 44, MaxGuests = 4, Description = "TestDescription4" };
+            Offer offer = new Offer
+            { 
+                HotelID = 2, 
+                OfferTitle = "TestOfferTitle4", 
+                OfferPreviewPicture = "TestOfferPreviewPicture4", 
+                IsActive = true, 
+                IsDeleted = false, 
+                CostPerChild = 40, 
+                CostPerAdult = 44, 
+                MaxGuests = 4, 
+                Description = "TestDescription4" 
+            };
 
             int offerID = _dataAccess.AddOffer(offer);
             OfferDb offerTest = _context.Offers.Find(offerID);
@@ -187,9 +206,14 @@ namespace Server.Tests.Database
             Assert.Equal(offer.CostPerAdult, offerTest.CostPerAdult);
         }
         [Fact]
-        public void Can_AddOfferPictures()
+        public void AddOfferPictures_OfferPicturesAreAdded()
         {
-            List<string> pictures = new List<string>() { "Pic1", "Pic2", "Pic3" };
+            List<string> pictures = new List<string>() 
+            { 
+                "Pic1", 
+                "Pic2", 
+                "Pic3" 
+            };
             int offerID = 2;
 
             int offerPicturesCount = _context.OfferPictures.Where(op => op.OfferID == offerID).Count();
@@ -199,10 +223,16 @@ namespace Server.Tests.Database
             Assert.Equal(offerPicturesCount + pictures.Count, offerPicturesUpdatedCount);
         }
         [Fact]
-        public void Can_UpdateOffer()
+        public void UpdateOffer_OfferIsUpdated()
         {
             int offerID = 1;
-            OfferUpdateInfo offerUpdate = new OfferUpdateInfo { OfferTitle = "TestOfferTitle4", OfferPreviewPicture = "TestOfferPreviewPicture4", IsActive = true, Description = "TestDescription4" };
+            OfferUpdateInfo offerUpdate = new OfferUpdateInfo
+            { 
+                OfferTitle = "TestOfferTitle4", 
+                OfferPreviewPicture = "TestOfferPreviewPicture4", 
+                IsActive = true, 
+                Description = "TestDescription4" 
+            };
 
             _dataAccess.UpdateOffer(offerID, offerUpdate);
             OfferDb offerTest = _context.Offers.Find(offerID);

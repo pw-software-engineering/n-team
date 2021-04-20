@@ -22,19 +22,29 @@ namespace Server.Tests.Services
                 opts.AddProfile(new AutoMapperProfile());
             });
             _mapper = config.CreateMapper();
-            _dataAccessMock = new Mock<IDataAccess>();
+            _dataAccessMock = new Mock<IOfferDataAccess>();
 
             _offerService = new OfferService(_dataAccessMock.Object, _mapper);
         }
         private OfferService _offerService;
-        private Mock<IDataAccess> _dataAccessMock;
+        private Mock<IOfferDataAccess> _dataAccessMock;
         private IMapper _mapper;
 
+        #region AddOfferTests
         [Fact]
-        public void Can_Add_Offer()
+        public void AddOffer_OfferIsAdded()
         {
             int hotelID = 1;
-            OfferView offerView = new OfferView {offerTitle = "TestOfferTitle4", offerPreviewPicture = "TestOfferPreviewPicture4", isActive = true, costPerChild = 40, costPerAdult = 44, maxGuests = 4, description = "TestDescription4" };
+            OfferView offerView = new OfferView 
+            {
+                offerTitle = "TestOfferTitle4", 
+                offerPreviewPicture = "TestOfferPreviewPicture4", 
+                isActive = true, 
+                costPerChild = 40, 
+                costPerAdult = 44, 
+                maxGuests = 4, 
+                description = "TestDescription4" 
+            };
             int offerID = 1;
             _dataAccessMock.Setup(da => da.AddOffer(It.IsAny<Offer>())).Returns(offerID);
 
@@ -44,9 +54,11 @@ namespace Server.Tests.Services
             _dataAccessMock.Verify(da => da.AddOfferPictures(It.IsAny<List<string>>(), offerID), Times.Once());
             Assert.Equal(offerID, offerIDTest);
         }
+        #endregion
 
+        #region DeleteOfferTests
         [Fact]
-        public void Can_NotOwner_DeleteOffer()
+        public void DeleteOffer_NotOwner_ThrowsNotOwnerException()
         {
             int hotelID = 1;
             int offerID = 1;
@@ -58,7 +70,7 @@ namespace Server.Tests.Services
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
         }
         [Fact]
-        public void Can_NoOffer_DeleteOffer()
+        public void DeleteOffer_NoOffer_ThrowsNotFoundException()
         {
             int hotelID = 1;
             int offerID = 1;
@@ -70,7 +82,7 @@ namespace Server.Tests.Services
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
         }
         [Fact]
-        public void Can_DeleteOffer()
+        public void DeleteOffer_OfferIsDeleted()
         {
             int hotelID = 1;
             int offerID = 1;
@@ -81,8 +93,11 @@ namespace Server.Tests.Services
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
             _dataAccessMock.Verify(da => da.DeleteOffer(offerID), Times.Once());
         }
+        #endregion
+
+        #region GetOfferTests
         [Fact]
-        public void Can_NotOwner_GetOffer()
+        public void GetOffer_NotOwner_ThrowsNotOwnerException()
         {
             int hotelID = 1;
             int offerID = 1;
@@ -94,7 +109,7 @@ namespace Server.Tests.Services
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
         }
         [Fact]
-        public void Can_NoOffer_GetOffer()
+        public void GetOffer_NoOffer_ThrowsNotFoundException()
         {
             int hotelID = 1;
             int offerID = 1;
@@ -106,7 +121,7 @@ namespace Server.Tests.Services
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
         }
         [Fact]
-        public void Can_GetOffer()
+        public void GetOffer_ReturnsOfferViewObject()
         {
             int hotelID = 1;
             int offerID = 1;
@@ -119,8 +134,11 @@ namespace Server.Tests.Services
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
             _dataAccessMock.Verify(da => da.GetOffer(offerID), Times.Once());
         }
+        #endregion
+
+        #region GetHotelOffersTests
         [Fact]
-        public void Can_GetHotelOffers()
+        public void GetHotelOffers_ReturnsListOfOfferPreviewViewsObjects()
         {
             int hotelID = 1;
             List<OfferPreview> offerPreviews = new List<OfferPreview>();
@@ -131,8 +149,11 @@ namespace Server.Tests.Services
             _dataAccessMock.Verify(da => da.GetHotelOffers(hotelID), Times.Once());
             Assert.Equal(_mapper.Map<List<OfferPreviewView>>(offerPreviews), offerPreviewsTest);
         }
+        #endregion
+
+        #region UpdateOfferTests
         [Fact]
-        public void Can_NotOwner_UpdateOffer()
+        public void UpdateOffer_NotOwner_ThrowsNotOwnerException()
         {
             int hotelID = 1;
             int offerID = 1;
@@ -145,7 +166,7 @@ namespace Server.Tests.Services
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
         }
         [Fact]
-        public void Can_NoOffer_UpdateOffer()
+        public void UpdateOffer_NoOffer_ThrowsNotFoundException()
         {
             int hotelID = 1;
             int offerID = 1;
@@ -158,7 +179,7 @@ namespace Server.Tests.Services
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
         }
         [Fact]
-        public void Can_UpdateOffer()
+        public void UpdateOffer_OfferIsUpdated()
         {
             int hotelID = 1;
             int offerID = 1;
@@ -170,8 +191,11 @@ namespace Server.Tests.Services
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
             _dataAccessMock.Verify(da => da.UpdateOffer(offerID, offerUpdateInfo), Times.Once());
         }
+        #endregion
+
+        #region CheckExceptionsTests
         [Fact]
-        public void Can_CheckExceptions()
+        public void CheckExceptions_NoExceptionsAreThrown()
         {
             int? ownerID = 1;
             int hotelID = 1;
@@ -179,7 +203,7 @@ namespace Server.Tests.Services
             _offerService.CheckExceptions(ownerID, hotelID);
         }
         [Fact]
-        public void Can_NoOffer_CheckExceptions()
+        public void CheckExceptions_NoOffer_ThrowsNotFoundException()
         {
             int? ownerID = null;
             int hotelID = 1;
@@ -189,7 +213,7 @@ namespace Server.Tests.Services
             Assert.Throws<NotFoundException>(act);
         }
         [Fact]
-        public void Can_NotOwner_CheckExceptions()
+        public void CheckExceptions_ThrowsNotOwnerException()
         {
             int? ownerID = 1;
             int hotelID = 2;
@@ -198,6 +222,6 @@ namespace Server.Tests.Services
 
             Assert.Throws<NotOwnerException>(act);
         }
-
+        #endregion
     }
 }

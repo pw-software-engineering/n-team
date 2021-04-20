@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess
 {
-    public class DataAccess : IDataAccess
+    public class OfferDataAccess : IOfferDataAccess
     {
         private readonly IMapper _mapper;
         private readonly ServerDbContext _dbContext;
-        public DataAccess(IMapper mapper, ServerDbContext dbContext)
+        public OfferDataAccess(IMapper mapper, ServerDbContext dbContext)
         {
             _mapper = mapper;
             _dbContext = dbContext;
