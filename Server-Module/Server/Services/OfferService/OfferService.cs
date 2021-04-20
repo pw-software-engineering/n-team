@@ -14,9 +14,9 @@ namespace Server.Services.OfferService
 {   
     public class OfferService : IOfferService
     {
-        private readonly IDataAccess _dataAccess;
+        private readonly IOfferDataAccess _dataAccess;
         private readonly IMapper _mapper; 
-        public OfferService(IDataAccess dataAccess, IMapper mapper)
+        public OfferService(IOfferDataAccess dataAccess, IMapper mapper)
         {
             _dataAccess = dataAccess;
             _mapper = mapper;
@@ -26,6 +26,7 @@ namespace Server.Services.OfferService
         {
             Offer offer = _mapper.Map<Offer>(offerView);
             offer.HotelID = hotelID;
+            offer.IsDeleted = false;
             int offerID = _dataAccess.AddOffer(offer);
             _dataAccess.AddOfferPictures(offer.Pictures, offerID);
             return offerID;

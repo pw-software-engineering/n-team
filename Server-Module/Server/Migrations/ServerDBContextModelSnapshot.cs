@@ -40,6 +40,29 @@ namespace Server.Migrations
                     b.HasIndex("OfferID");
 
                     b.ToTable("AvalaibleTimeIntervals");
+
+                    b.HasData(
+                        new
+                        {
+                            TimeIntervalID = 1,
+                            FromTime = new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OfferID = 2,
+                            ToTime = new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            TimeIntervalID = 2,
+                            FromTime = new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OfferID = 3,
+                            ToTime = new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            TimeIntervalID = 3,
+                            FromTime = new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OfferID = 3,
+                            ToTime = new DateTime(2001, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Server.Database.Models.ClientDb", b =>
@@ -67,6 +90,35 @@ namespace Server.Migrations
                     b.HasKey("ClientID");
 
                     b.ToTable("Clients");
+
+                    b.HasData(
+                        new
+                        {
+                            ClientID = 1,
+                            Email = "TestEmail1",
+                            Name = "TestName1",
+                            Password = "TestPassword1",
+                            Surname = "TestSurname1",
+                            Username = "TestUsername1"
+                        },
+                        new
+                        {
+                            ClientID = 2,
+                            Email = "TestEmail2",
+                            Name = "TestName2",
+                            Password = "TestPassword2",
+                            Surname = "TestSurname2",
+                            Username = "TestUsername2"
+                        },
+                        new
+                        {
+                            ClientID = 3,
+                            Email = "TestEmail3",
+                            Name = "TestName3",
+                            Password = "TestPassword3",
+                            Surname = "TestSurname3",
+                            Username = "TestUsername3"
+                        });
                 });
 
             modelBuilder.Entity("Server.Database.Models.ClientReservationDb", b =>
@@ -94,6 +146,9 @@ namespace Server.Migrations
                     b.Property<int>("OfferID")
                         .HasColumnType("int");
 
+                    b.Property<int>("ReviewID")
+                        .HasColumnType("int");
+
                     b.Property<int>("RoomID")
                         .HasColumnType("int");
 
@@ -111,20 +166,62 @@ namespace Server.Migrations
                     b.HasIndex("RoomID");
 
                     b.ToTable("ClientReservations");
+
+                    b.HasData(
+                        new
+                        {
+                            ReservationID = 1,
+                            ClientID = 2,
+                            FromTime = new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HotelID = 2,
+                            NumberOfAdults = 1L,
+                            NumberOfChildren = 0L,
+                            OfferID = 2,
+                            ReviewID = 1,
+                            RoomID = 2,
+                            ToTime = new DateTime(2001, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ReservationID = 2,
+                            ClientID = 3,
+                            FromTime = new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HotelID = 3,
+                            NumberOfAdults = 1L,
+                            NumberOfChildren = 1L,
+                            OfferID = 3,
+                            ReviewID = 2,
+                            RoomID = 2,
+                            ToTime = new DateTime(2001, 2, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ReservationID = 3,
+                            ClientID = 3,
+                            FromTime = new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HotelID = 3,
+                            NumberOfAdults = 1L,
+                            NumberOfChildren = 2L,
+                            OfferID = 3,
+                            ReviewID = 3,
+                            RoomID = 3,
+                            ToTime = new DateTime(2001, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Server.Database.Models.ClientReviewDb", b =>
                 {
                     b.Property<int>("ReviewID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("int");
 
                     b.Property<int>("ClientID")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("HotelID")
+                        .HasColumnType("int");
 
                     b.Property<int>("OfferID")
                         .HasColumnType("int");
@@ -139,9 +236,43 @@ namespace Server.Migrations
 
                     b.HasIndex("ClientID");
 
+                    b.HasIndex("HotelID");
+
                     b.HasIndex("OfferID");
 
                     b.ToTable("ClientReviews");
+
+                    b.HasData(
+                        new
+                        {
+                            ReviewID = 1,
+                            ClientID = 2,
+                            Content = "TestContent1",
+                            HotelID = 2,
+                            OfferID = 2,
+                            Rating = 1L,
+                            ReviewDate = new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ReviewID = 2,
+                            ClientID = 3,
+                            Content = "TestContent2",
+                            HotelID = 3,
+                            OfferID = 3,
+                            Rating = 2L,
+                            ReviewDate = new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ReviewID = 3,
+                            ClientID = 3,
+                            Content = "TestContent3",
+                            HotelID = 3,
+                            OfferID = 3,
+                            Rating = 3L,
+                            ReviewDate = new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Server.Database.Models.HotelInfoDb", b =>
@@ -172,6 +303,38 @@ namespace Server.Migrations
                     b.HasKey("HotelID");
 
                     b.ToTable("HotelInfos");
+
+                    b.HasData(
+                        new
+                        {
+                            HotelID = 1,
+                            AccessToken = "TestAccessToken1",
+                            City = "TestCity1",
+                            Country = "TestCountry1",
+                            HotelDesc = "TestHotelDesc1",
+                            HotelName = "TestHotelName1",
+                            HotelPreviewPicture = "TestHotelPreviewPicture1"
+                        },
+                        new
+                        {
+                            HotelID = 2,
+                            AccessToken = "TestAccessToken2",
+                            City = "TestCity2",
+                            Country = "TestCountry2",
+                            HotelDesc = "TestHotelDesc2",
+                            HotelName = "TestHotelName2",
+                            HotelPreviewPicture = "TestHotelPreviewPicture2"
+                        },
+                        new
+                        {
+                            HotelID = 3,
+                            AccessToken = "TestAccessToken3",
+                            City = "TestCity3",
+                            Country = "TestCountry3",
+                            HotelDesc = "TestHotelDesc3",
+                            HotelName = "TestHotelName3",
+                            HotelPreviewPicture = "TestHotelPreviewPicture3"
+                        });
                 });
 
             modelBuilder.Entity("Server.Database.Models.HotelPictureDb", b =>
@@ -192,6 +355,26 @@ namespace Server.Migrations
                     b.HasIndex("HotelID");
 
                     b.ToTable("HotelPictures");
+
+                    b.HasData(
+                        new
+                        {
+                            PictureID = 1,
+                            HotelID = 2,
+                            Picture = "TestPicture1"
+                        },
+                        new
+                        {
+                            PictureID = 2,
+                            HotelID = 3,
+                            Picture = "TestPicture2"
+                        },
+                        new
+                        {
+                            PictureID = 3,
+                            HotelID = 3,
+                            Picture = "TestPicture3"
+                        });
                 });
 
             modelBuilder.Entity("Server.Database.Models.HotelRoomDb", b =>
@@ -212,6 +395,26 @@ namespace Server.Migrations
                     b.HasIndex("HotelID");
 
                     b.ToTable("HotelRooms");
+
+                    b.HasData(
+                        new
+                        {
+                            RoomID = 1,
+                            HotelID = 2,
+                            HotelRoomNumber = "TestHotelRoomNumber1"
+                        },
+                        new
+                        {
+                            RoomID = 2,
+                            HotelID = 3,
+                            HotelRoomNumber = "TestHotelRoomNumber2"
+                        },
+                        new
+                        {
+                            RoomID = 3,
+                            HotelID = 3,
+                            HotelRoomNumber = "TestHotelRoomNumber3"
+                        });
                 });
 
             modelBuilder.Entity("Server.Database.Models.OfferDb", b =>
@@ -253,6 +456,47 @@ namespace Server.Migrations
                     b.HasIndex("HotelID");
 
                     b.ToTable("Offers");
+
+                    b.HasData(
+                        new
+                        {
+                            OfferID = 1,
+                            CostPerAdult = 11.0,
+                            CostPerChild = 10.0,
+                            Description = "TestDescription1",
+                            HotelID = 2,
+                            IsActive = true,
+                            IsDeleted = false,
+                            MaxGuests = 1L,
+                            OfferPreviewPicture = "TestOfferPreviewPicture1",
+                            OfferTitle = "TestOfferTitle1"
+                        },
+                        new
+                        {
+                            OfferID = 2,
+                            CostPerAdult = 22.0,
+                            CostPerChild = 20.0,
+                            Description = "TestDescription2",
+                            HotelID = 3,
+                            IsActive = true,
+                            IsDeleted = false,
+                            MaxGuests = 2L,
+                            OfferPreviewPicture = "TestOfferPreviewPicture2",
+                            OfferTitle = "TestOfferTitle2"
+                        },
+                        new
+                        {
+                            OfferID = 3,
+                            CostPerAdult = 33.0,
+                            CostPerChild = 30.0,
+                            Description = "TestDescription3",
+                            HotelID = 3,
+                            IsActive = false,
+                            IsDeleted = true,
+                            MaxGuests = 3L,
+                            OfferPreviewPicture = "TestOfferPreviewPicture3",
+                            OfferTitle = "TestOfferTitle3"
+                        });
                 });
 
             modelBuilder.Entity("Server.Database.Models.OfferHotelRoomDb", b =>
@@ -268,6 +512,28 @@ namespace Server.Migrations
                     b.HasIndex("RoomID");
 
                     b.ToTable("OfferHotelRooms");
+
+                    b.HasData(
+                        new
+                        {
+                            OfferID = 1,
+                            RoomID = 1
+                        },
+                        new
+                        {
+                            OfferID = 2,
+                            RoomID = 2
+                        },
+                        new
+                        {
+                            OfferID = 3,
+                            RoomID = 2
+                        },
+                        new
+                        {
+                            OfferID = 3,
+                            RoomID = 3
+                        });
                 });
 
             modelBuilder.Entity("Server.Database.Models.OfferPictureDb", b =>
@@ -288,6 +554,26 @@ namespace Server.Migrations
                     b.HasIndex("OfferID");
 
                     b.ToTable("OfferPictures");
+
+                    b.HasData(
+                        new
+                        {
+                            PictureID = 1,
+                            OfferID = 2,
+                            Picture = "TestPicture1"
+                        },
+                        new
+                        {
+                            PictureID = 2,
+                            OfferID = 3,
+                            Picture = "TestPicture2"
+                        },
+                        new
+                        {
+                            PictureID = 3,
+                            OfferID = 3,
+                            Picture = "TestPicture3"
+                        });
                 });
 
             modelBuilder.Entity("Server.Database.Models.AvalaibleTimeIntervalDb", b =>
@@ -344,15 +630,31 @@ namespace Server.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("Server.Database.Models.HotelInfoDb", "Hotel")
+                        .WithMany("Reviews")
+                        .HasForeignKey("HotelID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Server.Database.Models.OfferDb", "Offer")
                         .WithMany("ClientReviews")
                         .HasForeignKey("OfferID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("Server.Database.Models.ClientReservationDb", "Reservation")
+                        .WithOne("Review")
+                        .HasForeignKey("Server.Database.Models.ClientReviewDb", "ReviewID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Client");
 
+                    b.Navigation("Hotel");
+
                     b.Navigation("Offer");
+
+                    b.Navigation("Reservation");
                 });
 
             modelBuilder.Entity("Server.Database.Models.HotelPictureDb", b =>
@@ -425,6 +727,11 @@ namespace Server.Migrations
                     b.Navigation("ClientReviews");
                 });
 
+            modelBuilder.Entity("Server.Database.Models.ClientReservationDb", b =>
+                {
+                    b.Navigation("Review");
+                });
+
             modelBuilder.Entity("Server.Database.Models.HotelInfoDb", b =>
                 {
                     b.Navigation("HotelPictures");
@@ -432,6 +739,8 @@ namespace Server.Migrations
                     b.Navigation("HotelRooms");
 
                     b.Navigation("Offers");
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("Server.Database.Models.HotelRoomDb", b =>

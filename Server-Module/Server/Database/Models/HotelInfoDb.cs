@@ -19,5 +19,6 @@ namespace Server.Database.Models
         public List<HotelPictureDb> HotelPictures { get; set; }
         public List<OfferDb> Offers { get; set; }
         public List<HotelRoomDb> HotelRooms { get; set; }
+        public List<ClientReviewDb> Reviews { get; set; }
     }
 }

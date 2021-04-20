@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess
 {
-    public interface IDataAccess
+    public interface IOfferDataAccess
     {
         #region Offer
         int AddOffer(Offer offer);
