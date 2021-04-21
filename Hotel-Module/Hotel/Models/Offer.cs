@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Hotel.Models
 {
@@ -9,7 +6,7 @@ namespace Hotel.Models
     public class Offer
     {
         public uint OfferID { get; set; }
-        public bool Active { get; set; }
+        public bool IsActive { get; set; }
         public double CostPerChild { get; set; }
         public double CostPerAdult { get; set; }
         public uint MaxGuests { get; set; }
