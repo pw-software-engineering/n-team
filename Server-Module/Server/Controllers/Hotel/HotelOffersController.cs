@@ -8,7 +8,7 @@ using Server.ViewModels;
 namespace Server.Controllers.Hotel
 {
     [ApiController]
-    [Authorize(AuthenticationSchemes = "HotellTokenScheme")]
+    [Authorize(AuthenticationSchemes = "HotelTokenScheme")]
     public class HotelOffersController : Controller
     {
         private readonly IDataAccess dataAccess;

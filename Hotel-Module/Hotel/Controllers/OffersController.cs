@@ -1,6 +1,8 @@
 ﻿using Hotel.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
 
 namespace Hotel.Controllers
 {
@@ -34,9 +36,12 @@ namespace Hotel.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add([FromForm] Offer offer)
+        public async Task<IActionResult> Add([FromForm] Offer offer)
         {
-            //httpClient.PostAsync("/offers")
+            HttpContent content = JsonContent.Create(offer);
+            
+            HttpResponseMessage response = await httpClient.PostAsync("/offers", content);
+
             //IFormFile file = new OfferAdd().PreviewPicture;
             //var ms = new MemoryStream();
             //Convert.ToBase64String()
