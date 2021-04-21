@@ -1,16 +1,18 @@
 ﻿using Hotel.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace Hotel.Controllers
 {
     public class OffersController : Controller
     {
+        private readonly HttpClient httpClient;
+
+        public OffersController(HttpClient httpClient)
+        {
+            this.httpClient = httpClient;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -32,9 +34,9 @@ namespace Hotel.Controllers
         }
 
         [HttpPost]
-        //[DisableRequestSizeLimit]
         public IActionResult Add([FromForm] Offer offer)
         {
+            //httpClient.PostAsync("/offers")
             //IFormFile file = new OfferAdd().PreviewPicture;
             //var ms = new MemoryStream();
             //Convert.ToBase64String()
