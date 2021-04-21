@@ -18,6 +18,8 @@ namespace Server.AutoMapper
             CreateMap<OfferDb, OfferUpdateInfo>();
             CreateMap<OfferPreviewView, OfferDb>();
             CreateMap<OfferDb, OfferPreviewView>();
+            CreateMap<Offer, OfferDb>();
+            CreateMap<OfferDb, Offer>();
             #endregion
 
             #region Model -> ViewModel -> Model

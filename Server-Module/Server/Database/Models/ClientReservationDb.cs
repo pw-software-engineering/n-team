@@ -11,6 +11,7 @@ namespace Server.Database.Models
         public int ReservationID { get; set; }
         public int RoomID { get; set; }
         public int ClientID { get; set; }
+        public int ReviewID { get; set; }
         //ReservationInfo Properties
         public int HotelID { get; set; }
         public int OfferID { get; set; }
@@ -23,5 +24,6 @@ namespace Server.Database.Models
         public OfferDb Offer { get; set; }
         public ClientDb Client { get; set; }
         public HotelRoomDb Room { get; set; }
+        public ClientReviewDb Review { get; set; }
     }
 }

@@ -35,11 +35,11 @@ namespace Server
 
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<IOfferService, OfferService>();
-            services.AddTransient<IDataAccess, DataAccess>();
+            services.AddTransient<IOfferDataAccess, OfferDataAccess>();
             services.AddTransient<IHotelTokenDataAccess, HotelTokenDataAccess>();
             services.AddDbContext<ServerDbContext>(options =>           
-                options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext"))); 
-			//services.AddAuthentication("HotellBasic").AddScheme<HotellTokenSchemeOptions, HotellTokenScheme>("HotellBasic", null);
+                options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext")));
+            //services.AddAuthentication("HotellBasic").AddScheme<HotellTokenSchemeOptions, HotellTokenScheme>("HotellBasic", null);
             services.AddAuthentication().AddScheme<HotelTokenSchemeOptions, HotelTokenScheme>(HotelTokenDefaults.AuthenticationScheme, (HotelTokenSchemeOptions options) => { options.ClaimsIssuer = "HotelBasic"; });
         }
 
