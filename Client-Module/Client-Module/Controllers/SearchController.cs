@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Client_Module.Models;
 using Client_Module.ViewsTagID.Layout;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -23,25 +24,25 @@ namespace Client_Module.Controllers
             base.OnActionExecuting(context);
         }
 
-        [Route("/hotels")]
+        [HttpGet("/hotels")]
         public IActionResult Hotels()
         {
             return View();
         }
 
-        [Route("/hotels/{hotelID}")]
+        [HttpGet("/hotels/{hotelID}")]
         public IActionResult DetailedHotel(int hotelID)
         {
             return View();
         }
 
-        [Route("/hotels/{hotelID}/offers")]
+        [HttpGet("/hotels/{hotelID}/offers")]
         public IActionResult HotelOffers(int hotelID, HotelOffersModel hotelOffersModel)
         {
             return View();
         }
 
-        [Route("/hotels/{hotelID}/offers/{offerID}")]
+        [HttpGet("/hotels/{hotelID}/offers/{offerID}")]
         public IActionResult DetailedHotelOffer(int hotelID, int offerID)
         {
             return View();

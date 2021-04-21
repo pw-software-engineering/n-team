@@ -30,7 +30,7 @@ namespace Client_Module
         }
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            //Console.WriteLine("AUTHENTICATE");
+            Console.WriteLine($"{Guid.NewGuid()} - AUTHENTICATE");
             //LinkGenerator urlGenerator = Context.RequestServices.GetService(typeof(LinkGenerator)) as LinkGenerator;
             //Console.WriteLine($"{urlGenerator.GetPathByAction("LogIn", "Client")}");
             if (!Request.Cookies.ContainsKey(ClientTokenCookieDefaults.AuthCookieName))
@@ -42,9 +42,6 @@ namespace Client_Module
             var identity = new ClaimsIdentity(claims, ClientTokenCookieDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, ClientTokenCookieDefaults.AuthenticationScheme);
-            //Console.WriteLine("User logged in");
-
-            //Context.RequestServices.GetService(typeof(IHotelCredentialsDataAccess))
 
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }

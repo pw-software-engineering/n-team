@@ -73,8 +73,7 @@ namespace Client_Module.Controllers
             return View(viewModel);
         }
 
-        [HttpGet]
-        [Route("/account")]
+        [HttpGet("/account")]
         [Authorize(AuthenticationSchemes = "ClientTokenCookieScheme")]
         public IActionResult Account()
         {
