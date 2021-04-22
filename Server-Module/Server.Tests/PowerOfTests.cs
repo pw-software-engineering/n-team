@@ -1,10 +1,39 @@
+using Microsoft.AspNetCore.Routing;
+using Moq;
 using System;
+using System.Net.Http;
 using Xunit;
 
 namespace Server.Tests
 {
 	public class PowerOfTests
 	{
+		[Fact]
+		public void AuthTest()
+        {/*
+			var mocks = new MockRepository();
+			var controller = new  Controllers.Hotel.HotelAccountController(null);
+			var httpContext = HttpContext(mocks, true);
+			controller.ControllerContext = new ControllerContext
+			{
+				Controller = controller,
+				RequestContext = new RequestContext(httpContext, new RouteData())
+			};
+
+			httpContext.User.Expect(u => u.IsInRole("User")).Return(false);
+			mocks.ReplayAll();
+
+			// Act
+			var result =
+				controller.ActionInvoker.InvokeAction(controller.ControllerContext, "Index");
+			var statusCode = httpContext.Response.StatusCode;
+
+			// Assert
+			Assert.IsTrue(result, "Invoker Result");
+			Assert.AreEqual(401, statusCode, "Status Code");
+			mocks.VerifyAll();*/
+		}
+
 		public class IsPowerOf
 		{
 			public bool IsPowerOfTwo(uint candidate) => ((candidate - 1u) & candidate) == 0u;
