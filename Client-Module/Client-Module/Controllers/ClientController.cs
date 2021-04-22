@@ -74,7 +74,7 @@ namespace Client_Module.Controllers
         }
 
         [HttpGet("/account")]
-        [Authorize(AuthenticationSchemes = "ClientTokenCookieScheme")]
+        [Authorize(AuthenticationSchemes = ClientTokenCookieDefaults.AuthenticationScheme)]
         public IActionResult Account()
         {
             ViewData[LayoutTagID.NavSelectedBtnKey] = LayoutTagID.NavAccountBtnID;

@@ -23,8 +23,12 @@ namespace Server.Authentication.Client
         private IClientTokenManager _tokenManager;
         private ClientTokenSchemeOptions _options;
 
-        private string _errorString = null;
+        public string Error
+        {
+            get => _errorString;
+        }
 
+        private string _errorString = null;
         public ClientTokenScheme(
             IClientTokenManager tokenManager,
             IOptionsMonitor<ClientTokenSchemeOptions> options,
@@ -42,16 +46,16 @@ namespace Server.Authentication.Client
             ClientToken clientToken = null;
             try
             {
-                if((clientToken = _tokenManager.ParseTokenHeader(tokenHeader, out _errorString)) == null)
+                if ((clientToken = _tokenManager.ParseTokenHeader(tokenHeader, out _errorString)) == null)
                 {
                     return Task.FromResult(AuthenticateResult.NoResult());
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Task.FromResult(AuthenticateResult.Fail(e));
             }
-            if(!_tokenManager.ValidateToken(clientToken, out _errorString))
+            if (!_tokenManager.ValidateToken(clientToken, out _errorString))
             {
                 return Task.FromResult(AuthenticateResult.NoResult());
             }
@@ -67,7 +71,7 @@ namespace Server.Authentication.Client
             Console.WriteLine($"CHALLANGE: {Response.StatusCode}");
             Context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             Context.Response.ContentType = "application/json";
-            await Context.Response.WriteAsync(_errorString);
+            await Context.Response.WriteAsync("{\"desc\":" + _errorString + "\"}");
             return;
         }
 

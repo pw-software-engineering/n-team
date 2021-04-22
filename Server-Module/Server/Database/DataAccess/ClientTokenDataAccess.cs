@@ -15,7 +15,7 @@ namespace Server.Database.DataAccess
 
         public bool CheckIfClientExists(int clientID)
         {
-            return _dbContext.Clients.FirstOrDefault(client => client.ClientID == clientID) == null;
+            return _dbContext.Clients.FirstOrDefault(client => client.ClientID == clientID) != null;
         }
     }
 }

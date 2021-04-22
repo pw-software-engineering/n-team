@@ -72,7 +72,7 @@ namespace Client_Module
 
     public static class ClientTokenCookieDefaults
     {
-        public static string AuthenticationScheme { get; } = "ClientTokenCookieScheme";
-        public static string AuthCookieName { get; set; } = "clientTokenCookie";
+        public const string AuthenticationScheme = "ClientTokenCookieScheme";
+        public const string AuthCookieName = "clientTokenCookie";
     }
 }
