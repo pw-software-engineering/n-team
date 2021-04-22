@@ -11,21 +11,18 @@ namespace Server.Controllers.Hotel
     [Authorize(AuthenticationSchemes = "HotelTokenScheme")]
     public class HotelOffersController : Controller
     {
-        private readonly IDataAccess dataAccess;
-        private readonly IMapper mapper;
+        private readonly IOfferService service;
+        private readonly IHotelTokenDataAccess tokenDataAccess;
 
-        public HotelOffersController(IDataAccess dataAccess, IMapper mapper)
+        public HotelOffersController(IOfferService service, IHotelTokenDataAccess tokenDataAccess)
         {
-            this.dataAccess = dataAccess;
-            this.mapper = mapper;
+            this.service = service;
+            this.tokenDataAccess = tokenDataAccess;
         }
 
         [HttpPost("/offers")]
-        //[Route("/offers")]
-        public IActionResult AddOffer(OfferView view)
+        public IActionResult AddOffer(OfferView offer)
         {
-            OfferService service = new OfferService(dataAccess, mapper);
-
             return StatusCode(200);
         }
     }

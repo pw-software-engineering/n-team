@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Server.Services.OfferService
 {
-    interface IOfferService
+    public interface IOfferService
     {
         #region /offers
         public List<OfferPreviewView> GetHotelOffers(int hotelID);
