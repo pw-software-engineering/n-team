@@ -25,12 +25,11 @@ namespace Hotel
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            HttpClient httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("x-hotel-token", "nasz super tajny token");
-            httpClient.BaseAddress = new Uri("https://localhost:5001/");
-            //httpClient.BaseAddress = new Uri("https://192.168.8.195:49153/");
-            services.AddSingleton<HttpClient>(httpClient);
-
+            services.AddHttpClient("name",c=>
+            {
+                c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("scheme", "nasz super tajny token");
+                c.BaseAddress = new Uri("https://192.168.8.195:49153/");
+            });
             services.AddControllersWithViews();
         }
 

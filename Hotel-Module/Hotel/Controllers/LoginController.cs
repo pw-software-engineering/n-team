@@ -14,14 +14,15 @@ namespace Hotel.Controllers
     public class LoginController : Controller
     {
         private readonly ILogger<LoginController> logger;
-        private HttpClient httpClient;
+        private IHttpClientFactory httpClientFactory;
 
-        public LoginController(ILogger<LoginController> logger, HttpClient httpClient)
+        public LoginController(ILogger<LoginController> logger, IHttpClientFactory httpClientFactory)
         {
             this.logger = logger;
-            this.httpClient = httpClient;
-            //wysłanie zapytania
-            var t = httpClient.GetAsync("endpoint");
+            this.httpClientFactory = httpClientFactory;
+            //przykłąd wysłanie zapytania
+            //httpClient = httpClientFactory.CreateClient();
+            //var t = httpClient.GetAsync("endpoint");
         }
 
         public IActionResult Index()
