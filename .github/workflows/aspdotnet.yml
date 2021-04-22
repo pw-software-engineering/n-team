@@ -9,6 +9,7 @@ jobs:
     strategy:
       matrix:
         module: [ Server, Client, Hotel ]
+      fail-fast: false
     name: Build and test ${{ matrix.module }} module
     runs-on: ubuntu-latest
     steps:
