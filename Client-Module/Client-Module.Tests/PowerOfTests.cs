@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace Client_Module.Tests
+namespace ClientModule.Tests
 {
 	public class PowerOfTests
 	{

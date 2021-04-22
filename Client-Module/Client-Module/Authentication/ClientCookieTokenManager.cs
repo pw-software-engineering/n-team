@@ -13,14 +13,18 @@ namespace Client_Module.Authentication
 {
     public class ClientCookieTokenManager : IClientCookieTokenManager
     {
-        private IHttpClientFactory _httpClientFactory;
-        public ClientCookieTokenManager(IHttpClientFactory httpClientFactory)
+        private IClientInfoAccessor _clientInfoAccessor;
+        public ClientCookieTokenManager(IClientInfoAccessor clientInfoAccessor)
         {
-            _httpClientFactory = httpClientFactory;
+            _clientInfoAccessor = clientInfoAccessor;
         }
 
         public ClaimsPrincipal CreatePrincipal(ClientInfo clientToken)
         {
+            if(clientToken == null)
+            {
+                throw new ArgumentNullException("clientToken");
+            }
             var claims = new[]
             {
                 new Claim("name", clientToken.Name),
@@ -39,28 +43,13 @@ namespace Client_Module.Authentication
                 validationError = "Client cookie token must be a non-empy string";
                 return null;
             }
-            HttpClient httpClient = _httpClientFactory.CreateClient();
-            HttpRequestMessage httpRequest = new HttpRequestMessage();
-            httpRequest.Method = new HttpMethod("GET");
-            httpRequest.Headers.Add(ServerApiConfig.TokenHeaderName, cookieToken);
-            httpRequest.RequestUri = new Uri(ServerApiConfig.BaseUrl + "/client");
-            HttpResponseMessage response = httpClient.SendAsync(httpRequest).Result;
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                validationError = response.Content.ReadAsStringAsync().Result;
-                return null;
-            }
-            string responseJSON = response.Content.ReadAsStringAsync().Result;
-            //Console.WriteLine(responseJSON);
-            ClientInfo clientInfo = JsonConvert.DeserializeObject<ClientInfo>(
-                responseJSON,
-                new JsonSerializerSettings()
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                });
+            ClientInfo clientInfo = _clientInfoAccessor.GetClientInfo(cookieToken, out validationError);
             if (clientInfo == null)
             {
-                validationError = "Unexpected error - clientInfo contract is not fulfilled";
+                if(validationError == null)
+                {
+                    validationError = "Unexpected error - clientInfo contract is not fulfilled";
+                }
                 return null;
             }
             validationError = null;

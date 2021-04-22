@@ -35,6 +35,7 @@ namespace Client_Module
                 {
                     options.ClaimsIssuer = "localhost";
                 });
+            services.AddTransient<IClientInfoAccessor, ClientInfoAccessor>();
             services.AddTransient<IClientCookieTokenManager, ClientCookieTokenManager>();
             //services.AddTransient<IViewRenderService, ViewRenderService>();
             //services.AddAuthorization(options =>

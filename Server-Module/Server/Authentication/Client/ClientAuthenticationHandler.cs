@@ -71,7 +71,7 @@ namespace Server.Authentication.Client
             Console.WriteLine($"CHALLANGE: {Response.StatusCode}");
             Context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             Context.Response.ContentType = "application/json";
-            await Context.Response.WriteAsync("{\"desc\":" + _errorString + "\"}");
+            await Context.Response.WriteAsync("{\"error\":" + _errorString + "\"}");
             return;
         }
 

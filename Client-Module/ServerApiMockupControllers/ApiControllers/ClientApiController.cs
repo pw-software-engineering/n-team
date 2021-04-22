@@ -61,6 +61,11 @@ namespace ServerApiMockup.MockupApiControllers
                 Response.StatusCode = StatusCodes.Status401Unauthorized;
                 return new JsonResult(new { error = "No client token header in HTTP request" });
             }
+            else if(Request.Headers["x-client-token"] == "malformed")
+            {
+                Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return new JsonResult(new { error = "Token is malformed" });
+            }
             ClientToken token;
             try
             {
