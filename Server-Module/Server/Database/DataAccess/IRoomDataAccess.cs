@@ -1,4 +1,5 @@
-﻿using Server.ViewModels;
+﻿using Server.Models;
+using Server.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,11 @@ namespace Server.Database.DataAccess
 {
     public interface IRoomDataAccess
     {
-        List<RoomView> GetRooms(int hotelID, string hotelRoomNumber = null);
+        List<HotelRoom> GetRooms(Paging paging, int hotelID);
+        List<HotelRoom> GetRoomsWithRoomNumber(Paging paging, int hotelID, string roomNumber);
+        void GetOffersForRooms(List<HotelRoom> hotelRooms);
         int AddRoom(int hotelID, string hotelRoomNumber);
-        void DeleteRoom(int hotelID, int roomID)
+        void DeleteRoom(int roomID);
+        int? FindRoomAndGetOwner(int roomID);
     }
 }
