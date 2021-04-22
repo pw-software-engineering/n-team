@@ -29,7 +29,7 @@ jobs:
       run: |
         echo "SRCDIR=./Client-Module/Client-Module" >> $GITHUB_ENV
         echo "CSPROJ=./Client-Module/Client-Module/Client-Module.csproj" >> $GITHUB_ENV
-        echo "TESTPROJ=./Client-Module/Client-Module.Tests/Client-Module.Tests.csproj" >> $GITHUB_ENV
+        echo "TESTPROJ=./Client-Module/Client-Module.Tests/ClientModule.Tests.csproj" >> $GITHUB_ENV
         echo "TESTCOV=./Client-Module/Client-Module.Tests/cobertura.xml" >> $GITHUB_ENV
     - name: Conditionally set env vars for hotel module
       if: matrix.module == 'Hotel'
