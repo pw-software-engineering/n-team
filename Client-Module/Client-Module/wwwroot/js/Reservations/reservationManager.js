@@ -41,7 +41,7 @@ ReservationManager.prototype.getReservations = function (pageNumber, pageSize) {
     headers[this.apiConfig.apiTokenHeaderName] = getCookie(this.apiConfig.apiTokenCookieName);
     return $.ajax({
         method: "GET",
-        url: `${this.apiConfig.apiBaseUrl}/api/client/reservations?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+        url: `${this.apiConfig.apiBaseUrl}/client/reservations?pageNumber=${pageNumber}&pageSize=${pageSize}`,
         headers: headers
     }).then(
         (data, textStatus, jqXHR) => {
@@ -59,7 +59,7 @@ ReservationManager.prototype.deleteReservation = function (reservationID) {
     headers[this.apiConfig.apiTokenHeaderName] = getCookie(this.apiConfig.apiTokenCookieName);
     return $.ajax({
         method: "DELETE",
-        url: `${this.apiConfig.apiBaseUrl}/api/client/reservations/${reservationID}`,
+        url: `${this.apiConfig.apiBaseUrl}/client/reservations/${reservationID}`,
         headers: headers
     }).then(
         (data, textStatus, jqXHR) => {

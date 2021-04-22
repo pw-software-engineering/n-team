@@ -10,37 +10,49 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc.Routing;
+using System.Net.Http;
+using Microsoft.AspNetCore.Http;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
-namespace Client_Module
+namespace Client_Module.Authentication
 {
     public class ClientTokenCookieScheme
         : AuthenticationHandler<ClientTokenCookieSchemeOptions>
     {
         private ClientTokenCookieSchemeOptions _options;
+        private IHttpClientFactory _httpClientFactory;
+        private IClientCookieTokenManager _cookieTokenManager;
         public ClientTokenCookieScheme(
+            IClientCookieTokenManager cookieTokenManager,
+            IHttpClientFactory httpClientFactory,
             IOptionsMonitor<ClientTokenCookieSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
+            _httpClientFactory = httpClientFactory;
             _options = options.CurrentValue;
+            _cookieTokenManager = cookieTokenManager;
         }
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             Console.WriteLine($"{Guid.NewGuid()} - AUTHENTICATE");
-            //LinkGenerator urlGenerator = Context.RequestServices.GetService(typeof(LinkGenerator)) as LinkGenerator;
-            //Console.WriteLine($"{urlGenerator.GetPathByAction("LogIn", "Client")}");
             if (!Request.Cookies.ContainsKey(ClientTokenCookieDefaults.AuthCookieName))
             {
                 return Task.FromResult(AuthenticateResult.NoResult());
             }
-            string clientToken = Request.Cookies[ClientTokenCookieDefaults.AuthCookieName];
-            var claims = new[] { new Claim("clientToken", clientToken) };
-            var identity = new ClaimsIdentity(claims, ClientTokenCookieDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
+            string clientCookieToken = Request.Cookies[ClientTokenCookieDefaults.AuthCookieName];
+
+            ClientInfo clientInfo = _cookieTokenManager.ValidateCookieToken(clientCookieToken, out string validationError);
+            if (clientInfo == null)
+            {
+                return Task.FromResult(AuthenticateResult.NoResult());
+            }
+            var principal = _cookieTokenManager.CreatePrincipal(clientInfo);
             var ticket = new AuthenticationTicket(principal, ClientTokenCookieDefaults.AuthenticationScheme);
 
             return Task.FromResult(AuthenticateResult.Success(ticket));

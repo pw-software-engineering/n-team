@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Client_Module.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,8 @@ namespace Client_Module
                 {
                     options.ClaimsIssuer = "localhost";
                 });
+            services.AddTransient<IClientCookieTokenManager, ClientCookieTokenManager>();
+            //services.AddTransient<IViewRenderService, ViewRenderService>();
             //services.AddAuthorization(options =>
             //{
             //    options.AddPolicy("def", (AuthorizationPolicyBuilder b) => b.)

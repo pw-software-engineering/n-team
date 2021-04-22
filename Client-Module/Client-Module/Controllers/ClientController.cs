@@ -1,4 +1,5 @@
-﻿using Client_Module.Models;
+﻿using Client_Module.Authentication;
+using Client_Module.Models;
 using Client_Module.ViewsTagID.Layout;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -50,7 +51,7 @@ namespace Client_Module.Controllers
                 Encoding.UTF8, 
                 "application/json");
             httpRequest.Method = new HttpMethod("POST");
-            httpRequest.RequestUri = new Uri(ServerApiConfig.BaseUrl + "/api/client/login");
+            httpRequest.RequestUri = new Uri(ServerApiConfig.BaseUrl + "/client/login");
             HttpResponseMessage httpResponse = await httpClient.SendAsync(httpRequest);
             if(httpResponse.StatusCode == HttpStatusCode.OK)
             {
