@@ -10,8 +10,6 @@ namespace Hotel.Controllers
 {
     public class ReservationsController : Controller
     {
-
-        private HttpClient httpClient;
         public IActionResult Index()
         {
             return View();

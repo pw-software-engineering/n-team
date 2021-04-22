@@ -10,9 +10,9 @@ namespace Hotel.Controllers
     {
         private readonly HttpClient httpClient;
 
-        public OffersController(HttpClient httpClient)
+        public OffersController(IHttpClientFactory httpClientFactory)
         {
-            this.httpClient = httpClient;
+            this.httpClient = httpClientFactory.CreateClient(nameof(DefaultHttpClient));
         }
 
         public IActionResult Index()
@@ -38,14 +38,12 @@ namespace Hotel.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromForm] Offer offer)
         {
-            HttpContent content = JsonContent.Create(offer);
-            
-            HttpResponseMessage response = await httpClient.PostAsync("/offers", content);
+            //HttpResponseMessage response = await httpClient.PostAsJsonAsync("/offers", offer);
 
-            //IFormFile file = new OfferAdd().PreviewPicture;
-            //var ms = new MemoryStream();
-            //Convert.ToBase64String()
-            return null;
+            //if (!response.IsSuccessStatusCode)
+            //    return StatusCode((int)response.StatusCode);
+            //return RedirectToAction("index");
+            return StatusCode(200);
         }
     }
 }
