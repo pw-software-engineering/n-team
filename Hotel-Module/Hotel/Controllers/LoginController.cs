@@ -13,12 +13,12 @@ namespace Hotel.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly ILogger<LoginController> _logger;
+        private readonly ILogger<LoginController> logger;
         private IHttpClientFactory httpClientFactory;
 
         public LoginController(ILogger<LoginController> logger, IHttpClientFactory httpClientFactory)
         {
-            _logger = logger;
+            this.logger = logger;
             this.httpClientFactory = httpClientFactory;
             //przykłąd wysłanie zapytania
             //httpClient = httpClientFactory.CreateClient();
