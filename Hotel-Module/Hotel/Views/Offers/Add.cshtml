@@ -36,7 +36,7 @@
         </div>
         <!-- Child cost -->
         <div class="form-group col-sm-4">
-            <input asp-for="CostPerChild" min="0.01" step="0.01" class="form-control no-spinner" value="10.00" required />
+            <input asp-for="CostPerChild" type="number" min="0.01" step="0.01" class="form-control no-spinner" value="10.00" required />
             <label asp-for="CostPerChild" class="form-control-placeholder-file">Cost per child</label>
             <span class="field-icon">PLN</span>
         </div>
@@ -58,8 +58,8 @@
 
     <!-- Preview PIC -->
     <div class="form-group form-row">
-        <input asp-for="OfferPreviewPicture" type="file" class="form-control col-sm-4" onchange="previewGallery(this, 'previewGallery')" />
-        <label asp-for="OfferPreviewPicture" class="form-control-placeholder">Preview picture</label>
+        <input asp-for="OfferPreviewPicture" type="file" accept="image/*" class="form-control col-sm-4" onchange="previewGallery(this, 'previewGallery')" />
+        <label asp-for="OfferPreviewPicture" accept="image/*" class="form-control-placeholder">Preview picture</label>
         <div id="previewGallery"></div>
     </div>
     <hr /><br />
@@ -83,6 +83,7 @@
             // override submit()
             form.onsubmit = async function (e) {
                 e.preventDefault();
+
                 var formData = new FormData(form);
 
                 formData.set('@Html.DisplayNameFor(o => o.IsActive)', true);

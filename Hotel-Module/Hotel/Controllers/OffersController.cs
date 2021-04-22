@@ -38,12 +38,11 @@ namespace Hotel.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromForm] Offer offer)
         {
-            //HttpResponseMessage response = await httpClient.PostAsJsonAsync("/offers", offer);
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync("/offers", offer);
 
-            //if (!response.IsSuccessStatusCode)
-            //    return StatusCode((int)response.StatusCode);
-            //return RedirectToAction("index");
-            return StatusCode(200);
+            if (!response.IsSuccessStatusCode)
+                return StatusCode((int)response.StatusCode);
+            return RedirectToAction("index");
         }
     }
 }
