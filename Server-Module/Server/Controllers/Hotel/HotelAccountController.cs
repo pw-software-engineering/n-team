@@ -16,11 +16,9 @@ namespace Server.Controllers.Hotel
     public class HotelAccountController : ControllerBase
     {
         private readonly ILogger<HotelAccountController> _logger;
-        private IHttpContextAccessor httpContextAccessor1;
 
-        public HotelAccountController(ILogger<HotelAccountController> logger, IHttpContextAccessor httpContextAccessor)
+        public HotelAccountController(ILogger<HotelAccountController> logger)
         {
-            this.httpContextAccessor1 = httpContextAccessor;
             _logger = logger;
         }
 
@@ -28,7 +26,6 @@ namespace Server.Controllers.Hotel
         [HttpPatch()]
         public IActionResult UpdateInfo([FromBody] int tu_dane_z_body)
         {
-            var user = httpContextAccessor1.HttpContext.User.Identity;
             return StatusCode(404);
         }
     }
