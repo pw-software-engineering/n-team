@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using AutoMapper;
 using Moq;
@@ -8,6 +9,8 @@ using Server.Database.DataAccess;
 using Server.Exceptions;
 using Server.Models;
 using Server.Services.OfferService;
+using Server.Services.Response;
+using Server.Services.Result;
 using Server.ViewModels;
 using Xunit;
 
@@ -32,7 +35,7 @@ namespace Server.Tests.Services
 
         #region AddOfferTests
         [Fact]
-        public void AddOffer_OfferIsAdded()
+        public void AddOffer_200_OfferID()
         {
             int hotelID = 1;
             OfferView offerView = new OfferView 
@@ -48,80 +51,96 @@ namespace Server.Tests.Services
             int offerID = 1;
             _dataAccessMock.Setup(da => da.AddOffer(It.IsAny<Offer>())).Returns(offerID);
 
-            int offerIDTest = _offerService.AddOffer(offerView, hotelID);
+            IServiceResult response = _offerService.AddOffer(offerView, hotelID);
 
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             _dataAccessMock.Verify(da => da.AddOffer(It.IsAny<Offer>()));
             _dataAccessMock.Verify(da => da.AddOfferPictures(It.IsAny<List<string>>(), offerID), Times.Once());
-            Assert.Equal(offerID, offerIDTest);
+            Assert.Equal(offerID, ((OfferID)response.ResponseBody).offerID);
         }
         #endregion
 
         #region DeleteOfferTests
         [Fact]
-        public void DeleteOffer_NotOwner_ThrowsNotOwnerException()
+        public void DeleteOffer_NotOwner_401()
         {
             int hotelID = 1;
             int offerID = 1;
             _dataAccessMock.Setup(da => da.FindOfferAndGetOwner(offerID)).Returns(2);
 
-            Action act = () =>_offerService.DeleteOffer(offerID, hotelID);
+            IServiceResult response = _offerService.DeleteOffer(offerID, hotelID);
 
-            Assert.Throws<NotOwnerException>(act);
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
         }
         [Fact]
-        public void DeleteOffer_NoOffer_ThrowsNotFoundException()
+        public void DeleteOffer_NoOffer_404()
         {
             int hotelID = 1;
             int offerID = 1;
             _dataAccessMock.Setup(da => da.FindOfferAndGetOwner(offerID)).Returns((int?)null);
 
-            Action act = () => _offerService.DeleteOffer(offerID, hotelID);
+            IServiceResult response = _offerService.DeleteOffer(offerID, hotelID);
 
-            Assert.Throws<NotFoundException>(act);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
         }
         [Fact]
-        public void DeleteOffer_OfferIsDeleted()
+        public void DeleteOffer_200()
         {
             int hotelID = 1;
             int offerID = 1;
             _dataAccessMock.Setup(da => da.FindOfferAndGetOwner(offerID)).Returns(hotelID);
 
-            _offerService.DeleteOffer(offerID, hotelID);
+            IServiceResult response = _offerService.DeleteOffer(offerID, hotelID);
 
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
             _dataAccessMock.Verify(da => da.DeleteOffer(offerID), Times.Once());
+        }
+        [Fact]
+        public void DeleteOffer_PendingReservations_409()
+        {
+            int hotelID = 1;
+            int offerID = 1;
+            _dataAccessMock.Setup(da => da.FindOfferAndGetOwner(offerID)).Returns(hotelID);
+            _dataAccessMock.Setup(da => da.AreThereUnfinishedReservationsForOffer(offerID)).Returns(true);
+
+            IServiceResult response = _offerService.DeleteOffer(offerID, hotelID);
+
+            Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+            _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
+            _dataAccessMock.Verify(da => da.AreThereUnfinishedReservationsForOffer(offerID), Times.Once());
         }
         #endregion
 
         #region GetOfferTests
         [Fact]
-        public void GetOffer_NotOwner_ThrowsNotOwnerException()
+        public void GetOffer_NotOwner_401()
         {
             int hotelID = 1;
             int offerID = 1;
             _dataAccessMock.Setup(da => da.FindOfferAndGetOwner(offerID)).Returns(2);
 
-            Action act = () => _offerService.GetOffer(offerID, hotelID);
+            IServiceResult response = _offerService.GetOffer(offerID, hotelID);
 
-            Assert.Throws<NotOwnerException>(act);
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
         }
         [Fact]
-        public void GetOffer_NoOffer_ThrowsNotFoundException()
+        public void GetOffer_NoOffer_404()
         {
             int hotelID = 1;
             int offerID = 1;
             _dataAccessMock.Setup(da => da.FindOfferAndGetOwner(offerID)).Returns((int?)null);
 
-            Action act = () => _offerService.GetOffer(offerID, hotelID);
+            IServiceResult response = _offerService.GetOffer(offerID, hotelID);
 
-            Assert.Throws<NotFoundException>(act);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
         }
         [Fact]
-        public void GetOffer_ReturnsOfferViewObject()
+        public void GetOffer_200_Offer()
         {
             int hotelID = 1;
             int offerID = 1;
@@ -129,8 +148,9 @@ namespace Server.Tests.Services
             _dataAccessMock.Setup(da => da.FindOfferAndGetOwner(offerID)).Returns(hotelID);
             _dataAccessMock.Setup(da => da.GetOffer(offerID)).Returns(offer);
 
-            OfferView offerTest = _offerService.GetOffer(offerID, hotelID);
+            IServiceResult response = _offerService.GetOffer(offerID, hotelID);
 
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
             _dataAccessMock.Verify(da => da.GetOffer(offerID), Times.Once());
         }
@@ -138,56 +158,59 @@ namespace Server.Tests.Services
 
         #region GetHotelOffersTests
         [Fact]
-        public void GetHotelOffers_ReturnsListOfOfferPreviewViewsObjects()
+        public void GetHotelOffers_200_ListOfHotelOffers()
         {
             int hotelID = 1;
+            Paging paging = new Paging();
             List<OfferPreview> offerPreviews = new List<OfferPreview>();
-            _dataAccessMock.Setup(da => da.GetHotelOffers(hotelID)).Returns(offerPreviews);
+            _dataAccessMock.Setup(da => da.GetHotelOffers(paging, hotelID, null)).Returns(offerPreviews);
 
-            List<OfferPreviewView> offerPreviewsTest = _offerService.GetHotelOffers(hotelID);
+            IServiceResult response = _offerService.GetHotelOffers(paging, hotelID);
 
-            _dataAccessMock.Verify(da => da.GetHotelOffers(hotelID), Times.Once());
-            Assert.Equal(_mapper.Map<List<OfferPreviewView>>(offerPreviews), offerPreviewsTest);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            _dataAccessMock.Verify(da => da.GetHotelOffers(paging, hotelID, null), Times.Once());
+            Assert.Equal(_mapper.Map<List<OfferPreviewView>>(offerPreviews), response.ResponseBody);
         }
         #endregion
 
         #region UpdateOfferTests
         [Fact]
-        public void UpdateOffer_NotOwner_ThrowsNotOwnerException()
+        public void UpdateOffer_NotOwner_401()
         {
             int hotelID = 1;
             int offerID = 1;
             OfferUpdateInfo offerUpdateInfo = new OfferUpdateInfo();
             _dataAccessMock.Setup(da => da.FindOfferAndGetOwner(offerID)).Returns(2);
 
-            Action act = () => _offerService.UpdateOffer(offerID, hotelID, offerUpdateInfo);
+            IServiceResult response = _offerService.UpdateOffer(offerID, hotelID, offerUpdateInfo);
 
-            Assert.Throws<NotOwnerException>(act);
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
         }
         [Fact]
-        public void UpdateOffer_NoOffer_ThrowsNotFoundException()
+        public void UpdateOffer_NoOffer_404()
         {
             int hotelID = 1;
             int offerID = 1;
             OfferUpdateInfo offerUpdateInfo = new OfferUpdateInfo();
             _dataAccessMock.Setup(da => da.FindOfferAndGetOwner(offerID)).Returns((int?)null);
 
-            Action act = () => _offerService.UpdateOffer(offerID, hotelID, offerUpdateInfo);
+            IServiceResult response = _offerService.UpdateOffer(offerID, hotelID, offerUpdateInfo);
 
-            Assert.Throws<NotFoundException>(act);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
         }
         [Fact]
-        public void UpdateOffer_OfferIsUpdated()
+        public void UpdateOffer_200_OfferIsUpdated()
         {
             int hotelID = 1;
             int offerID = 1;
             OfferUpdateInfo offerUpdateInfo = new OfferUpdateInfo();
             _dataAccessMock.Setup(da => da.FindOfferAndGetOwner(offerID)).Returns(hotelID);
 
-            _offerService.UpdateOffer(offerID, hotelID, offerUpdateInfo);
+            IServiceResult response = _offerService.UpdateOffer(offerID, hotelID, offerUpdateInfo);
 
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             _dataAccessMock.Verify(da => da.FindOfferAndGetOwner(offerID), Times.Once());
             _dataAccessMock.Verify(da => da.UpdateOffer(offerID, offerUpdateInfo), Times.Once());
         }
@@ -195,32 +218,37 @@ namespace Server.Tests.Services
 
         #region CheckExceptionsTests
         [Fact]
-        public void CheckExceptions_NoExceptionsAreThrown()
+        public void CheckExistanceAndOwnership_200()
         {
-            int? ownerID = 1;
+            int offerID = 1;
             int hotelID = 1;
+            _dataAccessMock.Setup(da => da.FindOfferAndGetOwner(offerID)).Returns(hotelID);
 
-            _offerService.CheckExceptions(ownerID, hotelID);
+            IServiceResult response = _offerService.CheckExistanceAndOwnership(offerID, hotelID);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
         [Fact]
-        public void CheckExceptions_NoOffer_ThrowsNotFoundException()
+        public void CheckExistanceAndOwnership_NoOffer_404()
         {
-            int? ownerID = null;
+            int offerID = -1;
             int hotelID = 1;
+            _dataAccessMock.Setup(da => da.FindOfferAndGetOwner(offerID)).Returns((int?) null);
 
-            Action act = () => _offerService.CheckExceptions(ownerID, hotelID);
+            IServiceResult response = _offerService.CheckExistanceAndOwnership(offerID, hotelID);
 
-            Assert.Throws<NotFoundException>(act);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
         [Fact]
-        public void CheckExceptions_ThrowsNotOwnerException()
+        public void CheckExistanceAndOwnershi_NotOwner_401()
         {
-            int? ownerID = 1;
-            int hotelID = 2;
+            int offerID = 1;
+            int hotelID = 1;
+            _dataAccessMock.Setup(da => da.FindOfferAndGetOwner(offerID)).Returns(3);
 
-            Action act = () => _offerService.CheckExceptions(ownerID, hotelID);
+            IServiceResult response = _offerService.CheckExistanceAndOwnership(offerID, hotelID);
 
-            Assert.Throws<NotOwnerException>(act);
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
         #endregion
     }

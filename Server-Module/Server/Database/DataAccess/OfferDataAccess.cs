@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Database.Models;
 using Server.Models;
+using Server.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,9 +41,17 @@ namespace Server.Database.DataAccess
             }
             return offerDb.OfferID;
         }
-        public List<OfferPreview> GetHotelOffers(int hotelID)
+        public List<OfferPreview> GetHotelOffers(Paging paging, int hotelID, bool? isActive)
         {
-            return _mapper.Map<List<OfferPreview>>(_dbContext.Offers.Where(o => o.HotelID == hotelID).ToList());
+            var ret = _mapper.Map<List<OfferPreview>>(_dbContext.Offers
+                             .Where(o => o.HotelID == hotelID));
+
+            if (isActive.HasValue)
+                ret = ret.Where(o => o.IsActive).ToList();
+
+            return ret.Skip((paging.pageNumber - 1) * paging.pageSize)
+                      .Take(paging.pageNumber)
+                      .ToList();
         }
 
         public Offer GetOffer(int offerID)
@@ -51,7 +60,9 @@ namespace Server.Database.DataAccess
         }
         public int? FindOfferAndGetOwner(int offerID)
         {
-            List<int> owners = _dbContext.Offers.Where(o => o.OfferID == offerID).Select(o => o.HotelID).ToList();
+            List<int> owners = _dbContext.Offers.Where(o => o.OfferID == offerID)
+                                                .Select(o => o.HotelID)
+                                                .ToList();
             if (owners.Count == 0)
                 return null;
             return owners[0];
@@ -96,6 +107,22 @@ namespace Server.Database.DataAccess
             using (var transaction = _dbContext.Database.BeginTransaction())
             {
                 _dbContext.OfferPictures.AddRange(picturesDb);
+                _dbContext.SaveChanges();
+                transaction.Commit();
+            }
+        }
+
+        public bool AreThereUnfinishedReservationsForOffer(int offerID)
+        {
+            return _dbContext.ClientReservations.Where(cr => cr.OfferID == offerID && cr.ToTime > DateTime.Now).Any();
+        }
+
+        public void UnpinRoomsFromOffer(int offerID)
+        {
+            using (var transaction = _dbContext.Database.BeginTransaction())
+            {
+                IQueryable<OfferHotelRoomDb> roomsToUnpin = _dbContext.OfferHotelRooms.Where(ohr => ohr.OfferID == offerID);
+                _dbContext.OfferHotelRooms.RemoveRange(roomsToUnpin);
                 _dbContext.SaveChanges();
                 transaction.Commit();
             }

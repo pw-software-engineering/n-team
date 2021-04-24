@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using Server.ViewModels;
 using Server.Database.DataAccess;
 using AutoMapper;
+using Server.Services.Response;
+using System.Net;
+using Server.Services.Result;
 
 namespace Server.Services.OfferService
 {   
@@ -22,48 +25,70 @@ namespace Server.Services.OfferService
             _mapper = mapper;
         }
         
-        public int AddOffer(OfferView offerView, int hotelID)
+        public IServiceResult AddOffer(OfferView offerView, int hotelID)
         {
             Offer offer = _mapper.Map<Offer>(offerView);
             offer.HotelID = hotelID;
             offer.IsDeleted = false;
             int offerID = _dataAccess.AddOffer(offer);
             _dataAccess.AddOfferPictures(offer.Pictures, offerID);
-            return offerID;
+
+            return new ServiceResult(HttpStatusCode.OK, new OfferID(offerID));
         }
 
-        /// <exception cref="NotOwnerException" cref="NotFoundException"></exception>
-        public void DeleteOffer(int offerID, int hotelID)
+        public IServiceResult DeleteOffer(int offerID, int hotelID)
         {
-            CheckExceptions(_dataAccess.FindOfferAndGetOwner(offerID), hotelID);
+            IServiceResult response = CheckExistanceAndOwnership(offerID, hotelID);
+            if (response.StatusCode != HttpStatusCode.OK)
+                return response;
+
+            if (_dataAccess.AreThereUnfinishedReservationsForOffer(offerID))
+                return new ServiceResult(HttpStatusCode.Conflict, new Error("There are still pending reservations for this offer"));
+
+            _dataAccess.UnpinRoomsFromOffer(offerID);
             _dataAccess.DeleteOffer(offerID);
+
+            return new ServiceResult(HttpStatusCode.OK);
         }
 
-        public List<OfferPreviewView> GetHotelOffers(int hotelID)
+        public IServiceResult GetHotelOffers(Paging paging, int hotelID, bool? isActive = null)
         {
-            return _mapper.Map<List<OfferPreviewView>>(_dataAccess.GetHotelOffers(hotelID));
+            if (paging.pageNumber < 1 || paging.pageSize < 1)
+                return new ServiceResult(HttpStatusCode.BadRequest, new Error("Invalid paging arguments"));
+
+            List<OfferPreviewView> offersPreviews = _mapper.Map<List<OfferPreviewView>>(_dataAccess.GetHotelOffers(paging, hotelID, isActive));
+            return new ServiceResult(HttpStatusCode.OK, offersPreviews);
         }
 
-        /// <exception cref="NotOwnerException" cref="NotFoundException"></exception>
-        public OfferView GetOffer(int offerID, int hotelID)
+        public IServiceResult GetOffer(int offerID, int hotelID)
         {
-            CheckExceptions(_dataAccess.FindOfferAndGetOwner(offerID), hotelID);
-            return _mapper.Map<OfferView>(_dataAccess.GetOffer(offerID));
+            IServiceResult response = CheckExistanceAndOwnership(offerID, hotelID);
+            if (response.StatusCode != HttpStatusCode.OK)
+                return response;
+
+            OfferView offerView = _mapper.Map<OfferView>(_dataAccess.GetOffer(offerID));
+            return new ServiceResult(HttpStatusCode.OK, offerView);
         }
 
-        /// <exception cref="NotOwnerException" cref="NotFoundException"></exception>
-        public void UpdateOffer(int offerID, int hotelID, OfferUpdateInfo offerUpdateInfo)
+        public IServiceResult UpdateOffer(int offerID, int hotelID, OfferUpdateInfo offerUpdateInfo)
         {
-            CheckExceptions(_dataAccess.FindOfferAndGetOwner(offerID), hotelID);
+            IServiceResult response = CheckExistanceAndOwnership(offerID, hotelID);
+            if (response.StatusCode != HttpStatusCode.OK)
+                return response;
+
             _dataAccess.UpdateOffer(offerID, offerUpdateInfo);
+
+            return new ServiceResult(HttpStatusCode.OK);
         }
-        /// <exception cref="NotOwnerException" cref="NotFoundException"></exception>
-        public void CheckExceptions(int? ownerID, int hotelID)
+
+        public IServiceResult CheckExistanceAndOwnership(int offerID, int hotelID)
         {
+            int? ownerID = _dataAccess.FindOfferAndGetOwner(offerID);
             if (ownerID == null)
-                throw new NotFoundException();
+                return new ServiceResult(HttpStatusCode.NotFound);
             if (ownerID != hotelID)
-                throw new NotOwnerException();
+                return new ServiceResult(HttpStatusCode.Unauthorized);
+            return new ServiceResult(HttpStatusCode.OK);
         }
     }
 }

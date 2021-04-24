@@ -18,6 +18,10 @@ namespace Server.Database.DataAccess
             _mapper = mapper;
             _dbContext = dbContext;
         }
+        public bool DoesRoomAlreadyExist(int hotelID, string hotelRoomNumber)
+        {
+            return _dbContext.HotelRooms.Where(hr => hr.HotelRoomNumber == hotelRoomNumber && hr.HotelID == hotelID).Any();
+        }
         public int AddRoom(int hotelID, string hotelRoomNumber)
         {
             HotelRoomDb room = new HotelRoomDb { HotelID = hotelID, HotelRoomNumber = hotelRoomNumber };
@@ -29,37 +33,21 @@ namespace Server.Database.DataAccess
             }
             return room.RoomID;
         }
-
-        public void DeleteRoom(int roomID)
-        {
-            using (var transaction = _dbContext.Database.BeginTransaction())
-            {
-                _dbContext.HotelRooms
-                    .Remove(_dbContext.HotelRooms.Find(roomID));
-                _dbContext.SaveChanges();
-                transaction.Commit();
-            }
-        }
-
         public List<HotelRoom> GetRooms(Paging paging, int hotelID)
         {
-            List<HotelRoom> hotelRooms = _mapper.Map<List<HotelRoom>>(_dbContext.HotelRooms
-                                            .Where(hr => hr.HotelID == hotelID)
-                                            .Skip(paging.pageSize * (paging.pageNumber - 1))
-                                            .Take(paging.pageSize)
-                                            .ToList());
-            GetOffersForRooms(hotelRooms);
-            return hotelRooms;
+            return _mapper.Map<List<HotelRoom>>(_dbContext.HotelRooms
+                    .Where(hr => hr.HotelID == hotelID)
+                    .Skip(paging.pageSize * (paging.pageNumber - 1))
+                    .Take(paging.pageSize)
+                    .ToList());
         }
         public List<HotelRoom> GetRoomsWithRoomNumber(Paging paging, int hotelID, string roomNumber)
         {
-            List<HotelRoom> hotelRooms = _mapper.Map<List<HotelRoom>>(_dbContext.HotelRooms
-                                            .Where(hr => hr.HotelID == hotelID && hr.HotelRoomNumber == roomNumber)
-                                            .Skip(paging.pageSize * (paging.pageNumber - 1))
-                                            .Take(paging.pageSize)
-                                            .ToList());
-            GetOffersForRooms(hotelRooms);
-            return hotelRooms;
+            return _mapper.Map<List<HotelRoom>>(_dbContext.HotelRooms
+                    .Where(hr => hr.HotelID == hotelID && hr.HotelRoomNumber == roomNumber)
+                    .Skip(paging.pageSize * (paging.pageNumber - 1))
+                    .Take(paging.pageSize)
+                    .ToList());
         }
         public void GetOffersForRooms(List<HotelRoom> hotelRooms)
         {
@@ -71,6 +59,17 @@ namespace Server.Database.DataAccess
                                     .ToList();
             }
         }
+        public void DeleteRoom(int roomID)
+        {
+            using (var transaction = _dbContext.Database.BeginTransaction())
+            {
+                HotelRoomDb room = _dbContext.HotelRooms.Find(roomID);
+                _dbContext.HotelRooms
+                    .Remove(room);
+                _dbContext.SaveChanges();
+                transaction.Commit();
+            }
+        }
         public int? FindRoomAndGetOwner(int roomID)
         {
             List<int> owners = _dbContext.HotelRooms
@@ -79,6 +78,38 @@ namespace Server.Database.DataAccess
             if (owners.Count == 0)
                 return null;
             return owners[0];
+        }
+
+        public bool DoesRoomHaveAnyUnfinishedReservations(int roomID)
+        {
+            return _dbContext.ClientReservations.Where(cr => cr.RoomID == roomID && cr.ToTime > DateTime.Now).Count() != 0;
+        }
+
+        public void UnpinRoomFromAnyOffers(int roomID)
+        {
+            using(var transaction = _dbContext.Database.BeginTransaction())
+            {
+                List<OfferHotelRoomDb> offerHotelRooms = _dbContext.OfferHotelRooms
+                                                            .Where(ohr => ohr.RoomID == roomID)
+                                                            .ToList();
+                _dbContext.OfferHotelRooms.RemoveRange(offerHotelRooms);
+                _dbContext.SaveChanges();
+                transaction.Commit();
+            }
+        }
+
+        public void RemoveRoomFromPastReservations(int roomID)
+        {
+            using (var transaction = _dbContext.Database.BeginTransaction())
+            {
+                List<ClientReservationDb> roomPastReservations = _dbContext.ClientReservations
+                                                                    .Where(cr => cr.RoomID == roomID && cr.ToTime < DateTime.Now)
+                                                                    .ToList();
+                foreach (ClientReservationDb reservation in roomPastReservations)
+                    reservation.RoomID = null;
+                _dbContext.SaveChanges();
+                transaction.Commit();
+            }
         }
     }
 }
