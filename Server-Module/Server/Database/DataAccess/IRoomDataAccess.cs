@@ -10,8 +10,7 @@ namespace Server.Database.DataAccess
     public interface IRoomDataAccess
     {
         #region /rooms GET
-        List<HotelRoom> GetRooms(Paging paging, int hotelID);
-        List<HotelRoom> GetRoomsWithRoomNumber(Paging paging, int hotelID, string roomNumber);
+        List<HotelRoom> GetRooms(Paging paging, int hotelID, string roomNumber = null);
         void GetOffersForRooms(List<HotelRoom> hotelRooms);
         #endregion
 
@@ -22,6 +21,7 @@ namespace Server.Database.DataAccess
 
         #region /rooms/{roomID} DELETE
         void DeleteRoom(int roomID);
+        void ChangeActivationMark(int roomID, bool mark);
         bool DoesRoomHaveAnyUnfinishedReservations(int roomID);
         void UnpinRoomFromAnyOffers(int roomID);
         void RemoveRoomFromPastReservations(int roomID);

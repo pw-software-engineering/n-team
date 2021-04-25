@@ -33,21 +33,20 @@ namespace Server.Database.DataAccess
             }
             return room.RoomID;
         }
-        public List<HotelRoom> GetRooms(Paging paging, int hotelID)
+        public List<HotelRoom> GetRooms(Paging paging, int hotelID, string roomNumber)
         {
+            if(roomNumber==null) 
+                return _mapper.Map<List<HotelRoom>>(_dbContext.HotelRooms
+                            .Where(hr => hr.HotelID == hotelID)
+                            .Skip(paging.pageSize * (paging.pageNumber - 1))
+                            .Take(paging.pageSize)
+                            .ToList());
+
             return _mapper.Map<List<HotelRoom>>(_dbContext.HotelRooms
-                    .Where(hr => hr.HotelID == hotelID)
-                    .Skip(paging.pageSize * (paging.pageNumber - 1))
-                    .Take(paging.pageSize)
-                    .ToList());
-        }
-        public List<HotelRoom> GetRoomsWithRoomNumber(Paging paging, int hotelID, string roomNumber)
-        {
-            return _mapper.Map<List<HotelRoom>>(_dbContext.HotelRooms
-                    .Where(hr => hr.HotelID == hotelID && hr.HotelRoomNumber == roomNumber)
-                    .Skip(paging.pageSize * (paging.pageNumber - 1))
-                    .Take(paging.pageSize)
-                    .ToList());
+                        .Where(hr => hr.HotelID == hotelID && hr.HotelRoomNumber == roomNumber)
+                        .Skip(paging.pageSize * (paging.pageNumber - 1))
+                        .Take(paging.pageSize)
+                        .ToList());
         }
         public void GetOffersForRooms(List<HotelRoom> hotelRooms)
         {
@@ -107,6 +106,17 @@ namespace Server.Database.DataAccess
                                                                     .ToList();
                 foreach (ClientReservationDb reservation in roomPastReservations)
                     reservation.RoomID = null;
+                _dbContext.SaveChanges();
+                transaction.Commit();
+            }
+        }
+
+        public void ChangeActivationMark(int roomID, bool mark)
+        {
+            using (var transaction = _dbContext.Database.BeginTransaction())
+            {
+                HotelRoomDb room = _dbContext.HotelRooms.Find(roomID);
+                room.IsActive = mark;
                 _dbContext.SaveChanges();
                 transaction.Commit();
             }
