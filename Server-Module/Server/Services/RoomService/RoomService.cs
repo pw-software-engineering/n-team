@@ -49,6 +49,9 @@ namespace Server.Services.RoomService
 
         public IServiceResult GetHotelRooms(Paging paging, int hotelID, string hotelRoomNumber = null)
         {
+            if (paging.pageNumber < 1 || paging.pageSize < 1)
+                return new ServiceResult(HttpStatusCode.BadRequest, new Error("Invalid paging arguments"));
+
             List<HotelRoom> rooms = _dataAccess.GetRooms(paging, hotelID, hotelRoomNumber);
             _dataAccess.GetOffersForRooms(rooms);
             return new ServiceResult(HttpStatusCode.OK, _mapper.Map<List<HotelRoomView>>(rooms));

@@ -176,7 +176,7 @@ namespace Server.Tests.Database
             string roomNumber = "TestHotelRoomNumber3";
             Paging paging = new Paging();
 
-            List<HotelRoom> hotelRoomsTest = _dataAccess.GetRoomsWithRoomNumber(paging, hotelID, roomNumber);
+            List<HotelRoom> hotelRoomsTest = _dataAccess.GetRooms(paging, hotelID, roomNumber);
             List<HotelRoomDb> hotelRooms = _context.HotelRooms.Where(hr => hr.HotelID == hotelID && hr.HotelRoomNumber == roomNumber).ToList();
 
             Assert.Equal(hotelRooms.Count, hotelRoomsTest.Count);

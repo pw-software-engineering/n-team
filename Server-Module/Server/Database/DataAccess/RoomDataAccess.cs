@@ -33,7 +33,7 @@ namespace Server.Database.DataAccess
             }
             return room.RoomID;
         }
-        public List<HotelRoom> GetRooms(Paging paging, int hotelID, string roomNumber)
+        public List<HotelRoom> GetRooms(Paging paging, int hotelID, string roomNumber = null)
         {
             if(roomNumber==null) 
                 return _mapper.Map<List<HotelRoom>>(_dbContext.HotelRooms
