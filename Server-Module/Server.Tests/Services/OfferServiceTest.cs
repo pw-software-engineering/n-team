@@ -160,7 +160,7 @@ namespace Server.Tests.Services
         [Fact]
         public void GetHotelOffers_200_ListOfHotelOffers()
         {
-            int hotelID = 1;
+            int hotelID = 3;
             Paging paging = new Paging();
             List<OfferPreview> offerPreviews = new List<OfferPreview>();
             _dataAccessMock.Setup(da => da.GetHotelOffers(paging, hotelID, null)).Returns(offerPreviews);
