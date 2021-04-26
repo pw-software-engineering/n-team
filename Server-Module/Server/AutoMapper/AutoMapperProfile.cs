@@ -16,8 +16,8 @@ namespace Server.AutoMapper
             #region Db -> Model -> Db
             CreateMap<OfferUpdateInfo, OfferDb>();
             CreateMap<OfferDb, OfferUpdateInfo>();
-            CreateMap<OfferPreviewView, OfferDb>();
-            CreateMap<OfferDb, OfferPreviewView>();
+            CreateMap<OfferPreview, OfferDb>();
+            CreateMap<OfferDb, OfferPreview>();
             CreateMap<Offer, OfferDb>();
             CreateMap<OfferDb, Offer>();
             CreateMap<HotelRoomDb, HotelRoom>();
