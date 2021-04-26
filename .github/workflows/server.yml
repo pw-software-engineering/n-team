@@ -1,4 +1,4 @@
-name: ASP.NET CI
+name: Build and test server module
 
 on:
   pull_request:
@@ -7,10 +7,8 @@ on:
 jobs:
   build:
     strategy:
-      matrix:
-        module: [ Server, Client, Hotel ]
       fail-fast: false
-    name: Build and test ${{ matrix.module }} module
+    name: Build and test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -18,27 +16,12 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
-    - name: Conditionally set env vars for server module
-      if: matrix.module == 'Server'
+    - name: Set env vars
       run: |
         echo "SRCDIR=./Server-Module/Server" >> $GITHUB_ENV
         echo "CSPROJ=./Server-Module/Server/Server.csproj" >> $GITHUB_ENV
         echo "TESTPROJ=./Server-Module/Server.Tests/Server.Tests.csproj" >> $GITHUB_ENV
         echo "TESTCOV=./Server-Module/Server.Tests/cobertura.xml" >> $GITHUB_ENV
-    - name: Conditionally set env vars for client module
-      if: matrix.module == 'Client'
-      run: |
-        echo "SRCDIR=./Client-Module/Client-Module" >> $GITHUB_ENV
-        echo "CSPROJ=./Client-Module/Client-Module/Client-Module.csproj" >> $GITHUB_ENV
-        echo "TESTPROJ=./Client-Module/Client-Module.Tests/ClientModule.Tests.csproj" >> $GITHUB_ENV
-        echo "TESTCOV=./Client-Module/Client-Module.Tests/cobertura.xml" >> $GITHUB_ENV
-    - name: Conditionally set env vars for hotel module
-      if: matrix.module == 'Hotel'
-      run: |
-        echo "SRCDIR=./Hotel-Module/Hotel" >> $GITHUB_ENV
-        echo "CSPROJ=./Hotel-Module/Hotel/Hotel.csproj" >> $GITHUB_ENV
-        echo "TESTPROJ=./Hotel-Module/Hotel.Tests/Hotel.Tests.csproj" >> $GITHUB_ENV
-        echo "TESTCOV=./Hotel-Module/Hotel.Tests/cobertura.xml" >> $GITHUB_ENV
     - name: Restore dependencies
       run: dotnet restore ${{ env.CSPROJ }}
     - name: Build module
@@ -53,9 +36,9 @@ jobs:
         reporttypes: 'Html'
         sourcedirs: ${{ env.SRCDIR }}
         verbosity: 'Warning'
-        title: ${{ matrix.module }} test coverage report
+        title: Server module test coverage report
     - name: Upload test report to GitHub
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.module }} test report
+        name: Server module test report
         path: './coverage/*'

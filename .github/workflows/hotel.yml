@@ -1,0 +1,44 @@
+name: Build and test hotel module
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup ASP.NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Set env vars
+      run: |
+        echo "SRCDIR=./Hotel-Module/Hotel" >> $GITHUB_ENV
+        echo "CSPROJ=./Hotel-Module/Hotel/Hotel.csproj" >> $GITHUB_ENV
+        echo "TESTPROJ=./Hotel-Module/Hotel.Tests/Hotel.Tests.csproj" >> $GITHUB_ENV
+        echo "TESTCOV=./Hotel-Module/Hotel.Tests/cobertura.xml" >> $GITHUB_ENV
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.CSPROJ }}
+    - name: Build module
+      run: dotnet build --no-restore ${{ env.CSPROJ }}
+    - name: Test module
+      run: dotnet test --verbosity normal /p:IncludeTestAssembly=true /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="cobertura.xml" ${{ env.TESTPROJ }}
+    - name: Generate test report
+      uses: danielpalme/ReportGenerator-GitHub-Action@4.8.7
+      with:
+        reports: ${{ env.TESTCOV }}
+        targetdir: 'coverage'
+        reporttypes: 'Html'
+        sourcedirs: ${{ env.SRCDIR }}
+        verbosity: 'Warning'
+        title: Hotel module test coverage report
+    - name: Upload test report to GitHub
+      uses: actions/upload-artifact@v2
+      with:
+        name: Hotel module test report
+        path: './coverage/*'
