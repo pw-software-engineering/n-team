@@ -1,37 +1,66 @@
+using Castle.Core.Logging;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Options;
 using Moq;
+using Server.Authentication;
+using Server.Database.DataAccess;
+using Server.Tests.Database;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Encodings.Web;
 using Xunit;
 
 namespace Server.Tests
 {
 	public class PowerOfTests
 	{
-		[Fact]
-		public void AuthTest()
-        {/*
-			var mocks = new MockRepository();
-			var controller = new  Controllers.Hotel.HotelAccountController(null);
-			var httpContext = HttpContext(mocks, true);
-			controller.ControllerContext = new ControllerContext
-			{
-				Controller = controller,
-				RequestContext = new RequestContext(httpContext, new RouteData())
-			};
+		public class HotelAuthTestClass
+        {
+			private IHotelTokenDataAccess hotelTokenDataAcess;
+            private Mock<IOptionsMonitor<HotelTokenSchemeOptions>> options;
+			private Mock<Microsoft.Extensions.Logging.ILoggerFactory> logger;
+			private Mock<UrlEncoder> encoder;
+			private Mock<ISystemClock> clock;
+			private readonly HotelTokenScheme hotelTokenScheme;
+			
+			public HotelAuthTestClass()
+            {
+				options = new Mock<IOptionsMonitor<HotelTokenSchemeOptions>>();
+				options.Setup(x => x.Get("HotelTokenSchemeOptions")).Returns(new HotelTokenSchemeOptions());
+				hotelTokenDataAcess = new MokDataAccessHotelToken();
+				logger = new Mock<Microsoft.Extensions.Logging.ILoggerFactory>();
+				encoder = new Mock<UrlEncoder>();
+				clock = new Mock<ISystemClock>();
+				hotelTokenScheme = new HotelTokenScheme(hotelTokenDataAcess, options.Object, logger.Object	, encoder.Object, clock.Object);
+			}
 
-			httpContext.User.Expect(u => u.IsInRole("User")).Return(false);
-			mocks.ReplayAll();
+			[Fact]
+            public async void HotelBadAuthTest()
+            {
+				var a = new HttpClient();
+				a.BaseAddress = new Uri("https://127.0.0.1:5000");
+				a.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("a","a");
+				
+				var contex = new DefaultHttpContext();
+				contex.Request.Headers.Clear();
+				var p1 = a.DefaultRequestHeaders.GetEnumerator();
+				while (p1.MoveNext())
+				{
+					System.String[] y2 = (string[])p1.Current.Value;
+					var t1 = new Microsoft.Extensions.Primitives.StringValues(y2);
 
-			// Act
-			var result =
-				controller.ActionInvoker.InvokeAction(controller.ControllerContext, "Index");
-			var statusCode = httpContext.Response.StatusCode;
-
-			// Assert
-			Assert.IsTrue(result, "Invoker Result");
-			Assert.AreEqual(401, statusCode, "Status Code");
-			mocks.VerifyAll();*/
+					contex.Request.Headers.Add(p1.Current.Key, t1);
+				}
+				
+				var d = new AuthenticationScheme(/*HotelTokenDefaults.AuthenticationScheme*/"HotelTokenScheme", "A", typeof(HotelTokenScheme));
+				await hotelTokenScheme.InitializeAsync(d, contex);
+				var w = await hotelTokenScheme.AuthenticateAsync();
+				
+				Assert.True(!w.Succeeded);
+			}
 		}
 
 		public class IsPowerOf

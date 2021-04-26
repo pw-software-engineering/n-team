@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Server.Controllers.Hotel
 {
-    [Authorize(AuthenticationSchemes = "HotellTokenScheme")]
+    [Authorize(AuthenticationSchemes = "HotelTokenScheme")]
     //[Route("api/[controller]")]
     [ApiController]
     public class HotelAccountController : ControllerBase
@@ -18,9 +18,8 @@ namespace Server.Controllers.Hotel
         private readonly ILogger<HotelAccountController> _logger;
         private IHttpContextAccessor httpContextAccessor1;
 
-        public HotelAccountController(ILogger<HotelAccountController> logger, IHttpContextAccessor httpContextAccessor)
+        public HotelAccountController(ILogger<HotelAccountController> logger)
         {
-            this.httpContextAccessor1 = httpContextAccessor;
             _logger = logger;
         }
 
@@ -28,7 +27,6 @@ namespace Server.Controllers.Hotel
         [HttpPatch()]
         public IActionResult UpdateInfo([FromBody] int tu_dane_z_body)
         {
-            var user = httpContextAccessor1.HttpContext.User.Identity;
             return StatusCode(404);
         }
     }
