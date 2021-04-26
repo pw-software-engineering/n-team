@@ -1,4 +1,5 @@
-﻿@{
+﻿@model System.Collections.Generic.IEnumerable<Hotel.Models.OfferPreview>
+@{
     ViewData["Title"] = "Offers";
 
     // data managed and passed to view by controller
@@ -57,86 +58,58 @@
 
 <table class="table table-striped">
     <tbody>
-        <tr>
-            <td>
-                <div class="row align-items-center m-0">
-                    <div class="container-fluid col-sm-3">
-                        <img src="~/img/rooms/room1.jpg" class="img float-left rounded w-100" />
+        @foreach (OfferPreview offer in Model)
+        {
+            <tr>
+                <td>
+                    <div class="row align-items-center m-0">
+                        <div class="container-fluid col-sm-3">
+                            @if (string.IsNullOrWhiteSpace(offer.OfferPreviewPicture))
+                            {
+                                <img src="~/img/empty-offer-img.png" class="img float-left rounded w-100" />
+                            }
+                            else
+                            { 
+                                <img src="data:image/png;base64,@Html.Raw(offer.OfferPreviewPicture)" class="img float-left rounded w-100" />
+                            }
+                        </div>
+                        <div class="col-sm">
+                            <h3 class="m-0">@Html.Raw(offer.OfferTitle)</h3>
+                            <dl class="row dl-compact">
+                                <dt class="col-sm-3">Adult</dt>
+                                <dd class="col-sm-9">@offer.CostPerAdult.ToString("F2") PLN</dd>
+                                <dt class="col-sm-3">Child</dt>
+                                <dd class="col-sm-9">@offer.CostPerChild.ToString("F2") PLN</dd>
+                                <dt class="col-sm-3">Max guests</dt>
+                                <dd class="col-sm-9">@Html.Raw(offer.MaxGuests)</dd>
+                                <dt class="col-sm-3">Active</dt>
+                                <dd class="col-sm-9">
+                                @if (offer.IsActive)
+                                {
+                                    @:Yes
+                                }
+                                else
+                                {
+                                    @:No
+                                }
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="btn-group-vertical btn-group-sm col-sm-2">
+                            @if (offer.IsActive)
+                            {
+                                <button class="btn btn-outline-danger">Deactivate</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-outline-success">Activate</button>
+                            }
+                            <a class="btn btn-sm btn-primary" asp-controller="offers" asp-action="details">Details</a>
+                        </div>
                     </div>
-                    <div class="col-sm">
-                        <h3 class="m-0">Limitless offer</h3>
-                        <dl class="row dl-compact">
-                            <dt class="col-sm-3">Adult</dt>
-                            <dd class="col-sm-9">120.00$</dd>
-                            <dt class="col-sm-3">Child</dt>
-                            <dd class="col-sm-9">100.00$</dd>
-                            <dt class="col-sm-3">Max guests</dt>
-                            <dd class="col-sm-9">3</dd>
-                            <dt class="col-sm-3">Active</dt>
-                            <dd class="col-sm-9">Yes</dd>
-                        </dl>
-                    </div>
-                    <div class="btn-group-vertical btn-group-sm col-sm-2">
-                        <button class="btn btn-sm btn-outline-danger">Deactivate</button>
-                        <a class="btn btn-sm btn-primary" asp-controller="offers" asp-action="details">Details</a>
-                    </div>
-                </div>
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <div class="row align-items-center m-0">
-                    <div class="container-fluid col-sm-3">
-                        <img src="~/img/rooms/room2.jpg" class="img float-left rounded w-100" />
-                    </div>
-                    <div class="col-sm">
-                        <h3>Offer's Title</h3>
-                        <dl class="row dl-compact">
-                            <dt class="col-sm-3">Adult</dt>
-                            <dd class="col-sm-9">50.00$</dd>
-                            <dt class="col-sm-3">Child</dt>
-                            <dd class="col-sm-9">10.00$</dd>
-                            <dt class="col-sm-3">Max guests</dt>
-                            <dd class="col-sm-9">5</dd>
-                            <dt class="col-sm-3">Active</dt>
-                            <dd class="col-sm-9">Yes</dd>
-                        </dl>
-                    </div>
-                    <div class="btn-group-vertical btn-group-sm col-sm-2">
-                        <button class="btn btn-outline-danger">Deactivate</button>
-                        <button class="btn btn-primary">Details</button>
-                    </div>
-                </div>
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <div class="row align-items-center m-0">
-                    <div class="container-fluid col-sm-3">
-                        <img src="~/img/rooms/room3.jpg" class="img float-left rounded w-100" />
-                    </div>
-                    <div class="col-sm">
-                        <h3>Boundless</h3>
-                        <dl class="row dl-compact">
-                            <dt class="col-sm-3">Adult</dt>
-                            <dd class="col-sm-9">65.00$</dd>
-                            <dt class="col-sm-3">Child</dt>
-                            <dd class="col-sm-9">65.00$</dd>
-                            <dt class="col-sm-3">Max guests</dt>
-                            <dd class="col-sm-9">2</dd>
-                            <dt class="col-sm-3">Active</dt>
-                            <dd class="col-sm-9">No</dd>
-                        </dl>
-                    </div>
-                    <div class="btn-group-vertical btn-group-sm col-sm-2">
-                        <button class="btn btn-outline-success">Activate</button>
-                        <button class="btn btn-primary">Details</button>
-                    </div>
-                </div>
-            </td>
-        </tr>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 

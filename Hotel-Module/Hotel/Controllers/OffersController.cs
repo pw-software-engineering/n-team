@@ -1,5 +1,6 @@
 ﻿using Hotel.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -15,9 +16,10 @@ namespace Hotel.Controllers
             this.httpClient = httpClientFactory.CreateClient(nameof(DefaultHttpClient));
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            IEnumerable<OfferPreview> response = await httpClient.GetFromJsonAsync<IEnumerable<OfferPreview>>("offers");
+            return View(response);
         }
 
         public IActionResult Add()
