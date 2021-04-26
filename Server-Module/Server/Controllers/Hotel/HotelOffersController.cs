@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Services.OfferService;
+using Server.Services.Response;
 using Server.ViewModels;
 using System;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace Server.Controllers.Hotel
             this.service = service;
         }
 
-        [HttpPost("/offers")]
+        [HttpPost("/api-hotel/offers")]
         public IActionResult AddOffer([FromBody] OfferView offer)
         {
             var ids = from claim in HttpContext.User.Claims
@@ -26,9 +27,11 @@ namespace Server.Controllers.Hotel
                         select claim.Value;
             int hotelId = Convert.ToInt32(ids.Single());
 
-            int offerID = service.AddOffer(offer, hotelId);
+            IServiceResult result = service.AddOffer(offer, hotelId);
 
-            return Ok(new JsonResult(new { offerID }));
+            JsonResult jsonResult = new JsonResult(result.ResponseBody);
+            jsonResult.StatusCode = (int)result.StatusCode;
+            return jsonResult;
         }
     }
 }
