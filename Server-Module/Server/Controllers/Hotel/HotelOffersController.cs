@@ -28,7 +28,7 @@ namespace Server.Controllers.Hotel
 
             int offerID = service.AddOffer(offer, hotelId);
 
-            return new JsonResult(new { offerID });
+            return Ok(new JsonResult(new { offerID }));
         }
     }
 }
