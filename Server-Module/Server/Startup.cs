@@ -36,6 +36,7 @@ namespace Server
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<IOfferService, OfferService>();
             services.AddTransient<IOfferDataAccess, OfferDataAccess>();
+            services.AddTransient<IRoomDataAccess, RoomDataAccess>();
             services.AddTransient<IHotelTokenDataAccess, HotelTokenDataAccess>();
             services.AddDbContext<ServerDbContext>(options =>           
                 options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext")));
