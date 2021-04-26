@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Services.OfferService;
+using Server.Services.Response;
 using Server.ViewModels;
 using System;
 using System.Linq;
@@ -26,9 +27,9 @@ namespace Server.Controllers.Hotel
                         select claim.Value;
             int hotelId = Convert.ToInt32(ids.Single());
 
-            int offerID = service.AddOffer(offer, hotelId);
+            IServiceResult result = service.AddOffer(offer, hotelId);
 
-            return Ok(new JsonResult(new { offerID }));
+            return Ok(new JsonResult(result.ResponseBody));
         }
     }
 }

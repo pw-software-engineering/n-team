@@ -47,10 +47,10 @@ namespace Server.Database.DataAccess
                              .Where(o => o.HotelID == hotelID));
 
             if (isActive.HasValue)
-                ret = ret.Where(o => o.IsActive).ToList();
+                ret = ret.Where(o => o.IsActive == isActive).ToList();
 
             return ret.Skip((paging.pageNumber - 1) * paging.pageSize)
-                      .Take(paging.pageNumber)
+                      .Take(paging.pageSize)
                       .ToList();
         }
 
