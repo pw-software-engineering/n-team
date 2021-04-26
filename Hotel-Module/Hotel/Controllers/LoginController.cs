@@ -5,17 +5,24 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Hotel.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly ILogger<LoginController> _logger;
+        private readonly ILogger<LoginController> logger;
+        private IHttpClientFactory httpClientFactory;
 
-        public LoginController(ILogger<LoginController> logger)
+        public LoginController(ILogger<LoginController> logger, IHttpClientFactory httpClientFactory)
         {
-            _logger = logger;
+            this.logger = logger;
+            this.httpClientFactory = httpClientFactory;
+            //przykłąd wysłanie zapytania
+            //httpClient = httpClientFactory.CreateClient();
+            //var t = httpClient.GetAsync("endpoint");
         }
 
         public IActionResult Index()
@@ -24,7 +31,7 @@ namespace Hotel.Controllers
         }
 
         public IActionResult Privacy()
-        {
+        { 
             return View();
         }
 

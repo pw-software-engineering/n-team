@@ -1,50 +1,49 @@
-﻿@{
+﻿@model Hotel.Models.Offer
+@{
     ViewData["Title"] = "Add offer";
 }
 
 <h1>Add new offer</h1>
 <hr />
 
-<form>
+<form asp-action="Add" method="post" id="addOfferForm" enctype="multipart/form-data">
     <!-- Active -->
     <div class="form-group custom-control custom-checkbox">
-        <input type="checkbox" id="activeCheckbox" class="custom-control-input" checked disabled />
-        <label class="custom-control-label" for="activeCheckbox">
-            Active
-        </label>
+        <input asp-for="IsActive" class="custom-control-input" checked disabled />
+        <label asp-for="IsActive" class="custom-control-label">Active</label>
     </div>
 
     <!-- Title -->
     <div class="form-group">
-        <input type="text" class="form-control" placeholder="Offer name" />
-        <label class="form-control-placeholder">Title</label>
+        <input asp-for="OfferTitle" class="form-control" placeholder="Offer name" />
+        <label asp-for="OfferTitle" class="form-control-placeholder">Title</label>
     </div>
     <hr /><br />
 
     <!-- Description -->
     <div class="form-group">
-        <textarea class="form-control" rows="4" placeholder="The best offer in the universe!"></textarea>
-        <label class="form-control-placeholder">Description</label>
+        <textarea asp-for="Description" class="form-control" rows="4" placeholder="The best offer in the universe!"></textarea>
+        <label asp-for="Description" class="form-control-placeholder">Description</label>
     </div>
     <hr /><br />
 
     <div class="form-row">
         <!-- Adult cost -->
         <div class="form-group col-sm-4">
-            <input type="number" min="0.01" step="0.01" class="form-control no-spinner" value="10.00" required />
-            <label class="form-control-placeholder-file">Cost per adult</label>
+            <input asp-for="CostPerAdult" type="number" min="0.01" step="0.01" class="form-control no-spinner" value="10.00" required />
+            <label asp-for="CostPerAdult" class="form-control-placeholder-file">Cost per adult</label>
             <span class="field-icon">PLN</span>
         </div>
         <!-- Child cost -->
         <div class="form-group col-sm-4">
-            <input type="number" min="0.01" step="0.01" class="form-control no-spinner" value="10.00" required />
-            <label class="form-control-placeholder-file">Cost per child</label>
+            <input asp-for="CostPerChild" type="number" min="0.01" step="0.01" class="form-control no-spinner" value="10.00" required />
+            <label asp-for="CostPerChild" class="form-control-placeholder-file">Cost per child</label>
             <span class="field-icon">PLN</span>
         </div>
         <!-- Max guests -->
         <div class="form-group col-sm-4">
-            <input type="number" min="1" step="1" class="form-control" value="1" required />
-            <label class="form-control-placeholder-file">Max guests</label>
+            <input asp-for="MaxGuests" min="1" step="1" class="form-control" value="1" required />
+            <label asp-for="MaxGuests" class="form-control-placeholder-file">Max guests</label>
             <span class="fa fa-user-tie field-icon mr-4"></span>
         </div>
     </div>
@@ -59,19 +58,101 @@
 
     <!-- Preview PIC -->
     <div class="form-group form-row">
-        <input class="form-control col-sm-4" type="file" onchange="previewGallery(this, 'previewGallery')" />
-        <label class="form-control-placeholder">Preview picture</label>
+        <input asp-for="OfferPreviewPicture" type="file" accept="image/*" class="form-control col-sm-4" onchange="previewGallery(this, 'previewGallery')" />
+        <label asp-for="OfferPreviewPicture" accept="image/*" class="form-control-placeholder">Preview picture</label>
         <div id="previewGallery"></div>
     </div>
     <hr /><br />
 
     <!-- Additinal PICS-->
     <div class="form-group form-row">
-        <input class="form-control col-sm-4" type="file" multiple onchange="previewGallery(this, 'additionalGallery')" />
-        <label class="form-control-placeholder">Additional pictures</label>
+        <input asp-for="Pictures" type="file" multiple class="form-control col-sm-4" onchange="previewGallery(this, 'additionalGallery')" />
+        <label asp-for="Pictures" class="form-control-placeholder">Additional pictures</label>
         <div id="additionalGallery"></div>
     </div>
     <hr />
 
     <button type="submit" class="btn btn-primary">Add offer</button>
 </form>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var form = $('#addOfferForm')[0];
+
+            // override submit()
+            form.onsubmit = async function (e) {
+                e.preventDefault();
+
+                var formData = new FormData(form);
+
+                formData.set('@Html.DisplayNameFor(o => o.IsActive)', true);
+
+                var previewPicString = '@Html.DisplayNameFor(o => o.OfferPreviewPicture)';
+                var picsString = '@Html.DisplayNameFor(o => o.Pictures)';
+
+                var previewPic = formData.get(previewPicString);
+                var previewPic64 = await get64BaseString(previewPic);
+                if (previewPic64) {
+                    formData.set(previewPicString, previewPic64);           // .set() overrides value
+                }
+
+                var pics = formData.getAll(picsString);
+                formData.delete(picsString);
+                for (const pic of pics) {
+                    var pic64 = await (get64BaseString(pic));
+                    if (pic64) {
+                        formData.append(picsString, pic64);
+                    }
+                }
+
+                await fetch('@Url.Action("Add")', {
+                    method: 'POST',
+                    body: formData,
+                    redirect: "follow"
+                }).then((response) => {
+                    if (response.ok) {
+                        alert("Offer added successfully!")
+                    } else {
+                        alert(response.status + ": " + response.statusText);
+                    }
+
+                    if (response.redirected) {
+                        window.location.replace(response.url);
+                    }
+                }).catch((error) => {
+                    console.error('fetch error: ', error);
+                });
+            };
+
+            async function get64BaseString(file) {
+                var str;
+                await readUploadedImage(file)
+                    .then(value => {
+                        str = value.split(',')[1];
+                    })
+                    .catch(function () {
+                        console.log("oops");
+                    });
+                return str;
+            }
+
+            function readUploadedImage(file) {
+                var reader = new FileReader();
+
+                return new Promise((resolve, reject) => {
+                    reader.onerror = () => {
+                        reader.abort();
+                        reject();
+                    };
+
+                    reader.onload = () => {
+                        resolve(reader.result);
+                    };
+
+                    reader.readAsDataURL(file);
+                });
+            }
+        })
+    </script>
+}
