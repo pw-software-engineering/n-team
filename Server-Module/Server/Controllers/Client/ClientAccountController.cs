@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Server.Authentication.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace Server.Controllers.Client
 {
+    [Authorize(AuthenticationSchemes = ClientTokenDefaults.AuthenticationScheme)]
     [ApiController]
-    //[Route("[controller]")]
     public class ClientAccountController : ControllerBase
     {
         
@@ -18,8 +20,8 @@ namespace Server.Controllers.Client
         {
             _logger = logger;
         }
-        [Route("/client")]
-        [HttpGet]
+
+        [HttpGet("/client")]
         public string Get()
         {
             return "";

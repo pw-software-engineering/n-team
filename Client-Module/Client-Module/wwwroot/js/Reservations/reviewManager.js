@@ -19,7 +19,7 @@ ReviewManager.prototype.reservationReviewApiCall = function ({ httpVerb, reserva
     headers[this.apiConfig.apiTokenHeaderName] = getCookie(this.apiConfig.apiTokenCookieName);
     var ajaxRequest = {
         method: httpVerb,
-        url: `${this.apiConfig.apiBaseUrl}/api/client/reservations/${reservationID}/review`,
+        url: `${this.apiConfig.apiBaseUrl}/client/reservations/${reservationID}/review`,
         headers: headers
     };
     if (reviewInfo !== undefined) {
