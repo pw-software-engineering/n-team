@@ -23,11 +23,11 @@ namespace Client_Module.Authentication
         }
         public ClientInfo GetClientInfo(string cookieToken, out string serverError)
         {
-            HttpClient httpClient = _httpClientFactory.CreateClient();
+            HttpClient httpClient = _httpClientFactory.CreateClient("default-server-api");
             HttpRequestMessage httpRequest = new HttpRequestMessage();
-            httpRequest.Method = new HttpMethod("GET");
+            httpRequest.Method = HttpMethod.Get;
             httpRequest.Headers.Add(ServerApiConfig.TokenHeaderName, cookieToken);
-            httpRequest.RequestUri = new Uri(ServerApiConfig.BaseUrl + "/client");
+            httpRequest.RequestUri = new Uri($"{ServerApiConfig.BaseUrl}/client");
             HttpResponseMessage response = httpClient.SendAsync(httpRequest).Result;
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {

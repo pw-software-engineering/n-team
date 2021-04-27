@@ -11,7 +11,7 @@ using System.IO;
 
 namespace ServerApiMockup.MockupApiControllers
 {
-    [Route("api/client")]
+    [Route("api-client/client")]
     [ApiController]
     public class ClientApiController : ControllerBase
     {

@@ -23,18 +23,15 @@ namespace Client_Module.Authentication
         : AuthenticationHandler<ClientTokenCookieSchemeOptions>
     {
         private ClientTokenCookieSchemeOptions _options;
-        private IHttpClientFactory _httpClientFactory;
         private IClientCookieTokenManager _cookieTokenManager;
         public ClientTokenCookieScheme(
             IClientCookieTokenManager cookieTokenManager,
-            IHttpClientFactory httpClientFactory,
             IOptionsMonitor<ClientTokenCookieSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
-            _httpClientFactory = httpClientFactory;
             _options = options.CurrentValue;
             _cookieTokenManager = cookieTokenManager;
         }

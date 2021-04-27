@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Net.Http;
 
 namespace Client_Module
 {
@@ -28,6 +29,10 @@ namespace Client_Module
             //services.AddTransient<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
             services.AddControllersWithViews();
             services.AddHttpClient();
+            //services.AddHttpClient("default-server-api", (HttpClient client) =>
+            //{
+            //    client.BaseAddress = new Uri(ServerApiConfig.BaseUrl.TrimEnd('/') + '/');
+            //});
             services.AddAuthentication(ClientTokenCookieDefaults.AuthenticationScheme)
                 .AddScheme<ClientTokenCookieSchemeOptions, ClientTokenCookieScheme>(
                 ClientTokenCookieDefaults.AuthenticationScheme,
@@ -35,8 +40,8 @@ namespace Client_Module
                 {
                     options.ClaimsIssuer = "localhost";
                 });
-            services.AddTransient<IClientInfoAccessor, ClientInfoAccessor>();
-            services.AddTransient<IClientCookieTokenManager, ClientCookieTokenManager>();
+            services.AddSingleton<IClientInfoAccessor, ClientInfoAccessor>();
+            services.AddSingleton<IClientCookieTokenManager, ClientCookieTokenManager>();
             //services.AddTransient<IViewRenderService, ViewRenderService>();
             //services.AddAuthorization(options =>
             //{
