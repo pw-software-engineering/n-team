@@ -29,10 +29,11 @@ namespace Server.Controllers.Client
         [HttpPatch("/client")]
         public IActionResult Patch(string username, string email)
         {
-            // default id until authentication is implemented
-            var id = 2;
+            var id = from claim in HttpContext.User.Claims
+                      where claim.Type == "id"
+                      select int.Parse(claim.Value);
 
-            IServiceResult serviceResult = service.UpdateClientInfo(id, username, email);
+            IServiceResult serviceResult = service.UpdateClientInfo(id.First(), username, email);
             JsonResult jsonResult = new JsonResult(serviceResult.ResponseBody)
             {
                 StatusCode = (int)serviceResult.StatusCode
