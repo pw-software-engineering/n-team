@@ -1,4 +1,4 @@
-﻿@model System.Collections.Generic.IEnumerable<Hotel.Models.OfferPreview>
+﻿@model Hotel.ViewModels.OffersIndex
 @{
     ViewData["Title"] = "Offers";
 
@@ -7,27 +7,21 @@
     ViewData["EntrPerPage"] = 10;
     int pageNr = int.Parse(ViewData["PageNo"].ToString());
     int entries = int.Parse(ViewData["EntrPerPage"].ToString());
-
-    ViewData["FilterSelection"] = "all"; // "all" or "current"
-    string filter = ViewData["FilterSelection"].ToString();
 }
 
 <div class="row">
     <h1 class="ml-4 col-sm-auto">Your offers</h1>
     <div class="row col-sm-5 ml-auto">
         <div class="form-group col-sm-6 m-3">
-            <select class="form-control">
-                @if (filter == "current")
+            @Html.DropDownListFor(vm => vm.IsActive, new SelectList(
+                new[]
                 {
-                    <option>All reservations</option>
-                    <option selected>Under service only</option>
-                }
-                else
-                {
-                    <option selected>All reservations</option>
-                    <option>Under service only</option>
-                }
-            </select>
+                    new { Value = "", Text = "All offers"},
+                    new { Value = true.ToString(), Text = "Active only"},
+                    new { Value = false.ToString(), Text = "Inactive only"}
+                }, "Value", "Text", Model.IsActive),
+                new { @class = "form-control" }
+            )
             <label class="form-control-placeholder">Filter</label>
         </div>
         <div class="form-group col-sm-4 m-3">
@@ -55,10 +49,17 @@
         </div>
     </div>
 </div>
+<hr />
 
+@if (Model.OfferPreviews is null || !Model.OfferPreviews.Any())
+{
+    <p class="text-center">List is empty.</p>
+}
+else
+{ 
 <table class="table table-striped">
     <tbody>
-        @foreach (OfferPreview offer in Model)
+        @foreach (OfferPreview offer in Model.OfferPreviews)
         {
             <tr>
                 <td>
@@ -112,6 +113,7 @@
         }
     </tbody>
 </table>
+}
 
 <nav aria-label="Offers pages">
     <ul class="pagination justify-content-center">
