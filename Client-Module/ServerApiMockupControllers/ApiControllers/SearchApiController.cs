@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace ServerApiMockup.MockupApiControllers
 {
-    [Route("api/hotels")]
+    [Route("api-client/hotels")]
     [ApiController]
     public class SearchApiController : ControllerBase
     {

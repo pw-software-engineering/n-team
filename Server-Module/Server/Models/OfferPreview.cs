@@ -7,6 +7,7 @@ namespace Server.Models
 {
     public class OfferPreview
     {
+        public int OfferID { get; set; }
         public bool IsActive { get; set; }
         public string OfferTitle { get; set; }
         public double CostPerChild { get; set; }
