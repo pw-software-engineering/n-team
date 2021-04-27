@@ -33,17 +33,19 @@ namespace Hotel.Controllers
             return View(offersVM);
         }
 
-        public IActionResult Add()
+        [Route("offers/{id}")]
+        public async Task<IActionResult> Details(int id)
         {
-            return View();
-        }
-
-        public IActionResult Details(int id)
-        {
+            Offer offer = await httpClient.GetFromJsonAsync<Offer>("offers/" + id.ToString());
             return View();
         }
 
         public IActionResult Edit(int id)
+        {
+            return View();
+        }
+
+        public IActionResult Add()
         {
             return View();
         }
