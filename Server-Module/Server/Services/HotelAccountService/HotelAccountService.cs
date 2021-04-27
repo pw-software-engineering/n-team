@@ -18,12 +18,23 @@ namespace Server.Services.HotelAccountService
 
         public HotelGetInfo GetInfo(int hotelId)
         {
-            return hotelAccountDataAccess.GetInfo(hotelId);
+            try
+            {
+                return hotelAccountDataAccess.GetInfo(hotelId);
+            } catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public void UpdateInfo(int hotelId, HotelUpdateInfo hotelUpdateInfo)
         {
-            hotelAccountDataAccess.UpdateInfo(hotelId, hotelUpdateInfo);
-        }
+            try {
+                hotelAccountDataAccess.UpdateInfo(hotelId, hotelUpdateInfo);
+            }catch(NotFundExepcion e)
+            {
+                throw new Exception(e.Message);
+            }
+        }   
     }
 }

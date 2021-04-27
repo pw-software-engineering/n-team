@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Server.Authentication;
 using Server.Database;
 using Server.Database.DataAccess;
+using Server.Services.HotelAccountService;
 using Server.Services.OfferService;
 using System;
 using System.Collections.Generic;
@@ -32,16 +33,20 @@ namespace Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
+            
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<IOfferService, OfferService>();
             services.AddTransient<IOfferDataAccess, OfferDataAccess>();
             services.AddTransient<IHotelTokenDataAccess, HotelTokenDataAccess>();
+
+            services.AddTransient<IHotelAccountDataAccess, HotelAccountDataAccess>();
+            services.AddTransient<IHotelAccountService, HotelAccountService>();
+            
             services.AddDbContext<ServerDbContext>(options =>           
                 options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext")));
             //services.AddAuthentication("HotellBasic").AddScheme<HotellTokenSchemeOptions, HotellTokenScheme>("HotellBasic", null);
             services.AddAuthentication().AddScheme<HotelTokenSchemeOptions, HotelTokenScheme>(HotelTokenDefaults.AuthenticationScheme, (HotelTokenSchemeOptions options) => { options.ClaimsIssuer = "HotelBasic"; });
-            services.AddHttpContextAccessor();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.Services.HotelAccountService
 {
-    interface IHotelAccountService
+    public interface IHotelAccountService
     {
         public void UpdateInfo(int hotelId,HotelUpdateInfo hotelUpdateInfo);
         public HotelGetInfo GetInfo(int hotelId);

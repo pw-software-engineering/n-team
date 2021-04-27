@@ -29,7 +29,14 @@ namespace Server.Controllers.Hotel
         public IActionResult UpdateInfo([FromBody] HotelUpdateInfo hotelUpdateInfo)
         {
             var hotelId = int.Parse(HttpContext.User.Claims.First().Value);
-            hotelAccountService.UpdateInfo(hotelId, hotelUpdateInfo);
+            try
+            {
+                hotelAccountService.UpdateInfo(hotelId, hotelUpdateInfo);
+            }catch(Exception)
+            {
+                return StatusCode(404);
+            }
+            
             return StatusCode(200);
         }
 
@@ -37,7 +44,14 @@ namespace Server.Controllers.Hotel
         public IActionResult GetInfo()
         {
             var hotelId = int.Parse(HttpContext.User.Claims.First().Value);
-            return new JsonResult(hotelAccountService.GetInfo(hotelId));
+            try
+            {
+                return new JsonResult(hotelAccountService.GetInfo(hotelId));
+            }
+            catch (Exception)
+            {
+                return StatusCode(400);
+            }
         }
     }
 }

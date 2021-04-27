@@ -13,7 +13,9 @@ namespace Server.ViewModels
         public string hotelDesc;
         public string hotelPreviewPicture;
         public string[] hotelPictures;
-        
+
+        public HotelUpdateInfo() { }
+
         public HotelUpdateInfo(HotelInfoDb hotelInfoDb)
         {
             hotelDesc = hotelInfoDb.HotelDesc;

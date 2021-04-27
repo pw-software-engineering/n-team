@@ -19,7 +19,7 @@ namespace Server.Tests
 	{
 		public class HotelAuthTestClass
         {
-			private IHotelTokenDataAccess hotelTokenDataAcess;
+			private Mock<IHotelTokenDataAccess> hotelTokenDataAcess;
             private Mock<IOptionsMonitor<HotelTokenSchemeOptions>> options;
 			private Mock<Microsoft.Extensions.Logging.ILoggerFactory> logger;
 			private Mock<UrlEncoder> encoder;
@@ -29,12 +29,12 @@ namespace Server.Tests
 			public HotelAuthTestClass()
             {
 				options = new Mock<IOptionsMonitor<HotelTokenSchemeOptions>>();
-				options.Setup(x => x.Get("HotelTokenSchemeOptions")).Returns(new HotelTokenSchemeOptions());
-				hotelTokenDataAcess = new MokDataAccessHotelToken();
+				options.Setup(x => x.Get(It.IsAny<string>())).Returns(new HotelTokenSchemeOptions());
+				hotelTokenDataAcess = new Mock<IHotelTokenDataAccess>();
 				logger = new Mock<Microsoft.Extensions.Logging.ILoggerFactory>();
 				encoder = new Mock<UrlEncoder>();
 				clock = new Mock<ISystemClock>();
-				hotelTokenScheme = new HotelTokenScheme(hotelTokenDataAcess, options.Object, logger.Object	, encoder.Object, clock.Object);
+				hotelTokenScheme = new HotelTokenScheme(hotelTokenDataAcess.Object, options.Object, logger.Object	, encoder.Object, clock.Object);
 			}
 
 			[Fact]
@@ -45,7 +45,7 @@ namespace Server.Tests
 				a.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("a","a");
 				
 				var contex = new DefaultHttpContext();
-				contex.Request.Headers.Clear();
+				//contex.Request.Headers.Clear();
 				var p1 = a.DefaultRequestHeaders.GetEnumerator();
 				while (p1.MoveNext())
 				{
