@@ -35,10 +35,9 @@ namespace Server.Services.ClientService
             if (usernameEmpty && emailEmpty) return new ServiceResult(HttpStatusCode.BadRequest, "Username and e-mail are null");
             else if (!(usernameEmpty || usernameRegex.IsMatch(username))) return new ServiceResult(HttpStatusCode.BadRequest, "Invalid (or too short/long) username");
             else if (!(emailEmpty || emailRegex.IsMatch(email))) return new ServiceResult(HttpStatusCode.BadRequest, "Invalid (or too short/long) e-mail");
+            _dataAccess.UpdateClientInfo(clientID, username, email);
 
-            return _dataAccess.UpdateClientInfo(clientID, username, email)
-                ? new ServiceResult(HttpStatusCode.OK, "Data changed successfully") 
-                : new ServiceResult(HttpStatusCode.InternalServerError, "Error while accessing the database");
+            return new ServiceResult(HttpStatusCode.OK);
         }
     }
 }

@@ -15,12 +15,10 @@ namespace Server.Controllers.Client
     public class ClientAccountController : ControllerBase
     {
         private readonly IClientService service;
-        private readonly ILogger<ClientAccountController> _logger;
 
-        public ClientAccountController(IClientService service, ILogger<ClientAccountController> logger)
+        public ClientAccountController(IClientService service)
         {
             this.service = service;
-            _logger = logger;
         }
 		[Route("/client")]
 		[HttpGet]
@@ -28,16 +26,19 @@ namespace Server.Controllers.Client
 		{
 			return "";
 		}
-        [Route("/client")]
-        [HttpPatch]
+        [HttpPatch("/client")]
         public IActionResult Patch(string username, string email)
         {
             // default id until authentication is implemented
             var id = 2;
 
             IServiceResult serviceResult = service.UpdateClientInfo(id, username, email);
+            JsonResult jsonResult = new JsonResult(serviceResult.ResponseBody)
+            {
+                StatusCode = (int)serviceResult.StatusCode
+            };
 
-            return StatusCode((int)serviceResult.StatusCode, serviceResult.ResponseBody);
+            return jsonResult;
         }
     }
 }
