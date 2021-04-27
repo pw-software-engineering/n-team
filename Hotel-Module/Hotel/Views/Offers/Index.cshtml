@@ -1,50 +1,40 @@
 ﻿@model Hotel.ViewModels.OffersIndex
 @{
     ViewData["Title"] = "Offers";
-
-    // data managed and passed to view by controller
-    ViewData["PageNo"] = 1;
-    ViewData["EntrPerPage"] = 10;
-    int pageNr = int.Parse(ViewData["PageNo"].ToString());
-    int entries = int.Parse(ViewData["EntrPerPage"].ToString());
 }
 
 <div class="row">
     <h1 class="ml-4 col-sm-auto">Your offers</h1>
     <div class="row col-sm-5 ml-auto">
         <div class="form-group col-sm-6 m-3">
-            @Html.DropDownListFor(vm => vm.IsActive, new SelectList(
-                new[]
-                {
-                    new { Value = "", Text = "All offers"},
-                    new { Value = true.ToString(), Text = "Active only"},
-                    new { Value = false.ToString(), Text = "Inactive only"}
-                }, "Value", "Text", Model.IsActive),
+            @Html.DropDownListFor(vm => vm.IsActive,
+                new SelectList(
+                    new[]
+                    {
+                        new { Value = "", Text = "All offers"},
+                        new { Value = true.ToString(), Text = "Active only"},
+                        new { Value = false.ToString(), Text = "Inactive only"}
+                    }, "Value", "Text", Model.IsActive
+                ),
                 new { @class = "form-control" }
             )
             <label class="form-control-placeholder">Filter</label>
         </div>
         <div class="form-group col-sm-4 m-3">
-            <select class="form-control">
-                @if (entries == 50)
+            @{
+                List<SelectListItem> items = new List<SelectListItem>
                 {
-                    <option>10</option>
-                    <option>20</option>
-                    <option selected>50</option>
-                }
-                else if (entries == 20)
-                {
-                    <option>10</option>
-                    <option selected>20</option>
-                    <option>50</option>
-                }
-                else
-                {
-                    <option selected>10</option>
-                    <option>20</option>
-                    <option>50</option>
-                }
-            </select>
+                    new SelectListItem("10", "10"),
+                    new SelectListItem("20", "20"),
+                    new SelectListItem("50", "50")
+                };
+                SelectListItem selected = new SelectListItem(Model.Paging.PageSize.ToString(), Model.Paging.PageSize.ToString());
+                if (!items.Any(i => i.Value == selected.Value))     // different pageSize than one of defaults
+                    items.Add(selected);
+            }
+            @Html.DropDownListFor(vm => vm.Paging.PageSize, items,
+                new { @class = "form-control" }
+            )
             <label class="form-control-placeholder">Entries per page</label>
         </div>
     </div>
@@ -117,24 +107,25 @@ else
 
 <nav aria-label="Offers pages">
     <ul class="pagination justify-content-center">
-        @if (pageNr <= 1)
-        {
-            <li class="page-item disabled">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span class="fa fa-chevron-left"></span>
-                </a>
-            </li>
-        }
-        else
-        {
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span class="fa fa-chevron-left"></span>
-                </a>
-            </li>
-        }
-        <li class="page-item"><a class="page-link">@pageNr.ToString()</a></li>
-        <li class="page-item">
+        <li class="page-item
+            @if (Model.Paging.PageNumber < 2)
+            {
+                @:disabled
+            }
+        ">
+            <a class="page-link" href="#" aria-label="Previous">
+                <span class="fa fa-chevron-left"></span>
+            </a>
+        </li>
+
+        <li class="page-item"><a class="page-link">@Model.Paging.PageNumber</a></li>
+
+        <li class="page-item
+            @if (Model.OfferPreviews.Count() < Model.Paging.PageSize)
+            {
+                @:disabled
+            }
+        ">
             <a class="page-link" href="#" aria-label="Next">
                 <span class="fa fa-chevron-right"></span>
             </a>
