@@ -30,16 +30,14 @@ namespace Server.Controllers.Client
 		}
         [Route("/client")]
         [HttpPatch]
-        public IActionResult Patch([FromBody] string username, [FromBody] string email)
+        public IActionResult Patch(string username, string email)
         {
             // default id until authentication is implemented
-            var id = 4;
+            var id = 2;
 
             IServiceResult serviceResult = service.UpdateClientInfo(id, username, email);
-            IActionResult result = BadRequest();
-            if (serviceResult.StatusCode == HttpStatusCode.OK) result = Ok();
 
-            return result;
+            return StatusCode((int)serviceResult.StatusCode, serviceResult.ResponseBody);
         }
     }
 }

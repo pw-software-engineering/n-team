@@ -11,7 +11,7 @@ using Server.Database.DataAccess;
 using AutoMapper;
 using Server.Services.Response;
 using System.Net;
-using Server.Services.Result;
+using System.Text.RegularExpressions;
 
 namespace Server.Services.ClientService
 {
@@ -27,12 +27,18 @@ namespace Server.Services.ClientService
         
         public IServiceResult UpdateClientInfo(int clientID, string username, string email)
         {
-            // todo: check if email is of correct form
+            bool usernameEmpty = string.IsNullOrWhiteSpace(username);
+            Regex usernameRegex = new Regex(@"^[a-zA-Z][a-zA-Z0-9]{5,30}$");
+            bool emailEmpty = string.IsNullOrWhiteSpace(email);
+            Regex emailRegex = new Regex(@"^[a-zA-Z]([a-zA-Z0-9]|[\.-_]){0,50}@[a-z]{1,10}\.[a-z]{1,10}$");
 
+            if (usernameEmpty && emailEmpty) return new ServiceResult(HttpStatusCode.BadRequest, "Username and e-mail are null");
+            else if (!(usernameEmpty || usernameRegex.IsMatch(username))) return new ServiceResult(HttpStatusCode.BadRequest, "Invalid (or too short/long) username");
+            else if (!(emailEmpty || emailRegex.IsMatch(email))) return new ServiceResult(HttpStatusCode.BadRequest, "Invalid (or too short/long) e-mail");
 
             return _dataAccess.UpdateClientInfo(clientID, username, email)
-                ? new ServiceResult(HttpStatusCode.OK) 
-                : new ServiceResult(HttpStatusCode.BadRequest);
+                ? new ServiceResult(HttpStatusCode.OK, "Data changed successfully") 
+                : new ServiceResult(HttpStatusCode.InternalServerError, "Error while accessing the database");
         }
     }
 }
