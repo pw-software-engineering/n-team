@@ -1,14 +1,22 @@
-﻿@{
+﻿@model Hotel.Models.Offer
+@{
     ViewData["Title"] = "Limitless offer";
 }
 
-<h1>Limitless offer</h1>
+<h1>@Model.OfferTitle</h1>
 
 <div>
-    <img class="img rounded preview-img" src="~/img/rooms/room1.jpg" /> <!--src="data:image/png;base64,<base64-string>"-->
+    @if (string.IsNullOrWhiteSpace(Model.OfferPreviewPicture))
+    {
+        <img class="img rounded preview-img" src="~/img/empty-offer-img.png" /> <!--src="data:image/png;base64,<base64-string>"-->
+    }
+    else
+    {
+        <img class="img rounded preview-img" src="data:image/png;base64,@Html.Raw(Model.OfferPreviewPicture)" />
+    }
 
     <div>
-        <small>Offer description description description description description description description description description description</small>
+        <small>@Html.Raw(Model.Description)</small>
     </div>
 </div>
 <hr />
@@ -16,22 +24,40 @@
 <div class="flex">
     <dl class="row dl-compact">
         <dt class="col-sm-3">Active</dt>
-        <dd class="col-sm-9">Yes</dd>
+        <dd class="col-sm-9">
+            @if (Model.IsActive)
+            {
+                @:Yes
+            }
+            else
+            {
+                @:No
+            }
+        </dd>
         <dt class="col-sm-3">Adult</dt>
-        <dd class="col-sm-9">65.00 PLN</dd>
+        <dd class="col-sm-9">@Model.CostPerAdult.ToString("F2") PLN</dd>
         <dt class="col-sm-3">Child</dt>
-        <dd class="col-sm-9">65.00 PLN</dd>
+        <dd class="col-sm-9">@Model.CostPerChild.ToString("F2") PLN</dd>
         <dt class="col-sm-3">Max guests</dt>
-        <dd class="col-sm-9">2</dd>
+        <dd class="col-sm-9">@Model.MaxGuests</dd>
     </dl>
 
     <dl class="row dl-compact">
         <dt class="col-sm-12 mb-2">Rooms</dt>
         <dd class="col-sm-auto">
-            <ul class="list-inline">
-                <li class="list-inline-item">13</li>
-                <li class="list-inline-item">14</li>
-            </ul>
+            @if (Model.Rooms is null || !Model.Rooms.Any())
+            {
+                @:<p class="text-center">This offer contains no rooms.</p>
+            }
+            else
+            {
+                <ul class="list-inline">
+                    @foreach (string room in Model.Rooms)
+                    {
+                        <li class="list-inline-item">@Html.Raw(room)</li>
+                    }
+                </ul>
+            }
         </dd>
     </dl>
 </div>
@@ -41,33 +67,21 @@
     <h2 class="heading-section">Photos</h2>
 
     <div class="row">
-        <div class="col-sm-3">
-            <a href="~/img/cats/cat1.jpg">
-                <img class="img-thumbnail" src="~/img/cats/cat1.jpg">
-            </a>
-        </div>
-        <div class="col-sm-3">
-            <a href="~/img/cats/cat2.jpg">
-                <img class="img-thumbnail" src="~/img/cats/cat2.jpg" />
-            </a>
-        </div>
-        <div class="col-sm-3">
-            <a href="~/img/cats/cat3.jpg">
-                <img class="img-thumbnail" src="~/img/cats/cat3.jpg" />
-            </a>
-        </div>
-        <div class="col-sm-3">
-            <a href="~/img/cats/cat4.jpg">
-                <img class="img-thumbnail" src="~/img/cats/cat4.jpg" />
-            </a>
-        </div>
-        <div class="col-sm-3">
-            <a href="~/img/cats/cat5.jpg">
-                <img class="img-thumbnail" src="~/img/cats/cat5.jpg" />
-            </a>
-        </div>
+        @if (Model.Pictures is null || !Model.Pictures.Any())
+        {
+            @:<p class="text-center">This offer contains no photos. Add some!</p>
+        }
+        else
+            foreach (string picture in Model.Pictures)
+            {
+                <div class="col-sm-3">
+                    <a href="data:image/png;base64,@Html.Raw(picture)">
+                        <img class="img-thumbnail" src="data:image/png;base64,@Html.Raw(Model.OfferPreviewPicture)">
+                    </a>
+                </div>
+            }
     </div>
 </div>
 <hr />
 
-<a class="btn btn-primary" asp-controller="offers" asp-action="edit">Edit offer</a>
+<a class="btn btn-primary" asp-controller="offers" asp-action="edit" asp-route-id="@Model.OfferID">Edit offer</a>

@@ -27,7 +27,16 @@ namespace Hotel.Controllers
             query["pageNumber"] = paging.PageNumber.ToString();
             query["pageSize"] = paging.PageSize.ToString();
 
-            IEnumerable<OfferPreview> response = await httpClient.GetFromJsonAsync<IEnumerable<OfferPreview>>("offers?" + query.ToString());
+            IEnumerable<OfferPreview> response;
+            try
+            {
+                response = await httpClient.GetFromJsonAsync<IEnumerable<OfferPreview>>("offers?" + query.ToString());
+
+            }
+            catch (HttpRequestException e)
+            {
+                return StatusCode((int)e.StatusCode);
+            }
 
             OffersIndex offersVM = new OffersIndex(response, paging, isActive);
             return View(offersVM);
@@ -36,8 +45,16 @@ namespace Hotel.Controllers
         [Route("offers/{id}")]
         public async Task<IActionResult> Details(int id)
         {
-            Offer offer = await httpClient.GetFromJsonAsync<Offer>("offers/" + id.ToString());
-            return View();
+            Offer offer;
+            try
+            {
+                offer = await httpClient.GetFromJsonAsync<Offer>("offers/" + id.ToString());
+            }
+            catch (HttpRequestException e)
+            {
+                return StatusCode((int)e.StatusCode);
+            }
+            return View(offer);
         }
 
         public IActionResult Edit(int id)
