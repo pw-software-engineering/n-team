@@ -2,12 +2,12 @@
 {
     public class Paging
     {
-        public int PageNumber;
-        public int PageSize;
-        public Paging(int pageNumber = 1, int pageSize = 10)
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public Paging()
         {
-            PageNumber = pageNumber;
-            PageSize = pageSize;
+            PageNumber = 1;
+            PageSize = 10;
         }
     }
 }

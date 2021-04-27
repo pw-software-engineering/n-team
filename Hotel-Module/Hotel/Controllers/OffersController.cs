@@ -19,17 +19,17 @@ namespace Hotel.Controllers
             this.httpClient = httpClientFactory.CreateClient(nameof(DefaultHttpClient));
         }
 
-        public async Task<IActionResult> Index(bool? isActive, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(bool? isActive, Paging paging)
         {
             NameValueCollection query = HttpUtility.ParseQueryString("");
             if (isActive.HasValue)
                 query["isActive"] = isActive.ToString();
-            query["pageNumber"] = pageNumber.ToString();
-            query["pageSize"] = pageSize.ToString();
+            query["pageNumber"] = paging.PageNumber.ToString();
+            query["pageSize"] = paging.PageSize.ToString();
 
             IEnumerable<OfferPreview> response = await httpClient.GetFromJsonAsync<IEnumerable<OfferPreview>>("offers?" + query.ToString());
 
-            OffersIndex offersVM = new OffersIndex(response, new Paging(pageNumber, pageSize), isActive);
+            OffersIndex offersVM = new OffersIndex(response, paging, isActive);
             return View(offersVM);
         }
 
