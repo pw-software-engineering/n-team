@@ -24,17 +24,20 @@ namespace Server.Services.ClientService
             _dataAccess = dataAccess;
             _mapper = mapper;
         }
-        
+
         public IServiceResult UpdateClientInfo(int clientID, string username, string email)
         {
             bool usernameEmpty = string.IsNullOrWhiteSpace(username);
             Regex usernameRegex = new Regex(@"^[a-zA-Z][a-zA-Z0-9]{5,30}$");
             bool emailEmpty = string.IsNullOrWhiteSpace(email);
-            Regex emailRegex = new Regex(@"^[a-zA-Z]([a-zA-Z0-9]|[\.-_]){0,50}@[a-z]{1,10}\.[a-z]{1,10}$");
+            Regex emailRegex = new Regex(@"^[a-zA-Z]([a-zA-Z0-9]|[\.\-_]){0,50}\@[a-z]{1,10}\.[a-z]{1,10}$");
 
-            if (usernameEmpty && emailEmpty) return new ServiceResult(HttpStatusCode.BadRequest, "Username and e-mail are null");
-            else if (!(usernameEmpty || usernameRegex.IsMatch(username))) return new ServiceResult(HttpStatusCode.BadRequest, "Invalid (or too short/long) username");
-            else if (!(emailEmpty || emailRegex.IsMatch(email))) return new ServiceResult(HttpStatusCode.BadRequest, "Invalid (or too short/long) e-mail");
+            if (usernameEmpty && emailEmpty)
+                return new ServiceResult(HttpStatusCode.BadRequest, new { errorMessage = "Username and e-mail are null" });
+            else if (!usernameEmpty && !usernameRegex.IsMatch(username))
+                return new ServiceResult(HttpStatusCode.BadRequest, new { errorMessage = "Invalid (or too short/long) username" });
+            else if (!emailEmpty && !emailRegex.IsMatch(email))
+                return new ServiceResult(HttpStatusCode.BadRequest, new { errorMessage = "Invalid (or too short/long) e-mail" });
             _dataAccess.UpdateClientInfo(clientID, username, email);
 
             return new ServiceResult(HttpStatusCode.OK);
