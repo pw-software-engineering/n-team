@@ -1,4 +1,5 @@
-﻿using Client_Module.Models;
+﻿using Client_Module.Authentication;
+using Client_Module.Models;
 using Client_Module.ViewsTagID.Layout;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -49,10 +50,10 @@ namespace Client_Module.Controllers
                 JsonSerializer.Serialize(secrets, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }), 
                 Encoding.UTF8, 
                 "application/json");
-            httpRequest.Method = new HttpMethod("POST");
-            httpRequest.RequestUri = new Uri(ServerApiConfig.BaseUrl + "/api/client/login");
+            httpRequest.Method = HttpMethod.Post;
+            httpRequest.RequestUri = new Uri($"{ServerApiConfig.BaseUrl}/client/login");
             HttpResponseMessage httpResponse = await httpClient.SendAsync(httpRequest);
-            if(httpResponse.StatusCode == HttpStatusCode.OK)
+            if(httpResponse.IsSuccessStatusCode)
             {
                 CookieOptions options = new CookieOptions();
                 Response.Cookies.Append(
@@ -73,9 +74,8 @@ namespace Client_Module.Controllers
             return View(viewModel);
         }
 
-        [HttpGet]
-        [Route("/account")]
-        [Authorize(AuthenticationSchemes = "ClientTokenCookieScheme")]
+        [HttpGet("/account")]
+        [Authorize(AuthenticationSchemes = ClientTokenCookieDefaults.AuthenticationScheme)]
         public IActionResult Account()
         {
             ViewData[LayoutTagID.NavSelectedBtnKey] = LayoutTagID.NavAccountBtnID;

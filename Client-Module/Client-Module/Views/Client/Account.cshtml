@@ -56,7 +56,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: "@ServerApiConfig.BaseUrl/api/client",
+                url: "@ServerApiConfig.BaseUrl/client",
                 headers: {
                     "@ServerApiConfig.TokenHeaderName": getCookie("@ClientTokenCookieDefaults.AuthCookieName")
                 },
@@ -163,7 +163,7 @@
             isPendingUpdateRequest = true;
             $.ajax({
                 method: "PATCH",
-                url: "@ServerApiConfig.BaseUrl/api/client",
+                url: "@ServerApiConfig.BaseUrl/client",
                 headers: {
                     "@ServerApiConfig.TokenHeaderName": getCookie("@ClientTokenCookieDefaults.AuthCookieName")
                 },

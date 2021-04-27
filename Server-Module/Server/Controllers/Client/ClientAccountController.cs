@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Server.Services.ClientService;
 using Server.Services.Response;
+using Server.Authentication.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +12,8 @@ using System.Threading.Tasks;
 
 namespace Server.Controllers.Client
 {
+    [Authorize(AuthenticationSchemes = ClientTokenDefaults.AuthenticationScheme)]
     [ApiController]
-    //[Route("[controller]")]
     public class ClientAccountController : ControllerBase
     {
         private readonly IClientService service;
@@ -20,12 +22,13 @@ namespace Server.Controllers.Client
         {
             this.service = service;
         }
-		[Route("/client")]
-		[HttpGet]
-		public string Get()
-		{
-			return "";
-		}
+        
+        [HttpGet("/client")]
+        public string Get()
+        {
+            return "";
+        }
+        
         [HttpPatch("/client")]
         public IActionResult Patch(string username, string email)
         {
