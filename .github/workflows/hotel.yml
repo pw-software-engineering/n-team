@@ -11,8 +11,8 @@ jobs:
     name: Build and test
     runs-on: windows-latest
     env:
-      SRCDIR: /Hotel-Module/Hotel
-      SOLFILE: /Hotel-Module/Hotel.sln
+      SRCDIR: ./Hotel-Module/Hotel
+      SOLFILE: ./Hotel-Module/Hotel.sln
       CSPROJ: ./Hotel-Module/Hotel/Hotel.csproj
       TESTPROJ: ./Hotel-Module/Hotel.Tests/Hotel.Tests.csproj
       TESTCOV: ./Hotel-Module/Hotel.Tests/cobertura.xml
