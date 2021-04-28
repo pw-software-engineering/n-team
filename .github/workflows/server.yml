@@ -9,21 +9,21 @@ jobs:
     strategy:
       fail-fast: false
     name: Build and test
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    env:
+      SRCDIR: ./Server-Module/Server
+      SOLFILE: ./Server-Module/Server.sln
+      CSPROJ: ./Server-Module/Server/Server.csproj
+      TESTPROJ: ./Server-Module/Server.Tests/Server.Tests.csproj
+      TESTCOV: ./Server-Module/Server.Tests/cobertura.xml
     steps:
     - uses: actions/checkout@v2
     - name: Setup ASP.NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
-    - name: Set env vars
-      run: |
-        echo "SRCDIR=./Server-Module/Server" >> $GITHUB_ENV
-        echo "CSPROJ=./Server-Module/Server/Server.csproj" >> $GITHUB_ENV
-        echo "TESTPROJ=./Server-Module/Server.Tests/Server.Tests.csproj" >> $GITHUB_ENV
-        echo "TESTCOV=./Server-Module/Server.Tests/cobertura.xml" >> $GITHUB_ENV
     - name: Restore dependencies
-      run: dotnet restore ${{ env.CSPROJ }}
+      run: dotnet restore ${{ env.SOLFILE }}
     - name: Build module
       run: dotnet build --no-restore ${{ env.CSPROJ }}
     - name: Test module
