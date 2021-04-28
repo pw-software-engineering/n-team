@@ -10,20 +10,20 @@ jobs:
       fail-fast: false
     name: Build and test
     runs-on: windows-latest
+    env:
+      SRCDIR: ./Client-Module/Client-Module
+      SOLFILE: ./Client-Module/Client-Module.sln
+      CSPROJ: ./Client-Module/Client-Module/Client-Module.csproj
+      TESTPROJ: ./Client-Module/Client-Module.Tests/ClientModule.Tests.csproj
+      TESTCOV: ./Client-Module/Client-Module.Tests/cobertura.xml
     steps:
     - uses: actions/checkout@v2
     - name: Setup ASP.NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
-    - name: Set env vars
-      run: |
-        echo "SRCDIR=./Client-Module/Client-Module" >> $GITHUB_ENV
-        echo "CSPROJ=./Client-Module/Client-Module/Client-Module.csproj" >> $GITHUB_ENV
-        echo "TESTPROJ=./Client-Module/Client-Module.Tests/ClientModule.Tests.csproj" >> $GITHUB_ENV
-        echo "TESTCOV=./Client-Module/Client-Module.Tests/cobertura.xml" >> $GITHUB_ENV
     - name: Restore dependencies
-      run: dotnet restore ${{ env.CSPROJ }}
+      run: dotnet restore ${{ env.SOLFILE }}
     - name: Build module
       run: dotnet build --no-restore ${{ env.CSPROJ }}
     - name: Test module
