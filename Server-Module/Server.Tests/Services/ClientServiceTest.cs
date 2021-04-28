@@ -40,6 +40,7 @@ namespace Server.Tests.Services
             int clientID = 1;
             string username = "", email = null;
             _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, username, email));
+
             IServiceResult response = _clientService.UpdateClientInfo(clientID, username, email);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -52,6 +53,7 @@ namespace Server.Tests.Services
             int clientID = 2;
             string username = "🐈", email = "jelonek@melonek.eu";
             _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, username, email));
+
             IServiceResult response = _clientService.UpdateClientInfo(clientID, username, email);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -64,6 +66,7 @@ namespace Server.Tests.Services
             int clientID = 3;
             string username = "jelonek", email = "jelonekbezdomeny";
             _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, username, email));
+
             IServiceResult response = _clientService.UpdateClientInfo(clientID, username, email);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -76,6 +79,7 @@ namespace Server.Tests.Services
             int clientID = 2;
             string username = "jelonek", email = "";
             _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, username, email));
+
             IServiceResult response = _clientService.UpdateClientInfo(clientID, username, email);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -88,6 +92,7 @@ namespace Server.Tests.Services
             int clientID = 3;
             string username = null, email = "jelonek@melonek.eu";
             _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, username, email));
+
             IServiceResult response = _clientService.UpdateClientInfo(clientID, username, email);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -99,6 +104,7 @@ namespace Server.Tests.Services
             int clientID = 1;
             string username = "jelonek", email = "jelonek@melonek.eu";
             _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, username, email));
+
             IServiceResult response = _clientService.UpdateClientInfo(clientID, username, email);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
