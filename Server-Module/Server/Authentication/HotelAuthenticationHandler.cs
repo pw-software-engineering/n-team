@@ -46,7 +46,7 @@ namespace Server.Authentication
             {
                 return Task.FromResult(AuthenticateResult.NoResult());
             }
-            var claims = new[] { new Claim("clientToken", hotelId.Value.ToString()) };
+            var claims = new[] { new Claim("hotelId", hotelId.Value.ToString()) };
             var identity = new ClaimsIdentity(claims, HotelTokenDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, HotelTokenDefaults.AuthenticationScheme);

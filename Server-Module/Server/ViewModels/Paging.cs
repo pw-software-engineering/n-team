@@ -9,5 +9,11 @@ namespace Server.ViewModels
     {
         public int pageSize = 10;
         public int pageNumber = 1;
+        public Paging() { }
+        public Paging(int size, int number)
+        {
+            pageSize = size;
+            pageNumber = number;
+        }
     }
 }

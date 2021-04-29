@@ -16,7 +16,6 @@ namespace Server.Controllers.Hotel
     public class HotelAccountController : ControllerBase
     {
         private readonly ILogger<HotelAccountController> _logger;
-        private IHttpContextAccessor httpContextAccessor1;
 
         public HotelAccountController(ILogger<HotelAccountController> logger)
         {

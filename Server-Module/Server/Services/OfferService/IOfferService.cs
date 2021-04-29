@@ -1,5 +1,6 @@
 ﻿using Server.Database.Models;
 using Server.Models;
+using Server.Services.Response;
 using Server.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -11,14 +12,14 @@ namespace Server.Services.OfferService
     public interface IOfferService
     {
         #region /offers
-        public List<OfferPreviewView> GetHotelOffers(int hotelID);
-        public int AddOffer(OfferView offer, int hotelID);
+        public IServiceResult GetHotelOffers(Paging paging, int hotelID, bool? isActive = null);
+        public IServiceResult AddOffer(OfferView offer, int hotelID);
         #endregion
 
         #region /offers/{offerID}
-        public void DeleteOffer(int offerID, int hotelID);
-        public void UpdateOffer(int offerID, int hotelID, OfferUpdateInfo offerUpdateInfo);
-        public OfferView GetOffer(int offerID, int hotelID);
+        public IServiceResult DeleteOffer(int offerID, int hotelID);
+        public IServiceResult UpdateOffer(int offerID, int hotelID, OfferUpdateInfo offerUpdateInfo);
+        public IServiceResult GetOffer(int offerID, int hotelID);
         #endregion
     }
 }

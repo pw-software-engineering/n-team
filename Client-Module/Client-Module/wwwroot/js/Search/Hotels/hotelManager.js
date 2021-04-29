@@ -25,7 +25,7 @@ HotelManager.prototype.getHotels = function ({
     }
     return $.ajax({
         method: "GET",
-        url: `${this.apiConfig.apiBaseUrl}/api/hotels${queryString}`,
+        url: `${this.apiConfig.apiBaseUrl}/hotels${queryString}`,
         headers: headers
     }).then(
         (data, textStatus, jqXHR) => {

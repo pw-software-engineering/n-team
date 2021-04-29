@@ -9,12 +9,12 @@ namespace Server.Database.Models
     {
         //Properties
         public int ReservationID { get; set; }
-        public int RoomID { get; set; }
-        public int ClientID { get; set; }
-        public int ReviewID { get; set; }
+        public int? RoomID { get; set; }
+        public int? ClientID { get; set; }
+        public int? ReviewID { get; set; }
         //ReservationInfo Properties
-        public int HotelID { get; set; }
-        public int OfferID { get; set; }
+        public int? HotelID { get; set; }
+        public int? OfferID { get; set; }
         public DateTime FromTime { get; set; }
         public DateTime ToTime { get; set; }
         public uint NumberOfChildren { get; set; }
