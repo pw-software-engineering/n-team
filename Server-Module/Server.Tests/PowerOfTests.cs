@@ -17,51 +17,7 @@ namespace Server.Tests
 {
 	public class PowerOfTests
 	{
-		public class HotelAuthTestClass
-        {
-			private IHotelTokenDataAccess hotelTokenDataAcess;
-            private Mock<IOptionsMonitor<HotelTokenSchemeOptions>> options;
-			private Mock<Microsoft.Extensions.Logging.ILoggerFactory> logger;
-			private Mock<UrlEncoder> encoder;
-			private Mock<ISystemClock> clock;
-			private readonly HotelTokenScheme hotelTokenScheme;
-			
-			public HotelAuthTestClass()
-            {
-				options = new Mock<IOptionsMonitor<HotelTokenSchemeOptions>>();
-				options.Setup(x => x.Get("HotelTokenSchemeOptions")).Returns(new HotelTokenSchemeOptions());
-				hotelTokenDataAcess = new MokDataAccessHotelToken();
-				logger = new Mock<Microsoft.Extensions.Logging.ILoggerFactory>();
-				encoder = new Mock<UrlEncoder>();
-				clock = new Mock<ISystemClock>();
-				hotelTokenScheme = new HotelTokenScheme(hotelTokenDataAcess, options.Object, logger.Object	, encoder.Object, clock.Object);
-			}
-
-			[Fact]
-            public async void HotelBadAuthTest()
-            {
-				var a = new HttpClient();
-				a.BaseAddress = new Uri("https://127.0.0.1:5000");
-				a.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("a","a");
-				
-				var contex = new DefaultHttpContext();
-				contex.Request.Headers.Clear();
-				var p1 = a.DefaultRequestHeaders.GetEnumerator();
-				while (p1.MoveNext())
-				{
-					System.String[] y2 = (string[])p1.Current.Value;
-					var t1 = new Microsoft.Extensions.Primitives.StringValues(y2);
-
-					contex.Request.Headers.Add(p1.Current.Key, t1);
-				}
-				
-				var d = new AuthenticationScheme(/*HotelTokenDefaults.AuthenticationScheme*/"HotelTokenScheme", "A", typeof(HotelTokenScheme));
-				await hotelTokenScheme.InitializeAsync(d, contex);
-				var w = await hotelTokenScheme.AuthenticateAsync();
-				
-				Assert.True(!w.Succeeded);
-			}
-		}
+		
 
 		public class IsPowerOf
 		{
