@@ -128,13 +128,13 @@ namespace Server.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("ClientID")
+                    b.Property<int>("ClientID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("FromTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("HotelID")
+                    b.Property<int>("HotelID")
                         .HasColumnType("int");
 
                     b.Property<long>("NumberOfAdults")
@@ -143,13 +143,13 @@ namespace Server.Migrations
                     b.Property<long>("NumberOfChildren")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("OfferID")
+                    b.Property<int>("OfferID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ReviewID")
+                    b.Property<int>("ReviewID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RoomID")
+                    b.Property<int>("RoomID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ToTime")
@@ -192,7 +192,7 @@ namespace Server.Migrations
                             OfferID = 3,
                             ReviewID = 2,
                             RoomID = 2,
-                            ToTime = new DateTime(3001, 2, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ToTime = new DateTime(2001, 2, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -390,9 +390,6 @@ namespace Server.Migrations
                     b.Property<string>("HotelRoomNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.HasKey("RoomID");
 
                     b.HasIndex("HotelID");
@@ -404,29 +401,19 @@ namespace Server.Migrations
                         {
                             RoomID = 1,
                             HotelID = 2,
-                            HotelRoomNumber = "TestHotelRoomNumber1",
-                            IsActive = false
+                            HotelRoomNumber = "TestHotelRoomNumber1"
                         },
                         new
                         {
                             RoomID = 2,
                             HotelID = 3,
-                            HotelRoomNumber = "TestHotelRoomNumber2",
-                            IsActive = false
+                            HotelRoomNumber = "TestHotelRoomNumber2"
                         },
                         new
                         {
                             RoomID = 3,
                             HotelID = 3,
-                            HotelRoomNumber = "TestHotelRoomNumber3",
-                            IsActive = false
-                        },
-                        new
-                        {
-                            RoomID = 4,
-                            HotelID = 3,
-                            HotelRoomNumber = "TestHotelRoomNumber4",
-                            IsActive = false
+                            HotelRoomNumber = "TestHotelRoomNumber3"
                         });
                 });
 
@@ -605,22 +592,26 @@ namespace Server.Migrations
                     b.HasOne("Server.Database.Models.ClientDb", "Client")
                         .WithMany("ClientReservations")
                         .HasForeignKey("ClientID")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("Server.Database.Models.HotelInfoDb", "Hotel")
                         .WithMany()
                         .HasForeignKey("HotelID")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("Server.Database.Models.OfferDb", "Offer")
                         .WithMany()
                         .HasForeignKey("OfferID")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("Server.Database.Models.HotelRoomDb", "Room")
                         .WithMany()
                         .HasForeignKey("RoomID")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Client");
 
