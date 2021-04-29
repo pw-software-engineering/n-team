@@ -74,6 +74,8 @@ namespace Server.Services.OfferService
                 return response;
 
             OfferView offerView = _mapper.Map<OfferView>(_dataAccess.GetOffer(offerID));
+            offerView.pictures = _dataAccess.GetOfferPictures(offerID);
+            offerView.rooms = _dataAccess.GetOfferRooms(offerID);
             return new ServiceResult(HttpStatusCode.OK, offerView);
         }
 

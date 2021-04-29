@@ -19,8 +19,8 @@ namespace Server.Database.DataAccess
         public void UpdateClientInfo(int clientID, string username, string email)
         {
             var client = _dbContext.Clients.Find(clientID);
-            client.Username = username ?? client.Username;
-            client.Email = email ?? client.Email;
+            client.Username = string.IsNullOrWhiteSpace(username) ? client.Username : username;
+            client.Email = string.IsNullOrWhiteSpace(email) ? client.Email : email;
             _dbContext.SaveChanges();
         }
     }

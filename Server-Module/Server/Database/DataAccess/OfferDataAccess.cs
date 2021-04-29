@@ -104,5 +104,19 @@ namespace Server.Database.DataAccess
             _dbContext.OfferHotelRooms.RemoveRange(roomsToUnpin);
             _dbContext.SaveChanges();
         }
+
+        public List<string> GetOfferRooms(int offerID)
+        {
+            return _dbContext.OfferHotelRooms.Where(ohr => ohr.OfferID == offerID)
+                                             .Select(ohr => ohr.Room.HotelRoomNumber)
+                                             .ToList();
+        }
+
+        public List<string> GetOfferPictures(int offerID)
+        {
+            return _dbContext.OfferPictures.Where(op => op.OfferID == offerID)
+                                           .Select(op => op.Picture)
+                                           .ToList();
+        }
     }
 }

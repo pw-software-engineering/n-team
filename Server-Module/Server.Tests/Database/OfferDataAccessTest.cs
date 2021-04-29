@@ -121,6 +121,32 @@ namespace Server.Tests.Database
             Assert.True(offer.IsDeleted);
         }
         [Fact]
+        public void GetOfferRooms_ReturnsListOfOfferRoomNames()
+        {
+            int offerID = 3;
+
+            List<string> offerRoomsTest = _dataAccess.GetOfferRooms(offerID);
+            List<OfferHotelRoomDb> offerRooms = _context.OfferHotelRooms.Where(ohr => ohr.OfferID == offerID)
+                                                                        .Include(ohr => ohr.Room)
+                                                                        .ToList();
+
+            Assert.Equal(offerRooms.Count, offerRoomsTest.Count);
+            for (int i = 0; i < offerRooms.Count; i++)
+                Assert.Equal(offerRooms[i].Room.HotelRoomNumber, offerRoomsTest[i]);
+        }
+        [Fact]
+        public void GetOfferPictures_ReturnsListOfOfferPictures()
+        {
+            int offerID = 3;
+
+            List<string> offerPicturesTest = _dataAccess.GetOfferPictures(offerID);
+            List<OfferPictureDb> offerPictures = _context.OfferPictures.Where(op => op.OfferID == offerID).ToList();
+
+            Assert.Equal(offerPictures.Count, offerPicturesTest.Count);
+            for (int i = 0; i < offerPictures.Count; i++)
+                Assert.Equal(offerPictures[i].Picture, offerPicturesTest[i]);
+        }
+        [Fact]
         public void GetOffer_ReturnsValidOfferObject()
         {
             int OfferID = 1;

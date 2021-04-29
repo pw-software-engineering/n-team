@@ -79,24 +79,18 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var form = $('#addOfferForm')[0];
-
             // override submit()
             form.onsubmit = async function (e) {
                 e.preventDefault();
-
                 var formData = new FormData(form);
-
                 formData.set('@Html.DisplayNameFor(o => o.IsActive)', true);
-
                 var previewPicString = '@Html.DisplayNameFor(o => o.OfferPreviewPicture)';
                 var picsString = '@Html.DisplayNameFor(o => o.Pictures)';
-
                 var previewPic = formData.get(previewPicString);
                 var previewPic64 = await get64BaseString(previewPic);
                 if (previewPic64) {
                     formData.set(previewPicString, previewPic64);           // .set() overrides value
                 }
-
                 var pics = formData.getAll(picsString);
                 formData.delete(picsString);
                 for (const pic of pics) {
@@ -105,7 +99,6 @@
                         formData.append(picsString, pic64);
                     }
                 }
-
                 await fetch('@Url.Action("Add")', {
                     method: 'POST',
                     body: formData,
@@ -116,7 +109,6 @@
                     } else {
                         alert(response.status + ": " + response.statusText);
                     }
-
                     if (response.redirected) {
                         window.location.replace(response.url);
                     }
@@ -124,7 +116,6 @@
                     console.error('fetch error: ', error);
                 });
             };
-
             async function get64BaseString(file) {
                 var str;
                 await readUploadedImage(file)
@@ -136,20 +127,16 @@
                     });
                 return str;
             }
-
             function readUploadedImage(file) {
                 var reader = new FileReader();
-
                 return new Promise((resolve, reject) => {
                     reader.onerror = () => {
                         reader.abort();
                         reject();
                     };
-
                     reader.onload = () => {
                         resolve(reader.result);
                     };
-
                     reader.readAsDataURL(file);
                 });
             }
