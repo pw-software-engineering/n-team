@@ -12,19 +12,21 @@ using AutoMapper;
 using Server.Services.Response;
 using System.Net;
 using Server.Services.Result;
+using Server.Database.DatabaseTransaction;
 
 namespace Server.Services.OfferService
 {   
     public class OfferService : IOfferService
     {
         private readonly IOfferDataAccess _dataAccess;
-        private readonly IMapper _mapper; 
-        public OfferService(IOfferDataAccess dataAccess, IMapper mapper)
+        private readonly IMapper _mapper;
+        private readonly IDatabaseTransaction _transaction;
+        public OfferService(IOfferDataAccess dataAccess, IMapper mapper, IDatabaseTransaction transaction)
         {
             _dataAccess = dataAccess;
             _mapper = mapper;
+            _transaction = transaction;
         }
-        
         public IServiceResult AddOffer(OfferView offerView, int hotelID)
         {
             Offer offer = _mapper.Map<Offer>(offerView);
