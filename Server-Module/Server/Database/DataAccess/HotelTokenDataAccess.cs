@@ -30,7 +30,7 @@ namespace Server.Database.DataAccess
             {
                 id = _dbContext.HotelInfos.First(x => x.AccessToken == hotelToken).HotelID;
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 return null;
             }
