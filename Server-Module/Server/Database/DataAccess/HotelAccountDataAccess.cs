@@ -60,6 +60,9 @@ namespace Server.Database.DataAccess
         //to update info about hotel
         public void UpdateInfo(int hotelId, HotelUpdateInfo hotelUpdateInfo)
         {
+            if (hotelUpdateInfo == null)
+                throw new NullReferenceException();
+
             var hotel = dbContext.HotelInfos.Find(hotelId);
             if (hotel == null)
             {
@@ -71,15 +74,18 @@ namespace Server.Database.DataAccess
                 hotel.HotelName = hotelUpdateInfo.hotelName;
                 hotel.HotelPreviewPicture = hotelUpdateInfo.hotelPreviewPicture;
                 hotel.HotelDesc = hotelUpdateInfo.hotelDesc;
-
-                foreach(var pic in hotelUpdateInfo.hotelPictures)
+                
+                if (hotelUpdateInfo.hotelPictures != null)
                 {
-                    var pictureDb= new Models.HotelPictureDb();
-                    pictureDb.Picture = pic;
-                    pictureDb.HotelID = hotelId;
-                    hotel.HotelPictures.Add(pictureDb);
+                    hotel.HotelPictures.Clear();
+                    foreach (var pic in hotelUpdateInfo.hotelPictures)
+                    {
+                        var pictureDb = new Models.HotelPictureDb();
+                        pictureDb.Picture = pic;
+                        pictureDb.HotelID = hotelId;
+                        hotel.HotelPictures.Add(pictureDb);
+                    }
                 }
-
 
                 dbContext.SaveChanges();
                 transaction.Commit();

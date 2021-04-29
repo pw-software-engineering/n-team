@@ -50,7 +50,7 @@ namespace Server.Tests.Services
             Assert.Throws<Exception>(() => hotelAccountService.GetInfo(hotelID + 1));
             
         }
-        /*
+        
         [Fact]
         public void BadIDUpdateingTest()
         {
@@ -59,12 +59,26 @@ namespace Server.Tests.Services
 
             var hotel = new HotelGetInfo() { city = "city", country = "contry", hotelDesc = "desc", hotelName = "name", hotelPictures = null, hotelPreviewPicture = "zdjencie" };
 
-            _dataAccessMock.Setup(x => x.UpdateInfo(It.IsAny<int>())).Throws(new Exception());
-            _dataAccessMock.Setup(x => x.UpdateInfo(hotelID, hotel))
+            _dataAccessMock.Setup(x => x.UpdateInfo(It.IsAny<int>(),It.IsAny<HotelUpdateInfo>())).Throws(new Exception());
+            _dataAccessMock.Setup(x => x.UpdateInfo(hotelID, hotel));
 
-            Assert.Throws<Exception>(() => hotelAccountService.GetInfo(hotelID + 1));
+            Assert.Throws<Exception>(() => hotelAccountService.UpdateInfo(hotelID + 1,hotel));
 
-        }*/
+        }
+        [Fact]
+        public void NullUpdateingTest()
+        {
+            int hotelID = 1;
+            _dataAccessMock.Setup(x => x.AddHotelInfo(It.IsAny<HotelUpdateInfo>())).Returns(hotelID);
+
+            var hotel = new HotelGetInfo() { city = "city", country = "contry", hotelDesc = "desc", hotelName = "name", hotelPictures = null, hotelPreviewPicture = "zdjencie" };
+
+            _dataAccessMock.Setup(x => x.UpdateInfo(It.IsAny<int>(), null)).Throws(new Exception());
+            _dataAccessMock.Setup(x => x.UpdateInfo(hotelID, hotel));
+
+            Assert.Throws<Exception>(() => hotelAccountService.UpdateInfo(hotelID, null));
+
+        }
 
     }
 }

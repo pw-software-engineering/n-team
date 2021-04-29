@@ -20,13 +20,21 @@ namespace Server.ViewModels
         {
             hotelDesc = hotelInfoDb.HotelDesc;
             hotelName = hotelInfoDb.HotelName;
-            var pictureDbs = hotelInfoDb.HotelPictures.ToArray();
-            List<string> pomString = new List<string>();
-            foreach(var pic in pictureDbs)
-            {
-                pomString.Add(pic.Picture);
-            }
             hotelPreviewPicture = hotelInfoDb.HotelPreviewPicture;
+            if (hotelInfoDb.HotelPictures != null)
+            {
+                var pictureDbs = hotelInfoDb.HotelPictures.ToArray();
+                List<string> pomString = new List<string>();
+                foreach (var pic in pictureDbs)
+                {
+                    pomString.Add(pic.Picture);
+                }
+                hotelPictures = pomString.ToArray();
+            }
+            else
+            {
+                hotelPictures = null;
+            }
         }
     }
 
