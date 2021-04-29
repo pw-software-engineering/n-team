@@ -28,7 +28,7 @@ namespace Server.Tests.Database
             .BuildServiceProvider();
 
             var builder = new DbContextOptionsBuilder<ServerDbContext>();
-            builder.UseSqlServer($"Server=(localdb)\\mssqllocaldb;Database=ServerDbTests;Trusted_Connection=True;MultipleActiveResultSets=true")
+            builder.UseSqlServer($"Server=(localdb)\\mssqllocaldb;Database=ServerDbHotelAccountTests;Trusted_Connection=True;MultipleActiveResultSets=true")
                     .UseInternalServiceProvider(serviceProvider);
 
             _context = new ServerDbContext(builder.Options);
