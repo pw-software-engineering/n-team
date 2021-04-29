@@ -21,6 +21,8 @@ namespace Server.Database.DataAccess
 
         #region /offers/{offerID} GET
         Offer GetOffer(int offerID);
+        List<string> GetOfferRooms(int offerID);
+        List<string> GetOfferPictures(int offerID);
         #endregion
 
         #region /offers/{offerID} PATCH

@@ -19,53 +19,17 @@ namespace Server.Controllers.Hotel
             this.service = service;
         }
 
-        [HttpGet("api-hotel/offers")]
-        public IActionResult GetOffers(bool? isActive, int pageNumber = 1, int pageSize = 10)
-        {
-            var ids = from claim in HttpContext.User.Claims
-                      where claim.Type == "hotelId"
-                      select claim.Value;
-            int hotelId = Convert.ToInt32(ids.Single());
-
-            IServiceResult result = service.GetHotelOffers(new Paging(pageSize, pageNumber), hotelId, isActive);
-            JsonResult jsonResult = new JsonResult(result.ResponseBody)
-            {
-                StatusCode = (int)result.StatusCode
-            };
-            return jsonResult;
-        }
-
-        [HttpGet("api-hotel/offers/{offerID}")]
-        public IActionResult GetOffer(int offerID)
-        {
-            var ids = from claim in HttpContext.User.Claims
-                      where claim.Type == "hotelId"
-                      select claim.Value;
-            int hotelId = Convert.ToInt32(ids.Single());
-
-            IServiceResult result = service.GetOffer(offerID, hotelId);
-            JsonResult jsonResult = new JsonResult(result.ResponseBody)
-            {
-                StatusCode = (int)result.StatusCode
-            };
-            return jsonResult;
-        }
-
-        [HttpPost("api-hotel/offers")]
+        [HttpPost("/offers")]
         public IActionResult AddOffer([FromBody] OfferView offer)
         {
             var ids = from claim in HttpContext.User.Claims
-                      where claim.Type == "hotelId"
-                      select claim.Value;
+                        where claim.Type == "hotelId"
+                        select claim.Value;
             int hotelId = Convert.ToInt32(ids.Single());
 
             IServiceResult result = service.AddOffer(offer, hotelId);
 
-            JsonResult jsonResult = new JsonResult(result.ResponseBody)
-            {
-                StatusCode = (int)result.StatusCode
-            };
-            return jsonResult;
+            return Ok(new JsonResult(result.ResponseBody));
         }
     }
 }

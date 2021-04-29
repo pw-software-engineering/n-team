@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Hotel.Models
+﻿namespace Hotel.Models
 {
     public class Offer
     {
@@ -13,6 +11,6 @@ namespace Hotel.Models
         public string Description { get; set; }
         public string OfferPreviewPicture { get; set; }
         public string[] Pictures { get; set; }
-        public IEnumerable<string> Rooms { get; set; }
+        //public Room[] Rooms { get; set; }
     }
 }

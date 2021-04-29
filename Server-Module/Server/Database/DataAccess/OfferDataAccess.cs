@@ -47,7 +47,7 @@ namespace Server.Database.DataAccess
                              .Where(o => o.HotelID == hotelID));
 
             if (isActive.HasValue)
-                ret = ret.Where(o => o.IsActive == isActive.Value).ToList();
+                ret = ret.Where(o => o.IsActive == isActive).ToList();
 
             return ret.Skip((paging.pageNumber - 1) * paging.pageSize)
                       .Take(paging.pageSize)
@@ -126,6 +126,20 @@ namespace Server.Database.DataAccess
                 _dbContext.SaveChanges();
                 transaction.Commit();
             }
+        }
+
+        public List<string> GetOfferRooms(int offerID)
+        {
+            return _dbContext.OfferHotelRooms.Where(ohr => ohr.OfferID == offerID)
+                                             .Select(ohr => ohr.Room.HotelRoomNumber)
+                                             .ToList();
+        }
+
+        public List<string> GetOfferPictures(int offerID)
+        {
+            return _dbContext.OfferPictures.Where(op => op.OfferID == offerID)
+                                           .Select(op => op.Picture)
+                                           .ToList();
         }
     }
 }

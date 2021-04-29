@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Server.Authentication;
 using Server.Database;
 using Server.Database.DataAccess;
+using Server.Services.ClientService;
 using Server.Services.OfferService;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,9 @@ namespace Server
 
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<IOfferService, OfferService>();
+            services.AddTransient<IClientService, ClientService>();
             services.AddTransient<IOfferDataAccess, OfferDataAccess>();
+            services.AddTransient<IClientDataAccess, ClientDataAccess>();
             services.AddTransient<IRoomDataAccess, RoomDataAccess>();
             services.AddTransient<IHotelTokenDataAccess, HotelTokenDataAccess>();
             services.AddDbContext<ServerDbContext>(options =>           
