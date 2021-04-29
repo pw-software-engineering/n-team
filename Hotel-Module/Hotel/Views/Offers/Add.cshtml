@@ -15,8 +15,8 @@
 
     <!-- Title -->
     <div class="form-group">
-        <input asp-for="Title" class="form-control" placeholder="Offer name" />
-        <label asp-for="Title" class="form-control-placeholder">Title</label>
+        <input asp-for="OfferTitle" class="form-control" placeholder="Offer name" />
+        <label asp-for="OfferTitle" class="form-control-placeholder">Title</label>
     </div>
     <hr /><br />
 
@@ -30,13 +30,13 @@
     <div class="form-row">
         <!-- Adult cost -->
         <div class="form-group col-sm-4">
-            <input asp-for="CostPerAdult" min="0.01" step="0.01" class="form-control no-spinner" value="10.00" required />
+            <input asp-for="CostPerAdult" type="number" min="0.01" step="0.01" class="form-control no-spinner" value="10.00" required />
             <label asp-for="CostPerAdult" class="form-control-placeholder-file">Cost per adult</label>
             <span class="field-icon">PLN</span>
         </div>
         <!-- Child cost -->
         <div class="form-group col-sm-4">
-            <input asp-for="CostPerChild" min="0.01" step="0.01" class="form-control no-spinner" value="10.00" required />
+            <input asp-for="CostPerChild" type="number" min="0.01" step="0.01" class="form-control no-spinner" value="10.00" required />
             <label asp-for="CostPerChild" class="form-control-placeholder-file">Cost per child</label>
             <span class="field-icon">PLN</span>
         </div>
@@ -58,8 +58,8 @@
 
     <!-- Preview PIC -->
     <div class="form-group form-row">
-        <input asp-for="PreviewPicture" type="file" class="form-control col-sm-4" onchange="previewGallery(this, 'previewGallery')" />
-        <label asp-for="PreviewPicture" class="form-control-placeholder">Preview picture</label>
+        <input asp-for="OfferPreviewPicture" type="file" accept="image/*" class="form-control col-sm-4" onchange="previewGallery(this, 'previewGallery')" />
+        <label asp-for="OfferPreviewPicture" accept="image/*" class="form-control-placeholder">Preview picture</label>
         <div id="previewGallery"></div>
     </div>
     <hr /><br />
@@ -83,25 +83,45 @@
             // override submit()
             form.onsubmit = async function (e) {
                 e.preventDefault();
+
                 var formData = new FormData(form);
-                var previewPicString = '@Html.DisplayNameFor(o => o.PreviewPicture)';
+
+                formData.set('@Html.DisplayNameFor(o => o.IsActive)', true);
+
+                var previewPicString = '@Html.DisplayNameFor(o => o.OfferPreviewPicture)';
                 var picsString = '@Html.DisplayNameFor(o => o.Pictures)';
 
                 var previewPic = formData.get(previewPicString);
                 var previewPic64 = await get64BaseString(previewPic);
-                formData.set(previewPicString, previewPic64);           // .set() overrides value
+                if (previewPic64) {
+                    formData.set(previewPicString, previewPic64);           // .set() overrides value
+                }
 
                 var pics = formData.getAll(picsString);
                 formData.delete(picsString);
                 for (const pic of pics) {
-                    formData.append(picsString, await (get64BaseString(pic)));
+                    var pic64 = await (get64BaseString(pic));
+                    if (pic64) {
+                        formData.append(picsString, pic64);
+                    }
                 }
 
                 await fetch('@Url.Action("Add")', {
                     method: 'POST',
-                    body: formData
-                }).then(() => {
-                    console.log('success');
+                    body: formData,
+                    redirect: "follow"
+                }).then((response) => {
+                    if (response.ok) {
+                        alert("Offer added successfully!")
+                    } else {
+                        alert(response.status + ": " + response.statusText);
+                    }
+
+                    if (response.redirected) {
+                        window.location.replace(response.url);
+                    }
+                }).catch((error) => {
+                    console.error('fetch error: ', error);
                 });
             };
 

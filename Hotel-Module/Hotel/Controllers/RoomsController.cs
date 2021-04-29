@@ -19,8 +19,8 @@ namespace Hotel.Controllers
             // get data from server
             Offer offer = new Offer
             {
-                PreviewPicture = "iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAARElEQVR42u3PMREAAAgEIE1u9DeDqwcN6FSmHmgRERERERERERERERERERERERERERERERERERERERERERERERERkYsFbE58nZm0+8AAAAAASUVORK5CYII=",
-                Title = "Limitless Offer",
+                OfferPreviewPicture = "iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAARElEQVR42u3PMREAAAgEIE1u9DeDqwcN6FSmHmgRERERERERERERERERERERERERERERERERERERERERERERERERkYsFbE58nZm0+8AAAAAASUVORK5CYII=",
+                OfferTitle = "Limitless Offer",
                 CostPerAdult = 120.00,
                 CostPerChild = 100.00,
                 MaxGuests = 3

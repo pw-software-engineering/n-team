@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ServerApiMockup.MockupApiControllers
 {
-    [Route("api/client/reservations")]
+    [Route("api-client/client/reservations")]
     [ApiController]
     public class ClientApiReservationsController : ControllerBase
     {

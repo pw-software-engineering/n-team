@@ -1,9 +1,10 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Server.Database.DataAccess;
 using Server.Services.OfferService;
+using Server.Services.Response;
 using Server.ViewModels;
+using System;
+using System.Linq;
 
 namespace Server.Controllers.Hotel
 {
@@ -12,18 +13,23 @@ namespace Server.Controllers.Hotel
     public class HotelOffersController : Controller
     {
         private readonly IOfferService service;
-        private readonly IHotelTokenDataAccess tokenDataAccess;
 
-        public HotelOffersController(IOfferService service, IHotelTokenDataAccess tokenDataAccess)
+        public HotelOffersController(IOfferService service)
         {
             this.service = service;
-            this.tokenDataAccess = tokenDataAccess;
         }
 
         [HttpPost("/offers")]
-        public IActionResult AddOffer(OfferView offer)
+        public IActionResult AddOffer([FromBody] OfferView offer)
         {
-            return StatusCode(200);
+            var ids = from claim in HttpContext.User.Claims
+                        where claim.Type == "hotelId"
+                        select claim.Value;
+            int hotelId = Convert.ToInt32(ids.Single());
+
+            IServiceResult result = service.AddOffer(offer, hotelId);
+
+            return Ok(new JsonResult(result.ResponseBody));
         }
     }
 }
