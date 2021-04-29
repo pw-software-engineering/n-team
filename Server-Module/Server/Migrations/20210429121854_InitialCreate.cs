@@ -68,7 +68,8 @@ namespace Server.Migrations
                     RoomID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     HotelID = table.Column<int>(type: "int", nullable: false),
-                    HotelRoomNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    HotelRoomNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -132,11 +133,11 @@ namespace Server.Migrations
                 {
                     ReservationID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoomID = table.Column<int>(type: "int", nullable: false),
-                    ClientID = table.Column<int>(type: "int", nullable: false),
-                    ReviewID = table.Column<int>(type: "int", nullable: false),
-                    HotelID = table.Column<int>(type: "int", nullable: false),
-                    OfferID = table.Column<int>(type: "int", nullable: false),
+                    RoomID = table.Column<int>(type: "int", nullable: true),
+                    ClientID = table.Column<int>(type: "int", nullable: true),
+                    ReviewID = table.Column<int>(type: "int", nullable: true),
+                    HotelID = table.Column<int>(type: "int", nullable: true),
+                    OfferID = table.Column<int>(type: "int", nullable: true),
                     FromTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ToTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     NumberOfChildren = table.Column<long>(type: "bigint", nullable: false),
@@ -279,12 +280,13 @@ namespace Server.Migrations
 
             migrationBuilder.InsertData(
                 table: "HotelRooms",
-                columns: new[] { "RoomID", "HotelID", "HotelRoomNumber" },
+                columns: new[] { "RoomID", "HotelID", "HotelRoomNumber", "IsActive" },
                 values: new object[,]
                 {
-                    { 1, 2, "TestHotelRoomNumber1" },
-                    { 2, 3, "TestHotelRoomNumber2" },
-                    { 3, 3, "TestHotelRoomNumber3" }
+                    { 1, 2, "TestHotelRoomNumber1", false },
+                    { 2, 3, "TestHotelRoomNumber2", false },
+                    { 3, 3, "TestHotelRoomNumber3", false },
+                    { 4, 3, "TestHotelRoomNumber4", false }
                 });
 
             migrationBuilder.InsertData(
@@ -313,7 +315,7 @@ namespace Server.Migrations
                 values: new object[,]
                 {
                     { 1, 2, new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 1L, 0L, 2, 1, 2, new DateTime(2001, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, 3, new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 1L, 1L, 3, 2, 2, new DateTime(2001, 2, 4, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, 3, new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 1L, 1L, 3, 2, 2, new DateTime(3001, 2, 4, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 3, 3, new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 1L, 2L, 3, 3, 3, new DateTime(2001, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
