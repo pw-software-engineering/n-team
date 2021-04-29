@@ -41,7 +41,10 @@ namespace Server.Services.ClientService
                 return new ServiceResult(HttpStatusCode.BadRequest, new { errorMessage = "Invalid (or too short/long) username" });
             else if (!emailEmpty && !emailRegex.IsMatch(email))
                 return new ServiceResult(HttpStatusCode.BadRequest, new { errorMessage = "Invalid (or too short/long) e-mail" });
+            
+            _transaction.BeginTransaction();
             _dataAccess.UpdateClientInfo(clientID, username, email);
+            _transaction.CommitTransaction();
 
             return new ServiceResult(HttpStatusCode.OK);
         }

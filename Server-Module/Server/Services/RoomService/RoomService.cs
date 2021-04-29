@@ -29,7 +29,10 @@ namespace Server.Services.RoomService
             if (_dataAccess.DoesRoomAlreadyExist(hotelID, hotelRoomNumber))
                 return new ServiceResult(HttpStatusCode.Conflict, new Error("Room with given number already exists"));
 
+            _transaction.BeginTransaction();
             int roomID = _dataAccess.AddRoom(hotelID, hotelRoomNumber);
+            _transaction.CommitTransaction();
+
             return new ServiceResult(HttpStatusCode.OK, new { roomID = roomID });
         }
 
@@ -38,15 +41,19 @@ namespace Server.Services.RoomService
             IServiceResult response = CheckExistanceAndOwnership(roomID, hotelID);
             if (response.StatusCode != HttpStatusCode.OK)
                 return response;
+
+            _transaction.BeginTransaction();
             if (_dataAccess.DoesRoomHaveAnyUnfinishedReservations(roomID))
             {
                 _dataAccess.ChangeActivationMark(roomID, false);
+                _transaction.CommitTransaction();
                 return new ServiceResult(HttpStatusCode.Conflict, new Error("There are still pending reservations for this room"));
             }
 
             _dataAccess.UnpinRoomFromAnyOffers(roomID);
             _dataAccess.RemoveRoomFromPastReservations(roomID);
             _dataAccess.DeleteRoom(roomID);
+            _transaction.CommitTransaction();
             return new ServiceResult(HttpStatusCode.OK);
         }
 
