@@ -1,170 +1,162 @@
-﻿@{
+﻿@model Hotel.ViewModels.OffersIndex
+@{
     ViewData["Title"] = "Offers";
-
-    // data managed and passed to view by controller
-    ViewData["PageNo"] = 1;
-    ViewData["EntrPerPage"] = 10;
-    int pageNr = int.Parse(ViewData["PageNo"].ToString());
-    int entries = int.Parse(ViewData["EntrPerPage"].ToString());
-
-    ViewData["FilterSelection"] = "all"; // "all" or "current"
-    string filter = ViewData["FilterSelection"].ToString();
 }
 
+<h1 class="ml-4 col-sm-auto">Your offers</h1>
+<hr />
 <div class="row">
-    <h1 class="ml-4 col-sm-auto">Your offers</h1>
-    <div class="row col-sm-5 ml-auto">
-        <div class="form-group col-sm-6 m-3">
-            <select class="form-control">
-                @if (filter == "current")
-                {
-                    <option>All reservations</option>
-                    <option selected>Under service only</option>
-                }
-                else
-                {
-                    <option selected>All reservations</option>
-                    <option>Under service only</option>
-                }
-            </select>
+    <form asp-action="index" id="filterForm" class="row">
+        <div class="form-group col-sm-4 m-3">
+            @Html.DropDownListFor(vm => vm.IsActive,
+                new SelectList(
+                    new[]
+                    {
+                        new { Value = "", Text = "All offers"},
+                        new { Value = true.ToString(), Text = "Active only"},
+                        new { Value = false.ToString(), Text = "Inactive only"}
+                    }, "Value", "Text", Model.IsActive
+                ),
+                new { @class = "form-control" }
+            )
             <label class="form-control-placeholder">Filter</label>
         </div>
         <div class="form-group col-sm-4 m-3">
-            <select class="form-control">
-                @if (entries == 50)
-                {
-                    <option>10</option>
-                    <option>20</option>
-                    <option selected>50</option>
-                }
-                else if (entries == 20)
-                {
-                    <option>10</option>
-                    <option selected>20</option>
-                    <option>50</option>
-                }
-                else
-                {
-                    <option selected>10</option>
-                    <option>20</option>
-                    <option>50</option>
-                }
-            </select>
+            @Html.DropDownListFor(vm => vm.Paging.PageSize,
+                new SelectList(
+                    new[]
+                    {
+                        new { Value = "5", Text = "5"},
+                        new { Value = "10", Text = "10"},
+                        new { Value = "20", Text = "20"},
+                        new { Value = "50", Text = "50"}
+                    }, "Value", "Text", Model.Paging.PageSize
+                ),
+                new { @class = "form-control" }
+            )
             <label class="form-control-placeholder">Entries per page</label>
         </div>
-    </div>
+
+        <input asp-for="Paging.PageNumber" id="pageNumber" hidden />
+
+        <div class="form-group col-sm-1 m-3">
+            <button type="submit" id="applyBtn" class="btn btn-primary">Apply</button>
+        </div>
+    </form>
 </div>
 
-<table class="table table-striped">
-    <tbody>
-        <tr>
-            <td>
-                <div class="row align-items-center m-0">
-                    <div class="container-fluid col-sm-3">
-                        <img src="~/img/rooms/room1.jpg" class="img float-left rounded w-100" />
-                    </div>
-                    <div class="col-sm">
-                        <h3 class="m-0">Limitless offer</h3>
-                        <dl class="row dl-compact">
-                            <dt class="col-sm-3">Adult</dt>
-                            <dd class="col-sm-9">120.00$</dd>
-                            <dt class="col-sm-3">Child</dt>
-                            <dd class="col-sm-9">100.00$</dd>
-                            <dt class="col-sm-3">Max guests</dt>
-                            <dd class="col-sm-9">3</dd>
-                            <dt class="col-sm-3">Active</dt>
-                            <dd class="col-sm-9">Yes</dd>
-                        </dl>
-                    </div>
-                    <div class="btn-group-vertical btn-group-sm col-sm-2">
-                        <button class="btn btn-sm btn-outline-danger">Deactivate</button>
-                        <a class="btn btn-sm btn-primary" asp-controller="offers" asp-action="details">Details</a>
-                    </div>
-                </div>
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <div class="row align-items-center m-0">
-                    <div class="container-fluid col-sm-3">
-                        <img src="~/img/rooms/room2.jpg" class="img float-left rounded w-100" />
-                    </div>
-                    <div class="col-sm">
-                        <h3>Offer's Title</h3>
-                        <dl class="row dl-compact">
-                            <dt class="col-sm-3">Adult</dt>
-                            <dd class="col-sm-9">50.00$</dd>
-                            <dt class="col-sm-3">Child</dt>
-                            <dd class="col-sm-9">10.00$</dd>
-                            <dt class="col-sm-3">Max guests</dt>
-                            <dd class="col-sm-9">5</dd>
-                            <dt class="col-sm-3">Active</dt>
-                            <dd class="col-sm-9">Yes</dd>
-                        </dl>
-                    </div>
-                    <div class="btn-group-vertical btn-group-sm col-sm-2">
-                        <button class="btn btn-outline-danger">Deactivate</button>
-                        <button class="btn btn-primary">Details</button>
-                    </div>
-                </div>
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <div class="row align-items-center m-0">
-                    <div class="container-fluid col-sm-3">
-                        <img src="~/img/rooms/room3.jpg" class="img float-left rounded w-100" />
-                    </div>
-                    <div class="col-sm">
-                        <h3>Boundless</h3>
-                        <dl class="row dl-compact">
-                            <dt class="col-sm-3">Adult</dt>
-                            <dd class="col-sm-9">65.00$</dd>
-                            <dt class="col-sm-3">Child</dt>
-                            <dd class="col-sm-9">65.00$</dd>
-                            <dt class="col-sm-3">Max guests</dt>
-                            <dd class="col-sm-9">2</dd>
-                            <dt class="col-sm-3">Active</dt>
-                            <dd class="col-sm-9">No</dd>
-                        </dl>
-                    </div>
-                    <div class="btn-group-vertical btn-group-sm col-sm-2">
-                        <button class="btn btn-outline-success">Activate</button>
-                        <button class="btn btn-primary">Details</button>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </tbody>
-</table>
+@if (Model.OfferPreviews is null || !Model.OfferPreviews.Any())
+{
+    <p class="text-center">List is empty.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <tbody>
+            @foreach (OfferPreview offer in Model.OfferPreviews)
+            {
+                <tr>
+                    <td>
+                        <div class="row align-items-center m-0">
+                            <div class="container-fluid col-sm-3">  
+                                @if (string.IsNullOrWhiteSpace(offer.OfferPreviewPicture))
+                                {
+                                    <img src="~/img/empty-offer-img.png" class="img float-left rounded w-50" />
+                                }
+                                else
+                                {
+                                    <img src="data:image/png;base64,@Html.Raw(offer.OfferPreviewPicture)" class="img float-left rounded w-50" />
+                                }
+                            </div>
+                            <div class="col-sm">
+                                <h3 class="m-0">@Html.Raw(offer.OfferTitle)</h3>
+                                <dl class="row dl-compact">
+                                    <dt class="col-sm-3">Adult</dt>
+                                    <dd class="col-sm-9">@offer.CostPerAdult.ToString("F2") PLN</dd>
+                                    <dt class="col-sm-3">Child</dt>
+                                    <dd class="col-sm-9">@offer.CostPerChild.ToString("F2") PLN</dd>
+                                    <dt class="col-sm-3">Max guests</dt>
+                                    <dd class="col-sm-9">@Html.Raw(offer.MaxGuests)</dd>
+                                    <dt class="col-sm-3">Active</dt>
+                                    <dd class="col-sm-9">
+                                        @if (offer.IsActive)
+                                        {
+                                            @:Yes
+                                        }
+                                        else
+                                        {
+                                            @:No
+                                        }
+                                    </dd>
+                                </dl>
+                            </div>
+                            <div class="btn-group-vertical btn-group-sm col-sm-2">
+                                @if (offer.IsActive)
+                                {
+                                    <button class="btn btn-outline-danger">Deactivate</button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-outline-success">Activate</button>
+                                }
+                                <a class="btn btn-sm btn-primary" asp-controller="offers" asp-action="details" asp-route-id="@offer.OfferID">Details</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 <nav aria-label="Offers pages">
     <ul class="pagination justify-content-center">
-        @if (pageNr <= 1)
-        {
-            <li class="page-item disabled">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span class="fa fa-chevron-left"></span>
-                </a>
-            </li>
-        }
-        else
-        {
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span class="fa fa-chevron-left"></span>
-                </a>
-            </li>
-        }
-        <li class="page-item"><a class="page-link">@pageNr.ToString()</a></li>
-        <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
+        <li class="page-item
+            @if (Model.Paging.PageNumber < 2)
+            {
+                @:disabled
+            }
+        ">
+            <button id="prevPageBtn" class="page-link" aria-label="Previous">
+                <span class="fa fa-chevron-left"></span>
+            </button>
+        </li>
+
+        <li class="page-item"><a class="page-link">@Model.Paging.PageNumber</a></li>
+
+        <li class="page-item
+            @if (Model.OfferPreviews.Count() < Model.Paging.PageSize)
+            {
+                @:disabled
+            }
+        ">
+            <button id="nextPageBtn" class="page-link" aria-label="Next">
                 <span class="fa fa-chevron-right"></span>
-            </a>
+            </button>
         </li>
     </ul>
 </nav>
 <hr />
 <a class="btn btn-success" asp-controller="offers" asp-action="add">Add new offer</a>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var form = document.getElementById('filterForm');
+            var pageNumElem = document.getElementById('pageNumber');
+
+            document.getElementById('nextPageBtn').onclick = function () {
+                pageNumElem.value = parseInt(pageNumElem.value) + 1;
+                form.submit();
+            };
+            document.getElementById('prevPageBtn').onclick = function () {
+                pageNumElem.value = parseInt(pageNumElem.value) - 1;
+                form.submit();
+            };
+
+            document.getElementById('applyBtn').onclick = function () {
+                pageNumElem.value = 1;
+            };
+        });
+    </script>
+}
