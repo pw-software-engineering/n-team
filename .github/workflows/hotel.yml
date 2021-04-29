@@ -9,21 +9,21 @@ jobs:
     strategy:
       fail-fast: false
     name: Build and test
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    env:
+      SRCDIR: ./Hotel-Module/Hotel
+      SOLFILE: ./Hotel-Module/Hotel.sln
+      CSPROJ: ./Hotel-Module/Hotel/Hotel.csproj
+      TESTPROJ: ./Hotel-Module/Hotel.Tests/Hotel.Tests.csproj
+      TESTCOV: ./Hotel-Module/Hotel.Tests/cobertura.xml
     steps:
     - uses: actions/checkout@v2
     - name: Setup ASP.NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-    - name: Set env vars
-      run: |
-        echo "SRCDIR=./Hotel-Module/Hotel" >> $GITHUB_ENV
-        echo "CSPROJ=./Hotel-Module/Hotel/Hotel.csproj" >> $GITHUB_ENV
-        echo "TESTPROJ=./Hotel-Module/Hotel.Tests/Hotel.Tests.csproj" >> $GITHUB_ENV
-        echo "TESTCOV=./Hotel-Module/Hotel.Tests/cobertura.xml" >> $GITHUB_ENV
     - name: Restore dependencies
-      run: dotnet restore ${{ env.CSPROJ }}
+      run: dotnet restore ${{ env.SOLFILE }}
     - name: Build module
       run: dotnet build --no-restore ${{ env.CSPROJ }}
     - name: Test module
