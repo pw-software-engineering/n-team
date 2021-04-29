@@ -13,14 +13,14 @@ using Xunit;
 
 namespace Server.Tests.Database
 {
-    public class HotelTokeanDataAccessTest : IDisposable
+    public class HotelTokenDataAccessTest : IDisposable
     {
         private ServerDbContext _context;
         private IMapper _mapper;
         private HotelTokenDataAccess _dataAccess;
 
         #region TestsSetup
-        public HotelTokeanDataAccessTest()
+        public HotelTokenDataAccessTest()
         {
             var serviceProvider = new ServiceCollection()
             .AddEntityFrameworkSqlServer()
