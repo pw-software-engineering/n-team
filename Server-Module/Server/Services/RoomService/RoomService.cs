@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Server.Database.DataAccess;
+using Server.Database.DatabaseTransaction;
 using Server.Models;
 using Server.Services.Response;
 using Server.Services.Result;
@@ -16,10 +17,12 @@ namespace Server.Services.RoomService
     {
         private readonly IRoomDataAccess _dataAccess;
         private readonly IMapper _mapper;
-        public RoomService(IRoomDataAccess dataAccess, IMapper mapper)
+        private readonly IDatabaseTransaction _transaction;
+        public RoomService(IRoomDataAccess dataAccess, IMapper mapper, IDatabaseTransaction transaction)
         {
             _dataAccess = dataAccess;
             _mapper = mapper;
+            _transaction = transaction;
         }
         public IServiceResult AddRoom(int hotelID, string hotelRoomNumber)
         {

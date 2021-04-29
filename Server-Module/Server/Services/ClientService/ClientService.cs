@@ -12,6 +12,7 @@ using AutoMapper;
 using Server.Services.Response;
 using System.Net;
 using System.Text.RegularExpressions;
+using Server.Database.DatabaseTransaction;
 
 namespace Server.Services.ClientService
 {
@@ -19,10 +20,12 @@ namespace Server.Services.ClientService
     {
         private readonly IClientDataAccess _dataAccess;
         private readonly IMapper _mapper;
-        public ClientService(IClientDataAccess dataAccess, IMapper mapper)
+        private readonly IDatabaseTransaction _transaction;
+        public ClientService(IClientDataAccess dataAccess, IMapper mapper, IDatabaseTransaction transaction)
         {
             _dataAccess = dataAccess;
             _mapper = mapper;
+            _transaction = transaction;
         }
 
         public IServiceResult UpdateClientInfo(int clientID, string username, string email)
