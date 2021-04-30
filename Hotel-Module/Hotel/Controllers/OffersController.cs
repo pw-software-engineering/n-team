@@ -61,9 +61,19 @@ namespace Hotel.Controllers
         }
 
         [HttpGet("/offers/{offerID}/edit")]
-        public IActionResult Edit(int offerID)
+        public async Task<IActionResult> Edit(int offerID)
         {
-            return View();
+            try
+            {
+                Offer offer = await httpClient.GetFromJsonAsync<Offer>("offers/" + offerID.ToString());
+                return View(offer);
+            }
+            catch (HttpRequestException e)
+            {
+                if (e.StatusCode is null)
+                    return StatusCode((int)HttpStatusCode.BadGateway);
+                return StatusCode((int)e.StatusCode);
+            }
         }
 
         [HttpGet("/offers/add")]

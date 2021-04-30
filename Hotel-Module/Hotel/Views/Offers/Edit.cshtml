@@ -1,34 +1,34 @@
-﻿@{
-    ViewData["Title"] = "Limitless offer";
+﻿@model Hotel.Models.Offer
+@{
+    ViewData["Title"] = Model.OfferTitle;
 }
 
-<h1>Edit Limitless offer</h1>
+<h1>Edit @Model.OfferTitle</h1>
 <hr />
 
 <div>
     <label class="form-control-placeholder-static">Rooms</label>
-    <ul class="list-group">
-
-        <!-- rooms -->
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            13
-            <a href="#" class="ml-4 text-danger" data-toggle="tooltip" title="Detach room from this offer">
-                <span class="badge badge-pill">
-                    <i class="fa fa-sm fa-unlink"></i>
-                    Detach
-                </span>
-            </a>
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            14
-            <a href="#" class="ml-4 text-danger" data-toggle="tooltip" title="Detach room from this offer">
-                <span class="badge badge-pill">
-                    <i class="fa fa-sm fa-unlink"></i>
-                    Detach
-                </span>
-            </a>
-        </li>
-    </ul>
+    @if (Model.Rooms is null || !Model.Rooms.Any())
+    {
+        <p class="text-center">There are no rooms in this offer.</p>
+    }
+    else
+    {
+        <ul class="list-group">
+            @foreach (string room in Model.Rooms)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @Html.Raw(room)
+                    <a href="#" class="ml-4 text-danger" data-toggle="tooltip" title="Detach room from this offer">
+                        <span class="badge badge-pill">
+                            <i class="fa fa-sm fa-unlink"></i>
+                            Detach
+                        </span>
+                    </a>
+                </li>
+            }
+        </ul>
+    }
     <hr/>
 
     <form>
@@ -49,23 +49,25 @@
 
 <form>
     <!-- Active -->
-    <div class="form-group custom-control custom-checkbox">
-        <input type="checkbox" id="activeCheckbox" class="custom-control-input" checked disabled />
+    <!--<div class="form-group custom-control custom-checkbox">
+        <input asp-for="IsActive" class="custom-control-input" />
         <label class="custom-control-label" for="activeCheckbox">
             Active
         </label>
-    </div>
+    </div>-->
+    <input asp-for="IsActive" hidden class="custom-control-input" />
+    <br />
 
     <!-- Title -->
     <div class="form-group">
-        <input type="text" class="form-control" placeholder="Offer name" value="Limitless offer" />
+        <input asp-for="OfferTitle" class="form-control" placeholder="Offer name" />
         <label class="form-control-placeholder">Title</label>
     </div>
     <hr /><br />
 
     <!-- Description -->
     <div class="form-group">
-        <textarea class="form-control" rows="4">Offer description description description description description description description description description description</textarea>
+        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Write something about this offer!"></textarea>
         <label class="form-control-placeholder">Description</label>
     </div>
     <hr /><br />
@@ -73,28 +75,40 @@
     <!-- Preview PIC -->
     <div class="form-group">
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" id="previewPicCheckbox" class="custom-control-input" onclick="switchEnabled(this, 'previewFile')" />
+            <input type="checkbox" id="previewPicCheckbox" class="custom-control-input" />
             <label class="custom-control-label" for="previewPicCheckbox">Change preview picture</label>
         </div>
         <div class="form-row">
-            <input id="previewFile" class="form-control col-sm-4" type="file" disabled onchange="previewGallery(this, 'previewGallery')" />
+            <input asp-for="OfferPreviewPicture" type="file" disabled class="form-control col-sm-4" />
             <label class="form-control-placeholder-file">Preview picture</label>
-            <div id="previewGallery"></div>
+            <div id="previewGallery">
+                @if (!(Model.OfferPreviewPicture is null) && !string.IsNullOrWhiteSpace(Model.OfferPreviewPicture))
+                {
+                    <img src="data:image/png;base64,@Html.Raw(Model.OfferPreviewPicture)" class="gallery-img" />
+                }
+            </div>
         </div>
-        <a href="~/img/rooms/room1.jpg">Current picture</a>
     </div>
     <hr /><br />
 
     <!-- Additinal PICS-->
     <div class="form-group">
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" id="additionalPicsCheckbox" class="custom-control-input" onclick="switchEnabled(this, 'additionalFiles')" />
+            <input type="checkbox" id="additionalPicsCheckbox" class="custom-control-input" />
             <label class="custom-control-label" for="additionalPicsCheckbox">Change additional pictures</label>
         </div>
         <div class="form-row">
-            <input id="additionalFiles" class="form-control col-sm-4" type="file" multiple disabled onchange="previewGallery(this, 'additionalGallery')" />
+            <input asp-for="Pictures" type="file" multiple disabled class="form-control col-sm-4" />
             <label class="form-control-placeholder-file">Additional pictures</label>
-            <div id="additionalGallery"></div>
+            <div id="additionalGallery">
+                @if (!(Model.Pictures is null))
+                {
+                    foreach (string pic in Model.Pictures)
+                    {
+                        @:<img src="data:image/png;base64,@Html.Raw(pic)" class="gallery-img" />
+                    }
+                }
+            </div>
         </div>
     </div>
     <hr />
@@ -105,3 +119,50 @@
         <button type="button" class="btn btn-danger m-1 ml-auto">Remove offer</button>
     </div>
 </form>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var previewPicInput = document.getElementById('@Html.IdFor(o => o.OfferPreviewPicture)');
+            var previewPicChckbox = document.getElementById('previewPicCheckbox');
+            var previewGalleryDiv = document.getElementById('previewGallery');
+
+            var additionalPicsInput = document.getElementById('@Html.IdFor(o => o.Pictures)');
+            var additionalPicsChckbox = document.getElementById('additionalPicsCheckbox');
+            var additionalGalleryDiv = document.getElementById('additionalGallery');
+
+            var previewDivHtml = previewGalleryDiv.innerHTML;
+            var additionalDivHtml = additionalGalleryDiv.innerHTML;
+
+            previewPicChckbox.onclick = function () { switchEnabled(previewPicChckbox, previewPicInput, previewGalleryDiv, previewDivHtml); };
+            previewPicInput.onchange = function () { previewGallery(previewPicInput, previewGalleryDiv); };
+            additionalPicsChckbox.onclick = function () { switchEnabled(additionalPicsChckbox, additionalPicsInput, additionalGalleryDiv, additionalDivHtml); };
+            additionalPicsInput.onchange = function () { previewGallery(additionalPicsInput, additionalGalleryDiv); };
+
+            // preview selected images in gallery
+            function previewGallery(inputElement, gallery) {
+                var count = inputElement.files.length;
+
+                gallery.innerHTML = '';
+                for (i = 0; i < count; i++) {
+                    var urls = URL.createObjectURL(inputElement.files[i]);
+                    gallery.innerHTML +=
+                        `<img src="` + urls + `" class="gallery-img" />`;
+                }
+            }
+
+            // checkbox controlling element's enabled/disabled attribute
+            function switchEnabled(checkbox, inputElement, gallery, defaultGalleryHtml) {
+                if (checkbox.checked == true) {
+                    inputElement.value = '';
+                    inputElement.disabled = false;
+                    gallery.innerHTML = '';
+                } else {
+                    inputElement.value = '';
+                    inputElement.disabled = true;
+                    gallery.innerHTML = defaultGalleryHtml;
+                }
+            }
+        })
+    </script>
+}
