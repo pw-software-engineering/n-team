@@ -8,6 +8,13 @@ namespace Hotel.ViewModels
         public bool ChangePreviewPicture { get; set; }
         public bool ChangeOfferPictures { get; set; }
 
+        public OfferEditViewModel()
+        {
+            Offer = null;
+            ChangePreviewPicture = false;
+            ChangeOfferPictures = false;
+        }
+
         public OfferEditViewModel(Offer offer)
         {
             Offer = offer;

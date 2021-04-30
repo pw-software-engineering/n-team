@@ -47,7 +47,7 @@
 </div>
 <hr />
 
-<form>
+<form asp-action="Edit" method="post">
     <!-- Active -->
     <!--<div class="form-group custom-control custom-checkbox">
         <input asp-for="IsActive" class="custom-control-input" />
@@ -55,6 +55,7 @@
             Active
         </label>
     </div>-->
+    <input asp-for="Offer.OfferID" hidden />
     <input asp-for="Offer.IsActive" hidden class="custom-control-input" />
     <br />
 

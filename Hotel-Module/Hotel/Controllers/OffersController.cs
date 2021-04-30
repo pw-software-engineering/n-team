@@ -76,6 +76,34 @@ namespace Hotel.Controllers
             }
         }
 
+        [HttpPost("/offers/{offerID}/edit")]
+        public async Task<IActionResult> Edit([FromForm] OfferEditViewModel offerViewModel)
+        {
+            OfferUpdateInfo offer = new OfferUpdateInfo
+            {
+                IsActive = offerViewModel.Offer.IsActive,
+                OfferTitle = offerViewModel.Offer.OfferTitle,
+                Description = offerViewModel.Offer.Description,
+                OfferPreviewPicture = offerViewModel.ChangePreviewPicture ? offerViewModel.Offer.OfferPreviewPicture : null,
+                OfferPictures = offerViewModel.ChangeOfferPictures ? offerViewModel.Offer.Pictures : null
+            };
+            HttpContent content = JsonContent.Create(offer);
+
+            try
+            {
+                HttpResponseMessage response = await httpClient.PatchAsync("offers/" + offerViewModel.Offer.OfferID.ToString(), content);
+                if (!response.IsSuccessStatusCode)
+                    return StatusCode((int)response.StatusCode);
+                return RedirectToAction("Details", new { offerViewModel.Offer.OfferID });
+            }
+            catch (HttpRequestException e)
+            {
+                if (e.StatusCode is null)
+                    return StatusCode((int)HttpStatusCode.BadGateway);
+                return StatusCode((int)e.StatusCode);
+            }
+        }
+
         [HttpGet("/offers/add")]
         public IActionResult Add()
         {

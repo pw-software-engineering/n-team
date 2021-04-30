@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Server.Models;
 using Server.Services.OfferService;
 using Server.Services.Response;
 using Server.ViewModels;
@@ -60,6 +61,23 @@ namespace Server.Controllers.Hotel
             int hotelId = Convert.ToInt32(ids.Single());
 
             IServiceResult result = service.AddOffer(offer, hotelId);
+
+            JsonResult jsonResult = new JsonResult(result.ResponseBody)
+            {
+                StatusCode = (int)result.StatusCode
+            };
+            return jsonResult;
+        }
+
+        [HttpPatch("api-hotel/offers/{offerID}")]
+        public IActionResult EditOffer(int offerID, OfferUpdateInfo updateInfo)
+        {
+            var ids = from claim in HttpContext.User.Claims
+                      where claim.Type == "hotelId"
+                      select claim.Value;
+            int hotelId = Convert.ToInt32(ids.Single());
+
+            IServiceResult result = service.UpdateOffer(offerID, hotelId, updateInfo);
 
             JsonResult jsonResult = new JsonResult(result.ResponseBody)
             {
