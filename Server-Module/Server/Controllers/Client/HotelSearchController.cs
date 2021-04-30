@@ -12,7 +12,7 @@ using Server.ViewModels;
 
 namespace Server.Controllers.Client
 {
-    //[Authorize(AuthenticationSchemes = ClientTokenDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = ClientTokenDefaults.AuthenticationScheme)]
     [ApiController]
     [Route("/api-client")]
     public class HotelSearchController : Controller
@@ -26,7 +26,7 @@ namespace Server.Controllers.Client
         [HttpGet("hotels")]
         public IActionResult GetHotels([FromQuery] Paging paging, [FromQuery] HotelFilter hotelFilter)
         {
-            Console.WriteLine($"{paging.pageNumber} | {paging.pageSize} [|] {hotelFilter.City} | {hotelFilter.Country} | {hotelFilter.HotelName}");
+            //Console.WriteLine($"{paging.pageNumber} | {paging.pageSize} [|] {hotelFilter.City} | {hotelFilter.Country} | {hotelFilter.HotelName}");
             IServiceResult serviceResult = _hotelSearchService.GetHotels(paging, hotelFilter);
             JsonResult jsonResult = new JsonResult(serviceResult.ResponseBody)
             {
