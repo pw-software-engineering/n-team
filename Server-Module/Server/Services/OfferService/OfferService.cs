@@ -12,6 +12,7 @@ using AutoMapper;
 using Server.Services.Response;
 using System.Net;
 using Server.Services.Result;
+using Server.RequestModels;
 
 namespace Server.Services.OfferService
 {   

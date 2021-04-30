@@ -3,6 +3,7 @@ using Moq;
 using Server.AutoMapper;
 using Server.Database.DataAccess;
 using Server.Models;
+using Server.RequestModels;
 using Server.Services.Response;
 using Server.Services.RoomService;
 using Server.ViewModels;

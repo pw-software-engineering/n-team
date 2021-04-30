@@ -11,6 +11,7 @@ using Server.Authentication;
 using Server.Database;
 using Server.Database.DataAccess;
 using Server.Services.ClientService;
+using Server.Services.HotelSearchService;
 using Server.Services.OfferService;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,8 @@ namespace Server
             services.AddTransient<IClientDataAccess, ClientDataAccess>();
             services.AddTransient<IRoomDataAccess, RoomDataAccess>();
             services.AddTransient<IHotelTokenDataAccess, HotelTokenDataAccess>();
+            services.AddTransient<IHotelSearchDataAccess, HotelSearchDataAccess>();
+            services.AddTransient<IHotelSearchService, HotelSearchService>();
             services.AddDbContext<ServerDbContext>(options =>           
                 options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext")));
             //services.AddAuthentication("HotellBasic").AddScheme<HotellTokenSchemeOptions, HotellTokenScheme>("HotellBasic", null);

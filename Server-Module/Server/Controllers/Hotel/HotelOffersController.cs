@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Server.RequestModels;
 using Server.Services.OfferService;
 using Server.Services.Response;
 using Server.ViewModels;

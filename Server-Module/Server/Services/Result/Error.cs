@@ -7,7 +7,7 @@ namespace Server.Services.Result
 {
     public class Error
     {
-        string error { get; }
+        public string error { get; }
         public Error(string error)
         {
             this.error = error;

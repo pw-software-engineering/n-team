@@ -8,6 +8,7 @@ using Server.AutoMapper;
 using Server.Database.DataAccess;
 using Server.Exceptions;
 using Server.Models;
+using Server.RequestModels;
 using Server.Services.OfferService;
 using Server.Services.Response;
 using Server.Services.Result;

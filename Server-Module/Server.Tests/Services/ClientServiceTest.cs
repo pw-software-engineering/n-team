@@ -11,7 +11,7 @@ using Server.Models;
 using Server.Services.ClientService;
 using Server.Services.Response;
 using Server.Services.Result;
-using Server.ViewModels;
+using Server.RequestModels;
 using Xunit;
 
 namespace Server.Tests.Services
