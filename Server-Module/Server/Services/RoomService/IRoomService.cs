@@ -1,4 +1,4 @@
-﻿using Server.Services.Response;
+﻿using Server.Services.Result;
 using Server.ViewModels;
 using System;
 using System.Collections.Generic;

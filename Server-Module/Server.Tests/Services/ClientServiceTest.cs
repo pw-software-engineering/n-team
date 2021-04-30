@@ -9,7 +9,6 @@ using Server.Database.DataAccess;
 using Server.Exceptions;
 using Server.Models;
 using Server.Services.ClientService;
-using Server.Services.Response;
 using Server.Services.Result;
 using Server.ViewModels;
 using Xunit;
@@ -45,7 +44,7 @@ namespace Server.Tests.Services
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, It.IsAny<string>(), It.IsAny<string>()), Times.Never());
-            Assert.Contains(@"errorMessage = Username and e-mail are null", response.ResponseBody.ToString());
+            Assert.Equal("Username and e-mail are null", ((Error)response.Result).error);
         }
         [Fact]
         public void UpdateClientInfo_UsernameInvalid_400_UsernameInvalidFormatError()
@@ -58,7 +57,7 @@ namespace Server.Tests.Services
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, username, email), Times.Never());
-            Assert.Contains(@"errorMessage = Invalid (or too short/long) username", response.ResponseBody.ToString());
+            Assert.Equal("Invalid (or too short/long) username", ((Error)response.Result).error);
         }
         [Fact]
         public void UpdateClientInfo_UsernameOkEmailInvalid_400_EmailInvalidFormatError()
@@ -71,7 +70,7 @@ namespace Server.Tests.Services
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, username, email), Times.Never());
-            Assert.Contains(@"errorMessage = Invalid (or too short/long) e-mail", response.ResponseBody.ToString());
+            Assert.Equal("Invalid (or too short/long) e-mail", ((Error)response.Result).error);
         }
         [Fact]
         public void UpdateClientInfo_UsernameOkEmailEmpty_200_UsernameChanged()
