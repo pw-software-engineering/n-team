@@ -66,7 +66,7 @@ namespace Hotel.Controllers
             try
             {
                 Offer offer = await httpClient.GetFromJsonAsync<Offer>("offers/" + offerID.ToString());
-                return View(offer);
+                return View(new OfferEditViewModel(offer));
             }
             catch (HttpRequestException e)
             {

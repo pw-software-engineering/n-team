@@ -1,21 +1,21 @@
-﻿@model Hotel.Models.Offer
+﻿@model Hotel.ViewModels.OfferEditViewModel
 @{
-    ViewData["Title"] = Model.OfferTitle;
+    ViewData["Title"] = Model.Offer.OfferTitle;
 }
 
-<h1>Edit @Model.OfferTitle</h1>
+<h1>Edit @Model.Offer.OfferTitle</h1>
 <hr />
 
 <div>
     <label class="form-control-placeholder-static">Rooms</label>
-    @if (Model.Rooms is null || !Model.Rooms.Any())
+    @if (Model.Offer.Rooms is null || !Model.Offer.Rooms.Any())
     {
         <p class="text-center">There are no rooms in this offer.</p>
     }
     else
     {
         <ul class="list-group">
-            @foreach (string room in Model.Rooms)
+            @foreach (string room in Model.Offer.Rooms)
             {
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     @Html.Raw(room)
@@ -55,19 +55,19 @@
             Active
         </label>
     </div>-->
-    <input asp-for="IsActive" hidden class="custom-control-input" />
+    <input asp-for="Offer.IsActive" hidden class="custom-control-input" />
     <br />
 
     <!-- Title -->
     <div class="form-group">
-        <input asp-for="OfferTitle" class="form-control" placeholder="Offer name" />
+        <input asp-for="Offer.OfferTitle" class="form-control" placeholder="Offer name" />
         <label class="form-control-placeholder">Title</label>
     </div>
     <hr /><br />
 
     <!-- Description -->
     <div class="form-group">
-        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Write something about this offer!"></textarea>
+        <textarea asp-for="Offer.Description" class="form-control" rows="4" placeholder="Write something about this offer!"></textarea>
         <label class="form-control-placeholder">Description</label>
     </div>
     <hr /><br />
@@ -75,16 +75,16 @@
     <!-- Preview PIC -->
     <div class="form-group">
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" id="previewPicCheckbox" class="custom-control-input" />
-            <label class="custom-control-label" for="previewPicCheckbox">Change preview picture</label>
+            <input asp-for="ChangePreviewPicture" class="custom-control-input" />
+            <label class="custom-control-label" for="@Html.IdFor(o => o.ChangePreviewPicture)">Change preview picture</label>
         </div>
         <div class="form-row">
-            <input asp-for="OfferPreviewPicture" type="file" disabled class="form-control col-sm-4" />
+            <input asp-for="Offer.OfferPreviewPicture" type="file" disabled class="form-control col-sm-4" />
             <label class="form-control-placeholder-file">Preview picture</label>
             <div id="previewGallery">
-                @if (!(Model.OfferPreviewPicture is null) && !string.IsNullOrWhiteSpace(Model.OfferPreviewPicture))
+                @if (!(Model.Offer.OfferPreviewPicture is null) && !string.IsNullOrWhiteSpace(Model.Offer.OfferPreviewPicture))
                 {
-                    <img src="data:image/png;base64,@Html.Raw(Model.OfferPreviewPicture)" class="gallery-img" />
+                    <img src="data:image/png;base64,@Html.Raw(Model.Offer.OfferPreviewPicture)" class="gallery-img" />
                 }
             </div>
         </div>
@@ -94,16 +94,16 @@
     <!-- Additinal PICS-->
     <div class="form-group">
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" id="additionalPicsCheckbox" class="custom-control-input" />
-            <label class="custom-control-label" for="additionalPicsCheckbox">Change additional pictures</label>
+            <input asp-for="ChangeOfferPictures" class="custom-control-input" />
+            <label class="custom-control-label" for="@Html.IdFor(o => o.ChangeOfferPictures)">Change additional pictures</label>
         </div>
         <div class="form-row">
-            <input asp-for="Pictures" type="file" multiple disabled class="form-control col-sm-4" />
+            <input asp-for="Offer.Pictures" type="file" multiple disabled class="form-control col-sm-4" />
             <label class="form-control-placeholder-file">Additional pictures</label>
             <div id="additionalGallery">
-                @if (!(Model.Pictures is null))
+                @if (!(Model.Offer.Pictures is null))
                 {
-                    foreach (string pic in Model.Pictures)
+                    foreach (string pic in Model.Offer.Pictures)
                     {
                         @:<img src="data:image/png;base64,@Html.Raw(pic)" class="gallery-img" />
                     }
@@ -123,12 +123,12 @@
 @section Scripts {
     <script type="text/javascript">
         $(document).ready(function () {
-            var previewPicInput = document.getElementById('@Html.IdFor(o => o.OfferPreviewPicture)');
-            var previewPicChckbox = document.getElementById('previewPicCheckbox');
+            var previewPicInput = document.getElementById('@Html.IdFor(o => o.Offer.OfferPreviewPicture)');
+            var previewPicChckbox = document.getElementById('@Html.IdFor(o => o.ChangePreviewPicture)');
             var previewGalleryDiv = document.getElementById('previewGallery');
 
-            var additionalPicsInput = document.getElementById('@Html.IdFor(o => o.Pictures)');
-            var additionalPicsChckbox = document.getElementById('additionalPicsCheckbox');
+            var additionalPicsInput = document.getElementById('@Html.IdFor(o => o.Offer.Pictures)');
+            var additionalPicsChckbox = document.getElementById('@Html.IdFor(o => o.ChangeOfferPictures)');
             var additionalGalleryDiv = document.getElementById('additionalGallery');
 
             var previewDivHtml = previewGalleryDiv.innerHTML;
@@ -152,6 +152,7 @@
             }
 
             // checkbox controlling element's enabled/disabled attribute
+            // and gallery content
             function switchEnabled(checkbox, inputElement, gallery, defaultGalleryHtml) {
                 if (checkbox.checked == true) {
                     inputElement.value = '';

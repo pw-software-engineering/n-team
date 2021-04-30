@@ -8,6 +8,6 @@ namespace Hotel.Models
         public string OfferTitle { get; set; }
         public string Description { get; set; }
         public string OfferPreviewPicture { get; set; }
-        public List<string> OfferPictures { get; set; }
+        public IEnumerable<string> OfferPictures { get; set; }
     }
 }
