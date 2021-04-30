@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using AutoMapper;
 using Moq;
+using Server.Authentication.Client;
 using Server.AutoMapper;
 using Server.Database.DataAccess;
 using Server.Exceptions;
@@ -33,7 +34,7 @@ namespace Server.Tests.Services
         private Mock<IClientDataAccess> _dataAccessMock;
         private IMapper _mapper;
 
-		#region Patch
+		#region UpdateClientInfo
         [Fact]
 		public void UpdateClientInfo_UsernameAndEmailEmpty_400_UsernameAndEmailEmptyError()
 		{
@@ -109,6 +110,48 @@ namespace Server.Tests.Services
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, username, email), Times.Once());
+        }
+        #endregion
+
+        #region Login
+        [Fact]
+        public void Login_MissingOrEmptyUsernameOrPasswordProperties_400()
+        {
+            IServiceResult resultNull = _clientService.Login(null, null);
+            IServiceResult resultEmpty = _clientService.Login(string.Empty, string.Empty);
+            IServiceResult resultPartial = _clientService.Login("ValidUsername", string.Empty);
+
+            Assert.Equal(HttpStatusCode.BadRequest, resultNull.StatusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, resultEmpty.StatusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, resultPartial.StatusCode);
+        }
+
+        [Fact]
+        public void Login_UsernameAndPasswordDoNotExistOrIncorrect_401()
+        {
+            string username = "NonexistentUsername#@!";
+            string password = "password123#@!";
+            _dataAccessMock.Setup(da => da.GetRegisteredClientID(username, password)).Returns((int?)null);
+
+            IServiceResult result = _clientService.Login(username, password);
+
+            Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
+            _dataAccessMock.Verify(da => da.GetRegisteredClientID(username, password), Times.Once);
+        }
+
+        [Fact]
+        public void Login_UsernameAndPasswordValid_200_ClientToken()
+        {
+            string username = "ValidUsername";
+            string password = "ValidPassword";
+            int clientID = 1;
+            _dataAccessMock.Setup(da => da.GetRegisteredClientID(username, password)).Returns(clientID);
+
+            IServiceResult result = _clientService.Login(username, password);
+            ClientToken clientToken = (ClientToken)result.ResponseBody;
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(clientID, clientToken.ID);
+            _dataAccessMock.Verify(da => da.GetRegisteredClientID(username, password), Times.Once);
         }
         #endregion
     }

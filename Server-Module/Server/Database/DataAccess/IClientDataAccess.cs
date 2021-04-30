@@ -10,5 +10,9 @@ namespace Server.Database.DataAccess
 		#region /client PATCH
 		public void UpdateClientInfo(int clientID, string username, string email);
 		#endregion
-	}
+
+		#region /client/login
+		public int? GetRegisteredClientID(string username, string password);
+        #endregion
+    }
 }

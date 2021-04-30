@@ -14,5 +14,9 @@ namespace Server.Services.ClientService
         #region /client
         public IServiceResult UpdateClientInfo(int clientID, string username, string email);
         #endregion
+
+        #region /client/login
+        public IServiceResult Login(string username, string password);
+        #endregion
     }
 }

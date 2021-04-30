@@ -7,7 +7,12 @@ namespace Server.Authentication.Client
 {
     public class ClientToken
     {
-        public int ID { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public ClientToken(int ID)
+        {
+            this.ID = ID;
+            CreatedAt = DateTime.Now;
+        }
+        public int ID { get; }
+        public DateTime CreatedAt { get; }
     }
 }
