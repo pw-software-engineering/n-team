@@ -52,6 +52,10 @@ namespace Server.Database.DataAccess
 
         public List<string> GetHotelPictures(int hotelID)
         {
+            if(_dbContext.HotelInfos.Where(h => h.HotelID == hotelID).Count() == 0)
+            {
+                return null;
+            }
             return _dbContext.HotelPictures.Where(picture => picture.HotelID == hotelID)
                                            .Select(picture => picture.Picture)
                                            .ToList();

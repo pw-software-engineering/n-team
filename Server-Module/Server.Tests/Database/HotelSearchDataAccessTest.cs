@@ -5,6 +5,8 @@ using Server.AutoMapper;
 using Server.Database;
 using Server.Database.DataAccess;
 using Server.Database.Models;
+using Server.Models;
+using Server.RequestModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,7 @@ using Xunit;
 
 namespace Server.Tests.Database
 {
-    class HotelSearchDataAccessTest : IDisposable
+    public class HotelSearchDataAccessTest : IDisposable
     {
         #region TestsSetup
         public HotelSearchDataAccessTest()
@@ -68,6 +70,92 @@ namespace Server.Tests.Database
         private ServerDbContext _context;
         private IMapper _mapper;
         private HotelSearchDataAccess _dataAccess;
+
+        [Fact]
+        public void GetHotels_NoHotelFilter_ReturnsListAllHotelPreviews()
+        {
+            Paging paging = new Paging(1000, 1);
+            HotelFilter hotelFilter = new HotelFilter();
+
+            List<HotelPreview> hotelPreviews = _dataAccess.GetHotels(paging, hotelFilter);
+
+            Assert.Equal(_context.HotelInfos.Count(), hotelPreviews.Count);
+        }
+
+        [Fact]
+        public void GetHotels_FilterOneHotelByPartialName_ReturnsListOfOneHotel()
+        {
+            Paging paging = new Paging(1000, 1);
+            HotelFilter hotelFilter = new HotelFilter()
+            {
+                HotelName = "telName2"
+            };
+
+            List<HotelPreview> hotelPreviews = _dataAccess.GetHotels(paging, hotelFilter);
+
+            Assert.Single(hotelPreviews);
+            Assert.Equal(2, hotelPreviews[0].HotelID);
+            Assert.Contains(hotelFilter.HotelName, hotelPreviews[0].HotelName);
+        }
+
+        [Fact]
+        public void GetHotels_NoHotelsMatchingFilter_ReturnsEmptyList()
+        {
+            Paging paging = new Paging(1000, 1);
+            HotelFilter hotelFilter = new HotelFilter()
+            {
+                HotelName = "ABCD1234$#@!"
+            };
+
+            List<HotelPreview> hotelPreviews = _dataAccess.GetHotels(paging, hotelFilter);
+
+            Assert.Empty(hotelPreviews);
+        }
+
+        [Fact]
+        public void GetHotelDetails_NonExistentID_ReturnsNull()
+        {
+            int hotelID = -1;
+
+            Hotel hotel = _dataAccess.GetHotelDetails(hotelID);
+
+            Assert.Null(hotel);
+        }
+
+        [Fact]
+        public void GetHotelDetails_ValidID_ReturnsHotelInfoWithoutPictures()
+        {
+            int hotelID = 3;
+
+            Hotel hotel = _dataAccess.GetHotelDetails(hotelID);
+
+            Assert.NotNull(hotel);
+            Assert.Equal("TestCity3", hotel.City);
+            Assert.Equal("TestCountry3", hotel.Country);
+            Assert.Equal("TestHotelName3", hotel.HotelName);
+            Assert.Equal("TestHotelDesc3", hotel.HotelDescription);
+        }
+
+        [Fact]
+        public void GetHotelPictures_NonExistentID_ReturnsNull()
+        {
+            int hotelID = -1;
+
+            List<string> hotelPictures = _dataAccess.GetHotelPictures(hotelID);
+
+            Assert.Null(hotelPictures);
+        }
+
+        [Fact]
+        public void GetHotelPictures_ValidID_ReturnsListOfBase64Pictures()
+        {
+            int hotelID = 3;
+
+            List<string> hotelPictures = _dataAccess.GetHotelPictures(hotelID);
+
+            Assert.Equal(2, hotelPictures.Count);
+            Assert.NotEqual(hotelPictures[0], hotelPictures[1]);
+        }
 
         public void Dispose()
         {
