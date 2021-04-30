@@ -62,7 +62,6 @@ namespace Server.Tests.Authentication
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 }
             );
-            File.WriteAllText("C:/Users/CLEVO/Desktop/test-output.txt", tokenJSON);
 
             StringValues tokenHeader = new StringValues(tokenJSON);
             ClientToken resToken = _clientTokenManager.ParseTokenHeader(tokenHeader, out string parseError);
