@@ -46,6 +46,12 @@ namespace Server.Services.OfferSearchService
                     HttpStatusCode.BadRequest,
                     new Error("Invalid paging arguments"));
             }
+            if(offerFilter.From.Value > offerFilter.To.Value)
+            {
+                return new ServiceResult(
+                   HttpStatusCode.BadRequest,
+                   new Error("From field cannot be greater than To field"));
+            }
             if(offerFilter.MinGuests.HasValue && offerFilter.MinGuests < 0)
             {
                 return new ServiceResult(
@@ -58,7 +64,7 @@ namespace Server.Services.OfferSearchService
                     HttpStatusCode.BadRequest,
                     new Error("MinCost must be a non-negative integer"));
             }
-            if (offerFilter.MinCost.HasValue && offerFilter.MaxCost < 0)
+            if (offerFilter.MaxCost.HasValue && offerFilter.MaxCost < 0)
             {
                 return new ServiceResult(
                     HttpStatusCode.BadRequest,

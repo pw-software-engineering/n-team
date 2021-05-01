@@ -37,7 +37,7 @@ namespace Server.Database.DataAccess.OfferSearch
             }
             if(offerFilter.MinCost.HasValue)
             {
-                offers = offers.Where(o => Math.Max(o.CostPerAdult, o.CostPerChild) <= offerFilter.MinCost);
+                offers = offers.Where(o => Math.Min(o.CostPerAdult, o.CostPerChild) >= offerFilter.MinCost);
             }
             if(offerFilter.MinGuests.HasValue)
             {
@@ -70,6 +70,10 @@ namespace Server.Database.DataAccess.OfferSearch
         }
         public List<string> GetHotelOfferPictures(int offerID)
         {
+            if(_dbContext.Offers.Find(offerID) == null)
+            {
+                return null;
+            }
             return _dbContext.OfferPictures.Where(odb => odb.OfferID == offerID).Select(odb => odb.Picture).ToList();
         }
 

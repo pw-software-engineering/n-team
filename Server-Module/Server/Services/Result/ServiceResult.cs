@@ -31,6 +31,10 @@ namespace Server.Services.Result
             return Task.Run(async () =>
                 {
                     context.HttpContext.Response.StatusCode = (int)StatusCode;
+                    if(Result == null)
+                    {
+                        return;
+                    }
                     JsonSerializerSettings serializerSettings = new JsonSerializerSettings()
                     {
                         ContractResolver = new CamelCasePropertyNamesContractResolver()
