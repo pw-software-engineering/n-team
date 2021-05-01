@@ -7,7 +7,6 @@ using Moq;
 using Server.AutoMapper;
 using Server.Database.DataAccess;
 using Server.Database.DatabaseTransaction;
-using Server.Exceptions;
 using Server.Models;
 using Server.Services.ClientService;
 using Server.Services.Result;

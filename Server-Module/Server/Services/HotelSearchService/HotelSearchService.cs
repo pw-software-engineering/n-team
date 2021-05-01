@@ -38,14 +38,14 @@ namespace Server.Services.HotelSearchService
                     new Error("Invalid paging arguments"));
             }
 
-            List<HotelPreviewView> hotelPreviews = _mapper.Map<List<HotelPreviewView>>(_hotelSearchDataAccess.GetHotels(paging, hotelFilter));
+            List<HotelSearchPreviewView> hotelPreviews = _mapper.Map<List<HotelSearchPreviewView>>(_hotelSearchDataAccess.GetHotels(paging, hotelFilter));
             
             return new ServiceResult(HttpStatusCode.OK, hotelPreviews);
         }
         public IServiceResult GetHotelDetails(int hotelID)
         {
             _transaction.BeginTransaction();
-            HotelView hotelView = _mapper.Map<HotelView>(_hotelSearchDataAccess.GetHotelDetails(hotelID));
+            HotelSearchView hotelView = _mapper.Map<HotelSearchView>(_hotelSearchDataAccess.GetHotelDetails(hotelID));
             if(hotelView == null)
             {
                 return new ServiceResult(HttpStatusCode.NotFound);

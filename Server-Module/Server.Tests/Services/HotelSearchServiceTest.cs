@@ -79,8 +79,8 @@ namespace Server.Tests.Services
             IServiceResult serviceResult = _hotelSearchService.GetHotels(paging, hotelFilter);
 
             Assert.Equal(HttpStatusCode.OK, serviceResult.StatusCode);
-            Assert.Equal(3, (serviceResult.Result as List<HotelPreviewView>).Count);
-            foreach(HotelPreviewView preview in serviceResult.Result as List<HotelPreviewView>)
+            Assert.Equal(3, (serviceResult.Result as List<HotelSearchPreviewView>).Count);
+            foreach(HotelSearchPreviewView preview in serviceResult.Result as List<HotelSearchPreviewView>)
             {
                 Assert.Equal(hotelPreview.HotelID, preview.HotelID);
                 Assert.Equal(hotelPreview.City, preview.City);
@@ -124,7 +124,7 @@ namespace Server.Tests.Services
             _hotelSearchDataAccessMock.Setup(da => da.GetHotelPictures(hotelID)).Returns(hotelPictures);
 
             IServiceResult serviceResult = _hotelSearchService.GetHotelDetails(hotelID);
-            HotelView hotelView = serviceResult.Result as HotelView;
+            HotelSearchView hotelView = serviceResult.Result as HotelSearchView;
 
             Assert.Equal(HttpStatusCode.OK, serviceResult.StatusCode);
             Assert.Equal(hotel.Country, hotelView.Country);
