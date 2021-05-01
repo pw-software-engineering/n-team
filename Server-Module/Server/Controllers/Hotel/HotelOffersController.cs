@@ -9,7 +9,7 @@ using System.Linq;
 namespace Server.Controllers.Hotel
 {
     [ApiController]
-    [Authorize(AuthenticationSchemes = "HotelTokenScheme")]
+    //[Authorize(AuthenticationSchemes = "HotelTokenScheme")]
     public class HotelOffersController : Controller
     {
         private readonly IOfferService service;
@@ -22,11 +22,10 @@ namespace Server.Controllers.Hotel
         [HttpGet("api-hotel/offers")]
         public IActionResult GetOffers(bool? isActive, int pageNumber = 1, int pageSize = 10)
         {
-            int hotelId = GetHotelID();
-
+            //int hotelId = GetHotelID();
+            int hotelId = 3;
             return service.GetHotelOffers(new Paging(pageSize, pageNumber), hotelId, isActive);
         }
-
         [HttpGet("api-hotel/offers/{offerID}")]
         public IActionResult GetOffer(int offerID)
         {

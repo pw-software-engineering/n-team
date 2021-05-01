@@ -28,7 +28,7 @@ namespace Server.Services.Result
 
         public Task ExecuteResultAsync(ActionContext context)
         {
-            return Task.Run(() =>
+            return Task.Run(async () =>
                 {
                     context.HttpContext.Response.StatusCode = (int)StatusCode;
                     JsonSerializerSettings serializerSettings = new JsonSerializerSettings()
@@ -37,24 +37,10 @@ namespace Server.Services.Result
                     };
                     string json = JsonConvert.SerializeObject(Result, serializerSettings);
 
-                    context.HttpContext.Response.Body = new MemoryStream(Encoding.UTF8.GetBytes(json));
+                    byte[] data = Encoding.UTF8.GetBytes(json);
+                    await context.HttpContext.Response.Body.WriteAsync(data, 0, data.Length);
+                    await context.HttpContext.Response.Body.FlushAsync();
                 });
         }
     }
-    //public class ServiceResult : IServiceResult
-    //{
-    //    public HttpStatusCode StatusCode { get; }
-    //    public T Result { get; }
-    //    public IActionResult GetActionResult()
-
-    //    public ServiceResult(HttpStatusCode code, T result)
-    //    {
-    //        StatusCode = code;
-    //        Result = result;
-    //    }
-    //    public ServiceResult(HttpStatusCode code)
-    //    {
-    //        StatusCode = code;
-    //    }
-    //}
 }
