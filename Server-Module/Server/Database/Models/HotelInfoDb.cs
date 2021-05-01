@@ -13,7 +13,7 @@ namespace Server.Database.Models
         public string City { get; set; }
         public string HotelPreviewPicture { get; set; }
         public string HotelName { get; set; }
-        public string HotelDesc { get; set; }
+        public string HotelDescription { get; set; }
         public string AccessToken { get; set; }
         //Navigational Properties
         public List<HotelPictureDb> HotelPictures { get; set; }

@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace Server.Services.Result
 {
-    public class Error
+    public class RoomID
     {
-        public string error { get; }
-        public Error(string error)
+        public int roomID{get;}
+        public RoomID(int roomID)
         {
-            this.error = error;
+            this.roomID = roomID;
         }
     }
 }

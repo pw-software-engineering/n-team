@@ -6,7 +6,7 @@ using Server.Database;
 using Server.Database.DataAccess;
 using Server.Database.Models;
 using Server.Models;
-using Server.ViewModels;
+using Server.RequestModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,9 +54,9 @@ namespace Server.Tests.Database
             {
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos ON");
                 _context.HotelInfos.AddRange(
-                    new HotelInfoDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDesc = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
-                    new HotelInfoDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDesc = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
-                    new HotelInfoDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDesc = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
+                    new HotelInfoDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
+                    new HotelInfoDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
+                    new HotelInfoDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos OFF");
 
@@ -165,6 +165,17 @@ namespace Server.Tests.Database
             Assert.Equal(offer.CostPerChild, offerTest.CostPerChild);
             Assert.Equal(offer.CostPerAdult, offerTest.CostPerAdult);
         }
+
+        [Fact]
+        public void GetOffer_InvalidOfferID_ReturnsNull()
+        {
+            int offerID = -1;
+
+            Offer offer = _dataAccess.GetOffer(offerID);
+
+            Assert.Null(offer);
+        }
+
         [Fact]
         public void GetHotelOffers_IsActiveSetToTrue_ReturnsListOfActiveOffersPreviewsObjects()
         {

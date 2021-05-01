@@ -2,7 +2,7 @@
 using Server.Database.DataAccess;
 using Server.Database.DatabaseTransaction;
 using Server.Models;
-using Server.Services.Response;
+using Server.RequestModels;
 using Server.Services.Result;
 using Server.ViewModels;
 using System;
@@ -33,7 +33,8 @@ namespace Server.Services.RoomService
             int roomID = _dataAccess.AddRoom(hotelID, hotelRoomNumber);
             _transaction.CommitTransaction();
 
-            return new ServiceResult(HttpStatusCode.OK, new { roomID = roomID });
+            return new ServiceResult(HttpStatusCode.OK, new RoomID(roomID));
+
         }
 
         public IServiceResult DeleteRoom(int hotelID, int roomID)

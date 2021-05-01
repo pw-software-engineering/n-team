@@ -1,15 +1,19 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.ViewModels
+namespace Server.RequestModels
 {
     public class Paging
     {
-        public int pageSize = 10;
-        public int pageNumber = 1;
-        public Paging() { }
+        [FromQuery]
+        public int pageSize { get; set; }
+
+        [FromQuery]
+        public int pageNumber { get; set; }
+        public Paging() : this(10, 1) { }
         public Paging(int size, int number)
         {
             pageSize = size;

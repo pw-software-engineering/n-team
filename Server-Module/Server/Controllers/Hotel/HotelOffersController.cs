@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Server.RequestModels;
 using Server.Services.OfferService;
-using Server.Services.Response;
+using Server.Services.Result;
 using Server.ViewModels;
 using System;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Linq;
 namespace Server.Controllers.Hotel
 {
     [ApiController]
-    [Authorize(AuthenticationSchemes = "HotelTokenScheme")]
+    //[Authorize(AuthenticationSchemes = "HotelTokenScheme")]
     public class HotelOffersController : Controller
     {
         private readonly IOfferService service;
@@ -22,50 +23,31 @@ namespace Server.Controllers.Hotel
         [HttpGet("api-hotel/offers")]
         public IActionResult GetOffers(bool? isActive, int pageNumber = 1, int pageSize = 10)
         {
-            var ids = from claim in HttpContext.User.Claims
-                      where claim.Type == "hotelId"
-                      select claim.Value;
-            int hotelId = Convert.ToInt32(ids.Single());
-
-            IServiceResult result = service.GetHotelOffers(new Paging(pageSize, pageNumber), hotelId, isActive);
-            JsonResult jsonResult = new JsonResult(result.ResponseBody)
-            {
-                StatusCode = (int)result.StatusCode
-            };
-            return jsonResult;
+            //int hotelId = GetHotelID();
+            int hotelId = 3;
+            return service.GetHotelOffers(new Paging(pageSize, pageNumber), hotelId, isActive);
         }
-
         [HttpGet("api-hotel/offers/{offerID}")]
         public IActionResult GetOffer(int offerID)
         {
-            var ids = from claim in HttpContext.User.Claims
-                      where claim.Type == "hotelId"
-                      select claim.Value;
-            int hotelId = Convert.ToInt32(ids.Single());
+            int hotelId = GetHotelID();
 
-            IServiceResult result = service.GetOffer(offerID, hotelId);
-            JsonResult jsonResult = new JsonResult(result.ResponseBody)
-            {
-                StatusCode = (int)result.StatusCode
-            };
-            return jsonResult;
+            return service.GetOffer(offerID, hotelId);
         }
 
         [HttpPost("api-hotel/offers")]
         public IActionResult AddOffer([FromBody] OfferView offer)
         {
+            int hotelId = GetHotelID();
+
+            return service.AddOffer(offer, hotelId);
+        }
+        private int GetHotelID()
+        {
             var ids = from claim in HttpContext.User.Claims
                       where claim.Type == "hotelId"
                       select claim.Value;
-            int hotelId = Convert.ToInt32(ids.Single());
-
-            IServiceResult result = service.AddOffer(offer, hotelId);
-
-            JsonResult jsonResult = new JsonResult(result.ResponseBody)
-            {
-                StatusCode = (int)result.StatusCode
-            };
-            return jsonResult;
+            return Convert.ToInt32(ids.Single());
         }
     }
 }

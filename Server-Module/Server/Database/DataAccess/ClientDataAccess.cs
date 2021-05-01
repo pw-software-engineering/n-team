@@ -16,6 +16,11 @@ namespace Server.Database.DataAccess
             _dbContext = dbContext;
         }
 
+        public int? GetRegisteredClientID(string username, string password)
+        {
+            return _dbContext.Clients.FirstOrDefault(client => client.Username == username && client.Password == password)?.ClientID;
+        }
+
         public void UpdateClientInfo(int clientID, string username, string email)
         {
             var client = _dbContext.Clients.Find(clientID);
