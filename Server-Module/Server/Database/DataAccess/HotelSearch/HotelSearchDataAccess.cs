@@ -52,7 +52,7 @@ namespace Server.Database.DataAccess
 
         public List<string> GetHotelPictures(int hotelID)
         {
-            if(_dbContext.HotelInfos.Where(h => h.HotelID == hotelID).Count() == 0)
+            if(!_dbContext.HotelInfos.Any())
             {
                 return null;
             }
