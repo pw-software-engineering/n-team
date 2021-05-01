@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Database.DataAccess;
 using Server.Models;
 using Server.RequestModels;
-using Server.Services.Response;
+using Server.Services.Result;
 using Server.Services.Result;
 using Server.ViewModels;
 using System;

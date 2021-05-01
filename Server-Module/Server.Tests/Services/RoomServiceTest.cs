@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Server.AutoMapper;
 using Server.Database.DataAccess;
 using Server.Models;
 using Server.RequestModels;
-using Server.Services.Response;
+using Server.Services.Result;
 using Server.Services.RoomService;
 using Server.ViewModels;
 using System;
@@ -54,7 +55,7 @@ namespace Server.Tests.Services
             IServiceResult result = _roomService.AddRoom(hotelID, hotelRoomNumber);
 
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-            Assert.Equal(roomID, result.ResponseBody.GetType().GetProperty("roomID").GetValue(result.ResponseBody));
+            Assert.Equal(roomID, ((RoomID)result.Result).roomID);
         }
         [Fact]
         public void DeleteRoom_200()
@@ -114,9 +115,8 @@ namespace Server.Tests.Services
             _dataAccessMock.Setup(da => da.GetRooms(paging, hotelID, null)).Returns(rooms);
 
             IServiceResult result = _roomService.GetHotelRooms(paging, hotelID);
-
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-            Assert.Equal(_mapper.Map<List<HotelRoomView>>(rooms), result.ResponseBody);
+            Assert.Equal(_mapper.Map<List<HotelRoomView>>(rooms), result.Result);
         }
         [Fact]
         public void GetHotelRooms_InvalidPaging_400()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Server.AutoMapper;
 using Server.Database.DataAccess;
@@ -10,7 +11,6 @@ using Server.Exceptions;
 using Server.Models;
 using Server.RequestModels;
 using Server.Services.OfferService;
-using Server.Services.Response;
 using Server.Services.Result;
 using Server.ViewModels;
 using Xunit;
@@ -57,7 +57,7 @@ namespace Server.Tests.Services
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             _dataAccessMock.Verify(da => da.AddOffer(It.IsAny<Offer>()));
             _dataAccessMock.Verify(da => da.AddOfferPictures(It.IsAny<List<string>>(), offerID), Times.Once());
-            Assert.Equal(offerID, ((OfferID)response.ResponseBody).offerID);
+            Assert.Equal(offerID, ((OfferID)response.Result).offerID);
         }
         #endregion
 
@@ -170,7 +170,7 @@ namespace Server.Tests.Services
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             _dataAccessMock.Verify(da => da.GetHotelOffers(paging, hotelID, null), Times.Once());
-            Assert.Equal(_mapper.Map<List<OfferPreviewView>>(offerPreviews), response.ResponseBody);
+            Assert.Equal(_mapper.Map<List<OfferPreviewView>>(offerPreviews), response.Result);
         }
         #endregion
 

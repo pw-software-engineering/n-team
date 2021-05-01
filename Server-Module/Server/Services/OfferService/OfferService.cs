@@ -9,10 +9,9 @@ using System.Threading.Tasks;
 using Server.ViewModels;
 using Server.Database.DataAccess;
 using AutoMapper;
-using Server.Services.Response;
-using System.Net;
 using Server.Services.Result;
 using Server.RequestModels;
+using System.Net;
 
 namespace Server.Services.OfferService
 {   

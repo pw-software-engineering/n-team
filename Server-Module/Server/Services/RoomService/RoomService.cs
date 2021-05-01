@@ -2,7 +2,6 @@
 using Server.Database.DataAccess;
 using Server.Models;
 using Server.RequestModels;
-using Server.Services.Response;
 using Server.Services.Result;
 using Server.ViewModels;
 using System;
@@ -28,7 +27,7 @@ namespace Server.Services.RoomService
                 return new ServiceResult(HttpStatusCode.Conflict, new Error("Room with given number already exists"));
 
             int roomID = _dataAccess.AddRoom(hotelID, hotelRoomNumber);
-            return new ServiceResult(HttpStatusCode.OK, new { roomID = roomID });
+            return new ServiceResult(HttpStatusCode.OK, new RoomID(roomID));
         }
 
         public IServiceResult DeleteRoom(int hotelID, int roomID)

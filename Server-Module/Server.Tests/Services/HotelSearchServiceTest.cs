@@ -5,7 +5,6 @@ using Server.Database.DataAccess;
 using Server.Models;
 using Server.RequestModels;
 using Server.Services.HotelSearchService;
-using Server.Services.Response;
 using Server.Services.Result;
 using Server.ViewModels;
 using System;
@@ -42,7 +41,7 @@ namespace Server.Tests.Services
             IServiceResult serviceResult = _hotelSearchService.GetHotels(paging, new HotelFilter());
 
             Assert.Equal(HttpStatusCode.BadRequest, serviceResult.StatusCode);
-            Assert.True(serviceResult.ResponseBody is Error);
+            Assert.True(serviceResult.Result is Error);
         }
 
         [Fact]
@@ -77,8 +76,8 @@ namespace Server.Tests.Services
             IServiceResult serviceResult = _hotelSearchService.GetHotels(paging, hotelFilter);
 
             Assert.Equal(HttpStatusCode.OK, serviceResult.StatusCode);
-            Assert.Equal(3, (serviceResult.ResponseBody as List<HotelPreviewView>).Count);
-            foreach(HotelPreviewView preview in serviceResult.ResponseBody as List<HotelPreviewView>)
+            Assert.Equal(3, (serviceResult.Result as List<HotelPreviewView>).Count);
+            foreach(HotelPreviewView preview in serviceResult.Result as List<HotelPreviewView>)
             {
                 Assert.Equal(hotelPreview.HotelID, preview.HotelID);
                 Assert.Equal(hotelPreview.City, preview.City);
@@ -122,7 +121,7 @@ namespace Server.Tests.Services
             _hotelSearchDataAccessMock.Setup(da => da.GetHotelPictures(hotelID)).Returns(hotelPictures);
 
             IServiceResult serviceResult = _hotelSearchService.GetHotelDetails(hotelID);
-            HotelView hotelView = serviceResult.ResponseBody as HotelView;
+            HotelView hotelView = serviceResult.Result as HotelView;
 
             Assert.Equal(HttpStatusCode.OK, serviceResult.StatusCode);
             Assert.Equal(hotel.Country, hotelView.Country);
