@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Server.Authentication;
 using Server.Database;
 using Server.Database.DataAccess;
+using Server.Database.DatabaseTransaction;
 using Server.Services.ClientService;
 using Server.Services.OfferService;
 using System;
@@ -35,6 +36,7 @@ namespace Server
             services.AddControllers();
 
             services.AddAutoMapper(typeof(Startup));
+            services.AddTransient<IDatabaseTransaction, DatabaseTransaction>();
             services.AddTransient<IOfferService, OfferService>();
             services.AddTransient<IClientService, ClientService>();
             services.AddTransient<IOfferDataAccess, OfferDataAccess>();

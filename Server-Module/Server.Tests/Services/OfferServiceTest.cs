@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Server.AutoMapper;
 using Server.Database.DataAccess;
+using Server.Database.DatabaseTransaction;
 using Server.Exceptions;
 using Server.Models;
 using Server.Services.OfferService;
@@ -26,11 +27,13 @@ namespace Server.Tests.Services
             });
             _mapper = config.CreateMapper();
             _dataAccessMock = new Mock<IOfferDataAccess>();
+            _transactionMock = new Mock<IDatabaseTransaction>();
 
-            _offerService = new OfferService(_dataAccessMock.Object, _mapper);
+            _offerService = new OfferService(_dataAccessMock.Object, _mapper, _transactionMock.Object);
         }
         private OfferService _offerService;
         private Mock<IOfferDataAccess> _dataAccessMock;
+        private Mock<IDatabaseTransaction> _transactionMock;
         private IMapper _mapper;
 
         #region AddOfferTests
