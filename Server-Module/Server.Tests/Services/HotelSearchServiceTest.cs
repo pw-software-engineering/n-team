@@ -2,6 +2,7 @@
 using Moq;
 using Server.AutoMapper;
 using Server.Database.DataAccess;
+using Server.Database.DatabaseTransaction;
 using Server.Models;
 using Server.RequestModels;
 using Server.Services.HotelSearchService;
@@ -25,11 +26,13 @@ namespace Server.Tests.Services
             });
             _mapper = config.CreateMapper();
             _hotelSearchDataAccessMock = new Mock<IHotelSearchDataAccess>();
+            _transactionMock = new Mock<IDatabaseTransaction>();
 
-            _hotelSearchService = new HotelSearchService(_hotelSearchDataAccessMock.Object, _mapper);
+            _hotelSearchService = new HotelSearchService(_hotelSearchDataAccessMock.Object, _mapper, _transactionMock.Object);
         }
         private HotelSearchService _hotelSearchService;
         private Mock<IHotelSearchDataAccess> _hotelSearchDataAccessMock;
+        private Mock<IDatabaseTransaction> _transactionMock;
         private IMapper _mapper;
 
         #region GetHotels

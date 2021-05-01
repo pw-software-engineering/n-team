@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Server.AutoMapper;
 using Server.Database.DataAccess;
+using Server.Database.DatabaseTransaction;
 using Server.Models;
 using Server.RequestModels;
 using Server.Services.Result;
@@ -26,11 +27,13 @@ namespace Server.Tests.Services
             });
             _mapper = config.CreateMapper();
             _dataAccessMock = new Mock<IRoomDataAccess>();
+            _transactionMock = new Mock<IDatabaseTransaction>();
 
-            _roomService = new RoomService(_dataAccessMock.Object, _mapper);
+            _roomService = new RoomService(_dataAccessMock.Object, _mapper, _transactionMock.Object);
         }
         private RoomService _roomService;
         private Mock<IRoomDataAccess> _dataAccessMock;
+        private Mock<IDatabaseTransaction> _transactionMock;
         private IMapper _mapper;
         [Fact]
         public void AddRoom_RoomAlreadyExists_409()

@@ -12,26 +12,31 @@ using AutoMapper;
 using Server.Services.Result;
 using Server.RequestModels;
 using System.Net;
+using Server.Database.DatabaseTransaction;
 
 namespace Server.Services.OfferService
 {   
     public class OfferService : IOfferService
     {
         private readonly IOfferDataAccess _dataAccess;
-        private readonly IMapper _mapper; 
-        public OfferService(IOfferDataAccess dataAccess, IMapper mapper)
+        private readonly IMapper _mapper;
+        private readonly IDatabaseTransaction _transaction;
+        public OfferService(IOfferDataAccess dataAccess, IMapper mapper, IDatabaseTransaction transaction)
         {
             _dataAccess = dataAccess;
             _mapper = mapper;
+            _transaction = transaction;
         }
-        
         public IServiceResult AddOffer(OfferView offerView, int hotelID)
         {
             Offer offer = _mapper.Map<Offer>(offerView);
             offer.HotelID = hotelID;
             offer.IsDeleted = false;
+
+            _transaction.BeginTransaction();
             int offerID = _dataAccess.AddOffer(offer);
             _dataAccess.AddOfferPictures(offer.Pictures, offerID);
+            _transaction.CommitTransaction();
 
             return new ServiceResult(HttpStatusCode.OK, new OfferID(offerID));
         }
@@ -45,8 +50,10 @@ namespace Server.Services.OfferService
             if (_dataAccess.AreThereUnfinishedReservationsForOffer(offerID))
                 return new ServiceResult(HttpStatusCode.Conflict, new Error("There are still pending reservations for this offer"));
 
+            _transaction.BeginTransaction();
             _dataAccess.UnpinRoomsFromOffer(offerID);
             _dataAccess.DeleteOffer(offerID);
+            _transaction.CommitTransaction();
 
             return new ServiceResult(HttpStatusCode.OK);
         }
@@ -78,7 +85,9 @@ namespace Server.Services.OfferService
             if (response.StatusCode != HttpStatusCode.OK)
                 return response;
 
+            _transaction.BeginTransaction();
             _dataAccess.UpdateOffer(offerID, offerUpdateInfo);
+            _transaction.CommitTransaction();
 
             return new ServiceResult(HttpStatusCode.OK);
         }

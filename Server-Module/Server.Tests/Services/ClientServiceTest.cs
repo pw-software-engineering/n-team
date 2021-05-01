@@ -6,6 +6,7 @@ using AutoMapper;
 using Moq;
 using Server.AutoMapper;
 using Server.Database.DataAccess;
+using Server.Database.DatabaseTransaction;
 using Server.Exceptions;
 using Server.Models;
 using Server.Services.ClientService;
@@ -25,11 +26,13 @@ namespace Server.Tests.Services
             });
             _mapper = config.CreateMapper();
             _dataAccessMock = new Mock<IClientDataAccess>();
+            _transactionMock = new Mock<IDatabaseTransaction>();
 
-            _clientService = new ClientService(_dataAccessMock.Object, _mapper);
+            _clientService = new ClientService(_dataAccessMock.Object, _mapper, _transactionMock.Object);
         }
         private ClientService _clientService;
         private Mock<IClientDataAccess> _dataAccessMock;
+        private Mock<IDatabaseTransaction> _transactionMock;
         private IMapper _mapper;
 
 		#region Patch
