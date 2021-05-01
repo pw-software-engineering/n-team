@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Server.Services.ClientService;
-using Server.Services.Response;
+using Server.Services.Result;
 using Server.Authentication.Client;
 using System;
 using System.Collections.Generic;
@@ -36,13 +36,7 @@ namespace Server.Controllers.Client
                       where claim.Type == "id"
                       select int.Parse(claim.Value);
 
-            IServiceResult serviceResult = service.UpdateClientInfo(id.First(), username, email);
-            JsonResult jsonResult = new JsonResult(serviceResult.ResponseBody)
-            {
-                StatusCode = (int)serviceResult.StatusCode
-            };
-
-            return jsonResult;
+            return service.UpdateClientInfo(id.First(), username, email);
         }
     }
 }

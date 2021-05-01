@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Authentication.Client;
 using Server.Services.ClientService;
-using Server.Services.Response;
+using Server.Services.Result;
 
 namespace Server.Controllers.Client
 {
@@ -24,11 +24,7 @@ namespace Server.Controllers.Client
         [HttpPost("client/login")]
         public IActionResult Login([FromBody] ClientCredentials credentials)
         {
-            IServiceResult serviceResult = _clientService.Login(credentials.Username, credentials.Password);
-            return new JsonResult(serviceResult.ResponseBody)
-            {
-                StatusCode = (int)serviceResult.StatusCode
-            };
+            return _clientService.Login(credentials.Username, credentials.Password);
         }
 
         public class ClientCredentials

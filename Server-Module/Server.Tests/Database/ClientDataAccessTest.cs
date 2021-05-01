@@ -6,7 +6,7 @@ using Server.Database;
 using Server.Database.DataAccess;
 using Server.Database.Models;
 using Server.Models;
-using Server.ViewModels;
+using Server.RequestModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
