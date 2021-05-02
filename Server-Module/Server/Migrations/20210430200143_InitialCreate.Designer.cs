@@ -10,7 +10,7 @@ using Server.Database;
 namespace Server.Migrations
 {
     [DbContext(typeof(ServerDbContext))]
-    [Migration("20210429121854_InitialCreate")]
+    [Migration("20210430200143_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -293,7 +293,7 @@ namespace Server.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HotelDesc")
+                    b.Property<string>("HotelDescription")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HotelName")
@@ -313,7 +313,7 @@ namespace Server.Migrations
                             AccessToken = "TestAccessToken1",
                             City = "TestCity1",
                             Country = "TestCountry1",
-                            HotelDesc = "TestHotelDesc1",
+                            HotelDescription = "TestHotelDesc1",
                             HotelName = "TestHotelName1",
                             HotelPreviewPicture = "TestHotelPreviewPicture1"
                         },
@@ -323,7 +323,7 @@ namespace Server.Migrations
                             AccessToken = "TestAccessToken2",
                             City = "TestCity2",
                             Country = "TestCountry2",
-                            HotelDesc = "TestHotelDesc2",
+                            HotelDescription = "TestHotelDesc2",
                             HotelName = "TestHotelName2",
                             HotelPreviewPicture = "TestHotelPreviewPicture2"
                         },
@@ -333,7 +333,7 @@ namespace Server.Migrations
                             AccessToken = "TestAccessToken3",
                             City = "TestCity3",
                             Country = "TestCountry3",
-                            HotelDesc = "TestHotelDesc3",
+                            HotelDescription = "TestHotelDesc3",
                             HotelName = "TestHotelName3",
                             HotelPreviewPicture = "TestHotelPreviewPicture3"
                         });

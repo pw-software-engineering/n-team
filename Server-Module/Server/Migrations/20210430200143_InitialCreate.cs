@@ -34,7 +34,7 @@ namespace Server.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HotelPreviewPicture = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HotelName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HotelDesc = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HotelDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AccessToken = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -260,7 +260,7 @@ namespace Server.Migrations
 
             migrationBuilder.InsertData(
                 table: "HotelInfos",
-                columns: new[] { "HotelID", "AccessToken", "City", "Country", "HotelDesc", "HotelName", "HotelPreviewPicture" },
+                columns: new[] { "HotelID", "AccessToken", "City", "Country", "HotelDescription", "HotelName", "HotelPreviewPicture" },
                 values: new object[,]
                 {
                     { 1, "TestAccessToken1", "TestCity1", "TestCountry1", "TestHotelDesc1", "TestHotelName1", "TestHotelPreviewPicture1" },

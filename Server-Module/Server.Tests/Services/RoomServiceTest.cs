@@ -5,6 +5,7 @@ using Server.AutoMapper;
 using Server.Database.DataAccess;
 using Server.Database.DatabaseTransaction;
 using Server.Models;
+using Server.RequestModels;
 using Server.Services.Result;
 using Server.Services.RoomService;
 using Server.ViewModels;

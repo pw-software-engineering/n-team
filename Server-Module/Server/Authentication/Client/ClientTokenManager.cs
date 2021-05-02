@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Server.Database.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Server.Authentication.Client
@@ -52,13 +53,19 @@ namespace Server.Authentication.Client
             ClientToken clientToken;
             try
             {
-                clientToken = JsonSerializer.Deserialize<ClientToken>(
+                clientToken = JsonConvert.DeserializeObject<ClientToken>(
                     tokenStr,
-                    new JsonSerializerOptions()
+                    new JsonSerializerSettings()
                     {
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                    }
-                );
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    });
+                //clientToken = JsonSerializer.Deserialize<ClientToken>(
+                //    tokenStr,
+                //    new JsonSerializerOptions()
+                //    {
+                //        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                //    }
+                //);
             }
             catch (JsonException)
             {

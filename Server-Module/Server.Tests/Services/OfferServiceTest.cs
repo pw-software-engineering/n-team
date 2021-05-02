@@ -10,6 +10,7 @@ using Server.Database.DataAccess;
 using Server.Database.DatabaseTransaction;
 using Server.Exceptions;
 using Server.Models;
+using Server.RequestModels;
 using Server.Services.OfferService;
 using Server.Services.Result;
 using Server.ViewModels;

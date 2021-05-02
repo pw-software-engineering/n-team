@@ -12,6 +12,7 @@ using Server.Database;
 using Server.Database.DataAccess;
 using Server.Database.DatabaseTransaction;
 using Server.Services.ClientService;
+using Server.Services.HotelSearchService;
 using Server.Services.OfferService;
 using System;
 using System.Collections.Generic;
@@ -36,13 +37,15 @@ namespace Server
             services.AddControllers();
 
             services.AddAutoMapper(typeof(Startup));
-            services.AddTransient<IDatabaseTransaction, DatabaseTransaction>();
+            services.AddScoped<IDatabaseTransaction, DatabaseTransaction>();
             services.AddTransient<IOfferService, OfferService>();
             services.AddTransient<IClientService, ClientService>();
             services.AddTransient<IOfferDataAccess, OfferDataAccess>();
             services.AddTransient<IClientDataAccess, ClientDataAccess>();
             services.AddTransient<IRoomDataAccess, RoomDataAccess>();
             services.AddTransient<IHotelTokenDataAccess, HotelTokenDataAccess>();
+            services.AddTransient<IHotelSearchDataAccess, HotelSearchDataAccess>();
+            services.AddTransient<IHotelSearchService, HotelSearchService>();
             services.AddDbContext<ServerDbContext>(options =>           
                 options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext")));
             //services.AddAuthentication("HotellBasic").AddScheme<HotellTokenSchemeOptions, HotellTokenScheme>("HotellBasic", null);

@@ -54,11 +54,7 @@ namespace Server.Tests.Authentication
         [Fact]
         public void ParseTokenHeader_SingleHeaderValueCorrectToken_NonNullClientTokenAndNullError()
         {
-            ClientToken token = new ClientToken()
-            {
-                ID = 1,
-                CreatedAt = DateTime.Now
-            };
+            ClientToken token = new ClientToken(1);
             string tokenJSON = JsonSerializer.Serialize(
                 token,
                 new JsonSerializerOptions()
@@ -66,7 +62,6 @@ namespace Server.Tests.Authentication
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 }
             );
-            //File.WriteAllText("test-output.txt", tokenJSON);
 
             StringValues tokenHeader = new StringValues(tokenJSON);
             ClientToken resToken = _clientTokenManager.ParseTokenHeader(tokenHeader, out string parseError);
@@ -86,11 +81,7 @@ namespace Server.Tests.Authentication
         public void ValidateToken_ClientTokenContainsValidID_ReturnsTrue()
         {
             _tokenDataAccessMock.Setup(dataAccess => dataAccess.CheckIfClientExists(1)).Returns(true);
-            ClientToken token = new ClientToken()
-            {
-                ID = 1,
-                CreatedAt = DateTime.Now
-            };
+            ClientToken token = new ClientToken(1);
             Assert.True(_clientTokenManager.ValidateToken(token, out string _));
         }
 
@@ -98,11 +89,7 @@ namespace Server.Tests.Authentication
         public void ValidateToken_ClientTokenContainsInvalidID_ReturnsFalseAndErrorNonNull()
         {
             _tokenDataAccessMock.Setup(dataAccess => dataAccess.CheckIfClientExists(It.IsNotIn(new int[] { 1 }))).Returns(false);
-            ClientToken token = new ClientToken()
-            {
-                ID = -1,
-                CreatedAt = DateTime.Now
-            };
+            ClientToken token = new ClientToken(-1);
             Assert.False(_clientTokenManager.ValidateToken(token, out string validationError));
             Assert.NotNull(validationError);
         }
@@ -116,11 +103,7 @@ namespace Server.Tests.Authentication
         [Fact]
         public void CreatePrincipal_NonNullClientToken_ContainsIDClaimWithTheSameValue()
         {
-            ClientToken token = new ClientToken()
-            {
-                ID = -1,
-                CreatedAt = DateTime.Now
-            };
+            ClientToken token = new ClientToken(-1);
             ClaimsPrincipal principal = _clientTokenManager.CreatePrincipal(token);
             Assert.Equal(token.ID, int.Parse(principal.FindFirstValue("id")));
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Server.RequestModels;
 using Server.Services.OfferService;
 using Server.Services.Result;
 using Server.ViewModels;
@@ -9,7 +10,7 @@ using System.Linq;
 namespace Server.Controllers.Hotel
 {
     [ApiController]
-    [Authorize(AuthenticationSchemes = "HotelTokenScheme")]
+    //[Authorize(AuthenticationSchemes = "HotelTokenScheme")]
     public class HotelOffersController : Controller
     {
         private readonly IOfferService service;

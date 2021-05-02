@@ -10,12 +10,15 @@ namespace Server.Database.DatabaseTransaction
     {
         private ServerDbContext _context;
         private IDbContextTransaction _transaction;
+        private bool _hasTransactionBegun = false;
+
         public DatabaseTransaction(ServerDbContext context)
         {
             _context = context;
         }
         public void BeginTransaction()
         {
+            _hasTransactionBegun = true;
             _transaction = _context.Database.BeginTransaction();
         }
         public void CommitTransaction()
@@ -28,7 +31,10 @@ namespace Server.Database.DatabaseTransaction
         }
         public void Dispose()
         {
-            _transaction.Dispose();
+            if(_hasTransactionBegun)
+            {
+                _transaction.Dispose();
+            }
         }
     }
 }
