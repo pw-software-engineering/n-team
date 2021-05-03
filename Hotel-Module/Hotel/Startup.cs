@@ -27,7 +27,7 @@ namespace Hotel
         {
             services.AddHttpClient<DefaultHttpClient>(c =>
             {
-                c.BaseAddress = new Uri("http://localhost:5001/");
+                c.BaseAddress = new Uri("https://localhost:5001/api-hotel/");
                 c.DefaultRequestHeaders.Add("x-hotel-token", "TestAccessToken1");   // TODO: change it
             });
             services.AddControllersWithViews();
@@ -55,6 +55,7 @@ namespace Hotel
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Login}/{action=Index}/{id?}");

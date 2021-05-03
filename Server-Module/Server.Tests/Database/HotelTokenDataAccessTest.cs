@@ -27,7 +27,7 @@ namespace Server.Tests.Database
             .BuildServiceProvider();
 
             var builder = new DbContextOptionsBuilder<ServerDbContext>();
-            builder.UseSqlServer($"Server=(localdb)\\mssqllocaldb;Database=ServerDbTokenHotelTests;Trusted_Connection=True;MultipleActiveResultSets=true")
+            builder.UseSqlServer($"Server=(localdb)\\mssqllocaldb;Database=ServerDbHotelTokenTests;Trusted_Connection=True;MultipleActiveResultSets=true")
                     .UseInternalServiceProvider(serviceProvider);
 
             _context = new ServerDbContext(builder.Options);
@@ -56,9 +56,9 @@ namespace Server.Tests.Database
             {
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos ON");
                 _context.HotelInfos.AddRange(
-                    new HotelInfoDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDesc = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
-                    new HotelInfoDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDesc = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
-                    new HotelInfoDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDesc = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
+                    new HotelInfoDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
+                    new HotelInfoDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
+                    new HotelInfoDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos OFF;");
 
