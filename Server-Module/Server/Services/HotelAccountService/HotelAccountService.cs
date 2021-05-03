@@ -1,4 +1,5 @@
 ﻿using Server.Database.DataAccess;
+using Server.Database.DatabaseTransaction;
 using Server.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,11 @@ namespace Server.Services.HotelAccountService
     public class HotelAccountService : IHotelAccountService
     {
         private IHotelAccountDataAccess hotelAccountDataAccess;
+        private readonly IDatabaseTransaction _transaction;
 
-        public HotelAccountService(IHotelAccountDataAccess hotelAccountDataAccess)
+        public HotelAccountService(IHotelAccountDataAccess hotelAccountDataAccess, IDatabaseTransaction databaseTransaction)
         {
+            _transaction = databaseTransaction;
             this.hotelAccountDataAccess = hotelAccountDataAccess;
         }
 
@@ -29,12 +32,16 @@ namespace Server.Services.HotelAccountService
 
         public void UpdateInfo(int hotelId, HotelUpdateInfo hotelUpdateInfo)
         {
+            _transaction.BeginTransaction();
             try {
                 hotelAccountDataAccess.UpdateInfo(hotelId, hotelUpdateInfo);
             }catch(NotFundExepcion e)
             {
+                _transaction.RollbackTransaction();
                 throw new Exception(e.Message);
             }
+            _transaction.CommitTransaction();
+            
         }   
     }
 }

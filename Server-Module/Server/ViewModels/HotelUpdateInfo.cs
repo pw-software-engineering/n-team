@@ -18,7 +18,7 @@ namespace Server.ViewModels
 
         public HotelUpdateInfo(HotelInfoDb hotelInfoDb)
         {
-            hotelDesc = hotelInfoDb.HotelDesc;
+            hotelDesc = hotelInfoDb.HotelDescription;
             hotelName = hotelInfoDb.HotelName;
             hotelPreviewPicture = hotelInfoDb.HotelPreviewPicture;
             if (hotelInfoDb.HotelPictures != null)

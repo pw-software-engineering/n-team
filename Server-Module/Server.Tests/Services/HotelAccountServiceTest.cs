@@ -1,6 +1,7 @@
 ﻿using Moq;
 using Server.Database;
 using Server.Database.DataAccess;
+using Server.Database.DatabaseTransaction;
 using Server.Services.HotelAccountService;
 using Server.ViewModels;
 using System;
@@ -14,19 +15,19 @@ namespace Server.Tests.Services
     {
         private HotelAccountService hotelAccountService;
         private Mock<IHotelAccountDataAccess> _dataAccessMock;
-
+        private Mock<IDatabaseTransaction> _transaction;
 
         public HotelAccountServiceTest()
         {
             _dataAccessMock = new Mock<IHotelAccountDataAccess>();
-            hotelAccountService = new HotelAccountService(_dataAccessMock.Object);
+            _transaction = new Mock<IDatabaseTransaction>();
+            hotelAccountService = new HotelAccountService(_dataAccessMock.Object,_transaction.Object);
         }
         [Fact]
         public void GodGetingTest()
         {
             int hotelID = 1;
-            _dataAccessMock.Setup(x => x.AddHotelInfo(It.IsAny<HotelUpdateInfo>())).Returns(hotelID);
-
+            
             var hotel = new HotelGetInfo() { city = "city", country = "contry", hotelDesc = "desc", hotelName = "name", hotelPictures = null, hotelPreviewPicture = "zdjencie" };
 
             _dataAccessMock.Setup(x => x.GetInfo(It.IsAny<int>())).Throws(new Exception());
@@ -75,6 +76,17 @@ namespace Server.Tests.Services
 
             Assert.Throws<Exception>(() => hotelAccountService.UpdateInfo(hotelID, null));
 
+        }
+        [Fact]
+        public void GoodUpdateTest()
+        {
+            int hotelID = 1;
+
+            var hotel = new HotelGetInfo() { city = "city", country = "contry", hotelDesc = "desc", hotelName = "name", hotelPictures = null, hotelPreviewPicture = "zdjencie" };
+
+            _dataAccessMock.Setup(x => x.UpdateInfo(It.IsAny<int>(), null)).Throws(new Exception());
+            _dataAccessMock.Setup(x => x.UpdateInfo(It.IsAny<int>(), It.IsAny<HotelUpdateInfo>()));
+            hotelAccountService.UpdateInfo(1, hotel);
         }
 
     }
