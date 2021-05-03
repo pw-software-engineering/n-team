@@ -23,8 +23,8 @@ namespace Server.Controllers.Hotel
         [HttpGet("api-hotel/offers")]
         public IActionResult GetOffers(bool? isActive, int pageNumber = 1, int pageSize = 10)
         {
-            //int hotelId = GetHotelID();
-            int hotelId = 3;
+            int hotelId = GetHotelID();
+
             return service.GetHotelOffers(new Paging(pageSize, pageNumber), hotelId, isActive);
         }
         [HttpGet("api-hotel/offers/{offerID}")]

@@ -32,9 +32,7 @@ namespace Server.Services.RoomService
             _transaction.BeginTransaction();
             int roomID = _dataAccess.AddRoom(hotelID, hotelRoomNumber);
             _transaction.CommitTransaction();
-
             return new ServiceResult(HttpStatusCode.OK, new RoomID(roomID));
-
         }
 
         public IServiceResult DeleteRoom(int hotelID, int roomID)
