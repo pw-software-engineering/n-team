@@ -75,9 +75,7 @@
             foreach (string picture in Model.Pictures)
             {
                 <div class="col-sm-3">
-                    <a href="data:image/png;base64,@Html.Raw(picture)">
-                        <img class="img-thumbnail" src="data:image/png;base64,@Html.Raw(picture)">
-                    </a>
+                    <img class="img-thumbnail" src="data:image/png;base64,@Html.Raw(picture)">
                 </div>
             }
     </div>
