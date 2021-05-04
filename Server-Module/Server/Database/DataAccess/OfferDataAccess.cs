@@ -71,12 +71,12 @@ namespace Server.Database.DataAccess
         {
             using (var transaction = _dbContext.Database.BeginTransaction())
             {
-                OfferDb offer = _dbContext.Offers.Find(offerID);
+                OfferDb offer = _dbContext.Offers.Include(o => o.OfferPictures).Single(o => o.OfferID == offerID);
                 offer.IsActive = offerUpdateInfo.IsActive ?? offer.IsActive;
                 offer.OfferTitle = offerUpdateInfo.OfferTitle ?? offer.OfferTitle;
                 offer.Description = offerUpdateInfo.Description ?? offer.Description;
                 offer.OfferPreviewPicture = offerUpdateInfo.OfferPreviewPicture ?? offer.OfferPreviewPicture;
-                if (offerUpdateInfo.OfferPictures != null)
+                if (!(offerUpdateInfo.OfferPictures is null))
                 {
                     offer.OfferPictures.RemoveAll(op => op.OfferID == offerID);
                     foreach (string picture in offerUpdateInfo.OfferPictures)

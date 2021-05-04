@@ -26,3 +26,29 @@ function switchEnabled(checkbox, elementId) {
         element.disabled = false;
     }
 }
+
+// function used when sending a picture to controller
+async function get64BaseString(file) {
+    var str;
+    await readUploadedImage(file)
+        .then(value => {
+            str = value.split(',')[1];
+        })
+        .catch(function () {
+            console.log("oops");
+        });
+    return str;
+}
+function readUploadedImage(file) {
+    var reader = new FileReader();
+    return new Promise((resolve, reject) => {
+        reader.onerror = () => {
+            reader.abort();
+            reject();
+        };
+        reader.onload = () => {
+            resolve(reader.result);
+        };
+        reader.readAsDataURL(file);
+    });
+}

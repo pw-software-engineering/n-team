@@ -206,7 +206,8 @@ namespace Server.Migrations
                         name: "FK_OfferPictures_Offers_OfferID",
                         column: x => x.OfferID,
                         principalTable: "Offers",
-                        principalColumn: "OfferID");
+                        principalColumn: "OfferID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

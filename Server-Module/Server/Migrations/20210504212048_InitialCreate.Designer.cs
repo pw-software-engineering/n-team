@@ -10,7 +10,7 @@ using Server.Database;
 namespace Server.Migrations
 {
     [DbContext(typeof(ServerDbContext))]
-    [Migration("20210429121854_InitialCreate")]
+    [Migration("20210504212048_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -725,7 +725,7 @@ namespace Server.Migrations
                     b.HasOne("Server.Database.Models.OfferDb", "Offer")
                         .WithMany("OfferPictures")
                         .HasForeignKey("OfferID")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Offer");

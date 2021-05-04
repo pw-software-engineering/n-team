@@ -723,7 +723,7 @@ namespace Server.Migrations
                     b.HasOne("Server.Database.Models.OfferDb", "Offer")
                         .WithMany("OfferPictures")
                         .HasForeignKey("OfferID")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Offer");

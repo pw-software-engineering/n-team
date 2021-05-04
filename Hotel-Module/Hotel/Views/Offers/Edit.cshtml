@@ -47,7 +47,7 @@
 </div>
 <hr />
 
-<form asp-action="Edit" method="post">
+<form asp-action="Edit" method="post" id="editOfferForm">
     <!-- Active -->
     <!--<div class="form-group custom-control custom-checkbox">
         <input asp-for="IsActive" class="custom-control-input" />
@@ -80,7 +80,7 @@
             <label class="custom-control-label" for="@Html.IdFor(o => o.ChangePreviewPicture)">Change preview picture</label>
         </div>
         <div class="form-row">
-            <input asp-for="Offer.OfferPreviewPicture" type="file" disabled class="form-control col-sm-4" />
+            <input asp-for="Offer.OfferPreviewPicture" type="file" accept="image/*" disabled class="form-control col-sm-4" />
             <label class="form-control-placeholder-file">Preview picture</label>
             <div id="previewGallery">
                 @if (!(Model.Offer.OfferPreviewPicture is null) && !string.IsNullOrWhiteSpace(Model.Offer.OfferPreviewPicture))
@@ -99,7 +99,7 @@
             <label class="custom-control-label" for="@Html.IdFor(o => o.ChangeOfferPictures)">Change additional pictures</label>
         </div>
         <div class="form-row">
-            <input asp-for="Offer.Pictures" type="file" multiple disabled class="form-control col-sm-4" />
+            <input asp-for="Offer.Pictures" type="file" accept="image/*" multiple disabled class="form-control col-sm-4" />
             <label class="form-control-placeholder-file">Additional pictures</label>
             <div id="additionalGallery">
                 @if (!(Model.Offer.Pictures is null))
@@ -165,6 +165,47 @@
                     gallery.innerHTML = defaultGalleryHtml;
                 }
             }
+
+
+            var form = document.getElementById('editOfferForm');
+            form.onsubmit = async function (e) {
+                e.preventDefault();
+                var formData = new FormData(form);
+                var previewPicString = '@Html.NameFor(o => o.Offer.OfferPreviewPicture)';
+                var picsString = '@Html.NameFor(o => o.Offer.Pictures)';
+
+                var previewPic = formData.get(previewPicString);
+                var previewPic64 = await get64BaseString(previewPic);
+                if (previewPic64) {
+                    formData.set(previewPicString, previewPic64);           // .set() overrides value
+                }
+
+                var pics = formData.getAll(picsString);
+                formData.delete(picsString);
+                for (const pic of pics) {
+                    var pic64 = await (get64BaseString(pic));
+                    if (pic64) {
+                        formData.append(picsString, pic64);
+                    }
+                }
+
+                await fetch('@Url.Action(nameof(Hotel.Controllers.OffersController.Edit))', {
+                    method: 'POST',
+                    body: formData,
+                    redirect: "follow"
+                }).then((response) => {
+                    if (response.ok) {
+                        alert("Offer edited successfully!")
+                    } else {
+                        alert("error: " + response.status);
+                    }
+                    if (response.redirected) {
+                        window.location.replace(response.url);
+                    }
+                }).catch((error) => {
+                    console.error('fetch error: ', error);
+                });
+            };
         })
     </script>
 }
