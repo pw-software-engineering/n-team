@@ -66,7 +66,7 @@
 
     <!-- Additinal PICS-->
     <div class="form-group form-row">
-        <input asp-for="Pictures" type="file" multiple class="form-control col-sm-4" onchange="previewGallery(this, 'additionalGallery')" />
+        <input asp-for="Pictures" type="file" accept="image/*" multiple class="form-control col-sm-4" onchange="previewGallery(this, 'additionalGallery')" />
         <label asp-for="Pictures" class="form-control-placeholder">Additional pictures</label>
         <div id="additionalGallery"></div>
     </div>

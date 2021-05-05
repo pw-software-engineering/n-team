@@ -75,6 +75,20 @@ namespace Server.Controllers.Hotel
             return jsonResult;
         }
 
+        [HttpDelete("offers/{offerID}")]
+        public IActionResult DeleteOffer(int offerID)
+        {
+            int hotelId = GetHotelID();
+
+            IServiceResult result = service.DeleteOffer(offerID, hotelId);
+
+            JsonResult jsonResult = new JsonResult(result.ResponseBody)
+            {
+                StatusCode = (int)result.StatusCode
+            };
+            return jsonResult;
+        }
+
         private int GetHotelID()
         {
             var ids = from claim in HttpContext.User.Claims

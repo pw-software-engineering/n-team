@@ -44,7 +44,7 @@ namespace Server.Database.DataAccess
         public List<OfferPreview> GetHotelOffers(Paging paging, int hotelID, bool? isActive)
         {
             var ret = _mapper.Map<List<OfferPreview>>(_dbContext.Offers
-                             .Where(o => o.HotelID == hotelID));
+                             .Where(o => o.HotelID == hotelID && !o.IsDeleted));
 
             if (isActive.HasValue)
                 ret = ret.Where(o => o.IsActive == isActive).ToList();

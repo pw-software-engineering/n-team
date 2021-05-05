@@ -117,7 +117,7 @@
     <div class="row">
         <button type="submit" class="btn btn-primary m-1">Save</button>
         <button type="button" class="btn btn-outline-danger m-1">Deactivate</button>
-        <button type="button" class="btn btn-danger m-1 ml-auto">Remove offer</button>
+        <button type="button" class="btn btn-danger m-1 ml-auto" id="removeOfferBtn">Remove offer</button>
     </div>
 </form>
 
@@ -166,7 +166,7 @@
                 }
             }
 
-
+            // converting pictures to base64 and sending a form
             var form = document.getElementById('editOfferForm');
             form.onsubmit = async function (e) {
                 e.preventDefault();
@@ -206,6 +206,29 @@
                     console.error('fetch error: ', error);
                 });
             };
+
+
+            // removing an offer
+            $('#removeOfferBtn').on('click', async function () {
+                if (!confirm('Are you sure you want to permanently delete offer "@Model.Offer.OfferTitle"? This action is irreversible!'))
+                    return;
+
+                await fetch('@Url.Action(nameof(Hotel.Controllers.OffersController.Delete), new { offerID = Model.Offer.OfferID })', {
+                    method: 'GET',
+                    redirect: 'follow'
+                }).then((response) => {
+                    if (response.ok) {
+                        alert("Offer deleted succesfully.");
+                    } else {
+                        alert("error: " + response.status);
+                    }
+                    if (response.redirected) {
+                        window.location.replace(response.url);
+                    }
+                }).catch((error) => {
+                    console.error('fetch error: ', error);
+                });
+            });
         })
     </script>
 }

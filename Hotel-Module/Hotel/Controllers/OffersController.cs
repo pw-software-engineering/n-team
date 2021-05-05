@@ -84,8 +84,8 @@ namespace Hotel.Controllers
                 IsActive = offerViewModel.Offer.IsActive,
                 OfferTitle = offerViewModel.Offer.OfferTitle,
                 Description = offerViewModel.Offer.Description,
-                OfferPreviewPicture = offerViewModel.ChangePreviewPicture ? offerViewModel.Offer.OfferPreviewPicture : null,
-                OfferPictures = offerViewModel.ChangeOfferPictures ? offerViewModel.Offer.Pictures : null
+                OfferPreviewPicture = offerViewModel.ChangePreviewPicture ? (offerViewModel.Offer.OfferPreviewPicture ?? "") : null,
+                OfferPictures = offerViewModel.ChangeOfferPictures ? (offerViewModel.Offer.Pictures ?? new List<string>()) : null
             };
             HttpContent content = JsonContent.Create(offer);
 
@@ -116,6 +116,22 @@ namespace Hotel.Controllers
             try
             {
                 HttpResponseMessage response = await httpClient.PostAsJsonAsync("offers", offer);
+                if (response.IsSuccessStatusCode)
+                    return RedirectToAction("index");
+                return StatusCode((int)response.StatusCode);
+            }
+            catch (HttpRequestException)
+            {
+                return StatusCode((int)HttpStatusCode.BadGateway);
+            }
+        }
+
+        [HttpGet("/offers/{offerID}/delete")]
+        public async Task<IActionResult> Delete([FromRoute] int offerID)
+        {
+            try
+            {
+                HttpResponseMessage response = await httpClient.DeleteAsync("offers/" + offerID.ToString());
                 if (response.IsSuccessStatusCode)
                     return RedirectToAction("index");
                 return StatusCode((int)response.StatusCode);
