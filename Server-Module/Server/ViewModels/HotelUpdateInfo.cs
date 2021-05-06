@@ -12,7 +12,7 @@ namespace Server.ViewModels
         public string HotelName { get; set; }
         public string HotelDesc { get; set; }
         public string HotelPreviewPicture { get; set; }
-        public string[] HotelPictures { get; set; }
+        public List<string> HotelPictures { get; set; }
 
         public HotelUpdateInfo() { }
 
@@ -29,7 +29,7 @@ namespace Server.ViewModels
                 {
                     pomString.Add(pic.Picture);
                 }
-                HotelPictures = pomString.ToArray();
+                HotelPictures = pomString;
             }
             else
             {
