@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Server.Models;
 using Server.RequestModels;
 using Server.Services.OfferService;
-using Server.Services.Result;
 using Server.ViewModels;
 using System;
 using System.Linq;
