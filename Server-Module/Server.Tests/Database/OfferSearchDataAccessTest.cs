@@ -173,8 +173,8 @@ namespace Server.Tests.Database
             Paging paging = new Paging(number: 1, size: 1000);
             OfferFilter offerFilter = new OfferFilter()
             {
-                From = new DateTime(4000, 10, 10),
-                To = new DateTime(4000, 10, 11)
+                FromTime = new DateTime(4000, 10, 10),
+                ToTime = new DateTime(4000, 10, 11)
             };
 
             List<ClientOfferPreview> clientOfferPreviews = _dataAccess.GetHotelOffers(hotelID, paging, offerFilter);
@@ -194,9 +194,9 @@ namespace Server.Tests.Database
             Paging paging = new Paging(number: 1, size: 1000);
             OfferFilter offerFilter = new OfferFilter()
             {
-                From = new DateTime(4000, 10, 10),
-                To = new DateTime(4000, 10, 11),
-                MaxCost = 100
+                FromTime = new DateTime(4000, 10, 10),
+                ToTime = new DateTime(4000, 10, 11),
+                CostMax = 100
             };
 
             List<ClientOfferPreview> clientOfferPreviews = _dataAccess.GetHotelOffers(hotelID, paging, offerFilter);
@@ -204,8 +204,8 @@ namespace Server.Tests.Database
                 o.IsActive && 
                 !o.IsDeleted && 
                 o.HotelID == hotelID &&
-                o.CostPerChild <= offerFilter.MaxCost &&
-                o.CostPerAdult <= offerFilter.MaxCost).ToList();
+                o.CostPerChild <= offerFilter.CostMax &&
+                o.CostPerAdult <= offerFilter.CostMax).ToList();
 
             Assert.Equal(allOffers.Count, clientOfferPreviews.Count);
             foreach (ClientOfferPreview preview in clientOfferPreviews)
@@ -221,9 +221,9 @@ namespace Server.Tests.Database
             Paging paging = new Paging(number: 1, size: 1000);
             OfferFilter offerFilter = new OfferFilter()
             {
-                From = new DateTime(4000, 10, 10),
-                To = new DateTime(4000, 10, 11),
-                MinCost = 100
+                FromTime = new DateTime(4000, 10, 10),
+                ToTime = new DateTime(4000, 10, 11),
+                CostMin = 100
             };
 
             List<ClientOfferPreview> clientOfferPreviews = _dataAccess.GetHotelOffers(hotelID, paging, offerFilter);
@@ -231,8 +231,8 @@ namespace Server.Tests.Database
                 o.IsActive &&
                 !o.IsDeleted &&
                 o.HotelID == hotelID &&
-                o.CostPerChild >= offerFilter.MinCost &&
-                o.CostPerAdult >= offerFilter.MinCost).ToList();
+                o.CostPerChild >= offerFilter.CostMin &&
+                o.CostPerAdult >= offerFilter.CostMin).ToList();
 
             Assert.Equal(allOffers.Count, clientOfferPreviews.Count);
             foreach (ClientOfferPreview preview in clientOfferPreviews)
@@ -248,8 +248,8 @@ namespace Server.Tests.Database
             Paging paging = new Paging(number: 1, size: 1000);
             OfferFilter offerFilter = new OfferFilter()
             {
-                From = new DateTime(4000, 10, 10),
-                To = new DateTime(4000, 10, 11),
+                FromTime = new DateTime(4000, 10, 10),
+                ToTime = new DateTime(4000, 10, 11),
                 MinGuests = 10
             };
 

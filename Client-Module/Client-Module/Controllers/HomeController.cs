@@ -17,6 +17,7 @@ using Client_Module.ViewsTagID.Layout;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Client_Module.Authentication;
 
 namespace Client_Module.Controllers
 {

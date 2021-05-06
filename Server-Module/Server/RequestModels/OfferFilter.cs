@@ -11,19 +11,19 @@ namespace Server.RequestModels
     {
         [FromQuery]
         [Required]
-        public DateTime? From { get; set; }
+        public DateTime? FromTime { get; set; }
 
         [FromQuery]
         [Required]
-        public DateTime? To { get; set; }
+        public DateTime? ToTime { get; set; }
 
         [FromQuery]
         public int? MinGuests { get; set; }
 
         [FromQuery]
-        public int? MinCost { get; set; }
+        public int? CostMin { get; set; }
 
         [FromQuery]
-        public int? MaxCost { get; set; }
+        public int? CostMax { get; set; }
     }
 }

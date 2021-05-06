@@ -31,13 +31,13 @@ namespace Server.Database.DataAccess.OfferSearch
             }
 
             IEnumerable<OfferDb> offers = _dbContext.Offers.Where(o => !o.IsDeleted && o.IsActive && o.HotelID == hotelID);
-            if(offerFilter.MaxCost.HasValue)
+            if(offerFilter.CostMax.HasValue)
             {
-                offers = offers.Where(o => Math.Max(o.CostPerAdult, o.CostPerChild) <= offerFilter.MaxCost);
+                offers = offers.Where(o => Math.Max(o.CostPerAdult, o.CostPerChild) <= offerFilter.CostMax);
             }
-            if(offerFilter.MinCost.HasValue)
+            if(offerFilter.CostMin.HasValue)
             {
-                offers = offers.Where(o => Math.Min(o.CostPerAdult, o.CostPerChild) >= offerFilter.MinCost);
+                offers = offers.Where(o => Math.Min(o.CostPerAdult, o.CostPerChild) >= offerFilter.CostMin);
             }
             if(offerFilter.MinGuests.HasValue)
             {
@@ -45,7 +45,7 @@ namespace Server.Database.DataAccess.OfferSearch
             }
 
             offers = offers.AsEnumerable();
-            offers = offers.Where(o => CheckHotelOfferAvailability(o.OfferID, offerFilter.From.Value, offerFilter.To.Value))
+            offers = offers.Where(o => CheckHotelOfferAvailability(o.OfferID, offerFilter.FromTime.Value, offerFilter.ToTime.Value))
                            .Skip((paging.pageNumber - 1) * paging.pageSize)
                            .Take(paging.pageSize);
 

@@ -76,8 +76,8 @@ namespace Server.Tests.Services
             Paging paging = new Paging();
             OfferFilter offerFilter = new OfferFilter()
             {
-                From = new DateTime(2000, 10, 10),
-                To = new DateTime(1999, 10, 10)
+                FromTime = new DateTime(2000, 10, 10),
+                ToTime = new DateTime(1999, 10, 10)
             };
 
             IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, paging, offerFilter);
@@ -93,8 +93,8 @@ namespace Server.Tests.Services
             Paging paging = new Paging();
             OfferFilter offerFilter = new OfferFilter()
             {
-                From = new DateTime(2000, 10, 10),
-                To = new DateTime(2010, 10, 10),
+                FromTime = new DateTime(2000, 10, 10),
+                ToTime = new DateTime(2010, 10, 10),
                 MinGuests = -1
             };
 
@@ -111,15 +111,15 @@ namespace Server.Tests.Services
             Paging paging = new Paging();
             OfferFilter offerFilterMinCost = new OfferFilter()
             {
-                From = new DateTime(2000, 10, 10),
-                To = new DateTime(2010, 10, 10),
-                MinCost = -1
+                FromTime = new DateTime(2000, 10, 10),
+                ToTime = new DateTime(2010, 10, 10),
+                CostMin = -1
             };
             OfferFilter offerFilterMaxCost = new OfferFilter()
             {
-                From = new DateTime(2000, 10, 10),
-                To = new DateTime(2010, 10, 10),
-                MaxCost = -1
+                FromTime = new DateTime(2000, 10, 10),
+                ToTime = new DateTime(2010, 10, 10),
+                CostMax = -1
             };
 
             IServiceResult serviceResultMinCost = _offerSearchService.GetHotelOffers(hotelID, paging, offerFilterMinCost);
@@ -138,10 +138,10 @@ namespace Server.Tests.Services
             Paging paging = new Paging();
             OfferFilter offerFilter = new OfferFilter()
             {
-                From = new DateTime(2000, 10, 10),
-                To = new DateTime(2010, 10, 10),
-                MinCost = 10,
-                MaxCost = 5
+                FromTime = new DateTime(2000, 10, 10),
+                ToTime = new DateTime(2010, 10, 10),
+                CostMin = 10,
+                CostMax = 5
             };
 
             IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, paging, offerFilter);
@@ -157,10 +157,10 @@ namespace Server.Tests.Services
             Paging paging = new Paging();
             OfferFilter offerFilter = new OfferFilter()
             {
-                From = new DateTime(2000, 10, 10),
-                To = new DateTime(2010, 10, 10),
-                MinCost = 5,
-                MaxCost = 10,
+                FromTime = new DateTime(2000, 10, 10),
+                ToTime = new DateTime(2010, 10, 10),
+                CostMin = 5,
+                CostMax = 10,
                 MinGuests = 0
             };
             ClientOfferPreview offerPreview = new ClientOfferPreview()

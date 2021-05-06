@@ -40,13 +40,19 @@ namespace Server.Services.OfferSearchService
             {
                 return new ServiceResult(HttpStatusCode.NotFound);
             }
+            if (offerFilter.FromTime == null || offerFilter.ToTime == null)
+            {
+                return new ServiceResult(
+                    HttpStatusCode.BadRequest,
+                    new Error("FromTime and ToTime properties are required."));
+            }
             if (paging.pageNumber < 1 || paging.pageSize < 1)
             {
                 return new ServiceResult(
                     HttpStatusCode.BadRequest,
                     new Error("Invalid paging arguments"));
             }
-            if(offerFilter.From.Value > offerFilter.To.Value)
+            if(offerFilter.FromTime.Value > offerFilter.ToTime.Value)
             {
                 return new ServiceResult(
                    HttpStatusCode.BadRequest,
@@ -58,19 +64,19 @@ namespace Server.Services.OfferSearchService
                     HttpStatusCode.BadRequest,
                     new Error("MinGuests must be a non-negative integer"));
             }
-            if(offerFilter.MinCost.HasValue && offerFilter.MinCost < 0)
+            if(offerFilter.CostMin.HasValue && offerFilter.CostMin < 0)
             {
                 return new ServiceResult(
                     HttpStatusCode.BadRequest,
                     new Error("MinCost must be a non-negative integer"));
             }
-            if (offerFilter.MaxCost.HasValue && offerFilter.MaxCost < 0)
+            if (offerFilter.CostMax.HasValue && offerFilter.CostMax < 0)
             {
                 return new ServiceResult(
                     HttpStatusCode.BadRequest,
                     new Error("MaxCost must be a non-negative integer"));
             }
-            if (offerFilter.MinCost.HasValue && offerFilter.MaxCost.HasValue && offerFilter.MinCost > offerFilter.MaxCost)
+            if (offerFilter.CostMin.HasValue && offerFilter.CostMax.HasValue && offerFilter.CostMin > offerFilter.CostMax)
             {
                 return new ServiceResult(
                     HttpStatusCode.BadRequest,
