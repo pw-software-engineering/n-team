@@ -70,8 +70,8 @@ namespace ServerApiMockup.MockupApiControllers
                 City = "Warsaw",
                 HotelPictures = new List<string>()
                 {
-                    //imgBase64Room,
-                    //imgBase64Stock
+                    imgBase64Room,
+                    imgBase64Stock
                 }
             };
             return new JsonResult(
