@@ -89,14 +89,12 @@
             validationError:"Field must contain only white-space characters and letters",
             inputValidator: textOrEmptyValidator
         })
-
         var countryInputValidator = new InputValidator({
             inputHandle: $("#@tagIDs.CountryFilterInputID"),
             errorBoxHandle: $("#@tagIDs.CountryValidationBoxID"),
             validationError: "Field must contain only white-space characters and letters",
             inputValidator: textOrEmptyValidator
         });
-
         var cityInputValidator = new InputValidator({
             inputHandle: $("#@tagIDs.CityFilterInputID"),
             errorBoxHandle: $("#@tagIDs.CityValidationBoxID"),
@@ -104,7 +102,7 @@
             inputValidator: textOrEmptyValidator
         });
 
-        $("#@tagIDs.ApplyFilterBtn").on("click", function () {
+        function ValidateFilterInput() {
             var inputValidators = [
                 hotelNameInputValidator,
                 countryInputValidator,
@@ -114,10 +112,11 @@
             for (var i = 0; i < inputValidators.length; i++) {
                 areValid = inputValidators[i].validate() && areValid;
             }
-            if (!areValid) {
-                return;
-            }
-            pager.setPageNumber(1);
+            return areValid;
+        }
+
+        $("#@tagIDs.ApplyFilterBtn").on("click", function () {
+            pager.setPageNumber(1, true);
         });
 
         var pager = new Pager();
@@ -127,31 +126,54 @@
         pager.addPageNumberInput($("#@tagIDs.TopPagerInputID"));
 
         $("#@tagIDs.BottomPagerNextBtnID").on("click", function () {
+            if (!ValidateFilterInput()) {
+                return;
+            }
             var pageInput = $("#@tagIDs.BottomPagerInputID");
             pager.setPageNumber(Number(pageInput.val()) + 1);
         });
         $("#@tagIDs.BottomPagerPreviousBtnID").on("click", function () {
+            if (!ValidateFilterInput()) {
+                return;
+            }
             var pageInput = $("#@tagIDs.BottomPagerInputID");
             pager.setPageNumber(Number(pageInput.val()) - 1);
         });
         $("#@tagIDs.BottomPagerInputID").on("change", function () {
+            if (!ValidateFilterInput()) {
+                $(this).val(pager.pageNumber);
+                return;
+            }
             pager.setPageNumber($(this).val());
         });
 
         $("#@tagIDs.TopPagerNextBtnID").on("click", function () {
+            if (!ValidateFilterInput()) {
+                return;
+            }
             var pageInput = $("#@tagIDs.TopPagerInputID");
             pager.setPageNumber(Number(pageInput.val()) + 1);
         });
         $("#@tagIDs.TopPagerPreviousBtnID").on("click", function () {
+            if (!ValidateFilterInput()) {
+                return;
+            }
             var pageInput = $("#@tagIDs.TopPagerInputID");
             pager.setPageNumber(Number(pageInput.val()) - 1);
         });
         $("#@tagIDs.TopPagerInputID").on("change", function () {
+            if (!ValidateFilterInput()) {
+                $(this).val(pager.pageNumber);
+                return;
+            }
             pager.setPageNumber($(this).val());
         });
 
         var hotelDisplayList = $("#@tagIDs.HotelDisplayListID");
         function DisplayHotels() {
+            if (!ValidateFilterInput()) {
+                return;
+            }
             hotelDisplayList.empty();
             hotelManager.getHotels({
                 pageNumber: pager.getPageNumber(),

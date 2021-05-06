@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Client_Module.Authentication;
 using Client_Module.Models;
@@ -15,11 +16,6 @@ namespace Client_Module.Controllers
     [Authorize(AuthenticationSchemes = ClientTokenCookieDefaults.AuthenticationScheme)]
     public class SearchController : Controller
     {
-        public SearchController()
-        {
-            
-        }
-
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             ViewData[LayoutTagID.NavSelectedBtnKey] = LayoutTagID.NavSearchBtnID;
@@ -35,7 +31,11 @@ namespace Client_Module.Controllers
         [HttpGet("/hotels/{hotelID}")]
         public IActionResult DetailedHotel(int hotelID)
         {
-            return View();
+            HotelDetailsModel model = new HotelDetailsModel()
+            {
+                HotelID = hotelID
+            };
+            return View(model);
         }
 
         [HttpGet("/hotels/{hotelID}/offers")]
