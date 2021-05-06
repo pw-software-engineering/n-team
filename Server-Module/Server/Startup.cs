@@ -10,9 +10,11 @@ using Microsoft.Extensions.Logging;
 using Server.Authentication;
 using Server.Database;
 using Server.Database.DataAccess;
+using Server.Database.DataAccess.OfferSearch;
 using Server.Database.DatabaseTransaction;
 using Server.Services.ClientService;
 using Server.Services.HotelSearchService;
+using Server.Services.OfferSearchService;
 using Server.Services.OfferService;
 using System;
 using System.Collections.Generic;
@@ -46,10 +48,18 @@ namespace Server
             services.AddTransient<IHotelTokenDataAccess, HotelTokenDataAccess>();
             services.AddTransient<IHotelSearchDataAccess, HotelSearchDataAccess>();
             services.AddTransient<IHotelSearchService, HotelSearchService>();
+            services.AddTransient<IOfferSearchDataAccess, OfferSearchDataAccess>();
+            services.AddTransient<IOfferSearchService, OfferSearchService>();
+
             services.AddDbContext<ServerDbContext>(options =>           
                 options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext")));
             //services.AddAuthentication("HotellBasic").AddScheme<HotellTokenSchemeOptions, HotellTokenScheme>("HotellBasic", null);
             services.AddAuthentication().AddScheme<HotelTokenSchemeOptions, HotelTokenScheme>(HotelTokenDefaults.AuthenticationScheme, (HotelTokenSchemeOptions options) => { options.ClaimsIssuer = "HotelBasic"; });
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
