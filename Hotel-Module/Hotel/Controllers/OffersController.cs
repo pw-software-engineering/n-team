@@ -13,15 +13,16 @@ namespace Hotel.Controllers
 {
     public class OffersController : Controller
     {
-        private readonly HttpClient httpClient;
+        private readonly HttpClient _httpClient;
 
         public OffersController(IHttpClientFactory httpClientFactory)
         {
-            this.httpClient = httpClientFactory.CreateClient(nameof(DefaultHttpClient));
+            _httpClient = httpClientFactory.CreateClient(nameof(DefaultHttpClient));
         }
 
+
         [HttpGet("/offers")]
-        public async Task<IActionResult> Index(bool? isActive, Paging paging)
+        public async Task<IActionResult> Index([FromQuery] bool? isActive, [FromQuery] Paging paging)
         {
             NameValueCollection query = HttpUtility.ParseQueryString("");
             if (isActive.HasValue)
@@ -32,7 +33,7 @@ namespace Hotel.Controllers
             IEnumerable<OfferPreview> response;
             try
             {
-                response = await httpClient.GetFromJsonAsync<IEnumerable<OfferPreview>>("offers?" + query.ToString());
+                response = await _httpClient.GetFromJsonAsync<IEnumerable<OfferPreview>>("offers?" + query.ToString());
             }
             catch (HttpRequestException e)
             {
@@ -40,16 +41,16 @@ namespace Hotel.Controllers
                     return StatusCode((int)HttpStatusCode.BadGateway);
                 return StatusCode((int)e.StatusCode);
             }
-            OffersIndex offersVM = new OffersIndex(response, paging, isActive);
+            OffersIndexViewModel offersVM = new OffersIndexViewModel(response, paging, isActive);
             return View(offersVM);
         }
 
         [HttpGet("/offers/{offerID}")]
-        public async Task<IActionResult> Details(int offerID)
+        public async Task<IActionResult> Details([FromRoute] int offerID)
         {
             try
             {
-                Offer offer = await httpClient.GetFromJsonAsync<Offer>("offers/" + offerID.ToString());
+                Offer offer = await _httpClient.GetFromJsonAsync<Offer>("offers/" + offerID.ToString());
                 return View(offer);
             }
             catch (HttpRequestException e)
@@ -61,11 +62,11 @@ namespace Hotel.Controllers
         }
 
         [HttpGet("/offers/{offerID}/edit")]
-        public async Task<IActionResult> Edit(int offerID)
+        public async Task<IActionResult> Edit([FromRoute] int offerID)
         {
             try
             {
-                Offer offer = await httpClient.GetFromJsonAsync<Offer>("offers/" + offerID.ToString());
+                Offer offer = await _httpClient.GetFromJsonAsync<Offer>("offers/" + offerID.ToString());
                 return View(new OfferEditViewModel(offer));
             }
             catch (HttpRequestException e)
@@ -91,7 +92,7 @@ namespace Hotel.Controllers
 
             try
             {
-                HttpResponseMessage response = await httpClient.PatchAsync("offers/" + offerViewModel.Offer.OfferID.ToString(), content);
+                HttpResponseMessage response = await _httpClient.PatchAsync("offers/" + offerViewModel.Offer.OfferID.ToString(), content);
                 if (!response.IsSuccessStatusCode)
                     return StatusCode((int)response.StatusCode);
                 return RedirectToAction("Details", new { offerViewModel.Offer.OfferID });
@@ -115,7 +116,7 @@ namespace Hotel.Controllers
         {
             try
             {
-                HttpResponseMessage response = await httpClient.PostAsJsonAsync("offers", offer);
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("offers", offer);
                 if (response.IsSuccessStatusCode)
                     return RedirectToAction("index");
                 return StatusCode((int)response.StatusCode);
@@ -131,7 +132,7 @@ namespace Hotel.Controllers
         {
             try
             {
-                HttpResponseMessage response = await httpClient.DeleteAsync("offers/" + offerID.ToString());
+                HttpResponseMessage response = await _httpClient.DeleteAsync("offers/" + offerID.ToString());
                 if (response.IsSuccessStatusCode)
                     return RedirectToAction("index");
                 return StatusCode((int)response.StatusCode);
