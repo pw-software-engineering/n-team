@@ -142,5 +142,29 @@ namespace Hotel.Controllers
                 return StatusCode((int)HttpStatusCode.BadGateway);
             }
         }
+
+        [HttpPost("/offers/{offerID}/changeActive")]
+        public async Task<IActionResult> ChangeActive([FromRoute] int offerID, [FromQuery] bool isActive)
+        {
+            OfferUpdateInfo offer = new OfferUpdateInfo
+            {
+                IsActive = isActive
+            };
+            HttpContent content = JsonContent.Create(offer);
+
+            try
+            {
+                HttpResponseMessage response = await _httpClient.PatchAsync("offers/" + offerID.ToString(), content);
+                if (!response.IsSuccessStatusCode)
+                    return StatusCode((int)response.StatusCode);
+                return RedirectToAction("index");
+            }
+            catch (HttpRequestException e)
+            {
+                if (e.StatusCode is null)
+                    return StatusCode((int)HttpStatusCode.BadGateway);
+                return StatusCode((int)e.StatusCode);
+            }
+        }
     }
 }

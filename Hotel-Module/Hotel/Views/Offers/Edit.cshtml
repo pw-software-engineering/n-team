@@ -116,7 +116,14 @@
 
     <div class="row">
         <button type="submit" class="btn btn-primary m-1">Save</button>
-        <button type="button" class="btn btn-outline-danger m-1">Deactivate</button>
+        @if (Model.Offer.IsActive)
+        {
+            <button type="button" class="btn btn-outline-danger m-1" id="changeActiveBtn">Deactivate</button>
+        }
+        else
+        {
+            <button type="button" class="btn btn-outline-success m-1" id="changeActiveBtn">Activate</button>
+        }
         <button type="button" class="btn btn-danger m-1 ml-auto" id="removeOfferBtn">Remove offer</button>
     </div>
 </form>
@@ -190,7 +197,7 @@
                 }
 
                 await fetch('@Url.Action(nameof(Hotel.Controllers.OffersController.Edit))', {
-                    method: 'POST',
+                    method: 'GET',
                     body: formData,
                     redirect: "follow"
                 }).then((response) => {
@@ -214,8 +221,7 @@
                     return;
 
                 await fetch('@Url.Action(nameof(Hotel.Controllers.OffersController.Delete), new { offerID = Model.Offer.OfferID })', {
-                    method: 'GET',
-                    redirect: 'follow'
+                    method: 'GET'
                 }).then((response) => {
                     if (response.ok) {
                         alert("Offer deleted succesfully.");
@@ -224,6 +230,25 @@
                     }
                     if (response.redirected) {
                         window.location.replace(response.url);
+                    }
+                }).catch((error) => {
+                    console.error('fetch error: ', error);
+                });
+            });
+
+            // (de)activate offer
+            $('#changeActiveBtn').on('click', async function () {
+                if (!confirm('You are about to change \'Active\' status of the offer "@Model.Offer.OfferTitle". Are you sure?'))
+                    return;
+
+                await fetch('@Url.Action(nameof(Hotel.Controllers.OffersController.ChangeActive), new { offerID = Model.Offer.OfferID, isActive = !Model.Offer.IsActive })', {
+                    method: 'GET'
+                }).then((response) => {
+                    if (response.ok) {
+                        alert('Operation succesfull.');
+                        window.location.replace('@Url.Action(nameof(Hotel.Controllers.OffersController.Details), new { offerID = Model.Offer.OfferID })');
+                    } else {
+                        alert('error: ' + response.status);
                     }
                 }).catch((error) => {
                     console.error('fetch error: ', error);

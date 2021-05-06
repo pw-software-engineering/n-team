@@ -93,13 +93,21 @@ else
                             <div class="btn-group-vertical btn-group-sm col-sm-2">
                                 @if (offer.IsActive)
                                 {
-                                    <button class="btn btn-outline-danger">Deactivate</button>
+                                    <button class="btn btn-outline-danger" asp-action="@nameof(Hotel.Controllers.OffersController.ChangeActive)"
+                                        asp-route-offerID="@offer.OfferID"
+                                        asp-route-isActive="@false">
+                                    Deactivate
+                                    </button>
                                 }
                                 else
                                 {
-                                    <button class="btn btn-outline-success">Activate</button>
+                                    <button class="btn btn-outline-success" asp-action="@nameof(Hotel.Controllers.OffersController.ChangeActive)"
+                                        asp-route-offerID="@offer.OfferID"
+                                        asp-route-isActive="@(!offer.IsActive)">
+                                    Activate
+                                    </button>
                                 }
-                                <a class="btn btn-sm btn-primary" asp-controller="offers" asp-action="details" asp-route-offerID="@offer.OfferID">Details</a>
+                                <a class="btn btn-sm btn-primary" asp-action="details" asp-route-offerID="@offer.OfferID">Details</a>
                             </div>
                         </div>
                     </td>
