@@ -125,7 +125,7 @@
             $("#@AccountTagID.InputClientEmailID"),
             $("#@AccountTagID.ClientEmailValidationBoxID"),
             (inputValue) => {
-                var emailRegexp = /^[a-zA-Z]([a-zA-Z0-9]|[\.-_]){0,50}@@[a-z]{1,10}\.[a-z]{1,10}$/;
+                var emailRegexp = /^[a-zA-Z]([a-zA-Z0-9]|[\.\-_]){0,100}@@[a-z]{1,50}\.[a-z]{1,50}$/;
                 return emailRegexp.test(inputValue);
             });
 

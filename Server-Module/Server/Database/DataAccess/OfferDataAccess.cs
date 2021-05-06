@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Database.Models;
 using Server.Models;
+using Server.RequestModels;
 using Server.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -22,23 +23,16 @@ namespace Server.Database.DataAccess
 
         public void DeleteOffer(int offerID)
         {
-            using (var transaction = _dbContext.Database.BeginTransaction())
-            {
-                OfferDb offer = _dbContext.Offers.Find(offerID);
-                offer.IsDeleted = true;
-                _dbContext.SaveChanges();
-                transaction.Commit();
-            }
+            OfferDb offer = _dbContext.Offers.Find(offerID);
+            offer.IsDeleted = true;
+            _dbContext.SaveChanges();
         }
         public int AddOffer(Offer offer)
         {
             OfferDb offerDb = _mapper.Map<OfferDb>(offer);
-            using (var transaction = _dbContext.Database.BeginTransaction())
-            {
-                _dbContext.Offers.Add(offerDb);
-                _dbContext.SaveChanges();
-                transaction.Commit();
-            }
+            _dbContext.Offers.Add(offerDb);
+            _dbContext.SaveChanges();
+
             return offerDb.OfferID;
         }
         public List<OfferPreview> GetHotelOffers(Paging paging, int hotelID, bool? isActive)
@@ -69,33 +63,25 @@ namespace Server.Database.DataAccess
         }
         public void UpdateOffer(int offerID, OfferUpdateInfo offerUpdateInfo)
         {
-            using (var transaction = _dbContext.Database.BeginTransaction())
+            OfferDb offer = _dbContext.Offers.Include(o => o.OfferPictures).Single(o => o.OfferID == offerID);
+            offer.IsActive = offerUpdateInfo.IsActive ?? offer.IsActive;
+            offer.OfferTitle = offerUpdateInfo.OfferTitle ?? offer.OfferTitle;
+            offer.Description = offerUpdateInfo.Description ?? offer.Description;
+            offer.OfferPreviewPicture = offerUpdateInfo.OfferPreviewPicture ?? offer.OfferPreviewPicture;
+            if (!(offerUpdateInfo.OfferPictures is null))
             {
-                OfferDb offer = _dbContext.Offers.Include(o => o.OfferPictures).Single(o => o.OfferID == offerID);
-                offer.IsActive = offerUpdateInfo.IsActive ?? offer.IsActive;
-                offer.OfferTitle = offerUpdateInfo.OfferTitle ?? offer.OfferTitle;
-                offer.Description = offerUpdateInfo.Description ?? offer.Description;
-                offer.OfferPreviewPicture = offerUpdateInfo.OfferPreviewPicture ?? offer.OfferPreviewPicture;
-                if (!(offerUpdateInfo.OfferPictures is null))
-                {
-                    offer.OfferPictures.RemoveAll(op => op.OfferID == offerID);
-                    foreach (string picture in offerUpdateInfo.OfferPictures)
-                        offer.OfferPictures.Add(new OfferPictureDb(picture, offerID));
-                }
-                _dbContext.SaveChanges();
-                transaction.Commit();
+                offer.OfferPictures.RemoveAll(op => op.OfferID == offerID);
+                foreach (string picture in offerUpdateInfo.OfferPictures)
+                    offer.OfferPictures.Add(new OfferPictureDb(picture, offerID));
             }
+            _dbContext.SaveChanges();
         }
 
         public void AddOfferPicture(string picture, int offerID)
         {
-            using (var transaction = _dbContext.Database.BeginTransaction())
-            {
-                OfferPictureDb offerPicture = new OfferPictureDb { Picture = picture, OfferID = offerID };
-                _dbContext.OfferPictures.Add(offerPicture);
-                _dbContext.SaveChanges();
-                transaction.Commit();
-            }
+            OfferPictureDb offerPicture = new OfferPictureDb { Picture = picture, OfferID = offerID };
+            _dbContext.OfferPictures.Add(offerPicture);
+            _dbContext.SaveChanges();
         }
 
         public void AddOfferPictures(List<string> pictures, int offerID)
@@ -104,12 +90,8 @@ namespace Server.Database.DataAccess
             foreach (string picture in pictures)
                 picturesDb.Add(new OfferPictureDb(picture, offerID));
 
-            using (var transaction = _dbContext.Database.BeginTransaction())
-            {
-                _dbContext.OfferPictures.AddRange(picturesDb);
-                _dbContext.SaveChanges();
-                transaction.Commit();
-            }
+            _dbContext.OfferPictures.AddRange(picturesDb);
+            _dbContext.SaveChanges();
         }
 
         public bool AreThereUnfinishedReservationsForOffer(int offerID)
@@ -119,13 +101,9 @@ namespace Server.Database.DataAccess
 
         public void UnpinRoomsFromOffer(int offerID)
         {
-            using (var transaction = _dbContext.Database.BeginTransaction())
-            {
-                IQueryable<OfferHotelRoomDb> roomsToUnpin = _dbContext.OfferHotelRooms.Where(ohr => ohr.OfferID == offerID);
-                _dbContext.OfferHotelRooms.RemoveRange(roomsToUnpin);
-                _dbContext.SaveChanges();
-                transaction.Commit();
-            }
+            IQueryable<OfferHotelRoomDb> roomsToUnpin = _dbContext.OfferHotelRooms.Where(ohr => ohr.OfferID == offerID);
+            _dbContext.OfferHotelRooms.RemoveRange(roomsToUnpin);
+            _dbContext.SaveChanges();
         }
 
         public List<string> GetOfferRooms(int offerID)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Client_Module.Authentication;
 using Client_Module.Models;
 using Client_Module.ViewsTagID.Layout;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Client_Module.Controllers
 {
+    [Authorize(AuthenticationSchemes = ClientTokenCookieDefaults.AuthenticationScheme)]
     public class SearchController : Controller
     {
         public SearchController()

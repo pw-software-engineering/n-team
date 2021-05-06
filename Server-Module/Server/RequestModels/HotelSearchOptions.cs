@@ -1,6 +1,6 @@
 using System;
 
-namespace Server
+namespace Server.RequestModels
 {
     public class HotelSearchOptions
     {

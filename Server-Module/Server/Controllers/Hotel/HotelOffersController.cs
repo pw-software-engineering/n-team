@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Server.Models;
+using Server.RequestModels;
 using Server.Services.OfferService;
-using Server.Services.Response;
+using Server.Services.Result;
 using Server.ViewModels;
 using System;
 using System.Linq;
@@ -26,25 +26,13 @@ namespace Server.Controllers.Hotel
         {
             int hotelId = GetHotelID();
 
-            IServiceResult result = service.GetHotelOffers(new Paging(pageSize, pageNumber), hotelId, isActive);
-            JsonResult jsonResult = new JsonResult(result.ResponseBody)
-            {
-                StatusCode = (int)result.StatusCode
-            };
-            return jsonResult;
+            return service.GetHotelOffers(new Paging(pageSize, pageNumber), hotelId, isActive);
         }
-
         [HttpGet("offers/{offerID}")]
         public IActionResult GetOffer(int offerID)
         {
             int hotelId = GetHotelID();
-
-            IServiceResult result = service.GetOffer(offerID, hotelId);
-            JsonResult jsonResult = new JsonResult(result.ResponseBody)
-            {
-                StatusCode = (int)result.StatusCode
-            };
-            return jsonResult;
+            return service.GetOffer(offerID, hotelId);
         }
 
         [HttpPost("offers")]
@@ -52,13 +40,7 @@ namespace Server.Controllers.Hotel
         {
             int hotelId = GetHotelID();
 
-            IServiceResult result = service.AddOffer(offer, hotelId);
-
-            JsonResult jsonResult = new JsonResult(result.ResponseBody)
-            {
-                StatusCode = (int)result.StatusCode
-            };
-            return jsonResult;
+            return service.AddOffer(offer, hotelId);
         }
 
         [HttpPatch("offers/{offerID}")]
@@ -66,13 +48,7 @@ namespace Server.Controllers.Hotel
         {
             int hotelId = GetHotelID();
 
-            IServiceResult result = service.UpdateOffer(offerID, hotelId, updateInfo);
-
-            JsonResult jsonResult = new JsonResult(result.ResponseBody)
-            {
-                StatusCode = (int)result.StatusCode
-            };
-            return jsonResult;
+            return service.UpdateOffer(offerID, hotelId, updateInfo);
         }
 
         [HttpDelete("offers/{offerID}")]
@@ -80,13 +56,7 @@ namespace Server.Controllers.Hotel
         {
             int hotelId = GetHotelID();
 
-            IServiceResult result = service.DeleteOffer(offerID, hotelId);
-
-            JsonResult jsonResult = new JsonResult(result.ResponseBody)
-            {
-                StatusCode = (int)result.StatusCode
-            };
-            return jsonResult;
+            return service.DeleteOffer(offerID, hotelId);
         }
 
         private int GetHotelID()

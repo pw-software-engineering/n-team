@@ -22,6 +22,16 @@ namespace Server.AutoMapper
             CreateMap<OfferDb, Offer>();
             CreateMap<HotelRoomDb, HotelRoom>();
             CreateMap<HotelRoom, HotelRoomDb>();
+
+            CreateMap<Hotel, HotelInfoDb>();
+            CreateMap<HotelInfoDb, Hotel>();
+            CreateMap<HotelPreview, HotelInfoDb>();
+            CreateMap<HotelInfoDb, HotelPreview>().AfterMap((hdb, h) => h.PreviewPicture = hdb.HotelPreviewPicture);
+
+            CreateMap<ClientOfferPreview, OfferDb>();
+            CreateMap<OfferDb, ClientOfferPreview>();
+            CreateMap<ClientOffer, OfferDb>();
+            CreateMap<OfferDb, ClientOffer>();
             #endregion
 
             #region Model -> ViewModel -> Model
@@ -31,6 +41,14 @@ namespace Server.AutoMapper
             CreateMap<OfferPreviewView, OfferPreview>();
             CreateMap<HotelRoomView, HotelRoom>();
             CreateMap<HotelRoom, HotelRoomView>();
+
+            CreateMap<Hotel, HotelSearchView>();
+            CreateMap<HotelSearchView, Hotel>();
+            CreateMap<HotelPreview, HotelSearchPreviewView>();
+            CreateMap<HotelSearchPreviewView, HotelPreview>();
+
+            CreateMap<ClientOfferPreview, OfferSearchPreviewView>();
+            CreateMap<OfferSearchPreviewView, ClientOfferPreview>();
             #endregion
         }
     }
