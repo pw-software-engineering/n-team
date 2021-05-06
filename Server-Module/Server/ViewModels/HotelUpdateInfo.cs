@@ -9,18 +9,18 @@ namespace Server.ViewModels
     // class used to in HotelAccountController to updet Info about hotel (endpoint /hotelIngo PATCH)
     public class HotelUpdateInfo
     {
-        public string hotelName;
-        public string hotelDesc;
-        public string hotelPreviewPicture;
-        public string[] hotelPictures;
+        public string HotelName { get; set; }
+        public string HotelDesc { get; set; }
+        public string HotelPreviewPicture { get; set; }
+        public string[] HotelPictures { get; set; }
 
         public HotelUpdateInfo() { }
 
         public HotelUpdateInfo(HotelInfoDb hotelInfoDb)
         {
-            hotelDesc = hotelInfoDb.HotelDescription;
-            hotelName = hotelInfoDb.HotelName;
-            hotelPreviewPicture = hotelInfoDb.HotelPreviewPicture;
+            HotelDesc = hotelInfoDb.HotelDescription;
+            HotelName = hotelInfoDb.HotelName;
+            HotelPreviewPicture = hotelInfoDb.HotelPreviewPicture;
             if (hotelInfoDb.HotelPictures != null)
             {
                 var pictureDbs = hotelInfoDb.HotelPictures.ToArray();
@@ -29,11 +29,11 @@ namespace Server.ViewModels
                 {
                     pomString.Add(pic.Picture);
                 }
-                hotelPictures = pomString.ToArray();
+                HotelPictures = pomString.ToArray();
             }
             else
             {
-                hotelPictures = null;
+                HotelPictures = null;
             }
         }
     }

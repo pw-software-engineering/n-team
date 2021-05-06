@@ -29,29 +29,16 @@ namespace Server.Controllers.Hotel
         public IActionResult UpdateInfo([FromBody] HotelUpdateInfo hotelUpdateInfo)
         {
             var hotelId = int.Parse(HttpContext.User.Claims.First().Value);
-            try
-            {
-                hotelAccountService.UpdateInfo(hotelId, hotelUpdateInfo);
-            }catch(Exception)
-            {
-                return StatusCode(404);
-            }
             
-            return StatusCode(200);
+            return hotelAccountService.UpdateInfo(hotelId, hotelUpdateInfo);
+
         }
 
         [HttpGet("/hotelInfo")]
         public IActionResult GetInfo()
         {
             var hotelId = int.Parse(HttpContext.User.Claims.First().Value);
-            try
-            {
-                return new JsonResult(hotelAccountService.GetInfo(hotelId));
-            }
-            catch (Exception)
-            {
-                return StatusCode(400);
-            }
+            return hotelAccountService.GetInfo(hotelId);
         }
     }
 }

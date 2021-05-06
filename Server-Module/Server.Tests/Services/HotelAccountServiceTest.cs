@@ -2,7 +2,9 @@
 using Server.Database;
 using Server.Database.DataAccess;
 using Server.Database.DatabaseTransaction;
+using Server.Exceptions;
 using Server.Services.HotelAccountService;
+using Server.Services.Result;
 using Server.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -28,26 +30,27 @@ namespace Server.Tests.Services
         {
             int hotelID = 1;
             
-            var hotel = new HotelGetInfo() { city = "city", country = "contry", hotelDesc = "desc", hotelName = "name", hotelPictures = null, hotelPreviewPicture = "zdjencie" };
-
-            _dataAccessMock.Setup(x => x.GetInfo(It.IsAny<int>())).Throws(new Exception());
+            var hotel = new HotelGetInfo() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
+            
+            _dataAccessMock.Setup(x => x.GetInfo(It.IsAny<int>())).Throws(new NotFoundException());
             _dataAccessMock.Setup(x => x.GetInfo(hotelID)).Returns(hotel);
             
             var h = hotelAccountService.GetInfo(hotelID);
 
-            Assert.True(h == hotel);
+            Assert.True((HotelGetInfo)h.Result == hotel&& h.StatusCode==System.Net.HttpStatusCode.OK);
         }
+
         [Fact]
         public void BadIDGetingTest()
         {
             int hotelID = 1;
             
-            var hotel = new HotelGetInfo() { city = "city", country = "contry", hotelDesc = "desc", hotelName = "name", hotelPictures = null, hotelPreviewPicture = "zdjencie" };
+            var hotel = new HotelGetInfo() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
 
             _dataAccessMock.Setup(x => x.GetInfo(It.IsAny<int>())).Throws(new Exception());
             _dataAccessMock.Setup(x => x.GetInfo(hotelID)).Returns(hotel);
-            
-            Assert.Throws<Exception>(() => hotelAccountService.GetInfo(hotelID + 1));
+            var result = hotelAccountService.GetInfo(hotelID + 1);
+            Assert.True(result.StatusCode == System.Net.HttpStatusCode.NotFound );
             
         }
         
@@ -56,12 +59,13 @@ namespace Server.Tests.Services
         {
             int hotelID = 1;
             
-            var hotel = new HotelGetInfo() { city = "city", country = "contry", hotelDesc = "desc", hotelName = "name", hotelPictures = null, hotelPreviewPicture = "zdjencie" };
+            var hotel = new HotelGetInfo() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
 
             _dataAccessMock.Setup(x => x.UpdateInfo(It.IsAny<int>(),It.IsAny<HotelUpdateInfo>())).Throws(new Exception());
             _dataAccessMock.Setup(x => x.UpdateInfo(hotelID, hotel));
+            var result = hotelAccountService.UpdateInfo(hotelID+1, hotel);
 
-            Assert.Throws<Exception>(() => hotelAccountService.UpdateInfo(hotelID + 1,hotel));
+            Assert.True(result.StatusCode == System.Net.HttpStatusCode.NotFound);
 
         }
         [Fact]
@@ -69,12 +73,13 @@ namespace Server.Tests.Services
         {
             int hotelID = 1;
             
-            var hotel = new HotelGetInfo() { city = "city", country = "contry", hotelDesc = "desc", hotelName = "name", hotelPictures = null, hotelPreviewPicture = "zdjencie" };
+            var hotel = new HotelGetInfo() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
 
             _dataAccessMock.Setup(x => x.UpdateInfo(It.IsAny<int>(), null)).Throws(new Exception());
             _dataAccessMock.Setup(x => x.UpdateInfo(hotelID, hotel));
 
-            Assert.Throws<Exception>(() => hotelAccountService.UpdateInfo(hotelID, null));
+            var result = hotelAccountService.UpdateInfo(hotelID, null);
+            Assert.True(result.StatusCode == System.Net.HttpStatusCode.NotFound && ((Error)result.Result).error == "Exception of type 'System.Exception' was thrown.");
 
         }
         [Fact]
@@ -82,11 +87,13 @@ namespace Server.Tests.Services
         {
             int hotelID = 1;
 
-            var hotel = new HotelGetInfo() { city = "city", country = "contry", hotelDesc = "desc", hotelName = "name", hotelPictures = null, hotelPreviewPicture = "zdjencie" };
+            var hotel = new HotelGetInfo() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
 
             _dataAccessMock.Setup(x => x.UpdateInfo(It.IsAny<int>(), null)).Throws(new Exception());
             _dataAccessMock.Setup(x => x.UpdateInfo(It.IsAny<int>(), It.IsAny<HotelUpdateInfo>()));
-            hotelAccountService.UpdateInfo(1, hotel);
+            var result = hotelAccountService.UpdateInfo(1, hotel);
+            Assert.True(result.StatusCode == System.Net.HttpStatusCode.OK );
+
         }
 
     }

@@ -5,6 +5,7 @@ using Server.AutoMapper;
 using Server.Database;
 using Server.Database.DataAccess;
 using Server.Database.Models;
+using Server.Exceptions;
 using Server.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -70,18 +71,18 @@ namespace Server.Tests.Database
 
         private bool Same(HotelGetInfo a, HotelGetInfo b)
         {
-            if (a.city != b.city || a.country != b.country || a.hotelDesc != b.hotelDesc
-                || a.hotelName != b.hotelName ||  a.hotelPreviewPicture != b.hotelPreviewPicture)
+            if (a.City != b.City || a.Country != b.Country || a.HotelDesc != b.HotelDesc
+                || a.HotelName != b.HotelName ||  a.HotelPreviewPicture != b.HotelPreviewPicture)
                 return false;
 
 
-            if (a.hotelPictures != null)
+            if (a.HotelPictures != null)
             {
-                if (b.hotelPictures == null)
+                if (b.HotelPictures == null)
                     return false;
-                foreach (var p in a.hotelPictures)
+                foreach (var p in a.HotelPictures)
                 {
-                    if (!b.hotelPictures.Contains(p))
+                    if (!b.HotelPictures.Contains(p))
                         return false;
                 }
             }
@@ -91,7 +92,7 @@ namespace Server.Tests.Database
         [Fact]
         public void GetInfoGoodIdTest()
         {
-            var wahtWeWant = new HotelGetInfo() { city = "TestCity1", country = "TestCountry1", hotelDesc = "TestHotelDesc1", hotelName = "TestHotelName1", hotelPreviewPicture = "TestHotelPreviewPicture1" };
+            var wahtWeWant = new HotelGetInfo() { City = "TestCity1", Country = "TestCountry1", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" };
             var whatWeGet = _dataAccess.GetInfo(1);
 
             Assert.True(Same(whatWeGet, wahtWeWant));
@@ -100,14 +101,14 @@ namespace Server.Tests.Database
         [Fact]
         public void GetInfoBadIdTest()
         {
-            Assert.Throws<NotFundExepcion>(() => _dataAccess.GetInfo(44));
+            Assert.Throws<NotFoundException>(() => _dataAccess.GetInfo(44));
         }
 
 
         [Fact]
         public void UpdateInfoGoodIdTest()
         {
-            var wahtWeWant = new HotelGetInfo() { city = "TestCity3", country = "TestCountry3", hotelDesc = "TestHotelDesc1", hotelName = "TestHotelName1", hotelPreviewPicture = "TestHotelPreviewPicture1" };
+            var wahtWeWant = new HotelGetInfo() { City = "TestCity3", Country = "TestCountry3", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" };
             _dataAccess.UpdateInfo(3, wahtWeWant);
             var whatWeGet = _dataAccess.GetInfo(3);
             Assert.True(Same(whatWeGet, wahtWeWant));
@@ -116,8 +117,8 @@ namespace Server.Tests.Database
         [Fact]
         public void UpdateInfoBadIdTest()
         {
-            var wahtWeWant = new HotelGetInfo() { city = "TestCity1", country = "TestCountry1", hotelDesc = "TestHotelDesc1", hotelName = "TestHotelName1", hotelPreviewPicture = "TestHotelPreviewPicture1" };
-            Assert.Throws<NotFundExepcion>(() => _dataAccess.UpdateInfo(44, wahtWeWant));
+            var wahtWeWant = new HotelGetInfo() { City = "TestCity1", Country = "TestCountry1", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" };
+            Assert.Throws<NotFoundException>(() => _dataAccess.UpdateInfo(44, wahtWeWant));
         }
 
         [Fact]

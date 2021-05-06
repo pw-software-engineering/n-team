@@ -1,5 +1,7 @@
 ﻿using Server.Database.DataAccess;
 using Server.Database.DatabaseTransaction;
+using Server.Exceptions;
+using Server.Services.Result;
 using Server.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -19,29 +21,33 @@ namespace Server.Services.HotelAccountService
             this.hotelAccountDataAccess = hotelAccountDataAccess;
         }
 
-        public HotelGetInfo GetInfo(int hotelId)
+        public IServiceResult GetInfo(int hotelId)
         {
+            HotelGetInfo result;
             try
             {
-                return hotelAccountDataAccess.GetInfo(hotelId);
+                result =  hotelAccountDataAccess.GetInfo(hotelId);
             } catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return new ServiceResult(System.Net.HttpStatusCode.NotFound, new Error(e.Message));
+               
             }
+            return new ServiceResult(System.Net.HttpStatusCode.OK, result);
         }
 
-        public void UpdateInfo(int hotelId, HotelUpdateInfo hotelUpdateInfo)
+        public IServiceResult UpdateInfo(int hotelId, HotelUpdateInfo hotelUpdateInfo)
         {
             _transaction.BeginTransaction();
             try {
                 hotelAccountDataAccess.UpdateInfo(hotelId, hotelUpdateInfo);
-            }catch(NotFundExepcion e)
+            }catch(Exception e)
             {
                 _transaction.RollbackTransaction();
-                throw new Exception(e.Message);
+                return new ServiceResult(System.Net.HttpStatusCode.NotFound, new Error(e.Message));
+                
             }
             _transaction.CommitTransaction();
-            
+            return new ServiceResult(System.Net.HttpStatusCode.OK, null);
         }   
     }
 }

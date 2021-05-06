@@ -9,8 +9,8 @@ namespace Server.ViewModels
     // class used by HotelAccountControler to get info about hotel (endpoint /hotelInfo Get)
     public class HotelGetInfo: HotelUpdateInfo
     {
-        public string country;
-        public string city;
+        public string Country { get; set; }
+        public string City { get; set; }
 
         public HotelGetInfo():base()
         {
@@ -18,8 +18,8 @@ namespace Server.ViewModels
 
         public HotelGetInfo(HotelInfoDb hotelInfoDb): base(hotelInfoDb)
         {
-            country = hotelInfoDb.Country;
-            city = hotelInfoDb.City;
+            Country = hotelInfoDb.Country;
+            City = hotelInfoDb.City;
             
         }
     }

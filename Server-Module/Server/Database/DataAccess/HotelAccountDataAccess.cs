@@ -1,12 +1,9 @@
-﻿using Server.ViewModels;
+﻿using Server.Exceptions;
+using Server.ViewModels;
 using System;
 
 namespace Server.Database.DataAccess
 {
-    public class NotFundExepcion : Exception
-    {
-        public NotFundExepcion() : base("element not fund") { }
-    }
 
     public class HotelAccountDataAccess : IHotelAccountDataAccess
     {
@@ -22,7 +19,7 @@ namespace Server.Database.DataAccess
             var hotelInfo = dbContext.HotelInfos.Find(hotelId);
             if (hotelInfo == null)
             {
-                throw new NotFundExepcion();
+                throw new NotFoundException();
             }
             return new HotelGetInfo(hotelInfo);
         }
@@ -36,17 +33,18 @@ namespace Server.Database.DataAccess
             var hotel = dbContext.HotelInfos.Find(hotelId);
             if (hotel == null)
             {
-                throw new NotFundExepcion();
+                throw new NotFoundException();
             }
 
-            hotel.HotelName = hotelUpdateInfo.hotelName;
-            hotel.HotelPreviewPicture = hotelUpdateInfo.hotelPreviewPicture;
-            hotel.HotelDescription = hotelUpdateInfo.hotelDesc;
+            hotel.HotelName = hotelUpdateInfo.HotelName;
+            if(hotelUpdateInfo.HotelPreviewPicture!=null)
+                hotel.HotelPreviewPicture = hotelUpdateInfo.HotelPreviewPicture;
+            hotel.HotelDescription = hotelUpdateInfo.HotelDesc;
 
-            if (hotelUpdateInfo.hotelPictures != null)
+            if (hotelUpdateInfo.HotelPictures != null)
             {
                 hotel.HotelPictures.Clear();
-                foreach (var pic in hotelUpdateInfo.hotelPictures)
+                foreach (var pic in hotelUpdateInfo.HotelPictures)
                 {
                     var pictureDb = new Models.HotelPictureDb();
                     pictureDb.Picture = pic;

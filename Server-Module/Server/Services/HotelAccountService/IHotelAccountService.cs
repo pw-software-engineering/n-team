@@ -1,4 +1,5 @@
-﻿using Server.ViewModels;
+﻿using Server.Services.Result;
+using Server.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace Server.Services.HotelAccountService
 {
     public interface IHotelAccountService
     {
-        public void UpdateInfo(int hotelId,HotelUpdateInfo hotelUpdateInfo);
-        public HotelGetInfo GetInfo(int hotelId);
+        public IServiceResult UpdateInfo(int hotelId,HotelUpdateInfo hotelUpdateInfo);
+        public IServiceResult GetInfo(int hotelId);
     }
 }
