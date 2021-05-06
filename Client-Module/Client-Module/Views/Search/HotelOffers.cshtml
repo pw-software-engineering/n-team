@@ -1,5 +1,7 @@
-﻿@{
+﻿@using Client_Module.ViewsTagID.Search; 
+@{
     ViewData["Title"] = "Search Offers";
+    HotelOffersTagID tagIDs = new HotelOffersTagID();
 }
 
 <div class="text-center">
@@ -57,26 +59,21 @@
 </div>
 
 @*https://www.w3schools.com/howto/howto_js_sticky_header.asp <- try to implement later on*@
-<div class="d-flex flex-row mt-2">
-    <div class="flex-grow-0 mx-auto form-inline">
-        @*flex-wrap: nowrap set in order to not wrap divs inside input-group*@
-        <div class="input-group" style="flex-wrap: nowrap">
-            <div class="input-group-prepend">
-                <button class="d-flex flex-row btn btn-outline-secondary bg-light text-secondary" type="button" style="width: 115px; align-items: center">
-                    <i class="fas fa-caret-left mx-1 flex-grow-0"></i>
-                    <span class="flex-grow-0 mx-auto">Previous</span>
-                </button>
-            </div>
-            <input type="text" class="form-control py-0 px-2 border-secondary border-right-0 border-left-0" style="width: 50px; text-align: center" />
-            <div class="input-group-append">
-                <button class="d-flex flex-row btn btn-outline-secondary bg-light text-secondary" type="button" style="width: 115px; align-items: center">
-                    <span class="flex-grow-0 mx-auto">Next</span>
-                    <i class="fas fa-caret-right mx-1 flex-grow-0"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<ul class="pagination justify-content-center my-3">
+    <li class="page-item">
+        <button class="page-link" href="" id="@tagIDs.TopPagerPreviousBtnID">
+            <i class="fas fa-chevron-left text-dark"></i>
+        </button>
+    </li>
+    <li class="page-item">
+        <input class="page-link text-dark text-center font-weight-bold p-2" id="@tagIDs.TopPagerInputID" style="width: 60px" type="number" min="1" value="1" />
+    </li>
+    <li class="page-item">
+        <button class="page-link" href="" id="@tagIDs.TopPagerNextBtnID">
+            <i class="fas fa-chevron-right text-dark"></i>
+        </button>
+    </li>
+</ul>
 <hr class="mt-3 mb-3" />
 <div class="card w-100 border-0 bg-website">
     <ul class="list-group">
@@ -142,5 +139,21 @@
             </div>
         </li>
 
+    </ul>
+
+    <ul class="pagination justify-content-center mx-auto w-100 my-3">
+        <li class="page-item ml-auto">
+            <button class="page-link" href="" id="@tagIDs.BottomPagerPreviousBtnID">
+                <i class="fas fa-chevron-left text-dark"></i>
+            </button>
+        </li>
+        <li class="page-item">
+            <input class="page-link text-dark text-center font-weight-bold p-2" id="@tagIDs.BottomPagerInputID" style="width: 60px" type="number" min="1" value="1" />
+        </li>
+        <li class="page-item">
+            <button class="page-link" href="" id="@tagIDs.BottomPagerNextBtnID">
+                <i class="fas fa-chevron-right text-dark"></i>
+            </button>
+        </li>
     </ul>
 </div>
