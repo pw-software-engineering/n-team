@@ -14,6 +14,7 @@ namespace Server.Tests.Services
 {
     public class HotelAccountServiceTest
     {
+        #region SetUp
         private HotelAccountService hotelAccountService;
         private Mock<IHotelAccountDataAccess> _dataAccessMock;
         private Mock<IDatabaseTransaction> _transaction;
@@ -24,8 +25,11 @@ namespace Server.Tests.Services
             _transaction = new Mock<IDatabaseTransaction>();
             hotelAccountService = new HotelAccountService(_dataAccessMock.Object,_transaction.Object);
         }
+        #endregion
+
+        #region GetInfo
         [Fact]
-        public void GodGetingTest()
+        public void GetInfo_GoodTest_Returns200AndInfo()
         {
             int hotelID = 1;
             
@@ -40,7 +44,7 @@ namespace Server.Tests.Services
         }
 
         [Fact]
-        public void BadIDGetingTest()
+        public void GetInfo_BadId_Returns404()
         {
             int hotelID = 1;
             
@@ -52,9 +56,11 @@ namespace Server.Tests.Services
             Assert.True(result.StatusCode == System.Net.HttpStatusCode.NotFound );
             
         }
-        
+        #endregion
+
+        #region UpdateInfo
         [Fact]
-        public void BadIDUpdateingTest()
+        public void UpdateInfo_BadId_Returns404()
         {
             int hotelID = 1;
             
@@ -68,7 +74,7 @@ namespace Server.Tests.Services
 
         }
         [Fact]
-        public void NullUpdateingTest()
+        public void UpdateInfo_ParametrIsNull_Returns404()
         {
             int hotelID = 1;
             
@@ -82,7 +88,7 @@ namespace Server.Tests.Services
 
         }
         [Fact]
-        public void GoodUpdateTest()
+        public void UpdateInfo_GoodTest_Returns200()
         {
             int hotelID = 1;
 
@@ -94,7 +100,7 @@ namespace Server.Tests.Services
             Assert.True(result.StatusCode == System.Net.HttpStatusCode.OK );
 
         }
-
+        #endregion
     }
 }
 

@@ -67,8 +67,9 @@ namespace Server.Tests.Database
         }
         #endregion
 
+        #region GetHotelIdFromToken
         [Fact]
-        public void GetHotelIdFromTokenGoodTokenTest()
+        public void GetHotelIdFromToken_GoodToken_ReturnsId()
         {
             int? id = _dataAccess.GetHotelIdFromToken("TestAccessToken1");
 
@@ -76,11 +77,12 @@ namespace Server.Tests.Database
             Assert.True(id.Value == 1);
         }
         [Fact]
-        public void GetHotelIdFromTokenBadTokenTest()
+        public void GetHotelIdFromToken_BadToken_ReturnsNull()
         {
             int? id = _dataAccess.GetHotelIdFromToken("NotTestAccessToken1");
 
             Assert.True(!id.HasValue);
         }
+        #endregion
     }
 }

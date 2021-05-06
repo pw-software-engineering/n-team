@@ -19,7 +19,7 @@ namespace Server.Tests.Database
         private ServerDbContext _context;
         private IMapper _mapper;
         private HotelAccountDataAccess _dataAccess;
-
+        
         #region TestsSetup
         public HotelAccountDataAccessTest()
         {
@@ -66,8 +66,7 @@ namespace Server.Tests.Database
                 transaction.Commit();
             }
         }
-        #endregion
-
+        
         private bool Same(HotelGetInfo a, HotelGetInfo b)
         {
             if (a.City != b.City || a.Country != b.Country || a.HotelDesc != b.HotelDesc
@@ -87,9 +86,11 @@ namespace Server.Tests.Database
             }
             return true;
         }
-
+        #endregion
+        
+        #region GetInfo
         [Fact]
-        public void GetInfoGoodIdTest()
+        public void GetInfo_GoodId_ReturnsHotelGetInfo()
         {
             var wahtWeWant = new HotelGetInfo() { City = "TestCity1", Country = "TestCountry1", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" };
             var whatWeGet = _dataAccess.GetInfo(1);
@@ -98,14 +99,15 @@ namespace Server.Tests.Database
         }
     
         [Fact]
-        public void GetInfoBadIdTest()
+        public void GetInfo_BadId_ThrowsExepcion()
         {
             Assert.Throws<Exception>(() => _dataAccess.GetInfo(44));
         }
+        #endregion
 
-
+        #region UpdateInfo
         [Fact]
-        public void UpdateInfoGoodIdTest()
+        public void UpdateInfo_GoodId_ReturnsVoid()
         {
             var wahtWeWant = new HotelGetInfo() { City = "TestCity3", Country = "TestCountry3", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" };
             _dataAccess.UpdateInfo(3, wahtWeWant);
@@ -114,16 +116,17 @@ namespace Server.Tests.Database
         }
 
         [Fact]
-        public void UpdateInfoBadIdTest()
+        public void UpdateInfo_BadId_ThrowsExepcion()
         {
             var wahtWeWant = new HotelGetInfo() { City = "TestCity1", Country = "TestCountry1", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" };
             Assert.Throws<Exception>(() => _dataAccess.UpdateInfo(44, wahtWeWant));
         }
 
         [Fact]
-        public void UpdateInfoNullTest()
+        public void UpdateInfo_NullPArametr_ThrowsExepcion()
         {
             Assert.Throws<NullReferenceException>(() => _dataAccess.UpdateInfo(2, null));
         }
+        #endregion
     }
 }
