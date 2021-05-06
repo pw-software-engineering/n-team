@@ -24,11 +24,11 @@
     <!-- Preview PIC -->
     <div class="form-group">
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" id="previewPicCheckbox" class="custom-control-input" onclick="switchEnabled(this, 'previewFile')" />
+            <input type="checkbox" id="previewPicCheckbox" class="custom-control-input" />
             <label class="custom-control-label" for="previewPicCheckbox">Change preview picture</label>
         </div>
         <div class="form-row">
-            <input id="previewFile" class="form-control col-sm-4" type="file" disabled onchange="previewGallery(this, 'previewGallery')" />
+            <input id="previewFile" class="form-control col-sm-4" type="file" disabled />
             <label class="form-control-placeholder-file">Preview picture</label>
             <div id="previewGallery"></div>
         </div>
@@ -39,11 +39,11 @@
     <!-- Additional PICS-->
     <div class="form-group">
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" id="additionalPicsCheckbox" class="custom-control-input" onclick="switchEnabled(this, 'additionalFiles')" />
+            <input type="checkbox" id="additionalPicsCheckbox" class="custom-control-input" />
             <label class="custom-control-label" for="additionalPicsCheckbox">Change additional pictures</label>
         </div>
         <div class="form-row">
-            <input id="additionalFiles" class="form-control col-sm-4" type="file" multiple disabled onchange="previewGallery(this, 'additionalGallery')" />
+            <input id="additionalFiles" class="form-control col-sm-4" type="file" multiple disabled />
             <label class="form-control-placeholder-file">Additional pictures</label>
             <div id="additionalGallery"></div>
         </div>
@@ -52,3 +52,25 @@
 
     <button type="submit" class="btn btn-success">Save</button>
 </form>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var previewPicInput = document.getElementById('previewFile');
+            var previewPicChckbox = document.getElementById('previewPicCheckbox');
+            var previewGalleryDiv = document.getElementById('previewGallery');
+
+            var additionalPicsInput = document.getElementById('additionalFiles');
+            var additionalPicsChckbox = document.getElementById('additionalPicsCheckbox');
+            var additionalGalleryDiv = document.getElementById('additionalGallery');
+
+            var previewDivHtml = previewGalleryDiv.innerHTML;
+            var additionalDivHtml = additionalGalleryDiv.innerHTML;
+
+            previewPicChckbox.onclick = function () { switchEnabled(previewPicChckbox, previewPicInput, previewGalleryDiv, previewDivHtml); };
+            previewPicInput.onchange = function () { previewGallery(previewPicInput, previewGalleryDiv); };
+            additionalPicsChckbox.onclick = function () { switchEnabled(additionalPicsChckbox, additionalPicsInput, additionalGalleryDiv, additionalDivHtml); };
+            additionalPicsInput.onchange = function () { previewGallery(additionalPicsInput, additionalGalleryDiv); };
+        });
+    </script>
+}

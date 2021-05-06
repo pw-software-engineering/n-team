@@ -4,10 +4,13 @@
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
-        public Paging()
+
+        public Paging() : this(1, 10)
+        { }
+        public Paging(int pageNumber, int pageSize)
         {
-            PageNumber = 1;
-            PageSize = 10;
+            PageNumber = pageNumber;
+            PageSize = pageSize;
         }
     }
 }

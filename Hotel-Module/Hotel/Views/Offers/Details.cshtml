@@ -82,4 +82,4 @@
 </div>
 <hr />
 
-<a class="btn btn-primary" asp-controller="Offers" asp-action="Edit" asp-route-offerID="@Model.OfferID">Edit offer</a>
+<a class="btn btn-primary" asp-action="@nameof(Hotel.Controllers.OffersController.Edit)" asp-route-offerID="@Model.OfferID">Edit offer</a>

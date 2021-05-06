@@ -4,26 +4,28 @@
 // Write your JavaScript code.
 
 // preview selected images in gallery
-function previewGallery(inputFileElement, galleryId) {
-    var count = inputFileElement.files.length;
-    var gallery = document.getElementById(galleryId);
+function previewGallery(inputElement, gallery) {
+    var count = inputElement.files.length;
 
-    gallery.innerHTML = "";
+    gallery.innerHTML = '';
     for (i = 0; i < count; i++) {
-        var urls = URL.createObjectURL(inputFileElement.files[i]);
+        var urls = URL.createObjectURL(inputElement.files[i]);
         gallery.innerHTML +=
             `<img src="` + urls + `" class="gallery-img" />`;
     }
 }
 
 // checkbox controlling element's enabled/disabled attribute
-function switchEnabled(checkbox, elementId) {
-    var element = document.getElementById(elementId);
-
-    if (checkbox.checked == false) {
-        element.disabled = true;
+// and gallery content
+function switchEnabled(checkbox, inputElement, gallery, defaultGalleryHtml) {
+    if (checkbox.checked == true) {
+        inputElement.value = '';
+        inputElement.disabled = false;
+        gallery.innerHTML = '';
     } else {
-        element.disabled = false;
+        inputElement.value = '';
+        inputElement.disabled = true;
+        gallery.innerHTML = defaultGalleryHtml;
     }
 }
 

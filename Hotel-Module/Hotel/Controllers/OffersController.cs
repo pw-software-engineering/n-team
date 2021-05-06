@@ -1,6 +1,7 @@
 ﻿using Hotel.Models;
 using Hotel.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
@@ -30,19 +31,20 @@ namespace Hotel.Controllers
             query["pageNumber"] = paging.PageNumber.ToString();
             query["pageSize"] = paging.PageSize.ToString();
 
-            IEnumerable<OfferPreview> response;
             try
             {
-                response = await _httpClient.GetFromJsonAsync<IEnumerable<OfferPreview>>("offers?" + query.ToString());
+                IEnumerable<OfferPreview> response = await _httpClient.GetFromJsonAsync<IEnumerable<OfferPreview>>("offers?" + query.ToString());
+                OffersIndexViewModel offersVM = new OffersIndexViewModel(response, paging, isActive);
+                return View(offersVM);
             }
             catch (HttpRequestException e)
             {
-                if (e.StatusCode is null)
-                    return StatusCode((int)HttpStatusCode.BadGateway);
-                return StatusCode((int)e.StatusCode);
+                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
             }
-            OffersIndexViewModel offersVM = new OffersIndexViewModel(response, paging, isActive);
-            return View(offersVM);
+            catch (Exception)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpGet("/offers/{offerID}")]
@@ -55,9 +57,11 @@ namespace Hotel.Controllers
             }
             catch (HttpRequestException e)
             {
-                if (e.StatusCode is null)
-                    return StatusCode((int)HttpStatusCode.BadGateway);
-                return StatusCode((int)e.StatusCode);
+                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
+            }
+            catch (Exception)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
 
@@ -71,9 +75,11 @@ namespace Hotel.Controllers
             }
             catch (HttpRequestException e)
             {
-                if (e.StatusCode is null)
-                    return StatusCode((int)HttpStatusCode.BadGateway);
-                return StatusCode((int)e.StatusCode);
+                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
+            }
+            catch (Exception)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
 
@@ -90,57 +96,7 @@ namespace Hotel.Controllers
             };
             HttpContent content = JsonContent.Create(offer);
 
-            try
-            {
-                HttpResponseMessage response = await _httpClient.PatchAsync("offers/" + offerViewModel.Offer.OfferID.ToString(), content);
-                if (!response.IsSuccessStatusCode)
-                    return StatusCode((int)response.StatusCode);
-                return RedirectToAction("Details", new { offerViewModel.Offer.OfferID });
-            }
-            catch (HttpRequestException e)
-            {
-                if (e.StatusCode is null)
-                    return StatusCode((int)HttpStatusCode.BadGateway);
-                return StatusCode((int)e.StatusCode);
-            }
-        }
-
-        [HttpGet("/offers/add")]
-        public IActionResult Add()
-        {
-            return View();
-        }
-
-        [HttpPost("/offers/add")]
-        public async Task<IActionResult> Add([FromForm] Offer offer)
-        {
-            try
-            {
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("offers", offer);
-                if (response.IsSuccessStatusCode)
-                    return RedirectToAction("index");
-                return StatusCode((int)response.StatusCode);
-            }
-            catch (HttpRequestException)
-            {
-                return StatusCode((int)HttpStatusCode.BadGateway);
-            }
-        }
-
-        [HttpGet("/offers/{offerID}/delete")]
-        public async Task<IActionResult> Delete([FromRoute] int offerID)
-        {
-            try
-            {
-                HttpResponseMessage response = await _httpClient.DeleteAsync("offers/" + offerID.ToString());
-                if (response.IsSuccessStatusCode)
-                    return RedirectToAction("index");
-                return StatusCode((int)response.StatusCode);
-            }
-            catch (HttpRequestException)
-            {
-                return StatusCode((int)HttpStatusCode.BadGateway);
-            }
+            return await CheckForConnectionError(_httpClient.PatchAsync("offers/" + offerViewModel.Offer.OfferID.ToString(), content));
         }
 
         [HttpPost("/offers/{offerID}/changeActive")]
@@ -152,18 +108,42 @@ namespace Hotel.Controllers
             };
             HttpContent content = JsonContent.Create(offer);
 
+            await CheckForConnectionError(_httpClient.PatchAsync("offers/" + offerID.ToString(), content));
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet("/offers/add")]
+        public IActionResult Add()
+        {
+            return View();
+        }
+
+        [HttpPost("/offers/add")]
+        public async Task<IActionResult> Add([FromForm] Offer offer)
+        {
+            return await CheckForConnectionError(_httpClient.PostAsJsonAsync("offers", offer));
+        }
+
+        [HttpGet("/offers/{offerID}/delete")]
+        public async Task<IActionResult> Delete([FromRoute] int offerID)
+        {
+            return await CheckForConnectionError(_httpClient.DeleteAsync("offers/" + offerID.ToString()));
+        }
+
+        private async Task<StatusCodeResult> CheckForConnectionError(Task<HttpResponseMessage> responseTask)
+        {
             try
             {
-                HttpResponseMessage response = await _httpClient.PatchAsync("offers/" + offerID.ToString(), content);
-                if (!response.IsSuccessStatusCode)
-                    return StatusCode((int)response.StatusCode);
-                return RedirectToAction("index");
+                HttpResponseMessage response = await responseTask;
+                return StatusCode((int)response.StatusCode);
             }
             catch (HttpRequestException e)
             {
-                if (e.StatusCode is null)
-                    return StatusCode((int)HttpStatusCode.BadGateway);
-                return StatusCode((int)e.StatusCode);
+                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
+            }
+            catch (Exception)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
     }

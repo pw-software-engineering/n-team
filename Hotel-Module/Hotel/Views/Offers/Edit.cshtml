@@ -47,7 +47,7 @@
 </div>
 <hr />
 
-<form asp-action="Edit" method="post" id="editOfferForm">
+<form asp-action="@nameof(Hotel.Controllers.OffersController.Edit)" method="post" id="editOfferForm">
     <!-- Active -->
     <!--<div class="form-group custom-control custom-checkbox">
         <input asp-for="IsActive" class="custom-control-input" />
@@ -55,6 +55,20 @@
             Active
         </label>
     </div>-->
+    <div>
+        <dl class="row dl-compact">
+            <dt class="col-sm-1">Active</dt>
+            <dd class="col-sm-11">
+                @if (Model.Offer.IsActive)
+                {@:Yes
+                }
+                else
+                {@:No
+                }
+            </dd>
+        </dl>
+    </div>
+
     <input asp-for="Offer.OfferID" hidden />
     <input asp-for="Offer.IsActive" hidden class="custom-control-input" />
     <br />
@@ -147,32 +161,6 @@
             additionalPicsChckbox.onclick = function () { switchEnabled(additionalPicsChckbox, additionalPicsInput, additionalGalleryDiv, additionalDivHtml); };
             additionalPicsInput.onchange = function () { previewGallery(additionalPicsInput, additionalGalleryDiv); };
 
-            // preview selected images in gallery
-            function previewGallery(inputElement, gallery) {
-                var count = inputElement.files.length;
-
-                gallery.innerHTML = '';
-                for (i = 0; i < count; i++) {
-                    var urls = URL.createObjectURL(inputElement.files[i]);
-                    gallery.innerHTML +=
-                        `<img src="` + urls + `" class="gallery-img" />`;
-                }
-            }
-
-            // checkbox controlling element's enabled/disabled attribute
-            // and gallery content
-            function switchEnabled(checkbox, inputElement, gallery, defaultGalleryHtml) {
-                if (checkbox.checked == true) {
-                    inputElement.value = '';
-                    inputElement.disabled = false;
-                    gallery.innerHTML = '';
-                } else {
-                    inputElement.value = '';
-                    inputElement.disabled = true;
-                    gallery.innerHTML = defaultGalleryHtml;
-                }
-            }
-
             // converting pictures to base64 and sending a form
             var form = document.getElementById('editOfferForm');
             form.onsubmit = async function (e) {
@@ -197,17 +185,14 @@
                 }
 
                 await fetch('@Url.Action(nameof(Hotel.Controllers.OffersController.Edit))', {
-                    method: 'GET',
-                    body: formData,
-                    redirect: "follow"
+                    method: 'POST',
+                    body: formData
                 }).then((response) => {
                     if (response.ok) {
                         alert("Offer edited successfully!")
+                        window.location.replace('@Url.Action(nameof(Hotel.Controllers.OffersController.Details), new { offerID = Model.Offer.OfferID })');
                     } else {
                         alert("error: " + response.status);
-                    }
-                    if (response.redirected) {
-                        window.location.replace(response.url);
                     }
                 }).catch((error) => {
                     console.error('fetch error: ', error);
@@ -225,11 +210,9 @@
                 }).then((response) => {
                     if (response.ok) {
                         alert("Offer deleted succesfully.");
+                        window.location.replace('@Url.Action(nameof(Hotel.Controllers.OffersController.Index))');
                     } else {
                         alert("error: " + response.status);
-                    }
-                    if (response.redirected) {
-                        window.location.replace(response.url);
                     }
                 }).catch((error) => {
                     console.error('fetch error: ', error);
@@ -242,10 +225,9 @@
                     return;
 
                 await fetch('@Url.Action(nameof(Hotel.Controllers.OffersController.ChangeActive), new { offerID = Model.Offer.OfferID, isActive = !Model.Offer.IsActive })', {
-                    method: 'GET'
+                    method: 'POST'
                 }).then((response) => {
                     if (response.ok) {
-                        alert('Operation succesfull.');
                         window.location.replace('@Url.Action(nameof(Hotel.Controllers.OffersController.Details), new { offerID = Model.Offer.OfferID })');
                     } else {
                         alert('error: ' + response.status);
