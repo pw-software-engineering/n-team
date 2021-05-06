@@ -1,5 +1,4 @@
-﻿using Server.Exceptions;
-using Server.ViewModels;
+﻿using Server.ViewModels;
 using System;
 
 namespace Server.Database.DataAccess
@@ -19,7 +18,7 @@ namespace Server.Database.DataAccess
             var hotelInfo = dbContext.HotelInfos.Find(hotelId);
             if (hotelInfo == null)
             {
-                throw new NotFoundException();
+                throw new Exception("not fund");
             }
             return new HotelGetInfo(hotelInfo);
         }
@@ -33,7 +32,7 @@ namespace Server.Database.DataAccess
             var hotel = dbContext.HotelInfos.Find(hotelId);
             if (hotel == null)
             {
-                throw new NotFoundException();
+                throw new Exception();
             }
 
             hotel.HotelName = hotelUpdateInfo.HotelName;

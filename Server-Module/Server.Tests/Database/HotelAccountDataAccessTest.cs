@@ -5,7 +5,6 @@ using Server.AutoMapper;
 using Server.Database;
 using Server.Database.DataAccess;
 using Server.Database.Models;
-using Server.Exceptions;
 using Server.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -101,7 +100,7 @@ namespace Server.Tests.Database
         [Fact]
         public void GetInfoBadIdTest()
         {
-            Assert.Throws<NotFoundException>(() => _dataAccess.GetInfo(44));
+            Assert.Throws<Exception>(() => _dataAccess.GetInfo(44));
         }
 
 
@@ -118,7 +117,7 @@ namespace Server.Tests.Database
         public void UpdateInfoBadIdTest()
         {
             var wahtWeWant = new HotelGetInfo() { City = "TestCity1", Country = "TestCountry1", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" };
-            Assert.Throws<NotFoundException>(() => _dataAccess.UpdateInfo(44, wahtWeWant));
+            Assert.Throws<Exception>(() => _dataAccess.UpdateInfo(44, wahtWeWant));
         }
 
         [Fact]

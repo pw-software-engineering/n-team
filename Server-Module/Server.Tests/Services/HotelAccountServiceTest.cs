@@ -2,7 +2,6 @@
 using Server.Database;
 using Server.Database.DataAccess;
 using Server.Database.DatabaseTransaction;
-using Server.Exceptions;
 using Server.Services.HotelAccountService;
 using Server.Services.Result;
 using Server.ViewModels;
@@ -32,7 +31,7 @@ namespace Server.Tests.Services
             
             var hotel = new HotelGetInfo() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
             
-            _dataAccessMock.Setup(x => x.GetInfo(It.IsAny<int>())).Throws(new NotFoundException());
+            _dataAccessMock.Setup(x => x.GetInfo(It.IsAny<int>())).Throws(new Exception());
             _dataAccessMock.Setup(x => x.GetInfo(hotelID)).Returns(hotel);
             
             var h = hotelAccountService.GetInfo(hotelID);
@@ -91,7 +90,7 @@ namespace Server.Tests.Services
 
             _dataAccessMock.Setup(x => x.UpdateInfo(It.IsAny<int>(), null)).Throws(new Exception());
             _dataAccessMock.Setup(x => x.UpdateInfo(It.IsAny<int>(), It.IsAny<HotelUpdateInfo>()));
-            var result = hotelAccountService.UpdateInfo(1, hotel);
+            var result = hotelAccountService.UpdateInfo(hotelID, hotel);
             Assert.True(result.StatusCode == System.Net.HttpStatusCode.OK );
 
         }

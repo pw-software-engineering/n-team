@@ -1,6 +1,5 @@
 ﻿using Server.Database.DataAccess;
 using Server.Database.DatabaseTransaction;
-using Server.Exceptions;
 using Server.Services.Result;
 using Server.ViewModels;
 using System;
