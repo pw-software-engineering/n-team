@@ -5,7 +5,7 @@
     this.onPageChange = onPageChange;
 }
 
-Pager.prototype.setPageNumber = function (number) {
+Pager.prototype.setPageNumber = function (number, forceChange = false) {
     if (number <= 0) {
         number = 1;
     }
@@ -14,7 +14,7 @@ Pager.prototype.setPageNumber = function (number) {
     for (var i = 0; i < this.pageNumberInputs.length; i++) {
         this.pageNumberInputs[i].val(this.pageNumber);
     }
-    if (!loadNewPage) {
+    if (!loadNewPage && !forceChange) {
         return;
     }
     this.onPageChange(this.pageNumber, this.pageSize);
