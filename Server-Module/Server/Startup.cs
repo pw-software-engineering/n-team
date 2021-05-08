@@ -22,6 +22,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using Server.Database.Models;
+using Server.ViewModels;
 
 namespace Server
 {
@@ -38,8 +41,9 @@ namespace Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            
+
             services.AddAutoMapper(typeof(Startup));
+
             services.AddScoped<IDatabaseTransaction, DatabaseTransaction>();
             services.AddTransient<IOfferService, OfferService>();
             services.AddTransient<IClientService, ClientService>();
