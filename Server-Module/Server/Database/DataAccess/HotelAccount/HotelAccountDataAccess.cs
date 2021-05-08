@@ -44,7 +44,10 @@ namespace Server.Database.DataAccess
         //to get info about hotel
         public HotelInfoDb GetInfo(int hotelId)
         {
+            
             var hotel = dbContext.HotelInfos.Find(hotelId);
+            if (hotel == null)
+                throw new Exception("reasores not fund");
             return hotel;
         }
 

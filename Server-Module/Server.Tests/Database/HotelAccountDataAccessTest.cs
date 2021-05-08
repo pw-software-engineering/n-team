@@ -103,7 +103,7 @@ namespace Server.Tests.Database
         [Fact]
         public void GetInfo_BadId_ThrowsExepcion()
         {
-            Assert.Throws<InvalidOperationException>(() => _dataAccess.GetInfo(44));
+            Assert.Throws<Exception>(() => _dataAccess.GetInfo(44));
         }
         #endregion
 
