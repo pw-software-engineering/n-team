@@ -17,6 +17,11 @@ namespace Server.Authentication.Client
         ClaimsPrincipal CreatePrincipal(ClientToken clientToken);
     }
 
+    public static class ClientTokenManagerOptions
+    {
+        public const string ClientIdClaimName = "id";
+    }
+
     public class ClientTokenManager : IClientTokenManager
     {
         private readonly IClientTokenDataAccess _tokenDataAccess;
@@ -32,7 +37,7 @@ namespace Server.Authentication.Client
                 throw new ArgumentNullException("clientToken");
             }
             List<Claim> claims = new List<Claim>();
-            claims.Add(new Claim("id", clientToken.ID.ToString()));
+            claims.Add(new Claim(ClientTokenManagerOptions.ClientIdClaimName, clientToken.ID.ToString()));
             ClaimsIdentity identity = new ClaimsIdentity(claims, "jwt");
             return new ClaimsPrincipal(identity);
         }

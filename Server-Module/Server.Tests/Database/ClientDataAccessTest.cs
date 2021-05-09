@@ -7,6 +7,7 @@ using Server.Database.DataAccess;
 using Server.Database.Models;
 using Server.Models;
 using Server.RequestModels;
+using Server.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,8 +65,34 @@ namespace Server.Tests.Database
         private IMapper _mapper;
         private ClientDataAccess _dataAccess;
 
-		#region UpdateClientInfo
-		[Fact]
+        #region GetClientInfo
+        [Fact]
+        public void GetClientInfo_NonExistentClientID_ReturnsNull()
+        {
+            int clientID = -1;
+
+            ClientInfoView clientInfoView = _dataAccess.GetClientInfo(clientID);
+
+            Assert.Null(clientInfoView);
+        }
+
+        [Fact]
+        public void GetClientInfo_ValidClientID_ReturnsClientInfoView()
+        {
+            int clientID = 1;
+
+            ClientInfoView clientInfoView = _dataAccess.GetClientInfo(clientID);
+            ClientDb clientDb = _context.Clients.Find(clientID);
+
+            Assert.Equal(clientDb.Name, clientInfoView.Name);
+            Assert.Equal(clientDb.Surname, clientInfoView.Surname);
+            Assert.Equal(clientDb.Email, clientInfoView.Email);
+            Assert.Equal(clientDb.Username, clientInfoView.Username);
+        }
+        #endregion
+
+        #region UpdateClientInfo
+        [Fact]
         public void UpdateClientInfo_UsernameAndEmailNull_DoesNothing()
         {
             int clientID = 1;

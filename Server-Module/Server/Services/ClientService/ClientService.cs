@@ -49,6 +49,18 @@ namespace Server.Services.ClientService
             return new ServiceResult(HttpStatusCode.OK);
         }
 
+        public IServiceResult GetClientInfo(int clientID)
+        {
+            ClientInfoView clientInfo = _dataAccess.GetClientInfo(clientID);
+            if(clientInfo == null)
+            {
+                return new ServiceResult(
+                    HttpStatusCode.BadRequest, 
+                    new Error($"User with ID equal to {clientID} does not exist"));
+            }
+            return new ServiceResult(HttpStatusCode.OK, clientInfo);
+        }
+
         public IServiceResult Login(string username, string password)
         {
             if(string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))

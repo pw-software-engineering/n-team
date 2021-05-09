@@ -13,6 +13,7 @@ namespace Server.Services.ClientService
     {
         #region /client
         public IServiceResult UpdateClientInfo(int clientID, string username, string email);
+        public IServiceResult GetClientInfo(int clientID);
         #endregion
 
         #region /client/login
