@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Server.Database.Models;
 using Server.Models;
+using Server.RequestModels;
 using Server.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,9 @@ namespace Server.AutoMapper
 
             CreateMap<ClientOfferPreview, OfferSearchPreviewView>();
             CreateMap<OfferSearchPreviewView, ClientOfferPreview>();
+
+            CreateMap<Reservation, ReservationInfo>();
+            CreateMap<ReservationInfo, Reservation>();
             #endregion
         }
     }
