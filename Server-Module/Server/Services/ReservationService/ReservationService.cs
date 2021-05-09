@@ -23,7 +23,7 @@ namespace Server.Services.ReservationService
             _mapper = mapper;
             _transaction = transaction;
         }
-        IServiceResult AddReservation(int hotelID, int offerID, int userID, ReservationInfo reservationInfo)
+        public IServiceResult AddReservation(int hotelID, int offerID, int userID, ReservationInfo reservationInfo)
         {
             IServiceResult response = CheckOfferExistanceAndOwnership(offerID, hotelID);
             if (response.StatusCode != HttpStatusCode.OK)
@@ -51,7 +51,7 @@ namespace Server.Services.ReservationService
             return new ServiceResult(HttpStatusCode.BadRequest, new Error("Offer is not available in chosen time interval"));
         }
 
-        IServiceResult CancelReservation(int reservationID, int userID)
+        public IServiceResult CancelReservation(int reservationID, int userID)
         {
             IServiceResult response = CheckReservationExistanceAndOwnership(reservationID, userID);
             if (response.StatusCode != HttpStatusCode.OK)

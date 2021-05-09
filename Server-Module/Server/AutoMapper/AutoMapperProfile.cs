@@ -33,6 +33,9 @@ namespace Server.AutoMapper
             CreateMap<OfferDb, ClientOfferPreview>();
             CreateMap<ClientOffer, OfferDb>();
             CreateMap<OfferDb, ClientOffer>();
+
+            CreateMap<Reservation, ClientReservationDb>();
+            CreateMap<ClientReservationDb, Reservation>();
             #endregion
 
             #region Model -> ViewModel -> Model
