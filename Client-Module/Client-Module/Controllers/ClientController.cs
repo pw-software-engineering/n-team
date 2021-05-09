@@ -85,12 +85,12 @@ namespace Client_Module.Controllers
 
     class ClientSecrets
     {
-        public ClientSecrets(string login, string password)
+        public ClientSecrets(string username, string password)
         {
-            Login = login;
+            Username = username;
             Password = password;
         }
-        public string Login { get; }
+        public string Username { get; }
         public string Password { get; }
     }
 

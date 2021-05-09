@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Server.Authentication;
 using Server.Authentication.Client;
 using Server.Database;
@@ -70,6 +71,15 @@ namespace Server
                 {
                     options.ClaimsIssuer = "ClientToken";
                 });
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                });
+            });
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -88,6 +98,21 @@ namespace Server
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
+            //app.Use(async (context, next) =>
+            //{
+            //    context.Response.Headers.Add(
+            //        "Access-Control-Allow-Origin", 
+            //        new StringValues("*"));
+            //    context.Response.Headers.Add(
+            //        "Access-Control-Allow-Headers",
+            //        new StringValues(new string[] { ClientTokenDefaults.TokenHeaderName, HotelTokenDefaults.TokenHeaderName }));
+            //    context.Response.Headers.Add(
+            //        "Access-Control-Allow-Methods",
+            //        new StringValues(new string[] { "PUT", "DELETE", "PATCH", "GET", "POST" }));
+            //    await next();
+            //});
 
             app.UseAuthorization();
 
