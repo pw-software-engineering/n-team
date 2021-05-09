@@ -9,34 +9,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Server.Controllers.Client
 {
     [Authorize(AuthenticationSchemes = ClientTokenDefaults.AuthenticationScheme)]
     [ApiController]
-    public class ClientAccountController : ControllerBase
+    [Route("/api-client")]
+    public class ClientAccountController : Controller
     {
         private readonly IClientService service;
-
+        private int _clientID;
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            var id = from claim in HttpContext.User.Claims
+                     where claim.Type == ClientTokenManagerOptions.ClientIdClaimName
+                     select int.Parse(claim.Value);
+            _clientID = id.First();
+            base.OnActionExecuting(context);
+        }
         public ClientAccountController(IClientService service)
         {
             this.service = service;
+            
         }
         
-        [HttpGet("/client")]
-        public string Get()
+        [HttpGet("client")]
+        public IActionResult GetClientInfo()
         {
-            return "";
+            return service.GetClientInfo(_clientID);
         }
         
-        [HttpPatch("/client")]
-        public IActionResult Patch(string username, string email)
+        [HttpPatch("client")]
+        public IActionResult PatchClientInfo(string username, string email)
         {
-            var id = from claim in HttpContext.User.Claims
-                      where claim.Type == "id"
-                      select int.Parse(claim.Value);
-
-            return service.UpdateClientInfo(id.First(), username, email);
+            return service.UpdateClientInfo(_clientID, username, email);
         }
     }
 }

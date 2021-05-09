@@ -13,6 +13,7 @@ using Server.Services.ClientService;
 using Server.Services.Result;
 using Server.RequestModels;
 using Xunit;
+using Server.ViewModels;
 
 namespace Server.Tests.Services
 {
@@ -35,7 +36,44 @@ namespace Server.Tests.Services
         private Mock<IDatabaseTransaction> _transactionMock;
         private IMapper _mapper;
 
-		#region UpdateClientInfo
+        #region GetClientInfo
+        [Fact]
+        public void GetClientInfo_NonExistentClientID_400_NonNullError()
+        {
+            int clientID = -1;
+            _dataAccessMock.Setup(da => da.GetClientInfo(clientID)).Returns((ClientInfoView)null);
+
+            IServiceResult serviceResult = _clientService.GetClientInfo(clientID);
+
+            Assert.Equal(HttpStatusCode.BadRequest, serviceResult.StatusCode);
+            Assert.True(serviceResult.Result is Error);
+        }
+
+        [Fact]
+        public void GetClientInfo_ValidClientID_200_ClientInfoViewObject()
+        {
+            ClientInfoView clientInfoView = new ClientInfoView()
+            {
+                Name = "TestName",
+                Surname = "TestSurname",
+                Email = "TestEmail",
+                Username = "TestUsername"
+            };
+            int clientID = 1;
+            _dataAccessMock.Setup(da => da.GetClientInfo(clientID)).Returns(clientInfoView);
+
+            IServiceResult serviceResult = _clientService.GetClientInfo(clientID);
+            ClientInfoView clientInfoViewResult = serviceResult.Result as ClientInfoView;
+
+            Assert.Equal(HttpStatusCode.OK, serviceResult.StatusCode);
+            Assert.Equal(clientInfoView.Name, clientInfoViewResult.Name);
+            Assert.Equal(clientInfoView.Surname, clientInfoViewResult.Surname);
+            Assert.Equal(clientInfoView.Email, clientInfoViewResult.Email);
+            Assert.Equal(clientInfoView.Username, clientInfoViewResult.Username);
+        }
+        #endregion
+
+        #region UpdateClientInfo
         [Fact]
 		public void UpdateClientInfo_UsernameAndEmailEmpty_400_UsernameAndEmailEmptyError()
 		{

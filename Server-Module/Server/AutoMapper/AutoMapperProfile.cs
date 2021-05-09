@@ -50,6 +50,8 @@ namespace Server.AutoMapper
             CreateMap<ClientOfferPreview, OfferSearchPreviewView>();
             CreateMap<OfferSearchPreviewView, ClientOfferPreview>();
             #endregion
+
+            CreateMap<ClientDb, ClientInfoView>();
         }
     }
 }
