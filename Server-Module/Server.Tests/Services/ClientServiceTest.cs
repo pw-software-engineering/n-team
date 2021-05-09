@@ -38,7 +38,7 @@ namespace Server.Tests.Services
 
         #region GetClientInfo
         [Fact]
-        public void GetClientInfo_NonExistentClientID_400_NonNullError()
+        public void GetClientInfo_NonExistentClientID_400_ErrorResult()
         {
             int clientID = -1;
             _dataAccessMock.Setup(da => da.GetClientInfo(clientID)).Returns((ClientInfoView)null);
@@ -50,7 +50,7 @@ namespace Server.Tests.Services
         }
 
         [Fact]
-        public void GetClientInfo_ValidClientID_200_ClientInfoViewObject()
+        public void GetClientInfo_ValidClientID_200_ClientInfoViewResult()
         {
             ClientInfoView clientInfoView = new ClientInfoView()
             {
