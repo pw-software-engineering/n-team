@@ -25,8 +25,7 @@ namespace Server.Database.DataAccess
 
         public ClientInfoView GetClientInfo(int clientID)
         {
-            ClientDb client = _dbContext.Clients.Find(clientID);
-            return client == null ? null : _mapper.Map<ClientInfoView>(client);
+            return _mapper.Map<ClientInfoView>(_dbContext.Clients.Find(clientID));
         }
 
         public void UpdateClientInfo(int clientID, string username, string email)
