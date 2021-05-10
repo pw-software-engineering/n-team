@@ -116,7 +116,8 @@ namespace Server.Database
             modelBuilder.Entity<OfferPictureDb>()
                .HasOne(op => op.Offer)
                .WithMany(o => o.OfferPictures)
-               .HasForeignKey(op => op.OfferID);
+               .HasForeignKey(op => op.OfferID)
+               .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<OfferHotelRoomDb>()
                .HasOne(ohr => ohr.Offer)

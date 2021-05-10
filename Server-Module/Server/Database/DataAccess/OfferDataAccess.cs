@@ -70,7 +70,7 @@ namespace Server.Database.DataAccess
             offer.OfferPreviewPicture = offerUpdateInfo.OfferPreviewPicture ?? offer.OfferPreviewPicture;
             if (!(offerUpdateInfo.OfferPictures is null))
             {
-                offer.OfferPictures.RemoveAll(op => op.OfferID == offerID);
+                _dbContext.OfferPictures.RemoveRange(_dbContext.OfferPictures.Where(p => p.OfferID == offerID));
                 foreach (string picture in offerUpdateInfo.OfferPictures)
                     offer.OfferPictures.Add(new OfferPictureDb(picture, offerID));
             }
