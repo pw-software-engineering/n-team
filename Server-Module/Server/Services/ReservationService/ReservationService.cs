@@ -33,7 +33,7 @@ namespace Server.Services.ReservationService
             List<int> roomIDs = _dataAccess.GetOfferRoomIDs(offerID);
             foreach (int roomID in roomIDs)
             {
-                if (_dataAccess.CheckAvailability(roomID, offerID, reservationInfo.From, reservationInfo.To))
+                if (_dataAccess.IsRoomAvailable(roomID, reservationInfo.From, reservationInfo.To))
                 {
                     Reservation reservation = _mapper.Map<Reservation>(reservationInfo);
                     reservation.ClientID = userID;

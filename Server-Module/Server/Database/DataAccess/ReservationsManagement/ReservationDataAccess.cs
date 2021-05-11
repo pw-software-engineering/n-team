@@ -24,10 +24,10 @@ namespace Server.Database.DataAccess.ReservationsManagement
             _dbContext.SaveChanges();
         }
 
-        public bool CheckAvailability(int roomID, int offerID, DateTime from, DateTime to)
+        public bool IsRoomAvailable(int roomID, DateTime from, DateTime to)
         {
 
-            return !_dbContext.ClientReservations.Any(cr => cr.RoomID == roomID && cr.OfferID == offerID &&
+            return !_dbContext.ClientReservations.Any(cr => cr.RoomID == roomID &&
                                                             ((cr.FromTime >= from && cr.FromTime < to) ||
                                                             (cr.ToTime > from && cr.ToTime <= to)));                                                           
         }

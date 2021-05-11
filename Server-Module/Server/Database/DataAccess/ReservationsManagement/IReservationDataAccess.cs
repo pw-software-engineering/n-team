@@ -9,7 +9,7 @@ namespace Server.Database.DataAccess.ReservationsManagement
     public interface IReservationDataAccess
     {
         List<int> GetOfferRoomIDs(int offerID);
-        bool CheckAvailability(int roomID, int offerID, DateTime from, DateTime to);
+        bool IsRoomAvailable(int roomID, DateTime from, DateTime to);
         void AddReservation(Reservation reservation);
         bool HasReservationBegun(int reservationID);
         void RemoveReservation(int ReservationID);
