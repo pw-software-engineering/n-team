@@ -154,6 +154,11 @@ namespace Server.Tests.Services
 
         #region Login
         [Fact]
+        public void Login_ClientCredentialsArgumentNull_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => _clientService.Login(null));
+        }
+        [Fact]
         public void Login_MissingOrEmptyClientLoginOrPasswordProperties_400()
         {
             ClientCredentials nullCredentials = new ClientCredentials();

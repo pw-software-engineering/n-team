@@ -148,11 +148,11 @@ namespace Server.Tests.Database
 
         #region GetRegisteredClientID
         [Fact]
-        public void GetRegisteredClientID_UsernameOrPasswordNullOrEmpty_Null()
+        public void GetRegisteredClientID_LoginOrPasswordNullOrEmpty_Null()
         {
             int? clientIDNull = _dataAccess.GetRegisteredClientID(null, null);
             int? clientIDEmpty = _dataAccess.GetRegisteredClientID(string.Empty, string.Empty);
-            int? clientIDPartial = _dataAccess.GetRegisteredClientID("TestUsername1", string.Empty);
+            int? clientIDPartial = _dataAccess.GetRegisteredClientID("TestLoginEmail1", string.Empty);
 
             Assert.False(clientIDNull.HasValue);
             Assert.False(clientIDEmpty.HasValue);
@@ -162,8 +162,8 @@ namespace Server.Tests.Database
         [Fact]
         public void GetRegisteredClientID_InvalidUsernameOrPassword_Null()
         {
-            int? clientIDPassword = _dataAccess.GetRegisteredClientID("NonexistentUsername", "TestPassword1");
-            int? clientIDUsername = _dataAccess.GetRegisteredClientID("TestUsername1", "InvalidPassword123#@!");
+            int? clientIDPassword = _dataAccess.GetRegisteredClientID("NonexistentLoginEmail", "TestPassword1");
+            int? clientIDUsername = _dataAccess.GetRegisteredClientID("TestLoginEmail1", "InvalidPassword123#@!");
 
             Assert.False(clientIDPassword.HasValue);
             Assert.False(clientIDUsername.HasValue);
@@ -173,10 +173,10 @@ namespace Server.Tests.Database
         public void GetRegisteredClientID_ValidUsernameAndPassword_DatabaseClientID()
         {
             int expectedClientID = 1;
-            string username = "TestUsername1";
+            string login = "TestEmail1";
             string password = "TestPassword1";
 
-            int? clientID = _dataAccess.GetRegisteredClientID(username, password);
+            int? clientID = _dataAccess.GetRegisteredClientID(login, password);
 
             Assert.Equal(expectedClientID, clientID.Value);
         }
