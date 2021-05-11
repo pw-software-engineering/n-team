@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Client_Module.Controllers
 {
-    [Authorize(AuthenticationSchemes = ClientTokenCookieDefaults.AuthenticationScheme)]
+    [Authorize]
     public class SearchController : Controller
     {
         public override void OnActionExecuting(ActionExecutingContext context)

@@ -13,6 +13,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Server.Authentication.Client;
 using Server.Database.DatabaseTransaction;
+using Server.RequestModels;
 
 namespace Server.Services.ClientService
 {
@@ -61,15 +62,19 @@ namespace Server.Services.ClientService
             return new ServiceResult(HttpStatusCode.OK, clientInfo);
         }
 
-        public IServiceResult Login(string username, string password)
+        public IServiceResult Login(ClientCredentials clientCredentials)
         {
-            if(string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            if(clientCredentials == null)
+            {
+                throw new ArgumentNullException("clientCredentials");
+            }
+            if(string.IsNullOrEmpty(clientCredentials.Login) || string.IsNullOrEmpty(clientCredentials.Password))
             {
                 return new ServiceResult(
                     HttpStatusCode.BadRequest,
                     new Error("Both password and username properties must be included in the request"));
             }
-            int? clientID = _dataAccess.GetRegisteredClientID(username, password);
+            int? clientID = _dataAccess.GetRegisteredClientID(clientCredentials.Login, clientCredentials.Password);
             if(!clientID.HasValue)
             {
                 return new ServiceResult(

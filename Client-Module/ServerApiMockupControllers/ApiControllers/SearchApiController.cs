@@ -17,7 +17,7 @@ namespace ServerApiMockup.MockupApiControllers
     {
         public SearchApiController() { }
 
-        [HttpGet("")]
+        [HttpGet("hotels")]
         public IActionResult GetHotels(string hotelName = null, string country = null, string city = null, int pageNumber = 1, int pageSize = 10)
         {
             byte[] imgRaw = System.IO.File.ReadAllBytes($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Resources/picture.png");
@@ -88,6 +88,10 @@ namespace ServerApiMockup.MockupApiControllers
         public IActionResult GetHotelOffers([FromRoute] int hotelID, [FromQuery] OfferFilter offerFilter, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             Console.WriteLine("GET HOTEL OFFERS");
+            if(pageNumber > 2)
+            {
+                return new JsonResult(new List<OfferPreviewInfo>());
+            }
             List<OfferPreviewInfo> offers = new List<OfferPreviewInfo>();
             byte[] imgRawRoom = System.IO.File.ReadAllBytes($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Resources/picture.png");
             string imgBase64Room = "data:image/png;base64," + Convert.ToBase64String(imgRawRoom);

@@ -25,7 +25,7 @@ namespace Server.Controllers.Client
         [HttpPost("client/login")]
         public IActionResult Login([FromBody] ClientCredentials credentials)
         {
-            return _clientService.Login(credentials.Username, credentials.Password);
+            return _clientService.Login(credentials);
         }
     }
 }

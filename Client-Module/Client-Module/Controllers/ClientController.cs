@@ -32,12 +32,6 @@ namespace Client_Module.Controllers
             return View(new LogInViewModel());
         }
 
-        [HttpGet("/logout")]
-        public IActionResult LogOut()
-        {
-            this.Response.Cookies.Delete(ClientTokenCookieDefaults.AuthCookieName);
-            return Redirect("/");
-        }
 
         [HttpPost("/login")]
         public async Task<IActionResult> LogIn(string login, string password)
@@ -74,8 +68,15 @@ namespace Client_Module.Controllers
             return View(viewModel);
         }
 
+        [HttpGet("/logout")]
+        public IActionResult LogOut()
+        {
+            this.Response.Cookies.Delete(ClientTokenCookieDefaults.AuthCookieName);
+            return Redirect("/");
+        }
+
         [HttpGet("/account")]
-        [Authorize(AuthenticationSchemes = ClientTokenCookieDefaults.AuthenticationScheme)]
+        [Authorize]
         public IActionResult Account()
         {
             ViewData[LayoutTagID.NavSelectedBtnKey] = LayoutTagID.NavAccountBtnID;
