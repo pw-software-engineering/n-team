@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Server.Authentication;
 using Microsoft.Extensions.Logging;
+using Server.ViewModels;
+using Server.Services.HotelAccountService;
 
 namespace Server.Controllers.Hotel
 {
@@ -16,17 +18,27 @@ namespace Server.Controllers.Hotel
     public class HotelAccountController : ControllerBase
     {
         private readonly ILogger<HotelAccountController> _logger;
-
-        public HotelAccountController(ILogger<HotelAccountController> logger)
+        private IHotelAccountService hotelAccountService;
+        public HotelAccountController(ILogger<HotelAccountController> logger, IHotelAccountService hotelAccountService)
         {
+            this.hotelAccountService = hotelAccountService;
             _logger = logger;
         }
 
-        [Route("/hotelInfo")]
-        [HttpPatch()]
-        public IActionResult UpdateInfo([FromBody] int tu_dane_z_body)
+        [HttpPatch("/hotelInfo")]
+        public IActionResult UpdateInfo([FromBody] HotelUpdateInfo hotelUpdateInfo)
         {
-            return StatusCode(404);
+            var hotelId = int.Parse(HttpContext.User.Claims.First().Value);
+            
+            return hotelAccountService.UpdateInfo(hotelId, hotelUpdateInfo);
+
+        }
+
+        [HttpGet("/hotelInfo")]
+        public IActionResult GetInfo()
+        {
+            var hotelId = int.Parse(HttpContext.User.Claims.First().Value);
+            return hotelAccountService.GetInfo(hotelId);
         }
     }
 }
