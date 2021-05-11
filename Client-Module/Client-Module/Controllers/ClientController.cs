@@ -40,10 +40,10 @@ namespace Client_Module.Controllers
         }
 
         [HttpPost("/login")]
-        public async Task<IActionResult> LogIn(string username, string password)
+        public async Task<IActionResult> LogIn(string login, string password)
         {
-            Console.WriteLine($"{username} | {password}");
-            ClientSecrets secrets = new ClientSecrets(username, password);
+            Console.WriteLine($"{login} | {password}");
+            ClientSecrets secrets = new ClientSecrets(login, password);
             HttpClient httpClient = _httpClientFactory.CreateClient();
             HttpRequestMessage httpRequest = new HttpRequestMessage();
             httpRequest.Content = new StringContent(
@@ -85,12 +85,12 @@ namespace Client_Module.Controllers
 
     class ClientSecrets
     {
-        public ClientSecrets(string username, string password)
+        public ClientSecrets(string login, string password)
         {
-            Username = username;
+            Login = login;
             Password = password;
         }
-        public string Username { get; }
+        public string Login { get; }
         public string Password { get; }
     }
 

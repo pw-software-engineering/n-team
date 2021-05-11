@@ -39,9 +39,13 @@ namespace Client_Module.Controllers
         }
 
         [HttpGet("/hotels/{hotelID}/offers")]
-        public IActionResult HotelOffers(int hotelID, HotelOffersModel hotelOffersModel)
+        public IActionResult HotelOffers(int hotelID)
         {
-            return View();
+            HotelOfferSearchModel model = new HotelOfferSearchModel()
+            {
+                HotelID = hotelID
+            };
+            return View(model);
         }
 
         [HttpGet("/hotels/{hotelID}/offers/{offerID}")]

@@ -1,4 +1,5 @@
-﻿@using Client_Module.ViewsTagID.Search; 
+﻿@using Client_Module.ViewsTagID.Search;
+@model Client_Module.Models.HotelOfferSearchModel
 @{
     ViewData["Title"] = "Search Offers";
     HotelOffersTagID tagIDs = new HotelOffersTagID();
@@ -84,27 +85,25 @@
                 <p class="m-0 text-align-center"><i style="font-size: 22px">Example offer name</i></p>
             </div>
             <hr class="my-1 border-secondary" />
-
-            <small class="d-block text-secondary mt-1">(Offer ID: 42)</small>
-            @*justify-content: center to horizontally center flex items after they're wrapped*@
-            <div class="d-flex flex-row" style="flex-wrap: wrap; justify-content: center">
+            @*justify-content-center to horizontally center flex items after they're wrapped*@
+            <div class="d-flex flex-row flex-wrap justify-content-center">
                 <div class="flex-grow-0 p-2">
                     <div class="d-block rounded mx-auto" style="width: 260px; height: 200px; background-color: red"></div>
                 </div>
-                <div class="flex-grow-1 p-2">
-                    <p class="flex-grow-1 mb-2 mx-1" style="font-size: 19px"><b>Max. number of guests: </b><span class="mx-2">4</span></p>
+                <div class="flex-grow-1 p-2 d-flex flex-column">
+                    <p class="mb-2 mx-1" style="font-size: 19px"><b>Max. number of guests: </b><span class="mx-2">4</span></p>
                     <b class="m-1" style="font-size: 19px">Cost per person:</b>
-                    <ul class="pl-4" style="list-style-type: none">
+                    <ul class="pl-4 mb-2 list-unstyled">
                         <li>
                             <i class="fas fa-user-tie mx-2"></i>
-                            <span class="m-0"><span style="color: gray">Adults:</span><span class="mx-3">125 zł</span></span>
+                            <span class="m-0"><span style="color: gray">Adults: </span><span class="mx-3">125 zł</span></span>
                         </li>
                         <li>
                             <i class="fas fa-child mx-2"></i>
                             <span class="m-0"><span style="color: gray">Children:</span><span class="mx-3">67 zł</span></span>
                         </li>
                     </ul>
-                    <button class="w-100 my-2 btn btn-secondary mt-4">Find out more<i class="ml-2 fas fa-chevron-right"></i></button>
+                    <button class="w-100 btn btn-secondary mt-auto">Find out more<i class="ml-2 fas fa-chevron-right"></i></button>
                 </div>
             </div>
         </li>
@@ -157,3 +156,23 @@
         </li>
     </ul>
 </div>
+
+@section Scripts {
+    <script src="~/js/Search/HotelOffers/hotelOfferEntry.js"></script>
+    <script src="~/js/Search/HotelOffers/hotelOffersManager.js"></script>
+    <script>
+        $(document).ready(function () {
+            var hotelID = @Model.HotelID;
+            var apiConfig = {
+                apiBaseUrl: "@ServerApiConfig.BaseUrl",
+                apiTokenCookieName: "@ClientTokenCookieDefaults.AuthCookieName",
+                apiTokenHeaderName: "@ServerApiConfig.TokenHeaderName"
+            }
+
+            var hotelOffersManager = new HotelOffersManager({
+                hotelID = hotelID,
+                apiConfig = apiConfig
+            });
+        });
+    </script>
+}
