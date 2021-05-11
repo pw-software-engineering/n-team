@@ -114,7 +114,7 @@ namespace Server.Tests.Database
         private ReservationDataAccess _dataAccess;
 
         [Fact]
-        public void FindOfferAnfGetOwner_NoOffer_ReturnNull()
+        public void FindOfferAndGetOwner_NoOffer_ReturnNull()
         {
             int offerID = -1;
 
@@ -123,7 +123,7 @@ namespace Server.Tests.Database
             Assert.Null(owner);
         }
         [Fact]
-        public void FindOfferAnfGetOwner_ReturnOwnerHotelID()
+        public void FindOfferAndGetOwner_ReturnOwnerHotelID()
         {
             int offerID = 1;
             int ownerID = 2;
