@@ -3,19 +3,19 @@ using System.Collections.Generic;
 
 namespace Hotel.ViewModels
 {
-    public class OffersIndex
+    public class OffersIndexViewModel
     {
         public IEnumerable<OfferPreview> OfferPreviews { get; set; }
         public Paging Paging { get; set; }
         public bool? IsActive { get; set; }
 
-        public OffersIndex()
+        public OffersIndexViewModel()
         {
             OfferPreviews = new List<OfferPreview>();
             Paging = new Paging();
             IsActive = null;
         }
-        public OffersIndex(IEnumerable<OfferPreview> offers, Paging paging, bool? isActive = null)
+        public OffersIndexViewModel(IEnumerable<OfferPreview> offers, Paging paging, bool? isActive = null)
         {
             OfferPreviews = offers;
             Paging = paging;
