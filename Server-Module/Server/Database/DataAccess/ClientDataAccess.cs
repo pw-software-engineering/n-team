@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Server.Database.Models;
+using Server.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +21,11 @@ namespace Server.Database.DataAccess
         public int? GetRegisteredClientID(string username, string password)
         {
             return _dbContext.Clients.FirstOrDefault(client => client.Username == username && client.Password == password)?.ClientID;
+        }
+
+        public ClientInfoView GetClientInfo(int clientID)
+        {
+            return _mapper.Map<ClientInfoView>(_dbContext.Clients.Find(clientID));
         }
 
         public void UpdateClientInfo(int clientID, string username, string email)

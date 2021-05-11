@@ -75,13 +75,11 @@
             foreach (string picture in Model.Pictures)
             {
                 <div class="col-sm-3">
-                    <a href="data:image/png;base64,@Html.Raw(picture)">
-                        <img class="img-thumbnail" src="data:image/png;base64,@Html.Raw(picture)">
-                    </a>
+                    <img class="img-thumbnail" src="data:image/png;base64,@Html.Raw(picture)">
                 </div>
             }
     </div>
 </div>
 <hr />
 
-<a class="btn btn-primary" asp-controller="Offers" asp-action="Edit" asp-route-offerID="@Model.OfferID">Edit offer</a>
+<a class="btn btn-primary" asp-action="@nameof(Hotel.Controllers.OffersController.Edit)" asp-route-offerID="@Model.OfferID">Edit offer</a>

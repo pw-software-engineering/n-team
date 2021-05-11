@@ -38,7 +38,7 @@ namespace Server.Database.DataAccess
         public List<OfferPreview> GetHotelOffers(Paging paging, int hotelID, bool? isActive)
         {
             var ret = _mapper.Map<List<OfferPreview>>(_dbContext.Offers
-                             .Where(o => o.HotelID == hotelID));
+                             .Where(o => o.HotelID == hotelID && !o.IsDeleted));
 
             if (isActive.HasValue)
                 ret = ret.Where(o => o.IsActive == isActive).ToList();
@@ -63,14 +63,14 @@ namespace Server.Database.DataAccess
         }
         public void UpdateOffer(int offerID, OfferUpdateInfo offerUpdateInfo)
         {
-            OfferDb offer = _dbContext.Offers.Find(offerID);
+            OfferDb offer = _dbContext.Offers.Include(o => o.OfferPictures).Single(o => o.OfferID == offerID);
             offer.IsActive = offerUpdateInfo.IsActive ?? offer.IsActive;
             offer.OfferTitle = offerUpdateInfo.OfferTitle ?? offer.OfferTitle;
             offer.Description = offerUpdateInfo.Description ?? offer.Description;
             offer.OfferPreviewPicture = offerUpdateInfo.OfferPreviewPicture ?? offer.OfferPreviewPicture;
-            if (offerUpdateInfo.OfferPictures != null)
+            if (!(offerUpdateInfo.OfferPictures is null))
             {
-                offer.OfferPictures.RemoveAll(op => op.OfferID == offerID);
+                _dbContext.OfferPictures.RemoveRange(_dbContext.OfferPictures.Where(p => p.OfferID == offerID));
                 foreach (string picture in offerUpdateInfo.OfferPictures)
                     offer.OfferPictures.Add(new OfferPictureDb(picture, offerID));
             }

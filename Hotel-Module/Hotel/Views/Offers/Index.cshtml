@@ -1,4 +1,4 @@
-﻿@model Hotel.ViewModels.OffersIndex
+﻿@model Hotel.ViewModels.OffersIndexViewModel
 @{
     ViewData["Title"] = "Offers";
 }
@@ -90,16 +90,22 @@ else
                                     </dd>
                                 </dl>
                             </div>
+
+                            <form asp-action="@nameof(Hotel.Controllers.OffersController.ChangeActive)"
+                                asp-route-offerID="@offer.OfferID"
+                                asp-route-isActive="@(!offer.IsActive)" method="post" id="changeActiveForm_@offer.OfferID" class="changeActiveForm">
+                            </form>
+
                             <div class="btn-group-vertical btn-group-sm col-sm-2">
                                 @if (offer.IsActive)
                                 {
-                                    <button class="btn btn-outline-danger">Deactivate</button>
+                                    <button class="btn btn-outline-danger" form="changeActiveForm_@offer.OfferID">Deactivate</button>
                                 }
                                 else
                                 {
-                                    <button class="btn btn-outline-success">Activate</button>
+                                    <button class="btn btn-outline-success" form="changeActiveForm_@offer.OfferID">Activate</button>
                                 }
-                                <a class="btn btn-sm btn-primary" asp-controller="offers" asp-action="details" asp-route-offerID="@offer.OfferID">Details</a>
+                                <a class="btn btn-sm btn-primary" asp-action="@nameof(Hotel.Controllers.OffersController.Details)" asp-route-offerID="@offer.OfferID">Details</a>
                             </div>
                         </div>
                     </td>
@@ -137,7 +143,7 @@ else
     </ul>
 </nav>
 <hr />
-<a class="btn btn-success" asp-controller="Offers" asp-action="Add">Add new offer</a>
+<a class="btn btn-success" asp-action="@nameof(Hotel.Controllers.OffersController.Add)">Add new offer</a>
 
 @section Scripts {
     <script type="text/javascript">

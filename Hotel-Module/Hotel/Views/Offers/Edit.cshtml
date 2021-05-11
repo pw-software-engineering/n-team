@@ -1,34 +1,34 @@
-﻿@{
-    ViewData["Title"] = "Limitless offer";
+﻿@model Hotel.ViewModels.OfferEditViewModel
+@{
+    ViewData["Title"] = Model.Offer.OfferTitle;
 }
 
-<h1>Edit Limitless offer</h1>
+<h1>Edit @Model.Offer.OfferTitle</h1>
 <hr />
 
 <div>
     <label class="form-control-placeholder-static">Rooms</label>
-    <ul class="list-group">
-
-        <!-- rooms -->
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            13
-            <a href="#" class="ml-4 text-danger" data-toggle="tooltip" title="Detach room from this offer">
-                <span class="badge badge-pill">
-                    <i class="fa fa-sm fa-unlink"></i>
-                    Detach
-                </span>
-            </a>
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            14
-            <a href="#" class="ml-4 text-danger" data-toggle="tooltip" title="Detach room from this offer">
-                <span class="badge badge-pill">
-                    <i class="fa fa-sm fa-unlink"></i>
-                    Detach
-                </span>
-            </a>
-        </li>
-    </ul>
+    @if (Model.Offer.Rooms is null || !Model.Offer.Rooms.Any())
+    {
+        <p class="text-center">There are no rooms in this offer.</p>
+    }
+    else
+    {
+        <ul class="list-group">
+            @foreach (string room in Model.Offer.Rooms)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @Html.Raw(room)
+                    <a href="#" class="ml-4 text-danger" data-toggle="tooltip" title="Detach room from this offer">
+                        <span class="badge badge-pill">
+                            <i class="fa fa-sm fa-unlink"></i>
+                            Detach
+                        </span>
+                    </a>
+                </li>
+            }
+        </ul>
+    }
     <hr/>
 
     <form>
@@ -47,25 +47,42 @@
 </div>
 <hr />
 
-<form>
+<form asp-action="@nameof(Hotel.Controllers.OffersController.Edit)" method="post" id="editOfferForm">
     <!-- Active -->
-    <div class="form-group custom-control custom-checkbox">
-        <input type="checkbox" id="activeCheckbox" class="custom-control-input" checked disabled />
+    <!--<div class="form-group custom-control custom-checkbox">
+        <input asp-for="IsActive" class="custom-control-input" />
         <label class="custom-control-label" for="activeCheckbox">
             Active
         </label>
+    </div>-->
+    <div>
+        <dl class="row dl-compact">
+            <dt class="col-sm-1">Active</dt>
+            <dd class="col-sm-11">
+                @if (Model.Offer.IsActive)
+                {@:Yes
+                }
+                else
+                {@:No
+                }
+            </dd>
+        </dl>
     </div>
+
+    <input asp-for="Offer.OfferID" hidden />
+    <input asp-for="Offer.IsActive" hidden class="custom-control-input" />
+    <br />
 
     <!-- Title -->
     <div class="form-group">
-        <input type="text" class="form-control" placeholder="Offer name" value="Limitless offer" />
+        <input asp-for="Offer.OfferTitle" class="form-control" placeholder="Offer name" />
         <label class="form-control-placeholder">Title</label>
     </div>
     <hr /><br />
 
     <!-- Description -->
     <div class="form-group">
-        <textarea class="form-control" rows="4">Offer description description description description description description description description description description</textarea>
+        <textarea asp-for="Offer.Description" class="form-control" rows="4" placeholder="Write something about this offer!"></textarea>
         <label class="form-control-placeholder">Description</label>
     </div>
     <hr /><br />
@@ -73,35 +90,152 @@
     <!-- Preview PIC -->
     <div class="form-group">
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" id="previewPicCheckbox" class="custom-control-input" onclick="switchEnabled(this, 'previewFile')" />
-            <label class="custom-control-label" for="previewPicCheckbox">Change preview picture</label>
+            <input asp-for="ChangePreviewPicture" class="custom-control-input" />
+            <label class="custom-control-label" for="@Html.IdFor(o => o.ChangePreviewPicture)">Change preview picture</label>
         </div>
         <div class="form-row">
-            <input id="previewFile" class="form-control col-sm-4" type="file" disabled onchange="previewGallery(this, 'previewGallery')" />
+            <input asp-for="Offer.OfferPreviewPicture" type="file" accept="image/*" disabled class="form-control col-sm-4" />
             <label class="form-control-placeholder-file">Preview picture</label>
-            <div id="previewGallery"></div>
+            <div id="previewGallery">
+                @if (!(Model.Offer.OfferPreviewPicture is null) && !string.IsNullOrWhiteSpace(Model.Offer.OfferPreviewPicture))
+                {
+                    <img src="data:image/png;base64,@Html.Raw(Model.Offer.OfferPreviewPicture)" class="gallery-img" />
+                }
+            </div>
         </div>
-        <a href="~/img/rooms/room1.jpg">Current picture</a>
     </div>
     <hr /><br />
 
     <!-- Additinal PICS-->
     <div class="form-group">
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" id="additionalPicsCheckbox" class="custom-control-input" onclick="switchEnabled(this, 'additionalFiles')" />
-            <label class="custom-control-label" for="additionalPicsCheckbox">Change additional pictures</label>
+            <input asp-for="ChangeOfferPictures" class="custom-control-input" />
+            <label class="custom-control-label" for="@Html.IdFor(o => o.ChangeOfferPictures)">Change additional pictures</label>
         </div>
         <div class="form-row">
-            <input id="additionalFiles" class="form-control col-sm-4" type="file" multiple disabled onchange="previewGallery(this, 'additionalGallery')" />
+            <input asp-for="Offer.Pictures" type="file" accept="image/*" multiple disabled class="form-control col-sm-4" />
             <label class="form-control-placeholder-file">Additional pictures</label>
-            <div id="additionalGallery"></div>
+            <div id="additionalGallery">
+                @if (!(Model.Offer.Pictures is null))
+                {
+                    foreach (string pic in Model.Offer.Pictures)
+                    {
+                        @:<img src="data:image/png;base64,@Html.Raw(pic)" class="gallery-img" />
+                    }
+                }
+            </div>
         </div>
     </div>
     <hr />
 
     <div class="row">
         <button type="submit" class="btn btn-primary m-1">Save</button>
-        <button type="button" class="btn btn-outline-danger m-1">Deactivate</button>
-        <button type="button" class="btn btn-danger m-1 ml-auto">Remove offer</button>
+        @if (Model.Offer.IsActive)
+        {
+            <button type="button" class="btn btn-outline-danger m-1" id="changeActiveBtn">Deactivate</button>
+        }
+        else
+        {
+            <button type="button" class="btn btn-outline-success m-1" id="changeActiveBtn">Activate</button>
+        }
+        <button type="button" class="btn btn-danger m-1 ml-auto" id="removeOfferBtn">Remove offer</button>
     </div>
 </form>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var previewPicInput = document.getElementById('@Html.IdFor(o => o.Offer.OfferPreviewPicture)');
+            var previewPicChckbox = document.getElementById('@Html.IdFor(o => o.ChangePreviewPicture)');
+            var previewGalleryDiv = document.getElementById('previewGallery');
+
+            var additionalPicsInput = document.getElementById('@Html.IdFor(o => o.Offer.Pictures)');
+            var additionalPicsChckbox = document.getElementById('@Html.IdFor(o => o.ChangeOfferPictures)');
+            var additionalGalleryDiv = document.getElementById('additionalGallery');
+
+            var previewDivHtml = previewGalleryDiv.innerHTML;
+            var additionalDivHtml = additionalGalleryDiv.innerHTML;
+
+            previewPicChckbox.onclick = function () { switchEnabled(previewPicChckbox, previewPicInput, previewGalleryDiv, previewDivHtml); };
+            previewPicInput.onchange = function () { previewGallery(previewPicInput, previewGalleryDiv); };
+            additionalPicsChckbox.onclick = function () { switchEnabled(additionalPicsChckbox, additionalPicsInput, additionalGalleryDiv, additionalDivHtml); };
+            additionalPicsInput.onchange = function () { previewGallery(additionalPicsInput, additionalGalleryDiv); };
+
+            // converting pictures to base64 and sending a form
+            var form = document.getElementById('editOfferForm');
+            form.onsubmit = async function (e) {
+                e.preventDefault();
+                var formData = new FormData(form);
+                var previewPicString = '@Html.NameFor(o => o.Offer.OfferPreviewPicture)';
+                var picsString = '@Html.NameFor(o => o.Offer.Pictures)';
+
+                var previewPic = formData.get(previewPicString);
+                var previewPic64 = await get64BaseString(previewPic);
+                if (previewPic64) {
+                    formData.set(previewPicString, previewPic64);           // .set() overrides value
+                }
+
+                var pics = formData.getAll(picsString);
+                formData.delete(picsString);
+                for (const pic of pics) {
+                    var pic64 = await (get64BaseString(pic));
+                    if (pic64) {
+                        formData.append(picsString, pic64);
+                    }
+                }
+
+                await fetch('@Url.Action(nameof(Hotel.Controllers.OffersController.Edit))', {
+                    method: 'POST',
+                    body: formData
+                }).then((response) => {
+                    if (response.ok) {
+                        alert("Offer edited successfully!")
+                        window.location.replace('@Url.Action(nameof(Hotel.Controllers.OffersController.Details), new { offerID = Model.Offer.OfferID })');
+                    } else {
+                        alert("error: " + response.status);
+                    }
+                }).catch((error) => {
+                    console.error('fetch error: ', error);
+                });
+            };
+
+
+            // removing an offer
+            $('#removeOfferBtn').on('click', async function () {
+                if (!confirm('Are you sure you want to permanently delete offer "@Model.Offer.OfferTitle"? This action is irreversible!'))
+                    return;
+
+                await fetch('@Url.Action(nameof(Hotel.Controllers.OffersController.Delete), new { offerID = Model.Offer.OfferID })', {
+                    method: 'GET'
+                }).then((response) => {
+                    if (response.ok) {
+                        alert("Offer deleted succesfully.");
+                        window.location.replace('@Url.Action(nameof(Hotel.Controllers.OffersController.Index))');
+                    } else {
+                        alert("error: " + response.status);
+                    }
+                }).catch((error) => {
+                    console.error('fetch error: ', error);
+                });
+            });
+
+            // (de)activate offer
+            $('#changeActiveBtn').on('click', async function () {
+                if (!confirm('You are about to change \'Active\' status of the offer "@Model.Offer.OfferTitle". Are you sure?'))
+                    return;
+
+                await fetch('@Url.Action(nameof(Hotel.Controllers.OffersController.ChangeActive), new { offerID = Model.Offer.OfferID, isActive = !Model.Offer.IsActive })', {
+                    method: 'POST'
+                }).then((response) => {
+                    if (response.ok) {
+                        window.location.replace('@Url.Action(nameof(Hotel.Controllers.OffersController.Details), new { offerID = Model.Offer.OfferID })');
+                    } else {
+                        alert('error: ' + response.status);
+                    }
+                }).catch((error) => {
+                    console.error('fetch error: ', error);
+                });
+            });
+        })
+    </script>
+}

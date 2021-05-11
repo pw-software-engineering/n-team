@@ -7,9 +7,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Server.Authentication;
+using Server.Authentication.Client;
 using Server.Database;
 using Server.Database.DataAccess;
+using Server.Services.HotelAccountService;
 using Server.Database.DataAccess.OfferSearch;
 using Server.Database.DataAccess.ReservationsManagement;
 using Server.Database.DatabaseTransaction;
@@ -23,6 +26,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using Server.Database.Models;
+using Server.ViewModels;
 
 namespace Server
 {
@@ -41,6 +47,7 @@ namespace Server
             services.AddControllers();
 
             services.AddAutoMapper(typeof(Startup));
+
             services.AddScoped<IDatabaseTransaction, DatabaseTransaction>();
             services.AddTransient<IOfferService, OfferService>();
             services.AddTransient<IClientService, ClientService>();
@@ -48,6 +55,8 @@ namespace Server
             services.AddTransient<IClientDataAccess, ClientDataAccess>();
             services.AddTransient<IRoomDataAccess, RoomDataAccess>();
             services.AddTransient<IHotelTokenDataAccess, HotelTokenDataAccess>();
+            services.AddTransient<IHotelAccountDataAccess, HotelAccountDataAccess>();
+            services.AddTransient<IHotelAccountService, HotelAccountService>();
             services.AddTransient<IHotelSearchDataAccess, HotelSearchDataAccess>();
             services.AddTransient<IHotelSearchService, HotelSearchService>();
             services.AddTransient<IOfferSearchDataAccess, OfferSearchDataAccess>();
@@ -55,10 +64,33 @@ namespace Server
             services.AddTransient<IReservationDataAccess, ReservationDataAccess>();
             services.AddTransient<IReservationService, ReservationService>();
 
+            services.AddTransient<IClientTokenManager, ClientTokenManager>();
+            services.AddTransient<IClientTokenDataAccess, ClientTokenDataAccess>();
+
             services.AddDbContext<ServerDbContext>(options =>           
                 options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext")));
             //services.AddAuthentication("HotellBasic").AddScheme<HotellTokenSchemeOptions, HotellTokenScheme>("HotellBasic", null);
-            services.AddAuthentication().AddScheme<HotelTokenSchemeOptions, HotelTokenScheme>(HotelTokenDefaults.AuthenticationScheme, (HotelTokenSchemeOptions options) => { options.ClaimsIssuer = "HotelBasic"; });
+            services.AddAuthentication()
+                .AddScheme<HotelTokenSchemeOptions, HotelTokenScheme>(
+                HotelTokenDefaults.AuthenticationScheme, 
+                (HotelTokenSchemeOptions options) => { 
+                    options.ClaimsIssuer = "HotelBasic"; 
+                })
+                .AddScheme<ClientTokenSchemeOptions, ClientTokenScheme>(
+                ClientTokenDefaults.AuthenticationScheme,
+                (ClientTokenSchemeOptions options) =>
+                {
+                    options.ClaimsIssuer = "ClientToken";
+                });
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                });
+            });
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -77,6 +109,21 @@ namespace Server
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
+            //app.Use(async (context, next) =>
+            //{
+            //    context.Response.Headers.Add(
+            //        "Access-Control-Allow-Origin", 
+            //        new StringValues("*"));
+            //    context.Response.Headers.Add(
+            //        "Access-Control-Allow-Headers",
+            //        new StringValues(new string[] { ClientTokenDefaults.TokenHeaderName, HotelTokenDefaults.TokenHeaderName }));
+            //    context.Response.Headers.Add(
+            //        "Access-Control-Allow-Methods",
+            //        new StringValues(new string[] { "PUT", "DELETE", "PATCH", "GET", "POST" }));
+            //    await next();
+            //});
 
             app.UseAuthorization();
 

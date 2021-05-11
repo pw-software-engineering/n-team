@@ -1,15 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Server.Database;
 using Server.Database.DataAccess;
+using Server.Services.Result;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -68,10 +73,11 @@ namespace Server.Authentication.Client
 
         protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
         {
-            Console.WriteLine($"CHALLANGE: {Response.StatusCode}");
-            Context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            Context.Response.ContentType = "application/json";
-            await Context.Response.WriteAsync("{\"error\":" + _errorString + "\"}");
+            Console.WriteLine($"CHALLANGE: {Response.StatusCode} | {_errorString}");
+            IServiceResult result = new ServiceResult(HttpStatusCode.Unauthorized, new Error(_errorString));
+            RouteData routeData = new RouteData(Context.Request.RouteValues);
+            ActionDescriptor actionDescriptor = new ActionDescriptor();
+            await result.ExecuteResultAsync(new ActionContext(Context, routeData, actionDescriptor));
             return;
         }
 
@@ -86,7 +92,7 @@ namespace Server.Authentication.Client
 
     public static class ClientTokenDefaults
     {
-        public const string AuthenticationScheme = "HotelTokenScheme";
+        public const string AuthenticationScheme = "ClientTokenScheme";
         public const string TokenHeaderName = "x-client-token";
     }
 

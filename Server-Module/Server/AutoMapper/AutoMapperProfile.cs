@@ -36,6 +36,8 @@ namespace Server.AutoMapper
 
             CreateMap<Reservation, ClientReservationDb>();
             CreateMap<ClientReservationDb, Reservation>();
+            CreateMap<HotelInfoDb, HotelGetInfo>().AfterMap((hdb, h) => h.HotelDesc = hdb.HotelDescription);
+            CreateMap<HotelGetInfo, HotelInfoDb>().AfterMap((h, hdb) =>  hdb.HotelDescription = h.HotelDesc);
             #endregion
 
             #region Model -> ViewModel -> Model
@@ -57,6 +59,8 @@ namespace Server.AutoMapper
             CreateMap<Reservation, ReservationInfo>();
             CreateMap<ReservationInfo, Reservation>();
             #endregion
+
+            CreateMap<ClientDb, ClientInfoView>();
         }
     }
 }

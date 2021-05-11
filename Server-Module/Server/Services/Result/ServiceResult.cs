@@ -42,6 +42,7 @@ namespace Server.Services.Result
                     string json = JsonConvert.SerializeObject(Result, serializerSettings);
 
                     byte[] data = Encoding.UTF8.GetBytes(json);
+                    context.HttpContext.Response.ContentType = "application/json";
                     await context.HttpContext.Response.Body.WriteAsync(data, 0, data.Length);
                     await context.HttpContext.Response.Body.FlushAsync();
                 });
