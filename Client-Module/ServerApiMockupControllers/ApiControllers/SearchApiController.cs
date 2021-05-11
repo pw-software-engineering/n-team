@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace ServerApiMockup.MockupApiControllers
 {
-    [Route("api-client/hotels")]
+    [Route("api-client")]
     [ApiController]
     public class SearchApiController : ControllerBase
     {
@@ -55,7 +55,7 @@ namespace ServerApiMockup.MockupApiControllers
                 });
         }
 
-        [HttpGet("{hotelID}")]
+        [HttpGet("hotels/{hotelID}")]
         public IActionResult GetHotelDetails(int hotelID)
         {
             //Thread.Sleep(3000);
@@ -87,6 +87,7 @@ namespace ServerApiMockup.MockupApiControllers
         [HttpGet("hotels/{hotelID}/offers")]
         public IActionResult GetHotelOffers([FromRoute] int hotelID, [FromQuery] OfferFilter offerFilter, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
+            Console.WriteLine("GET HOTEL OFFERS");
             List<OfferPreviewInfo> offers = new List<OfferPreviewInfo>();
             byte[] imgRawRoom = System.IO.File.ReadAllBytes($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Resources/picture.png");
             string imgBase64Room = "data:image/png;base64," + Convert.ToBase64String(imgRawRoom);

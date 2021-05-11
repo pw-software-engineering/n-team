@@ -20,11 +20,11 @@
         headers[this.apiConfig.apiTokenHeaderName] = getCookie(this.apiConfig.apiTokenCookieName);
         var queryParameters = [];
         queryParameters.push(
-            `from=${from}`,
-            `to=${to}`
+            `fromTime=${from}`,
+            `toTime=${to}`
         );
         queryParameters.push(
-            minCost !== null ? `minCost=${Number(minCost.)}` : null,
+            minCost !== null ? `minCost=${Number(minCost)}` : null,
             maxCost !== null ? `maxCost=${Number(maxCost)}` : null,
             minGuests !== null ? `minGuests=${Number(minGuests)}` : null,
             pageNumber !== null ? `pageNumber=${Number(pageNumber)}` : null,
@@ -41,7 +41,9 @@
         }).then(
             (data, textStatus, jqXHR) => {
                 console.log(data);
-                data.hotelID = this.hotelID;
+                for (var entry of data) {
+                    entry.hotelID = this.hotelID;
+                }
                 return data;
             },
             (jqXHR, textStatus, errorThrown) => {

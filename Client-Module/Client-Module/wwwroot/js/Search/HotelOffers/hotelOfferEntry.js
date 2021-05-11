@@ -11,19 +11,20 @@
     }
 
     createComponent() {
-        var offerInfoComponent = $("<li>").attr("class", "list-group-item rounded-0 m-1 mb-3 bg-light reservation-list-entry");
-        offerInfoComponent.append(
+        var hotelOfferPreviewComponent = $("<li>").attr("class", "list-group-item rounded-0 m-1 mb-3 bg-light reservation-list-entry");
+        hotelOfferPreviewComponent.append(
             this.createHeaderComponent(),
             $("<hr>").attr("class", "my-1 border-secondary"),
             this.createOfferInfoComponent()
-        )
+        );
+        return hotelOfferPreviewComponent;
     }
 
     createHeaderComponent() {
         var headerComponent = $("<div>");
         return headerComponent.append(
-            $("<p>").attr("class", "m-0 text-align-center").text(this.hotelOfferData.offerTitle).append(
-                $('<i style="font-size: 22px">')
+            $("<p>").attr("class", "m-0 text-align-center").append(
+                $('<i style="font-size: 22px">').text(this.hotelOfferData.offerTitle)
             )
         );
     }
@@ -39,23 +40,27 @@
                 .attr("src", this.hotelOfferData.offerPreviewPicture)
         );
         offerInfoComponent.append(offerPreviewPictureComponent);
-        var offerInfoPanelComponent = $("<div>").attr("flex-grow-1 p-2 d-flex flex-column");
+        var offerInfoPanelComponent = $("<div>").attr("class", "flex-grow-1 p-2 d-flex flex-column");
+        var numberFormatterOptions = {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        };
         offerInfoPanelComponent.append(
             $("<p>").attr("class", "mb-2 mx-1").attr("style", "font-size: 19px").append(
                 $("<span>").attr("style", "font-weight: 500").text("Max. number of guests: "),
-                $("<span>").attr("class", "mx-2").text(data.maxGuests)
+                $("<span>").attr("class", "mx-2").text(this.hotelOfferData.maxGuests)
             ),
-            $("<p>").attr("class", "my-0").attr("style", "font-size: 19px; font-weight: 500").text("Cost per person:"),
+            $("<p>").attr("class", "m-1").attr("style", "font-size: 19px; font-weight: 500").text("Cost per person:"),
             $("<ul>").attr("class", "pl-4 mb-2 list-unstyled").append(
                 $("<li>").append(
                     $('<i class="fas fa-user-tie mx-2">'),
                     $("<span>").attr("style", "color: gray").text("Adults: "),
-                    $("<span>").attr("class", "mx-3").text(`${this.hotelOfferData.costPerAdult} zł`)
+                    $("<span>").attr("class", "mx-3").text(`${Number(this.hotelOfferData.costPerAdult).toLocaleString('en-US', numberFormatterOptions)} zł`)
                 ),
                 $("<li>").append(
-                    $('<i class="fas fa-user-tie mx-2">'),
+                    $('<i class="fas fa-child mx-2">'),
                     $("<span>").attr("style", "color: gray").text("Children: "),
-                    $("<span>").attr("class", "mx-3").text(`${this.hotelOfferData.costPerChild} zł`)
+                    $("<span>").attr("class", "mx-3").text(`${Number(this.hotelOfferData.costPerChild).toLocaleString('en-US', numberFormatterOptions)} zł`)
                 )
             )
         );
