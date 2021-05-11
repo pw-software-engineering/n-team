@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Server.Database.Models;
 using Server.Models;
+using Server.RequestModels;
 using Server.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,8 @@ namespace Server.AutoMapper
             CreateMap<ClientOffer, OfferDb>();
             CreateMap<OfferDb, ClientOffer>();
 
+            CreateMap<Reservation, ClientReservationDb>();
+            CreateMap<ClientReservationDb, Reservation>();
             CreateMap<HotelInfoDb, HotelGetInfo>().AfterMap((hdb, h) => h.HotelDesc = hdb.HotelDescription);
             CreateMap<HotelGetInfo, HotelInfoDb>().AfterMap((h, hdb) =>  hdb.HotelDescription = h.HotelDesc);
             #endregion
@@ -53,7 +56,8 @@ namespace Server.AutoMapper
             CreateMap<ClientOfferPreview, OfferSearchPreviewView>();
             CreateMap<OfferSearchPreviewView, ClientOfferPreview>();
 
-            
+            CreateMap<Reservation, ReservationInfo>();
+            CreateMap<ReservationInfo, Reservation>();
             #endregion
 
             CreateMap<ClientDb, ClientInfoView>();

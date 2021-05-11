@@ -14,11 +14,13 @@ using Server.Database;
 using Server.Database.DataAccess;
 using Server.Services.HotelAccountService;
 using Server.Database.DataAccess.OfferSearch;
+using Server.Database.DataAccess.ReservationsManagement;
 using Server.Database.DatabaseTransaction;
 using Server.Services.ClientService;
 using Server.Services.HotelSearchService;
 using Server.Services.OfferSearchService;
 using Server.Services.OfferService;
+using Server.Services.ReservationService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,6 +61,8 @@ namespace Server
             services.AddTransient<IHotelSearchService, HotelSearchService>();
             services.AddTransient<IOfferSearchDataAccess, OfferSearchDataAccess>();
             services.AddTransient<IOfferSearchService, OfferSearchService>();
+            services.AddTransient<IReservationDataAccess, ReservationDataAccess>();
+            services.AddTransient<IReservationService, ReservationService>();
 
             services.AddTransient<IClientTokenManager, ClientTokenManager>();
             services.AddTransient<IClientTokenDataAccess, ClientTokenDataAccess>();
