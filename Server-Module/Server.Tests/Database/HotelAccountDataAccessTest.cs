@@ -124,10 +124,10 @@ namespace Server.Tests.Database
         public void UpdateInfo_GoodId_ReturnsVoid()
         {
             int hotelId = 3;
-            var wahtWeWant = new HotelGetInfo() { City = "TestCity3", Country = "TestCountry3", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" , HotelPictures  = new List<string>()};
-            _dataAccess.UpdateInfo(hotelId,wahtWeWant);
+            var whatWeWant = new HotelGetInfo() { City = "TestCity3", Country = "TestCountry3", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" , HotelPictures  = new List<string>()};
+            _dataAccess.UpdateInfo(hotelId, whatWeWant);
             var whatWeGet = _dataAccess.GetInfo(3);
-            Assert.True(Same(whatWeGet, wahtWeWant));
+            Assert.True(Same(whatWeGet, whatWeWant));
         }
 
         [Fact]

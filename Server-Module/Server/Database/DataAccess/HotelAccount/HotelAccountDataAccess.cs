@@ -40,13 +40,8 @@ namespace Server.Database.DataAccess
 
         public List<string> FindPictres(int hotelId)
         {
-            var pom = dbContext.HotelPictures.AsEnumerable().Where(x => x.HotelID == hotelId);
-            List<string> wynik = new List<string>();
-            foreach (var p in pom)
-            {
-                wynik.Add(p.Picture);
-            }
-            return wynik;
+            var pics = dbContext.HotelPictures.Where(x => x.HotelID == hotelId).ToList().ConvertAll<string>(x => x.Picture);
+            return pics;
         }
 
         //to get info about hotel
@@ -64,9 +59,6 @@ namespace Server.Database.DataAccess
         {
             if (hotelUpdateInfo == null)
                 throw new NullReferenceException();
-
-            //if (dbContext.HotelInfos.Find(hotelUpdateInfo.HotelID) == null)
-            //  throw new Exception("key not in the database");
             var DBHotelInfo = mapper.Map<HotelInfoDb>(hotelUpdateInfo);
             DBHotelInfo.HotelID = hotelId;
             dbContext.HotelInfos.Update(DBHotelInfo);
