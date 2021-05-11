@@ -13,13 +13,11 @@ namespace Server.Services.HotelAccountService
 {
     public class HotelAccountService : IHotelAccountService
     {
-        private IMapper mapper;
         private IHotelAccountDataAccess hotelAccountDataAccess;
         private readonly IDatabaseTransaction _transaction;
 
-        public HotelAccountService(IHotelAccountDataAccess hotelAccountDataAccess, IDatabaseTransaction databaseTransaction,IMapper mapper)
+        public HotelAccountService(IHotelAccountDataAccess hotelAccountDataAccess, IDatabaseTransaction databaseTransaction)
         {
-            this.mapper = mapper;
             _transaction = databaseTransaction;
             this.hotelAccountDataAccess = hotelAccountDataAccess;
             
@@ -30,7 +28,7 @@ namespace Server.Services.HotelAccountService
             HotelGetInfo result;
             try
             {
-                result = mapper.Map<HotelGetInfo>(hotelAccountDataAccess.GetInfo(hotelId));
+                result = hotelAccountDataAccess.GetInfo(hotelId);
                 result.HotelPictures = hotelAccountDataAccess.FindPictres(hotelId);
             } catch (Exception e)
             {
@@ -44,13 +42,10 @@ namespace Server.Services.HotelAccountService
         {
             _transaction.BeginTransaction();
             try {
-                var h = mapper.Map<HotelInfoDb>(hotelUpdateInfo);
-                h.HotelID = hotelId;
-                var old = hotelAccountDataAccess.GetInfo(hotelId);
                 if(hotelUpdateInfo.HotelPictures!=null)
-                    hotelAccountDataAccess.DeletePicteres(old);
-                hotelAccountDataAccess.AddPictures(h);
-                hotelAccountDataAccess.UpdateInfo(h);
+                    hotelAccountDataAccess.DeletePicteres(hotelId);
+                hotelAccountDataAccess.AddPictures(hotelUpdateInfo.HotelPictures, hotelId);
+                hotelAccountDataAccess.UpdateInfo(hotelId,hotelUpdateInfo);
             }catch(Exception e)
             {
                 _transaction.RollbackTransaction();
@@ -58,7 +53,7 @@ namespace Server.Services.HotelAccountService
                 
             }
             _transaction.CommitTransaction();
-            return new ServiceResult(System.Net.HttpStatusCode.OK, null);
+            return new ServiceResult(System.Net.HttpStatusCode.OK);
         }   
     }
 }

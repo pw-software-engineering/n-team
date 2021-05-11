@@ -1,4 +1,5 @@
-﻿using Server.Database.Models;
+﻿using AutoMapper;
+using Server.Database.Models;
 using Server.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -9,23 +10,30 @@ namespace Server.Database.DataAccess
 
     public class HotelAccountDataAccess : IHotelAccountDataAccess
     {
+        private IMapper mapper;
         private ServerDbContext dbContext;
-        public HotelAccountDataAccess(ServerDbContext dbContext)
+        public HotelAccountDataAccess(ServerDbContext dbContext, IMapper mapper)
         {
+            this.mapper = mapper;
             this.dbContext = dbContext;
         }
-        public void AddPictures(HotelInfoDb hotelInfoDb)
+        public void AddPictures(List<string> pictures, int hotelId)
         {
-            if (hotelInfoDb == null || hotelInfoDb.HotelPictures == null)
+            if (pictures == null)
                 return;
-            dbContext.HotelPictures.AddRange(hotelInfoDb.HotelPictures);
+            foreach(var pic in pictures)
+            {
+                var DBpic = new HotelPictureDb();
+                DBpic.HotelID = hotelId;
+                DBpic.Picture = pic;
+                dbContext.HotelPictures.Add(DBpic);
+            }
             dbContext.SaveChanges();
         }
-        public void DeletePicteres(HotelInfoDb hotelInfoDb)
+        public void DeletePicteres(int hotelId)
         {
-            if (hotelInfoDb == null ||hotelInfoDb.HotelPictures==null)
-                return;
-            var pic = dbContext.HotelPictures.Find(hotelInfoDb.HotelPictures);
+
+            var pic = dbContext.HotelPictures.Where(x => x.HotelID == hotelId);
             dbContext.HotelPictures.RemoveRange(pic);
             dbContext.SaveChanges();
         }
@@ -42,24 +50,26 @@ namespace Server.Database.DataAccess
         }
 
         //to get info about hotel
-        public HotelInfoDb GetInfo(int hotelId)
+        public HotelGetInfo GetInfo(int hotelId)
         {
             
             var hotel = dbContext.HotelInfos.Find(hotelId);
             if (hotel == null)
                 throw new Exception("reasores not fund");
-            return hotel;
+            return mapper.Map<HotelGetInfo>(hotel);
         }
 
         //to update info about hotel
-        public void UpdateInfo(HotelInfoDb hotelUpdateInfo)
+        public void UpdateInfo(int hotelId , HotelUpdateInfo hotelUpdateInfo)
         {
             if (hotelUpdateInfo == null)
                 throw new NullReferenceException();
 
             //if (dbContext.HotelInfos.Find(hotelUpdateInfo.HotelID) == null)
-              //  throw new Exception("key not in the database");
-            dbContext.HotelInfos.Update(hotelUpdateInfo);
+            //  throw new Exception("key not in the database");
+            var DBHotelInfo = mapper.Map<HotelInfoDb>(hotelUpdateInfo);
+            DBHotelInfo.HotelID = hotelId;
+            dbContext.HotelInfos.Update(DBHotelInfo);
             
             dbContext.SaveChanges();
 

@@ -43,7 +43,7 @@ namespace Server.Tests.Database
             });
             _mapper = config.CreateMapper();
 
-            _dataAccess = new HotelAccountDataAccess( _context);
+            _dataAccess = new HotelAccountDataAccess( _context, _mapper);
         }
 
         public void Dispose()
@@ -63,13 +63,24 @@ namespace Server.Tests.Database
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos OFF;");
 
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelPictures ON");
+                _context.HotelPictures.AddRange(
+                    new HotelPictureDb { HotelID = 1, Picture = "a1", PictureID = 1 },
+                    new HotelPictureDb { HotelID = 1, Picture = "a2", PictureID = 2 },
+                    new HotelPictureDb { HotelID = 2, Picture = "a3", PictureID = 3 },
+                    new HotelPictureDb { HotelID = 2, Picture = "a4", PictureID = 4 },
+                    new HotelPictureDb { HotelID = 3, Picture = "a5", PictureID = 5 }
+                    );
+                _context.SaveChanges();
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelPictures OFF;");
+
                 transaction.Commit();
             }
         }
         
-        private bool Same(HotelInfoDb a, HotelInfoDb b)
+        private bool Same(HotelGetInfo a, HotelGetInfo b)
         {
-            if (a.City != b.City || a.Country != b.Country || a.HotelDescription != b.HotelDescription
+            if (a.City != b.City || a.Country != b.Country || a.HotelDesc != b.HotelDesc
                 || a.HotelName != b.HotelName ||  a.HotelPreviewPicture != b.HotelPreviewPicture)
                 return false;
 
@@ -92,10 +103,11 @@ namespace Server.Tests.Database
         [Fact]
         public void GetInfo_GoodId_ReturnsHotelGetInfo()
         {
-            var wahtWeWant = new HotelInfoDb() {HotelID =1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1", HotelPictures = new List<HotelPictureDb>() };
+            int hotelId = 1;
+            var wahtWeWant = new HotelGetInfo() { City = "TestCity1", Country = "TestCountry1", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1", HotelPictures = new List<string>() };
             //var wahtWeWant = _context.HotelInfos.
             //var a = _context.HotelInfos.Find(2);
-            var whatWeGet = _dataAccess.GetInfo(1);
+            var whatWeGet = _dataAccess.GetInfo(hotelId);
 
             Assert.True(Same(whatWeGet, wahtWeWant));
         }
@@ -111,9 +123,9 @@ namespace Server.Tests.Database
         [Fact]
         public void UpdateInfo_GoodId_ReturnsVoid()
         {
-            var wahtWeWant = new HotelInfoDb() { City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" , HotelPictures  = null};
-            wahtWeWant.HotelID = 3;
-            _dataAccess.UpdateInfo(wahtWeWant);
+            int hotelId = 3;
+            var wahtWeWant = new HotelGetInfo() { City = "TestCity3", Country = "TestCountry3", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" , HotelPictures  = new List<string>()};
+            _dataAccess.UpdateInfo(hotelId,wahtWeWant);
             var whatWeGet = _dataAccess.GetInfo(3);
             Assert.True(Same(whatWeGet, wahtWeWant));
         }
@@ -121,17 +133,20 @@ namespace Server.Tests.Database
         [Fact]
         public void UpdateInfo_BadId_ThrowsExepcion()
         {
-            var wahtWeWant = new HotelGetInfo() { City = "TestCity1", Country = "TestCountry1", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" };
-            var p = _mapper.Map<HotelInfoDb>(wahtWeWant);
-            p.HotelID = 44;
-            Assert.Throws<Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException>(() => _dataAccess.UpdateInfo(p));
+
+            var whatWeWant = new HotelGetInfo() { City = "TestCity1", Country = "TestCountry1", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" };
+            int hotelId = 44;
+            Assert.Throws<Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException>(() => _dataAccess.UpdateInfo(hotelId, whatWeWant));
         }
 
         [Fact]
         public void UpdateInfo_NullPArametr_ThrowsExepcion()
         {
-            Assert.Throws<NullReferenceException>(() => _dataAccess.UpdateInfo(null));
+            int hotelId = 1;
+            Assert.Throws<NullReferenceException>(() => _dataAccess.UpdateInfo(hotelId,null));
         }
         #endregion
+
+        
     }
 }
