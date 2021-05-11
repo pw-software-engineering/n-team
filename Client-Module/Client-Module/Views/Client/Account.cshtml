@@ -165,7 +165,7 @@
                 method: "PATCH",
                 url: "@ServerApiConfig.BaseUrl/client",
                 headers: {
-                    "@ServerApiConfig.TokenHeaderName": getCookie("@ClientTokenCookieDefaults.AuthCookieName")
+                    "@ServerApiConfig.TokenHeaderName": getCookie("@ClientTokenCookieDefaults.AuthCookieName"),
                 },
                 contentType: "application/json",
                 data: JSON.stringify({

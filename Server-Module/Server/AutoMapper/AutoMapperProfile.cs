@@ -56,6 +56,7 @@ namespace Server.AutoMapper
             
             #endregion
 
+            CreateMap<ClientDb, ClientInfoView>();
         }
     }
 }

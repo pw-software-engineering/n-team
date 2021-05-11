@@ -33,7 +33,7 @@ namespace Server.Authentication
             string hotelToken;
             try
             {
-                hotelToken = this.Context.Request.Headers["x-hotel-token"][0];
+                hotelToken = this.Context.Request.Headers[HotelTokenDefaults.TokenHeaderName][0];
             }
             catch(Exception)
             {
@@ -81,5 +81,6 @@ namespace Server.Authentication
     public static class HotelTokenDefaults
     {
         public static string AuthenticationScheme { get; } = "HotelTokenScheme";
+        public const string TokenHeaderName = "x-hotel-token";
     }
 }
