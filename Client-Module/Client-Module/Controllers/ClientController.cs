@@ -57,13 +57,22 @@ namespace Client_Module.Controllers
                 return Redirect("/");
             }
             //Console.WriteLine($"Status code: {httpResponse.StatusCode}\n{await httpResponse.Content.ReadAsStringAsync()}");
-            LogInError error = JsonSerializer.Deserialize<LogInError>(
-                await httpResponse.Content.ReadAsStringAsync(),
-                new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
-            );
+            string serverError = null;
+            try
+            {
+                LogInError error = JsonSerializer.Deserialize<LogInError>(
+                    await httpResponse.Content.ReadAsStringAsync(),
+                    new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
+                );
+                serverError = error.Error;
+            }
+            catch(JsonException)
+            {
+                serverError = "500: Internal server error";
+            }
             LogInViewModel viewModel = new LogInViewModel()
             {
-                ServerLogInError = error.Error
+                ServerLogInError = serverError
             };
             return View(viewModel);
         }
