@@ -2,6 +2,7 @@
 using Server.Database.Models;
 using Server.RequestModels;
 using Server.ViewModels;
+using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,19 +34,19 @@ namespace Server.Database.DataAccess.Hotel
             _dbContext.SaveChanges();
             return room.RoomID;
         }
-        public List<HotelRoomView> GetRooms(Paging paging, int hotelID, string roomNumber = null)
+        public List<HotelRoomView> GetRooms(int hotelID, Paging paging, string roomNumber = null)
         {
             if (roomNumber == null)
                 return _mapper.Map<List<HotelRoomView>>(_dbContext.HotelRooms
                             .Where(hr => hr.HotelID == hotelID)
-                            .Skip(paging.pageSize * (paging.pageNumber - 1))
-                            .Take(paging.pageSize)
+                            .Skip(paging.PageSize * (paging.PageNumber - 1))
+                            .Take(paging.PageSize)
                             .ToList());
 
             return _mapper.Map<List<HotelRoomView>>(_dbContext.HotelRooms
                         .Where(hr => hr.HotelID == hotelID && hr.HotelRoomNumber == roomNumber)
-                        .Skip(paging.pageSize * (paging.pageNumber - 1))
-                        .Take(paging.pageSize)
+                        .Skip(paging.PageSize * (paging.PageNumber - 1))
+                        .Take(paging.PageSize)
                         .ToList());
         }
         public List<int> GetOfferIDsForRoom(int roomId)

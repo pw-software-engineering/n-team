@@ -1,5 +1,6 @@
 ﻿using Server.RequestModels;
 using Server.ViewModels;
+using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Linq;

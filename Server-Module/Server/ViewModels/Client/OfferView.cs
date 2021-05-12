@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.ViewModels
+namespace Server.ViewModels.Client
 {
-    public class ClientOfferView
+    public class OfferView
     {
         public string OfferTitle { get; set; }
         public string OfferDescription { get; set; }

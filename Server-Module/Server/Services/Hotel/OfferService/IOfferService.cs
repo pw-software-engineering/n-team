@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Server.RequestModels;
+using Server.RequestModels.Hotel;
 
 namespace Server.Services.Hotel
 {

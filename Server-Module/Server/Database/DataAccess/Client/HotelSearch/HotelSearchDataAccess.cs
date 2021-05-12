@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Server.Database.Models;
-using Server.Models;
 using Server.RequestModels;
-using Server.Services.HotelSearchService;
+using Server.RequestModels.Client;
 using Server.ViewModels;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace Server.Database.DataAccess.Client
             _mapper = mapper;
             _dbContext = dbContext;
         }
-        public List<HotelPreview> GetHotels(Paging paging, HotelFilter hotelFilter)
+        public List<HotelPreviewView> GetHotels(Paging paging, HotelFilter hotelFilter)
         {
             IQueryable<HotelDb> ret = _dbContext.Hotels;
 
@@ -38,15 +38,15 @@ namespace Server.Database.DataAccess.Client
             }
 
             ret = ret.OrderBy(hdb => hdb.HotelID)
-                     .Skip((paging.pageNumber - 1) * paging.pageSize)
-                     .Take(paging.pageSize);
+                     .Skip((paging.PageNumber - 1) * paging.PageSize)
+                     .Take(paging.PageSize);
 
-            return _mapper.Map<List<HotelPreview>>(ret.ToList());
+            return _mapper.Map<List<HotelPreviewView>>(ret.ToList());
         }
 
-        public Hotel GetHotelDetails(int hotelID)
+        public HotelView GetHotelDetails(int hotelID)
         {
-            Hotel hotel = _mapper.Map<Hotel>(_dbContext.Hotels.Find(hotelID));
+            HotelView hotel = _mapper.Map<HotelView>(_dbContext.Hotels.Find(hotelID));
             return hotel;
         }
 

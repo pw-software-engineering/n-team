@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.RequestModels
+namespace Server.RequestModels.Client
 {
     public class OfferFilter
     {

@@ -2,8 +2,10 @@
 using Server.Database.DataAccess.Client;
 using Server.Database.DatabaseTransaction;
 using Server.RequestModels;
+using Server.RequestModels.Client;
 using Server.Services.Result;
 using Server.ViewModels;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +26,7 @@ namespace Server.Services.Client
             _offerSearchDataAccess = offerSearchDataAccess;
             _transaction = transaction;
         }
-        public IServiceResult GetHotelOffers(int hotelID, Paging paging, OfferFilter offerFilter)
+        public IServiceResult GetHotelOffers(int hotelID, OfferFilter offerFilter, Paging paging)
         {
             if (paging == null)
             {
@@ -45,7 +47,7 @@ namespace Server.Services.Client
                     HttpStatusCode.BadRequest,
                     new ErrorView("FromTime and ToTime properties are required."));
             }
-            if (paging.pageNumber < 1 || paging.pageSize < 1)
+            if (paging.PageNumber < 1 || paging.PageSize < 1)
             {
                 return new ServiceResult(
                     HttpStatusCode.BadRequest,
@@ -94,7 +96,7 @@ namespace Server.Services.Client
                 return new ServiceResult(HttpStatusCode.NotFound);
             }
             _transaction.BeginTransaction();
-            ClientOfferView offer = _offerSearchDataAccess.GetHotelOfferDetails(offerID);
+            OfferView offer = _offerSearchDataAccess.GetHotelOfferDetails(offerID);
             offer.OfferPictures = _offerSearchDataAccess.GetHotelOfferPictures(offerID);
             _transaction.CommitTransaction();
 

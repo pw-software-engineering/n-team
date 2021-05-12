@@ -5,6 +5,7 @@ using Server.Database.DatabaseTransaction;
 using Server.RequestModels;
 using Server.Services.Result;
 using Server.ViewModels;
+using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,7 +60,7 @@ namespace Server.Services.Hotel
 
         public IServiceResult GetHotelRooms(int hotelID, Paging paging, string hotelRoomNumber = null)
         {
-            if (paging.pageNumber < 1 || paging.pageSize < 1)
+            if (paging.PageNumber < 1 || paging.PageSize < 1)
                 return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Invalid paging arguments"));
 
             List<HotelRoomView> rooms = _dataAccess.GetRooms(hotelID, paging, hotelRoomNumber);

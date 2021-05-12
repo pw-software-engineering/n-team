@@ -2,7 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Database.Models;
 using Server.RequestModels;
+using Server.RequestModels.Hotel;
 using Server.ViewModels;
+using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,8 +45,8 @@ namespace Server.Database.DataAccess.Hotel
             if (isActive.HasValue)
                 ret = ret.Where(o => o.IsActive == isActive).ToList();
 
-            return ret.Skip((paging.pageNumber - 1) * paging.pageSize)
-                      .Take(paging.pageSize)
+            return ret.Skip((paging.PageNumber - 1) * paging.PageSize)
+                      .Take(paging.PageSize)
                       .ToList();
         }
 

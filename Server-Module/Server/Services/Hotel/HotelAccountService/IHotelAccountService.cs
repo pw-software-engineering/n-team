@@ -1,4 +1,5 @@
 ﻿using Server.RequestModels;
+using Server.RequestModels.Hotel;
 using Server.Services.Result;
 using Server.ViewModels;
 using System;

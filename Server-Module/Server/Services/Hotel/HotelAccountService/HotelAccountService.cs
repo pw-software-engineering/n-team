@@ -4,8 +4,10 @@ using Server.Database.DataAccess.Hotel;
 using Server.Database.DatabaseTransaction;
 using Server.Database.Models;
 using Server.RequestModels;
+using Server.RequestModels.Hotel;
 using Server.Services.Result;
 using Server.ViewModels;
+using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +21,9 @@ namespace Server.Services.Hotel
         private readonly IHotelAccountDataAccess _hotelAccountDataAccess;
         private readonly IDatabaseTransaction _transaction;
 
-        public HotelAccountService(IHotelAccountDataAccess hotelAccountDataAccess, IDatabaseTransaction databaseTransaction)
+        public HotelAccountService(IHotelAccountDataAccess hotelAccountDataAccess, IDatabaseTransaction transaction)
         {
-            _transaction = databaseTransaction;
+            _transaction = transaction;
             _hotelAccountDataAccess = hotelAccountDataAccess; 
         }
 

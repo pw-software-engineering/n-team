@@ -1,4 +1,5 @@
 ﻿using Server.RequestModels;
+using Server.RequestModels.Client;
 using Server.Services.Result;
 using Server.ViewModels;
 using System;
@@ -11,7 +12,7 @@ namespace Server.Services.Client
     public interface IOfferSearchService
     {
         #region /hotels/{hotelID}/offers
-        public IServiceResult GetHotelOffers(int hotelID, Paging paging, OfferFilter offerFilter);
+        public IServiceResult GetHotelOffers(int hotelID, OfferFilter offerFilter, Paging paging);
         #endregion
 
         #region /hotels/{hotelID}/offers/{offerID}

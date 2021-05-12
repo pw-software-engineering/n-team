@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Server.Database.Models;
 using Server.RequestModels;
+using Server.RequestModels.Client;
 using Server.ViewModels;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +21,7 @@ namespace Server.Database.DataAccess.Client
             _dbContext = dbContext;
         }
 
-        public List<OfferSearchPreviewView> GetHotelOffers(int hotelID, Paging paging, OfferFilter offerFilter)
+        public List<OfferPreviewView> GetHotelOffers(int hotelID, Paging paging, OfferFilter offerFilter)
         {
             if(paging == null)
             {
@@ -46,10 +48,10 @@ namespace Server.Database.DataAccess.Client
 
             offers = offers.AsEnumerable();
             offers = offers.Where(o => CheckHotelOfferAvailability(o.OfferID, offerFilter.FromTime.Value, offerFilter.ToTime.Value))
-                           .Skip((paging.pageNumber - 1) * paging.pageSize)
-                           .Take(paging.pageSize);
+                           .Skip((paging.PageNumber - 1) * paging.PageSize)
+                           .Take(paging.PageSize);
 
-            return _mapper.Map<List<OfferSearchPreviewView>>(offers.ToList());
+            return _mapper.Map<List<OfferPreviewView>>(offers.ToList());
         }
 
         public bool CheckHotelOfferAvailability(int offerID, DateTime from, DateTime to)
@@ -64,9 +66,9 @@ namespace Server.Database.DataAccess.Client
             }
             return false;
         }
-        public ClientOfferView GetHotelOfferDetails(int offerID)
+        public OfferView GetHotelOfferDetails(int offerID)
         {
-            return _mapper.Map<ClientOfferView>(_dbContext.Offers.Find(offerID));
+            return _mapper.Map<OfferView>(_dbContext.Offers.Find(offerID));
         }
         public List<string> GetHotelOfferPictures(int offerID)
         {

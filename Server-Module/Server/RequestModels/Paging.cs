@@ -9,15 +9,15 @@ namespace Server.RequestModels
     public class Paging
     {
         [FromQuery]
-        public int pageSize { get; set; }
+        public int PageSize { get; set; }
 
         [FromQuery]
-        public int pageNumber { get; set; }
+        public int PageNumber { get; set; }
         public Paging() : this(10, 1) { }
         public Paging(int size, int number)
         {
-            pageSize = size;
-            pageNumber = number;
+            PageSize = size;
+            PageNumber = number;
         }
     }
 }

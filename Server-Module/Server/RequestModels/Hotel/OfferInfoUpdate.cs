@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.RequestModels
+namespace Server.RequestModels.Hotel
 {
     public class OfferInfoUpdate
     {

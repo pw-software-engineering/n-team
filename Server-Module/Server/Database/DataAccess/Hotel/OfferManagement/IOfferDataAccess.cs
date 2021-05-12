@@ -1,5 +1,7 @@
 ﻿using Server.RequestModels;
+using Server.RequestModels.Hotel;
 using Server.ViewModels;
+using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,7 @@ namespace Server.Database.DataAccess.Hotel
     public interface IOfferDataAccess
     {
         #region /offers GET
-        List<OfferPreviewView> GetHotelOffers(int hotelID, Paging paging,  bool? isActive = null);
+        List<OfferPreviewView> GetHotelOffers(int hotelID, Paging paging, bool? isActive = null);
         #endregion
 
         #region /offers POST

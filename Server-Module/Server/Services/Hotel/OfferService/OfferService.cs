@@ -12,6 +12,8 @@ using Server.RequestModels;
 using System.Net;
 using Server.Database.DatabaseTransaction;
 using Server.Database.DataAccess.Hotel;
+using Server.RequestModels.Hotel;
+using Server.ViewModels.Hotel;
 
 namespace Server.Services.Hotel
 {   
@@ -55,7 +57,7 @@ namespace Server.Services.Hotel
 
         public IServiceResult GetHotelOffers(int hotelID, Paging paging, bool? isActive = null)
         {
-            if (paging.pageNumber < 1 || paging.pageSize < 1)
+            if (paging.PageNumber < 1 || paging.PageSize < 1)
                 return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Invalid paging arguments"));
 
             List<OfferPreviewView> offersPreviews = _mapper.Map<List<OfferPreviewView>>(_dataAccess.GetHotelOffers(hotelID, paging, isActive));

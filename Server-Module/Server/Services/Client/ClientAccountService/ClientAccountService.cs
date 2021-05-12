@@ -14,6 +14,8 @@ using Server.Authentication.Client;
 using Server.Database.DatabaseTransaction;
 using Server.RequestModels;
 using Server.Database.DataAccess.Client;
+using Server.RequestModels.Client;
+using Server.ViewModels.Client;
 
 namespace Server.Services.Client
 {
