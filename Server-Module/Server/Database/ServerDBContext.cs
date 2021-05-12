@@ -27,7 +27,7 @@ namespace Server.Database
         public DbSet<OfferHotelRoomDb> OfferHotelRooms { get; set; }
         public DbSet<OfferPictureDb> OfferPictures { get; set; }
         #endregion
-        //FluentAPI    
+        //FluentA   
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region PrimaryKeys
