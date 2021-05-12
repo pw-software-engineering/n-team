@@ -22,7 +22,7 @@ namespace Server.Tests.Services
         {
             var config = new MapperConfiguration(opts =>
             {
-                opts.AddProfile(new AutoMapperProfile());
+                opts.AddProfile(new ClientAutoMapperProfile());
             });
             _mapper = config.CreateMapper();
             _hotelSearchDataAccessMock = new Mock<IHotelSearchDataAccess>();

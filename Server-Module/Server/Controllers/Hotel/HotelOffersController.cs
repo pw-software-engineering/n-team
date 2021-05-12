@@ -2,17 +2,18 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Server.Authentication.Hotel;
-using Server.Models;
 using Server.RequestModels;
-using Server.Services.OfferService;
+using Server.RequestModels.Hotel;
+using Server.Services.Hotel;
 using Server.ViewModels;
+using Server.ViewModels.Hotel;
 using System;
 using System.Linq;
 
 namespace Server.Controllers.Hotel
 {
     [ApiController]
-    [Route("/api-hotel/")]
+    [Route("/api-hotel")]
     [Authorize(AuthenticationSchemes = HotelTokenDefaults.AuthenticationScheme)]
     public class HotelOffersController : Controller
     {
@@ -33,7 +34,7 @@ namespace Server.Controllers.Hotel
         [HttpGet("offers")]
         public IActionResult GetOffers([FromQuery] bool? isActive, [FromQuery] Paging paging)
         {
-            return _service.GetHotelOffers(paging, _hotelID, isActive);
+            return _service.GetHotelOffers(_hotelID, paging, isActive);
         }
         [HttpGet("offers/{offerID}")]
         public IActionResult GetOffer([FromRoute] int offerID)
@@ -42,21 +43,21 @@ namespace Server.Controllers.Hotel
         }
 
         [HttpPost("offers")]
-        public IActionResult AddOffer([FromBody] OfferView offer)
+        public IActionResult AddOffer([FromBody] OfferInfo offer)
         {
-            return _service.AddOffer(offer, _hotelID);
+            return _service.AddOffer(_hotelID, offer);
         }
 
         [HttpPatch("offers/{offerID}")]
-        public IActionResult EditOffer([FromRoute] int offerID, [FromBody] OfferUpdateInfo updateInfo)
+        public IActionResult EditOffer([FromRoute] int offerID, [FromBody] OfferInfoUpdate offerInfoUpdate)
         {
-            return _service.UpdateOffer(offerID, _hotelID, updateInfo);
+            return _service.UpdateOffer(_hotelID, offerID, offerInfoUpdate);
         }
 
         [HttpDelete("offers/{offerID}")]
         public IActionResult DeleteOffer([FromRoute] int offerID)
         {
-            return _service.DeleteOffer(offerID, _hotelID);
+            return _service.DeleteOffer(_hotelID, offerID);
         }
     }
 }

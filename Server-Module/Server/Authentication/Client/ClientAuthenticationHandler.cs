@@ -11,6 +11,7 @@ using Server.Authentication.Hotel;
 using Server.Database;
 using Server.Database.DataAccess;
 using Server.Services.Result;
+using Server.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;

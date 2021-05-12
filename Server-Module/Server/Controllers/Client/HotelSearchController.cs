@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Authentication.Client;
 using Server.RequestModels;
-using Server.Services.HotelSearchService;
+using Server.RequestModels.Client;
+using Server.Services.Client;
 using Server.Services.Result;
 using Server.ViewModels;
 
@@ -24,9 +25,9 @@ namespace Server.Controllers.Client
         }
 
         [HttpGet("hotels")]
-        public IActionResult GetHotels([FromQuery] Paging paging, [FromQuery] HotelFilter hotelFilter)
+        public IActionResult GetHotels([FromQuery] HotelFilter hotelFilter, [FromQuery] Paging paging)
         {
-            return _hotelSearchService.GetHotels(paging, hotelFilter);
+            return _hotelSearchService.GetHotels(hotelFilter, paging);
         }
 
         [HttpGet("hotels/{hotelID:int}")]

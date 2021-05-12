@@ -39,7 +39,8 @@ namespace Server.Tests.Database
 
             var config = new MapperConfiguration(opts =>
             {
-                opts.AddProfile(new AutoMapperProfile());
+                opts.AddProfile(new 
+                    ());
             });
             _mapper = config.CreateMapper();
 

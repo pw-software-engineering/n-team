@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Server.Authentication.Client;
 using Server.RequestModels;
-using Server.Services.OfferSearchService;
+using Server.RequestModels.Client;
+using Server.Services.Client;
 using Server.Services.Result;
 
 namespace Server.Controllers.Client
@@ -26,9 +27,9 @@ namespace Server.Controllers.Client
 
         //[HotelOfferSearchValidateModel]
         [HttpGet("hotels/{hotelID:int}/offers")]
-        public IActionResult GetHotelOffers([FromRoute] int hotelID, [FromQuery] Paging paging, [FromQuery] OfferFilter offerFilter)
+        public IActionResult GetHotelOffers([FromRoute] int hotelID, [FromQuery] OfferFilter offerFilter, [FromQuery] Paging paging)
         {
-            return _offerSearchService.GetHotelOffers(hotelID, paging, offerFilter);
+            return _offerSearchService.GetHotelOffers(hotelID, offerFilter, paging);
         }
 
         [HttpGet("hotels/{hotelID:int}/offers/{offerID:int}")]

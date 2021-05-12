@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Server.Database;
 using Server.Database.DataAccess;
+using Server.Database.DataAccess.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Linq;

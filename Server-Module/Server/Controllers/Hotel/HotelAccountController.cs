@@ -8,13 +8,15 @@ using System.Threading.Tasks;
 using Server.Authentication;
 using Microsoft.Extensions.Logging;
 using Server.ViewModels;
-using Server.Services.HotelAccountService;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Server.Services.Hotel;
+using Server.Authentication.Hotel;
+using Server.RequestModels.Hotel;
 
 namespace Server.Controllers.Hotel
 {
-    [Authorize(AuthenticationSchemes = "HotelTokenScheme")]
-    //[Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = HotelTokenDefaults.AuthenticationScheme)]
+    [Route("/api-hotel")]
     [ApiController]
     public class HotelAccountController : Controller
     {
@@ -33,15 +35,15 @@ namespace Server.Controllers.Hotel
         }
 
         [HttpPatch("/hotelInfo")]
-        public IActionResult UpdateInfo([FromBody] HotelInfoUpdate hotelUpdateInfo)
+        public IActionResult UpdateHotelInfo([FromBody] HotelInfoUpdate hotelInfoUpdate)
         {
-            return _hotelAccountService.UpdateInfo(_hotelID, hotelUpdateInfo);
+            return _hotelAccountService.UpdateHotelInfo(_hotelID, hotelInfoUpdate);
         }
 
         [HttpGet("/hotelInfo")]
-        public IActionResult GetInfo()
+        public IActionResult GetHotelInfo()
         {
-            return _hotelAccountService.GetInfo(_hotelID);
+            return _hotelAccountService.GetHotelInfo(_hotelID);
         }
     }
 }

@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Authentication.Client;
 using Server.RequestModels;
-using Server.Services.ClientService;
+using Server.RequestModels.Client;
+using Server.Services.Client;
 using Server.Services.Result;
 
 namespace Server.Controllers.Client

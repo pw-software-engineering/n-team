@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Server.Services.ClientService;
 using Server.Services.Result;
 using Server.Authentication.Client;
 using System;
@@ -11,6 +10,8 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Server.RequestModels;
+using Server.Services.Client;
+using Server.RequestModels.Client;
 
 namespace Server.Controllers.Client
 {

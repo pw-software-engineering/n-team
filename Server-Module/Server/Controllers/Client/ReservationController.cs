@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Server.Authentication.Client;
 using Server.RequestModels;
-using Server.Services.HotelSearchService;
-using Server.Services.ReservationService;
+using Server.RequestModels.Client;
+using Server.Services.Client;
 using Server.Services.Result;
 using Server.ViewModels;
 
