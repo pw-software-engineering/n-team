@@ -1,59 +1,48 @@
 ﻿using AutoMapper;
 using Server.Database.DataAccess;
+using Server.Database.DataAccess.Hotel;
 using Server.Database.DatabaseTransaction;
 using Server.Database.Models;
+using Server.RequestModels;
 using Server.Services.Result;
 using Server.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Server.Services.HotelAccountService
 {
     public class HotelAccountService : IHotelAccountService
     {
-        private IHotelAccountDataAccess hotelAccountDataAccess;
+        private readonly IHotelAccountDataAccess _hotelAccountDataAccess;
         private readonly IDatabaseTransaction _transaction;
 
         public HotelAccountService(IHotelAccountDataAccess hotelAccountDataAccess, IDatabaseTransaction databaseTransaction)
         {
             _transaction = databaseTransaction;
-            this.hotelAccountDataAccess = hotelAccountDataAccess;
-            
+            _hotelAccountDataAccess = hotelAccountDataAccess; 
         }
 
-        public IServiceResult GetInfo(int hotelId)
+        public IServiceResult GetHotelInfo(int hotelId)
         {
-            HotelGetInfo result;
-            try
-            {
-                result = hotelAccountDataAccess.GetInfo(hotelId);
-                result.HotelPictures = hotelAccountDataAccess.FindPictres(hotelId);
-            } catch (Exception e)
-            {
-                return new ServiceResult(System.Net.HttpStatusCode.NotFound, new Error(e.Message));
-               
-            }
-            return new ServiceResult(System.Net.HttpStatusCode.OK, result);
+            HotelInfoView hotelInfo = _hotelAccountDataAccess.GetHotelInfo(hotelId);
+            hotelInfo.HotelPictures = _hotelAccountDataAccess.GetPictures(hotelId);
+            return new ServiceResult(HttpStatusCode.OK, hotelInfo);
         }
 
-        public IServiceResult UpdateInfo(int hotelId, HotelUpdateInfo hotelUpdateInfo)
+        public IServiceResult UpdateHotelInfo(int hotelId, HotelInfoUpdate hotelInfoUpdate)
         {
             _transaction.BeginTransaction();
-            try {
-                if(hotelUpdateInfo.HotelPictures!=null)
-                    hotelAccountDataAccess.DeletePicteres(hotelId);
-                hotelAccountDataAccess.AddPictures(hotelUpdateInfo.HotelPictures, hotelId);
-                hotelAccountDataAccess.UpdateInfo(hotelId,hotelUpdateInfo);
-            }catch(Exception e)
+            if (hotelInfoUpdate.HotelPictures != null)
             {
-                _transaction.RollbackTransaction();
-                return new ServiceResult(System.Net.HttpStatusCode.NotFound, new Error(e.Message));
-                
+                _hotelAccountDataAccess.DeletePictures(hotelId);
+                _hotelAccountDataAccess.AddPictures(hotelInfoUpdate.HotelPictures, hotelId);
             }
+            _hotelAccountDataAccess.UpdateHotelInfo(hotelId, hotelInfoUpdate);
             _transaction.CommitTransaction();
-            return new ServiceResult(System.Net.HttpStatusCode.OK);
+            return new ServiceResult(HttpStatusCode.OK);
         }   
     }
 }

@@ -7,8 +7,8 @@ namespace Server.ViewModels
 {
     public class HotelRoomView
     {
-        public int roomID { get; set; }
-        public string hotelRoomNumber { get; set; }
-        public List<int> offerID { get; set; }
+        public int RoomID { get; set; }
+        public string HotelRoomNumber { get; set; }
+        public List<int> OfferID { get; set; }
     }
 }

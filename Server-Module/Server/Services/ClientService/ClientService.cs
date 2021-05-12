@@ -29,7 +29,7 @@ namespace Server.Services.ClientService
             _transaction = transaction;
         }
 
-        public IServiceResult UpdateClientInfo(int clientID, EditClientInfo editClientInfo)
+        public IServiceResult UpdateClientInfo(int clientID, ClientInfoUpdate editClientInfo)
         {
             bool usernameEmpty = string.IsNullOrWhiteSpace(editClientInfo.Username);
             Regex usernameRegex = new Regex(@"^[a-zA-Z][a-zA-Z0-9]{5,60}$");

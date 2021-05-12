@@ -114,7 +114,7 @@ namespace Server.Tests.Services
         {
             int hotelID = 1;
             Paging paging = new Paging();
-            List<HotelRoom> rooms = new List<HotelRoom>();
+            List<HotelRoomView> rooms = new List<HotelRoomView>();
             _dataAccessMock.Setup(da => da.GetRooms(paging, hotelID, null)).Returns(rooms);
 
             IServiceResult result = _roomService.GetHotelRooms(paging, hotelID);
@@ -126,7 +126,7 @@ namespace Server.Tests.Services
         {
             int hotelID = 1;
             Paging paging = new Paging(-1, -1);
-            List<HotelRoom> rooms = new List<HotelRoom>();
+            List<HotelRoomView> rooms = new List<HotelRoomView>();
 
             IServiceResult result = _roomService.GetHotelRooms(paging, hotelID);
 

@@ -21,13 +21,13 @@ namespace Server.AutoMapper
             CreateMap<OfferDb, OfferPreview>();
             CreateMap<Offer, OfferDb>();
             CreateMap<OfferDb, Offer>();
-            CreateMap<HotelRoomDb, HotelRoom>();
-            CreateMap<HotelRoom, HotelRoomDb>();
+            CreateMap<HotelRoomDb, HotelRoomView>();
+            CreateMap<HotelRoomView, HotelRoomDb>();
 
-            CreateMap<Hotel, HotelInfoDb>();
-            CreateMap<HotelInfoDb, Hotel>();
-            CreateMap<HotelPreview, HotelInfoDb>();
-            CreateMap<HotelInfoDb, HotelPreview>().AfterMap((hdb, h) => h.PreviewPicture = hdb.HotelPreviewPicture);
+            CreateMap<Hotel, HotelDb>();
+            CreateMap<HotelDb, Hotel>();
+            CreateMap<HotelPreview, HotelDb>();
+            CreateMap<HotelDb, HotelPreview>().AfterMap((hdb, h) => h.PreviewPicture = hdb.HotelPreviewPicture);
 
             CreateMap<ClientOfferPreview, OfferDb>();
             CreateMap<OfferDb, ClientOfferPreview>();
@@ -36,8 +36,8 @@ namespace Server.AutoMapper
 
             CreateMap<Reservation, ClientReservationDb>();
             CreateMap<ClientReservationDb, Reservation>();
-            CreateMap<HotelInfoDb, HotelGetInfo>().AfterMap((hdb, h) => h.HotelDesc = hdb.HotelDescription);
-            CreateMap<HotelGetInfo, HotelInfoDb>().AfterMap((h, hdb) =>  hdb.HotelDescription = h.HotelDesc);
+            CreateMap<HotelDb, HotelInfoView>().AfterMap((hdb, h) => h.HotelDesc = hdb.HotelDescription);
+            CreateMap<HotelInfoView, HotelDb>().AfterMap((h, hdb) =>  hdb.HotelDescription = h.HotelDesc);
             #endregion
 
             #region Model -> ViewModel -> Model
@@ -45,8 +45,8 @@ namespace Server.AutoMapper
             CreateMap<OfferView, Offer>();
             CreateMap<OfferPreview, OfferPreviewView>();
             CreateMap<OfferPreviewView, OfferPreview>();
-            CreateMap<HotelRoomView, HotelRoom>();
-            CreateMap<HotelRoom, HotelRoomView>();
+            CreateMap<HotelRoomView, HotelRoomView>();
+            CreateMap<HotelRoomView, HotelRoomView>();
 
             CreateMap<Hotel, HotelSearchView>();
             CreateMap<HotelSearchView, Hotel>();

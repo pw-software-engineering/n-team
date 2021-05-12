@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Server.RequestModels
 {
-    public class EditClientInfo
+    public class ClientInfoUpdate
     {
         public string Username { get; set; }
         public string Email { get; set; }

@@ -48,9 +48,9 @@ namespace Server.Tests.Database
             {
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos ON");
                 _context.HotelInfos.AddRange(
-                    new HotelInfoDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
-                    new HotelInfoDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
-                    new HotelInfoDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
+                    new HotelDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
+                    new HotelDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
+                    new HotelDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos OFF;");
 
@@ -123,9 +123,9 @@ namespace Server.Tests.Database
         [Fact]
         public void GetOffersForRooms_SingleRoom_OffersAreAddedForRoom()
         {
-            List<HotelRoom> hotelRooms = new List<HotelRoom>()
+            List<HotelRoomView> hotelRooms = new List<HotelRoomView>()
             {
-                new HotelRoom{ RoomID = 2}
+                new HotelRoomView{ RoomID = 2}
             };
 
             _dataAccess.GetOffersForRooms(hotelRooms);
@@ -141,11 +141,11 @@ namespace Server.Tests.Database
         [Fact]
         public void GetOffersForRooms_MultipleRooms_OffersAreAddedForEachRoom()
         {
-            List<HotelRoom> hotelRooms = new List<HotelRoom>()
+            List<HotelRoomView> hotelRooms = new List<HotelRoomView>()
             {
-                 new HotelRoom{ RoomID = 1},
-                 new HotelRoom{ RoomID = 2},
-                 new HotelRoom{ RoomID = 3},
+                 new HotelRoomView{ RoomID = 1},
+                 new HotelRoomView{ RoomID = 2},
+                 new HotelRoomView{ RoomID = 3},
             };
 
             _dataAccess.GetOffersForRooms(hotelRooms);
@@ -159,7 +159,7 @@ namespace Server.Tests.Database
             int hotelID = 3;
             Paging paging = new Paging();
 
-            List<HotelRoom> hotelRoomsTest = _dataAccess.GetRooms(paging, hotelID);
+            List<HotelRoomView> hotelRoomsTest = _dataAccess.GetRooms(paging, hotelID);
             List<HotelRoomDb> hotelRooms = _context.HotelRooms.Where(hr => hr.HotelID == hotelID).ToList();
 
             Assert.Equal(hotelRooms.Count, hotelRoomsTest.Count);
@@ -176,7 +176,7 @@ namespace Server.Tests.Database
             string roomNumber = "TestHotelRoomNumber3";
             Paging paging = new Paging();
 
-            List<HotelRoom> hotelRoomsTest = _dataAccess.GetRooms(paging, hotelID, roomNumber);
+            List<HotelRoomView> hotelRoomsTest = _dataAccess.GetRooms(paging, hotelID, roomNumber);
             List<HotelRoomDb> hotelRooms = _context.HotelRooms.Where(hr => hr.HotelID == hotelID && hr.HotelRoomNumber == roomNumber).ToList();
 
             Assert.Equal(hotelRooms.Count, hotelRoomsTest.Count);

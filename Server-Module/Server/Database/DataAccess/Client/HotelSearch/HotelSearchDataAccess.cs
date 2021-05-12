@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Database.DataAccess
+namespace Server.Database.DataAccess.Client
 {
     public class HotelSearchDataAccess : IHotelSearchDataAccess
     {
@@ -22,7 +22,7 @@ namespace Server.Database.DataAccess
         }
         public List<HotelPreview> GetHotels(Paging paging, HotelFilter hotelFilter)
         {
-            IQueryable<HotelInfoDb> ret = _dbContext.HotelInfos;
+            IQueryable<HotelDb> ret = _dbContext.Hotels;
 
             if (!string.IsNullOrEmpty(hotelFilter.HotelName))
             {
@@ -46,16 +46,12 @@ namespace Server.Database.DataAccess
 
         public Hotel GetHotelDetails(int hotelID)
         {
-            Hotel hotel = _mapper.Map<Hotel>(_dbContext.HotelInfos.Find(hotelID));
+            Hotel hotel = _mapper.Map<Hotel>(_dbContext.Hotels.Find(hotelID));
             return hotel;
         }
 
         public List<string> GetHotelPictures(int hotelID)
         {
-            if(!_dbContext.HotelInfos.Any(hdb => hdb.HotelID == hotelID))
-            {
-                return null;
-            }
             return _dbContext.HotelPictures.Where(picture => picture.HotelID == hotelID)
                                            .Select(picture => picture.Picture)
                                            .ToList();

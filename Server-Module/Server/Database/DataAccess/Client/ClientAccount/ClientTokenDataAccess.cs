@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Database.DataAccess
+namespace Server.Database.DataAccess.Client
 {
     public class ClientTokenDataAccess : IClientTokenDataAccess
     {
@@ -16,7 +16,7 @@ namespace Server.Database.DataAccess
 
         public bool CheckIfClientExists(int clientID)
         {
-            return _dbContext.Clients.FirstOrDefault(client => client.ClientID == clientID) != null;
+            return _dbContext.Clients.Any(client => client.ClientID == clientID);
         }
     }
 }

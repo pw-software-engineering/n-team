@@ -18,12 +18,11 @@ namespace Server.Database
         public DbSet<ClientReservationDb> ClientReservations { get; set; }
         public DbSet<ClientReviewDb> ClientReviews { get; set; }
         //Hotel Tables
-        public DbSet<HotelInfoDb> HotelInfos { get; set; }
+        public DbSet<HotelDb> Hotels { get; set; }
         public DbSet<HotelPictureDb> HotelPictures { get; set; }
         public DbSet<HotelRoomDb> HotelRooms { get; set; }
         //Offer Tables
         public DbSet<OfferDb> Offers { get; set; }
-        public DbSet<AvalaibleTimeIntervalDb> AvalaibleTimeIntervals { get; set; }
         public DbSet<OfferHotelRoomDb> OfferHotelRooms { get; set; }
         public DbSet<OfferPictureDb> OfferPictures { get; set; }
         #endregion
@@ -40,7 +39,7 @@ namespace Server.Database
                .HasKey(cr => cr.ReviewID);
 
             //Hotel PrimaryKeys
-            modelBuilder.Entity<HotelInfoDb>()
+            modelBuilder.Entity<HotelDb>()
                .HasKey(hi => hi.HotelID);
             modelBuilder.Entity<HotelPictureDb>()
                .HasKey(hp => hp.PictureID);
@@ -54,8 +53,6 @@ namespace Server.Database
                .HasKey(ohr => new { ohr.OfferID, ohr.RoomID });
             modelBuilder.Entity<OfferPictureDb>()
                .HasKey(op => op.PictureID);
-            modelBuilder.Entity<AvalaibleTimeIntervalDb>()
-               .HasKey(ati => ati.TimeIntervalID);
             #endregion
 
             #region Relations
@@ -101,12 +98,6 @@ namespace Server.Database
                .HasForeignKey<ClientReviewDb>(cr => cr.ReviewID);
 
             //Relations for offers tables
-            modelBuilder.Entity<AvalaibleTimeIntervalDb>()
-               .HasOne(ati => ati.Offer)
-               .WithMany(o => o.AvalaibleTimeIntervals)
-               .HasForeignKey(ati => ati.OfferID)
-               .OnDelete(DeleteBehavior.NoAction);
-
             modelBuilder.Entity<OfferDb>()
                .HasOne(o => o.Hotel)
                .WithMany(h => h.Offers)
@@ -150,10 +141,10 @@ namespace Server.Database
                 new ClientDb { ClientID = 2, Username = "TestUsername2", Email = "TestEmail2", Name = "TestName2", Surname = "TestSurname2", Password = "TestPassword2" },
                 new ClientDb { ClientID = 3, Username = "TestUsername3", Email = "TestEmail3", Name = "TestName3", Surname = "TestSurname3", Password = "TestPassword3" });
 
-            modelBuilder.Entity<HotelInfoDb>().HasData(
-                new HotelInfoDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
-                new HotelInfoDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
-                new HotelInfoDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
+            modelBuilder.Entity<HotelDb>().HasData(
+                new HotelDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
+                new HotelDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
+                new HotelDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
 
             modelBuilder.Entity<HotelPictureDb>().HasData(
                 new HotelPictureDb { PictureID = 1, HotelID = 2, Picture = "TestPicture1" },
@@ -191,12 +182,6 @@ namespace Server.Database
                 new ClientReservationDb { ReservationID = 1, OfferID = 2, ClientID = 2, HotelID = 2, RoomID = 2, ReviewID = 1, NumberOfAdults = 1, NumberOfChildren = 0, FromTime = new DateTime(2001, 1, 1), ToTime = new DateTime(2001, 1, 2) },
                 new ClientReservationDb { ReservationID = 2, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 2, ReviewID = 2, NumberOfAdults = 1, NumberOfChildren = 1, FromTime = new DateTime(2001, 2, 2), ToTime = new DateTime(3001, 2, 4) },
                 new ClientReservationDb { ReservationID = 3, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 3, ReviewID = 3, NumberOfAdults = 1, NumberOfChildren = 2, FromTime = new DateTime(3001, 3, 3), ToTime = new DateTime(3001, 3, 6) });
-
-            modelBuilder.Entity<AvalaibleTimeIntervalDb>().HasData(
-                new AvalaibleTimeIntervalDb { TimeIntervalID = 1, OfferID = 2, FromTime = new DateTime(2001, 1, 1), ToTime = new DateTime(2001, 2, 2) },
-                new AvalaibleTimeIntervalDb { TimeIntervalID = 2, OfferID = 3, FromTime = new DateTime(2001, 2, 2), ToTime = new DateTime(2001, 3, 3) },
-                new AvalaibleTimeIntervalDb { TimeIntervalID = 3, OfferID = 3, FromTime = new DateTime(2001, 3, 3), ToTime = new DateTime(2001, 4, 4) });
-
             #endregion
         }
     }

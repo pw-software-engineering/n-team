@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Database.DataAccess
+namespace Server.Database.DataAccess.Hotel
 {
     public interface IRoomDataAccess
     {
         #region /rooms GET
-        List<HotelRoom> GetRooms(Paging paging, int hotelID, string roomNumber = null);
-        void GetOffersForRooms(List<HotelRoom> hotelRooms);
+        List<HotelRoomView> GetRooms(Paging paging, int hotelID, string roomNumber = null);
+        List<int> GetOfferIDsForRoom(int roomID);
         #endregion
 
         #region /rooms POST
@@ -22,7 +22,7 @@ namespace Server.Database.DataAccess
 
         #region /rooms/{roomID} DELETE
         void DeleteRoom(int roomID);
-        void ChangeActivationMark(int roomID, bool mark);
+        void ChangeActivationMark(int roomID, bool activeState);
         bool DoesRoomHaveAnyUnfinishedReservations(int roomID);
         void UnpinRoomFromAnyOffers(int roomID);
         void RemoveRoomFromPastReservations(int roomID);

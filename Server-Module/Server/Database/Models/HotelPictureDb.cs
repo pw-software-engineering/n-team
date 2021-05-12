@@ -12,6 +12,6 @@ namespace Server.Database.Models
         public int PictureID { get; set; }
         public string Picture { get; set; }
         //Navigational Properties
-        public HotelInfoDb Hotel { get; set; }
+        public HotelDb Hotel { get; set; }
     }
 }

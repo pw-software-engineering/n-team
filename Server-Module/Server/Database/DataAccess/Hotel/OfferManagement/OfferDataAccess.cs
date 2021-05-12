@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Database.DataAccess
+namespace Server.Database.DataAccess.Hotel
 {
     public class OfferDataAccess : IOfferDataAccess
     {
@@ -54,33 +54,23 @@ namespace Server.Database.DataAccess
         }
         public int? FindOfferAndGetOwner(int offerID)
         {
-            List<int> owners = _dbContext.Offers.Where(o => o.OfferID == offerID)
-                                                .Select(o => o.HotelID)
-                                                .ToList();
-            if (owners.Count == 0)
-                return null;
-            return owners[0];
+            return _dbContext.Offers.Where(o => o.OfferID == offerID)
+                                    .Select(o => (int?)o.HotelID)
+                                    .FirstOrDefault();
         }
         public void UpdateOffer(int offerID, OfferUpdateInfo offerUpdateInfo)
         {
-            OfferDb offer = _dbContext.Offers.Include(o => o.OfferPictures).Single(o => o.OfferID == offerID);
+            OfferDb offer = _dbContext.Offers.Find(offerID);
             offer.IsActive = offerUpdateInfo.IsActive ?? offer.IsActive;
             offer.OfferTitle = offerUpdateInfo.OfferTitle ?? offer.OfferTitle;
             offer.Description = offerUpdateInfo.Description ?? offer.Description;
             offer.OfferPreviewPicture = offerUpdateInfo.OfferPreviewPicture ?? offer.OfferPreviewPicture;
-            if (!(offerUpdateInfo.OfferPictures is null))
+            if (!(offerUpdateInfo.OfferPictures == null))
             {
                 _dbContext.OfferPictures.RemoveRange(_dbContext.OfferPictures.Where(p => p.OfferID == offerID));
                 foreach (string picture in offerUpdateInfo.OfferPictures)
-                    offer.OfferPictures.Add(new OfferPictureDb(picture, offerID));
+                    _dbContext.OfferPictures.Add(new OfferPictureDb(picture, offerID));
             }
-            _dbContext.SaveChanges();
-        }
-
-        public void AddOfferPicture(string picture, int offerID)
-        {
-            OfferPictureDb offerPicture = new OfferPictureDb { Picture = picture, OfferID = offerID };
-            _dbContext.OfferPictures.Add(offerPicture);
             _dbContext.SaveChanges();
         }
 
@@ -96,7 +86,7 @@ namespace Server.Database.DataAccess
 
         public bool AreThereUnfinishedReservationsForOffer(int offerID)
         {
-            return _dbContext.ClientReservations.Where(cr => cr.OfferID == offerID && cr.ToTime > DateTime.Now).Any();
+            return _dbContext.ClientReservations.Any(cr => cr.OfferID == offerID && cr.ToTime > DateTime.Now);
         }
 
         public void UnpinRoomsFromOffer(int offerID)

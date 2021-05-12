@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Database.DataAccess
+namespace Server.Database.DataAccess.Client
 {
 	public interface IClientDataAccess
 	{
@@ -14,7 +14,7 @@ namespace Server.Database.DataAccess
         #endregion
 
         #region /client PATCH
-        public void UpdateClientInfo(int clientID, EditClientInfo editClientInfo);
+        public void UpdateClientInfo(int clientID, ClientInfoUpdate editClientInfo);
 		#endregion
 
 		#region /client/login

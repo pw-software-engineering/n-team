@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Database.DataAccess
+namespace Server.Database.DataAccess.Client
 {
     public class ClientDataAccess : IClientDataAccess
     {
@@ -29,7 +29,7 @@ namespace Server.Database.DataAccess
             return _mapper.Map<ClientInfoView>(_dbContext.Clients.Find(clientID));
         }
 
-        public void UpdateClientInfo(int clientID, EditClientInfo editClientInfo)
+        public void UpdateClientInfo(int clientID, ClientInfoUpdate editClientInfo)
         {
             var client = _dbContext.Clients.Find(clientID);
             client.Username = string.IsNullOrWhiteSpace(editClientInfo.Username) ? client.Username : editClientInfo.Username;

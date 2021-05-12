@@ -21,8 +21,7 @@ namespace Server.Database.Models
         public uint MaxGuests { get; set; }
         public string Description { get; set; }
         //Navigational Properties
-        public HotelInfoDb Hotel { get; set; }
-        public List<AvalaibleTimeIntervalDb> AvalaibleTimeIntervals { get; set; }
+        public HotelDb Hotel { get; set; }
         public List<OfferPictureDb> OfferPictures { get; set; }
         public List<ClientReviewDb> ClientReviews { get; set; }
         public List<OfferHotelRoomDb> OfferHotelRooms { get; set; }

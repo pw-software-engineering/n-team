@@ -20,7 +20,7 @@ namespace Server.Database.Models
         public uint NumberOfChildren { get; set; }
         public uint NumberOfAdults { get; set; }
         //Navigational Properties
-        public HotelInfoDb Hotel { get; set; }
+        public HotelDb Hotel { get; set; }
         public OfferDb Offer { get; set; }
         public ClientDb Client { get; set; }
         public HotelRoomDb Room { get; set; }

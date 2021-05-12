@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Database.DataAccess
+namespace Server.Database.DataAccess.Hotel
 {
     public interface IOfferDataAccess
     {
@@ -16,7 +16,6 @@ namespace Server.Database.DataAccess
 
         #region /offers POST
         int AddOffer(Offer offer);
-        void AddOfferPicture(string picture, int offerID);
         void AddOfferPictures(List<string> picture, int offerID);
         #endregion
 

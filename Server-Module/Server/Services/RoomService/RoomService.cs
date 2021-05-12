@@ -61,8 +61,9 @@ namespace Server.Services.RoomService
             if (paging.pageNumber < 1 || paging.pageSize < 1)
                 return new ServiceResult(HttpStatusCode.BadRequest, new Error("Invalid paging arguments"));
 
-            List<HotelRoom> rooms = _dataAccess.GetRooms(paging, hotelID, hotelRoomNumber);
-            _dataAccess.GetOffersForRooms(rooms);
+            List<HotelRoomView> rooms = _dataAccess.GetRooms(paging, hotelID, hotelRoomNumber);
+            foreach(HotelRoomView room in rooms)
+                room.OfferID = _dataAccess.GetOfferIDsForRoom(room.RoomID);
             return new ServiceResult(HttpStatusCode.OK, _mapper.Map<List<HotelRoomView>>(rooms));
         }
         public IServiceResult CheckExistanceAndOwnership(int roomID, int hotelID)

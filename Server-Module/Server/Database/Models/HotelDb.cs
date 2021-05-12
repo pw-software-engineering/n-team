@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Server.Database.Models
 {
-    public class HotelInfoDb
+    public class HotelDb
     {
         //Properties
         public int HotelID { get; set; }

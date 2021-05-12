@@ -12,6 +12,7 @@ using Server.Services.Result;
 using Server.RequestModels;
 using System.Net;
 using Server.Database.DatabaseTransaction;
+using Server.Database.DataAccess.Hotel;
 
 namespace Server.Services.OfferService
 {   

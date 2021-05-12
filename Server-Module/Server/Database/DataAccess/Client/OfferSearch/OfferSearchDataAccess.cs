@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Database.DataAccess.OfferSearch
+namespace Server.Database.DataAccess.Client
 {
     public class OfferSearchDataAccess : IOfferSearchDataAccess
     {
@@ -70,10 +70,6 @@ namespace Server.Database.DataAccess.OfferSearch
         }
         public List<string> GetHotelOfferPictures(int offerID)
         {
-            if(_dbContext.Offers.Find(offerID) == null)
-            {
-                return null;
-            }
             return _dbContext.OfferPictures.Where(odb => odb.OfferID == offerID).Select(odb => odb.Picture).ToList();
         }
 
@@ -84,7 +80,7 @@ namespace Server.Database.DataAccess.OfferSearch
 
         public bool CheckHotelExistence(int hotelID)
         {
-            return _dbContext.HotelInfos.Any(h => h.HotelID == hotelID);
+            return _dbContext.Hotels.Any(h => h.HotelID == hotelID);
         }
 
     }

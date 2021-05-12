@@ -33,7 +33,7 @@ namespace Server.Controllers.Hotel
         }
 
         [HttpPatch("/hotelInfo")]
-        public IActionResult UpdateInfo([FromBody] HotelUpdateInfo hotelUpdateInfo)
+        public IActionResult UpdateInfo([FromBody] HotelInfoUpdate hotelUpdateInfo)
         {
             return _hotelAccountService.UpdateInfo(_hotelID, hotelUpdateInfo);
         }

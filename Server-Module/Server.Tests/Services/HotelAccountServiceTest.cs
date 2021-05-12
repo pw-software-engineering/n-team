@@ -44,7 +44,7 @@ namespace Server.Tests.Services
         {
             int hotelID = 1;
             
-            var hotel = new HotelGetInfo() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
+            var hotel = new HotelInfoView() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
 
             _dataAccessMock.Setup(x => x.GetInfo(It.IsAny<int>())).Throws(new Exception());
             _dataAccessMock.Setup(x => x.GetInfo(hotelID)).Returns(hotel);
@@ -52,8 +52,8 @@ namespace Server.Tests.Services
             var result = hotelAccountService.GetInfo(hotelID);
 
             Assert.True(result.StatusCode==System.Net.HttpStatusCode.OK);
-            Assert.True(((HotelGetInfo)result.Result).HotelPictures is List<string>);
-            Assert.True(((HotelGetInfo)result.Result).HotelDesc == hotel.HotelDesc);
+            Assert.True(((HotelInfoView)result.Result).HotelPictures is List<string>);
+            Assert.True(((HotelInfoView)result.Result).HotelDesc == hotel.HotelDesc);
         }
 
         [Fact]
@@ -61,7 +61,7 @@ namespace Server.Tests.Services
         {
             int hotelID = 1;
             
-            var hotel = new HotelGetInfo() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
+            var hotel = new HotelInfoView() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
 
             _dataAccessMock.Setup(x => x.GetInfo(It.IsAny<int>())).Throws(new Exception());
             _dataAccessMock.Setup(x => x.GetInfo(hotelID)).Returns(hotel);
@@ -77,9 +77,9 @@ namespace Server.Tests.Services
         {
             int hotelID = 1;
             
-            var hotel = new HotelGetInfo() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
+            var hotel = new HotelInfoView() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
 
-            _dataAccessMock.Setup(x => x.UpdateInfo(It.IsAny<int>(), It.IsAny<HotelGetInfo>())).Throws(new Exception());
+            _dataAccessMock.Setup(x => x.UpdateInfo(It.IsAny<int>(), It.IsAny<HotelInfoView>())).Throws(new Exception());
             _dataAccessMock.Setup(x => x.UpdateInfo(hotelID,hotel));
             var result = hotelAccountService.UpdateInfo(hotelID+1, hotel);
 
@@ -91,7 +91,7 @@ namespace Server.Tests.Services
         {
             int hotelID = 1;
             
-            var hotel = new HotelGetInfo() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
+            var hotel = new HotelInfoView() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
 
             _dataAccessMock.Setup(x => x.UpdateInfo(hotelID,null)).Throws(new Exception());
             _dataAccessMock.Setup(x => x.UpdateInfo(hotelID ,hotel));
@@ -105,10 +105,10 @@ namespace Server.Tests.Services
         {
             int hotelID = 1;
 
-            var hotel = new HotelGetInfo() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
+            var hotel = new HotelInfoView() { City = "City", Country = "contry", HotelDesc = "desc", HotelName = "name", HotelPictures = null, HotelPreviewPicture = "zdjencie" };
             
             _dataAccessMock.Setup(x => x.UpdateInfo(hotelID, null)).Throws(new Exception());
-            _dataAccessMock.Setup(x => x.UpdateInfo(hotelID,It.IsAny<HotelGetInfo>()));
+            _dataAccessMock.Setup(x => x.UpdateInfo(hotelID,It.IsAny<HotelInfoView>()));
             _dataAccessMock.Setup(x => x.DeletePicteres(It.IsAny<int>())).Throws(new Exception());
             var result = hotelAccountService.UpdateInfo(hotelID, hotel);
             Assert.True(result.StatusCode == System.Net.HttpStatusCode.OK );

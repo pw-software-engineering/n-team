@@ -41,7 +41,7 @@ namespace Server.Controllers.Client
         }
         
         [HttpPatch("client")]
-        public IActionResult PatchClientInfo([FromBody] EditClientInfo editClientInfo)
+        public IActionResult PatchClientInfo([FromBody] ClientInfoUpdate editClientInfo)
         {
             return _service.UpdateClientInfo(_clientID, editClientInfo);
         }

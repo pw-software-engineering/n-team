@@ -13,7 +13,7 @@ namespace Server.Services.ClientService
     public interface IClientService
     {
         #region /client
-        public IServiceResult UpdateClientInfo(int clientID, EditClientInfo editClientInfo);
+        public IServiceResult UpdateClientInfo(int clientID, ClientInfoUpdate editClientInfo);
         public IServiceResult GetClientInfo(int clientID);
         #endregion
 
