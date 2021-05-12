@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Server.Database.DataAccess;
+using Server.Database.DataAccess.Client;
 using Server.Database.DatabaseTransaction;
-using Server.Models;
 using Server.RequestModels;
 using Server.Services.Result;
 using Server.ViewModels;
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Server.Services.HotelSearchService
+namespace Server.Services.Client
 {
     public class HotelSearchService : IHotelSearchService
     {
@@ -35,7 +35,7 @@ namespace Server.Services.HotelSearchService
             {
                 return new ServiceResult(
                     HttpStatusCode.BadRequest,
-                    new Error("Invalid paging arguments"));
+                    new ErrorView("Invalid paging arguments"));
             }
 
             List<HotelSearchPreviewView> hotelPreviews = _mapper.Map<List<HotelSearchPreviewView>>(_hotelSearchDataAccess.GetHotels(paging, hotelFilter));

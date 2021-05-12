@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Server.Database.Models;
-using Server.Models;
 using Server.RequestModels;
+using Server.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace Server.Database.DataAccess.Client
             _dbContext = dbContext;
         }
 
-        public List<ClientOfferPreview> GetHotelOffers(int hotelID, Paging paging, OfferFilter offerFilter)
+        public List<OfferSearchPreviewView> GetHotelOffers(int hotelID, Paging paging, OfferFilter offerFilter)
         {
             if(paging == null)
             {
@@ -49,7 +49,7 @@ namespace Server.Database.DataAccess.Client
                            .Skip((paging.pageNumber - 1) * paging.pageSize)
                            .Take(paging.pageSize);
 
-            return _mapper.Map<List<ClientOfferPreview>>(offers.ToList());
+            return _mapper.Map<List<OfferSearchPreviewView>>(offers.ToList());
         }
 
         public bool CheckHotelOfferAvailability(int offerID, DateTime from, DateTime to)
@@ -64,9 +64,9 @@ namespace Server.Database.DataAccess.Client
             }
             return false;
         }
-        public ClientOffer GetHotelOfferDetails(int offerID)
+        public ClientOfferView GetHotelOfferDetails(int offerID)
         {
-            return _mapper.Map<ClientOffer>(_dbContext.Offers.Find(offerID));
+            return _mapper.Map<ClientOfferView>(_dbContext.Offers.Find(offerID));
         }
         public List<string> GetHotelOfferPictures(int offerID)
         {

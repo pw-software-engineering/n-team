@@ -1,6 +1,5 @@
 ﻿using Server.Database;
 using Server.Database.Models;
-using Server.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ using System.Net;
 using Server.Database.DatabaseTransaction;
 using Server.Database.DataAccess.Hotel;
 
-namespace Server.Services.OfferService
+namespace Server.Services.Hotel
 {   
     public class OfferService : IOfferService
     {
@@ -27,28 +26,24 @@ namespace Server.Services.OfferService
             _mapper = mapper;
             _transaction = transaction;
         }
-        public IServiceResult AddOffer(OfferView offerView, int hotelID)
+        public IServiceResult AddOffer(int hotelID, OfferInfo offerInfo)
         {
-            Offer offer = _mapper.Map<Offer>(offerView);
-            offer.HotelID = hotelID;
-            offer.IsDeleted = false;
-
             _transaction.BeginTransaction();
-            int offerID = _dataAccess.AddOffer(offer);
-            _dataAccess.AddOfferPictures(offer.Pictures, offerID);
+            int offerID = _dataAccess.AddOffer(hotelID, offerInfo);
+            _dataAccess.AddOfferPictures(offerID, offerInfo.Pictures);
             _transaction.CommitTransaction();
 
-            return new ServiceResult(HttpStatusCode.OK, new OfferID(offerID));
+            return new ServiceResult(HttpStatusCode.OK, new OfferIDView(offerID));
         }
 
-        public IServiceResult DeleteOffer(int offerID, int hotelID)
+        public IServiceResult DeleteOffer(int hotelID, int offerID)
         {
-            IServiceResult response = CheckExistanceAndOwnership(offerID, hotelID);
-            if (response.StatusCode != HttpStatusCode.OK)
+            IServiceResult response = CheckExistanceAndOwnership(hotelID, offerID);
+            if (response != null)
                 return response;
 
             if (_dataAccess.AreThereUnfinishedReservationsForOffer(offerID))
-                return new ServiceResult(HttpStatusCode.Conflict, new Error("There are still pending reservations for this offer"));
+                return new ServiceResult(HttpStatusCode.Conflict, new ErrorView("There are still pending reservations for this offer"));
 
             _transaction.BeginTransaction();
             _dataAccess.UnpinRoomsFromOffer(offerID);
@@ -58,31 +53,30 @@ namespace Server.Services.OfferService
             return new ServiceResult(HttpStatusCode.OK);
         }
 
-        public IServiceResult GetHotelOffers(Paging paging, int hotelID, bool? isActive = null)
+        public IServiceResult GetHotelOffers(int hotelID, Paging paging, bool? isActive = null)
         {
             if (paging.pageNumber < 1 || paging.pageSize < 1)
-                return new ServiceResult(HttpStatusCode.BadRequest, new Error("Invalid paging arguments"));
+                return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Invalid paging arguments"));
 
-            List<OfferPreviewView> offersPreviews = _mapper.Map<List<OfferPreviewView>>(_dataAccess.GetHotelOffers(paging, hotelID, isActive));
+            List<OfferPreviewView> offersPreviews = _mapper.Map<List<OfferPreviewView>>(_dataAccess.GetHotelOffers(hotelID, paging, isActive));
             return new ServiceResult(HttpStatusCode.OK, offersPreviews);
         }
 
-        public IServiceResult GetOffer(int offerID, int hotelID)
+        public IServiceResult GetOffer(int hotelID, int offerID)
         {
-            IServiceResult response = CheckExistanceAndOwnership(offerID, hotelID);
-            if (response.StatusCode != HttpStatusCode.OK)
+            IServiceResult response = CheckExistanceAndOwnership(hotelID, offerID);
+            if (response != null)
                 return response;
 
             OfferView offerView = _mapper.Map<OfferView>(_dataAccess.GetOffer(offerID));
-            offerView.pictures = _dataAccess.GetOfferPictures(offerID);
-            offerView.rooms = _dataAccess.GetOfferRooms(offerID);
+            offerView.Pictures = _dataAccess.GetOfferPictures(offerID);
             return new ServiceResult(HttpStatusCode.OK, offerView);
         }
 
-        public IServiceResult UpdateOffer(int offerID, int hotelID, OfferUpdateInfo offerUpdateInfo)
+        public IServiceResult UpdateOffer(int hotelID, int offerID, OfferInfoUpdate offerUpdateInfo)
         {
-            IServiceResult response = CheckExistanceAndOwnership(offerID, hotelID);
-            if (response.StatusCode != HttpStatusCode.OK)
+            IServiceResult response = CheckExistanceAndOwnership(hotelID, offerID);
+            if (response != null)
                 return response;
 
             _transaction.BeginTransaction();
@@ -92,14 +86,14 @@ namespace Server.Services.OfferService
             return new ServiceResult(HttpStatusCode.OK);
         }
 
-        public IServiceResult CheckExistanceAndOwnership(int offerID, int hotelID)
+        private IServiceResult CheckExistanceAndOwnership(int hotelID, int offerID)
         {
             int? ownerID = _dataAccess.FindOfferAndGetOwner(offerID);
             if (ownerID == null)
                 return new ServiceResult(HttpStatusCode.NotFound);
             if (ownerID != hotelID)
                 return new ServiceResult(HttpStatusCode.Unauthorized);
-            return new ServiceResult(HttpStatusCode.OK);
+            return null;
         }
     }
 }

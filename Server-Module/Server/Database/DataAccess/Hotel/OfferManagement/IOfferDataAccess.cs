@@ -1,5 +1,4 @@
-﻿using Server.Models;
-using Server.RequestModels;
+﻿using Server.RequestModels;
 using Server.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -11,22 +10,22 @@ namespace Server.Database.DataAccess.Hotel
     public interface IOfferDataAccess
     {
         #region /offers GET
-        List<OfferPreview> GetHotelOffers(Paging paging, int hotelID, bool? isActive = null);
+        List<OfferPreviewView> GetHotelOffers(int hotelID, Paging paging,  bool? isActive = null);
         #endregion
 
         #region /offers POST
-        int AddOffer(Offer offer);
-        void AddOfferPictures(List<string> picture, int offerID);
+        int AddOffer(int hotelID, OfferInfo offerInfo);
+        void AddOfferPictures(int offerID, List<string> picture);
         #endregion
 
         #region /offers/{offerID} GET
-        Offer GetOffer(int offerID);
+        OfferView GetOffer(int offerID);
         List<string> GetOfferRooms(int offerID);
         List<string> GetOfferPictures(int offerID);
         #endregion
 
         #region /offers/{offerID} PATCH
-        void UpdateOffer(int offerID, OfferUpdateInfo offer);
+        void UpdateOffer(int offerID, OfferInfoUpdate offerInfoUpdate);
         #endregion
 
         #region /offers/{offerID} DELETE

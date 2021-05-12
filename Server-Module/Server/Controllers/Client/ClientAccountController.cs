@@ -19,7 +19,7 @@ namespace Server.Controllers.Client
     [Route("/api-client")]
     public class ClientAccountController : Controller
     {
-        private readonly IClientService _service;
+        private readonly IClientAccountService _service;
         private int _clientID;
         public override void OnActionExecuting(ActionExecutingContext context)
         {
@@ -29,7 +29,7 @@ namespace Server.Controllers.Client
             _clientID = id.First();
             base.OnActionExecuting(context);
         }
-        public ClientAccountController(IClientService service)
+        public ClientAccountController(IClientAccountService service)
         {
             _service = service;    
         }

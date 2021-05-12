@@ -70,7 +70,7 @@ namespace Server.Authentication.Client
         protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
         {
             Console.WriteLine($"CHALLANGE: {Response.StatusCode} | {_errorString}");
-            IServiceResult result = new ServiceResult(HttpStatusCode.Unauthorized, new Error(_errorString));
+            IServiceResult result = new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView(_errorString));
             RouteData routeData = new RouteData(Context.Request.RouteValues);
             ActionDescriptor actionDescriptor = new ActionDescriptor();
             await result.ExecuteResultAsync(new ActionContext(Context, routeData, actionDescriptor));

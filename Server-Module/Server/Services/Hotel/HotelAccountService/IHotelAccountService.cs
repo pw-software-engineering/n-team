@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Services.HotelAccountService
+namespace Server.Services.Hotel
 {
     public interface IHotelAccountService
     {

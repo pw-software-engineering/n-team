@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Server.Database.Models;
-using Server.Models;
 using Server.RequestModels;
 using Server.ViewModels;
 using System;
@@ -67,7 +66,7 @@ namespace Server.Database.DataAccess.Hotel
                              .FirstOrDefault();
         }
 
-        public bool DoesRoomHaveAnyUnfinishedReservations(int roomID)
+        public bool CheckAnyUnfinishedReservations(int roomID)
         {
             return _dbContext.ClientReservations.Any(cr => cr.RoomID == roomID && cr.ToTime > DateTime.Now);
         }

@@ -8,12 +8,12 @@ namespace Server.ViewModels
 {
     public class OfferPreviewView
     {
-        public int offerID { get; set; }
-        public bool isActive { get; set; }
-        public string offerTitle { get; set; }
-        public double costPerChild { get; set; }
-        public double costPerAdult { get; set; }
-        public uint maxGuests { get; set; }
-        public string offerPreviewPicture { get; set; }
+        public int OfferID { get; set; }
+        public bool IsActive { get; set; }
+        public string OfferTitle { get; set; }
+        public double CostPerChild { get; set; }
+        public double CostPerAdult { get; set; }
+        public uint MaxGuests { get; set; }
+        public string OfferPreviewPicture { get; set; }
     }
 }

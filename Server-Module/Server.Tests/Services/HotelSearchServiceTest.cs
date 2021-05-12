@@ -44,7 +44,7 @@ namespace Server.Tests.Services
             IServiceResult serviceResult = _hotelSearchService.GetHotels(paging, new HotelFilter());
 
             Assert.Equal(HttpStatusCode.BadRequest, serviceResult.StatusCode);
-            Assert.True(serviceResult.Result is Error);
+            Assert.True(serviceResult.Result is ErrorView);
         }
 
         [Fact]

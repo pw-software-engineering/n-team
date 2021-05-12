@@ -16,8 +16,8 @@ namespace Server.Controllers.Client
     [Route("api-client")]
     public class ClientLoginController : Controller
     {
-        private readonly IClientService _clientService;
-        public ClientLoginController(IClientService clientService)
+        private readonly IClientAccountService _clientService;
+        public ClientLoginController(IClientAccountService clientService)
         {
             _clientService = clientService;
         }

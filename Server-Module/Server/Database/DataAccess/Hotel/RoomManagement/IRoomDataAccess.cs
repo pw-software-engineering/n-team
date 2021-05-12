@@ -1,5 +1,4 @@
-﻿using Server.Models;
-using Server.RequestModels;
+﻿using Server.RequestModels;
 using Server.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ namespace Server.Database.DataAccess.Hotel
     public interface IRoomDataAccess
     {
         #region /rooms GET
-        List<HotelRoomView> GetRooms(Paging paging, int hotelID, string roomNumber = null);
+        List<HotelRoomView> GetRooms(int hotelID, Paging paging, string roomNumber = null);
         List<int> GetOfferIDsForRoom(int roomID);
         #endregion
 
@@ -23,7 +22,7 @@ namespace Server.Database.DataAccess.Hotel
         #region /rooms/{roomID} DELETE
         void DeleteRoom(int roomID);
         void ChangeActivationMark(int roomID, bool activeState);
-        bool DoesRoomHaveAnyUnfinishedReservations(int roomID);
+        bool CheckAnyUnfinishedReservations(int roomID);
         void UnpinRoomFromAnyOffers(int roomID);
         void RemoveRoomFromPastReservations(int roomID);
         #endregion

@@ -66,7 +66,7 @@ namespace Server.Tests.Services
             IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, paging, new OfferFilter());
 
             Assert.Equal(HttpStatusCode.BadRequest, serviceResult.StatusCode);
-            Assert.True(serviceResult.Result is Error);
+            Assert.True(serviceResult.Result is ErrorView);
         }
 
         [Fact]
@@ -83,7 +83,7 @@ namespace Server.Tests.Services
             IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, paging, offerFilter);
 
             Assert.Equal(HttpStatusCode.BadRequest, serviceResult.StatusCode);
-            Assert.True(serviceResult.Result is Error);
+            Assert.True(serviceResult.Result is ErrorView);
         }
 
         [Fact]
@@ -101,7 +101,7 @@ namespace Server.Tests.Services
             IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, paging, offerFilter);
 
             Assert.Equal(HttpStatusCode.BadRequest, serviceResult.StatusCode);
-            Assert.True(serviceResult.Result is Error);
+            Assert.True(serviceResult.Result is ErrorView);
         }
 
         [Fact]
@@ -126,9 +126,9 @@ namespace Server.Tests.Services
             IServiceResult serviceResultMaxCost = _offerSearchService.GetHotelOffers(hotelID, paging, offerFilterMaxCost);
 
             Assert.Equal(HttpStatusCode.BadRequest, serviceResultMinCost.StatusCode);
-            Assert.True(serviceResultMinCost.Result is Error);
+            Assert.True(serviceResultMinCost.Result is ErrorView);
             Assert.Equal(HttpStatusCode.BadRequest, serviceResultMaxCost.StatusCode);
-            Assert.True(serviceResultMaxCost.Result is Error);
+            Assert.True(serviceResultMaxCost.Result is ErrorView);
         }
 
         [Fact]
@@ -147,7 +147,7 @@ namespace Server.Tests.Services
             IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, paging, offerFilter);
 
             Assert.Equal(HttpStatusCode.BadRequest, serviceResult.StatusCode);
-            Assert.True(serviceResult.Result is Error);
+            Assert.True(serviceResult.Result is ErrorView);
         }
 
         [Fact]

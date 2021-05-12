@@ -1,5 +1,4 @@
-﻿using Server.Database.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,15 +7,13 @@ namespace Server.ViewModels
 {
     public class OfferView
     {
-        public uint offerID { get; set; }
-        public bool isActive { get; set; }
-        public string offerTitle { get; set; }
-        public double costPerChild { get; set; }
-        public double costPerAdult { get; set; }
-        public uint maxGuests { get; set; }
-        public string description { get; set; }
-        public string offerPreviewPicture { get; set; }
-        public List<string> pictures { get; set; }
-        public List<string> rooms { get; set; }
+        public bool IsActive { get; set; }
+        public string OfferTitle { get; set; }
+        public double CostPerChild { get; set; }
+        public double CostPerAdult { get; set; }
+        public uint MaxGuests { get; set; }
+        public string Description { get; set; }
+        public string OfferPreviewPicture { get; set; }
+        public List<string> Pictures { get; set; }
     }
 }

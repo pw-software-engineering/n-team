@@ -1,5 +1,4 @@
 ﻿using Server.Database.Models;
-using Server.Models;
 using Server.RequestModels;
 using Server.Services.Result;
 using Server.ViewModels;
@@ -8,9 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Services.ClientService
+namespace Server.Services.Client
 {
-    public interface IClientService
+    public interface IClientAccountService
     {
         #region /client
         public IServiceResult UpdateClientInfo(int clientID, ClientInfoUpdate editClientInfo);

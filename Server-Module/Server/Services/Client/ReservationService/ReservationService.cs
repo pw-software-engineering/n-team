@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
-using Server.Database.DataAccess.ReservationsManagement;
+using Server.Database.DataAccess.Client;
 using Server.Database.DatabaseTransaction;
-using Server.Models;
 using Server.RequestModels;
 using Server.Services.Result;
+using Server.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Server.Services.ReservationService
+namespace Server.Services.Client
 {
     public class ReservationService : IReservationService
     {
@@ -26,7 +26,7 @@ namespace Server.Services.ReservationService
         public IServiceResult AddReservation(int hotelID, int offerID, int userID, ReservationInfo reservationInfo)
         {
             IServiceResult response = CheckOfferExistanceAndOwnership(offerID, hotelID);
-            if (response.StatusCode != HttpStatusCode.OK)
+            if (response != null)
                 return response;
 
             _transaction.BeginTransaction();
@@ -48,17 +48,17 @@ namespace Server.Services.ReservationService
             }
 
             _transaction.RollbackTransaction();
-            return new ServiceResult(HttpStatusCode.BadRequest, new Error("Offer is not available in chosen time interval"));
+            return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Offer is not available in chosen time interval"));
         }
 
         public IServiceResult CancelReservation(int reservationID, int userID)
         {
             IServiceResult response = CheckReservationExistanceAndOwnership(reservationID, userID);
-            if (response.StatusCode != HttpStatusCode.OK)
+            if (response != null)
                 return response;
 
             if (_dataAccess.HasReservationBegun(reservationID))
-                return new ServiceResult(HttpStatusCode.BadRequest, new Error("Reservation is currently underway or already completed"));
+                return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Reservation is currently underway or already completed"));
 
             _transaction.BeginTransaction();
             _dataAccess.RemoveReservation(reservationID);
@@ -73,14 +73,14 @@ namespace Server.Services.ReservationService
                 return new ServiceResult(HttpStatusCode.NotFound);
             if (ownerID != userID)
                 return new ServiceResult(HttpStatusCode.Unauthorized);
-            return new ServiceResult(HttpStatusCode.OK);
+            return null;
         }
         public IServiceResult CheckOfferExistanceAndOwnership(int offerID, int userID)
         {
             int? ownerID = _dataAccess.FindOfferAndGetOwner(offerID);
             if (ownerID == null || ownerID != userID)
                 return new ServiceResult(HttpStatusCode.NotFound);
-            return new ServiceResult(HttpStatusCode.OK);
+            return null;
         }
     }
 }

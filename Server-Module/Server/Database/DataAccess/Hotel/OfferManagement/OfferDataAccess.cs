@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Server.Database.Models;
-using Server.Models;
 using Server.RequestModels;
 using Server.ViewModels;
 using System;
@@ -27,17 +26,18 @@ namespace Server.Database.DataAccess.Hotel
             offer.IsDeleted = true;
             _dbContext.SaveChanges();
         }
-        public int AddOffer(Offer offer)
+        public int AddOffer(int hotelID, OfferInfo offer)
         {
             OfferDb offerDb = _mapper.Map<OfferDb>(offer);
+            offerDb.HotelID = hotelID;
             _dbContext.Offers.Add(offerDb);
             _dbContext.SaveChanges();
 
             return offerDb.OfferID;
         }
-        public List<OfferPreview> GetHotelOffers(Paging paging, int hotelID, bool? isActive)
+        public List<OfferPreviewView> GetHotelOffers(int hotelID, Paging paging, bool? isActive)
         {
-            var ret = _mapper.Map<List<OfferPreview>>(_dbContext.Offers
+            var ret = _mapper.Map<List<OfferPreviewView>>(_dbContext.Offers
                              .Where(o => o.HotelID == hotelID && !o.IsDeleted));
 
             if (isActive.HasValue)
@@ -48,9 +48,9 @@ namespace Server.Database.DataAccess.Hotel
                       .ToList();
         }
 
-        public Offer GetOffer(int offerID)
+        public OfferView GetOffer(int offerID)
         {
-            return _mapper.Map<Offer>(_dbContext.Offers.Find(offerID));
+            return _mapper.Map<OfferView>(_dbContext.Offers.Find(offerID));
         }
         public int? FindOfferAndGetOwner(int offerID)
         {
@@ -58,23 +58,23 @@ namespace Server.Database.DataAccess.Hotel
                                     .Select(o => (int?)o.HotelID)
                                     .FirstOrDefault();
         }
-        public void UpdateOffer(int offerID, OfferUpdateInfo offerUpdateInfo)
+        public void UpdateOffer(int offerID, OfferInfoUpdate offerInfoUpdate)
         {
             OfferDb offer = _dbContext.Offers.Find(offerID);
-            offer.IsActive = offerUpdateInfo.IsActive ?? offer.IsActive;
-            offer.OfferTitle = offerUpdateInfo.OfferTitle ?? offer.OfferTitle;
-            offer.Description = offerUpdateInfo.Description ?? offer.Description;
-            offer.OfferPreviewPicture = offerUpdateInfo.OfferPreviewPicture ?? offer.OfferPreviewPicture;
-            if (!(offerUpdateInfo.OfferPictures == null))
+            offer.IsActive = offerInfoUpdate.IsActive ?? offer.IsActive;
+            offer.OfferTitle = offerInfoUpdate.OfferTitle ?? offer.OfferTitle;
+            offer.Description = offerInfoUpdate.Description ?? offer.Description;
+            offer.OfferPreviewPicture = offerInfoUpdate.OfferPreviewPicture ?? offer.OfferPreviewPicture;
+            if (!(offerInfoUpdate.OfferPictures == null))
             {
                 _dbContext.OfferPictures.RemoveRange(_dbContext.OfferPictures.Where(p => p.OfferID == offerID));
-                foreach (string picture in offerUpdateInfo.OfferPictures)
+                foreach (string picture in offerInfoUpdate.OfferPictures)
                     _dbContext.OfferPictures.Add(new OfferPictureDb(picture, offerID));
             }
             _dbContext.SaveChanges();
         }
 
-        public void AddOfferPictures(List<string> pictures, int offerID)
+        public void AddOfferPictures(int offerID, List<string> pictures)
         {
             List<OfferPictureDb> picturesDb = new List<OfferPictureDb>();
             foreach (string picture in pictures)

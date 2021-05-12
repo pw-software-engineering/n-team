@@ -59,7 +59,7 @@ namespace Server.Tests.Services
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             _dataAccessMock.Verify(da => da.AddOffer(It.IsAny<Offer>()));
             _dataAccessMock.Verify(da => da.AddOfferPictures(It.IsAny<List<string>>(), offerID), Times.Once());
-            Assert.Equal(offerID, ((OfferID)response.Result).offerID);
+            Assert.Equal(offerID, ((OfferIDView)response.Result).OfferID);
         }
         #endregion
 

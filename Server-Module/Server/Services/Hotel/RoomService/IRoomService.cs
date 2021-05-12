@@ -6,11 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Services.RoomService
+namespace Server.Services.Hotel
 {
     public interface IRoomService
     {
-        IServiceResult GetHotelRooms(Paging paging, int hotelID, string hotelRoomNumber = null);
+        IServiceResult GetHotelRooms(int hotelID, Paging paging, string hotelRoomNumber = null);
         IServiceResult AddRoom(int hotelID, string hotelRoomNumber);
         IServiceResult DeleteRoom(int hotelID, int roomID);
     }

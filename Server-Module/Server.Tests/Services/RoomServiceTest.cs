@@ -58,7 +58,7 @@ namespace Server.Tests.Services
             IServiceResult result = _roomService.AddRoom(hotelID, hotelRoomNumber);
 
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-            Assert.Equal(roomID, ((RoomID)result.Result).roomID);
+            Assert.Equal(roomID, ((RoomIDView)result.Result).RoomID);
         }
         [Fact]
         public void DeleteRoom_200()

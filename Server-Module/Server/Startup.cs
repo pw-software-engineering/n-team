@@ -50,7 +50,7 @@ namespace Server
 
             services.AddScoped<IDatabaseTransaction, DatabaseTransaction>();
             services.AddTransient<IOfferService, OfferService>();
-            services.AddTransient<IClientService, ClientService>();
+            services.AddTransient<IClientAccountService, ClientService>();
             services.AddTransient<IOfferDataAccess, OfferDataAccess>();
             services.AddTransient<IClientDataAccess, ClientDataAccess>();
             services.AddTransient<IRoomDataAccess, RoomDataAccess>();
