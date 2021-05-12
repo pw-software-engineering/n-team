@@ -13,6 +13,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Server.Authentication.Client;
 using Server.Database.DatabaseTransaction;
+using Server.RequestModels;
 
 namespace Server.Services.ClientService
 {
@@ -28,22 +29,22 @@ namespace Server.Services.ClientService
             _transaction = transaction;
         }
 
-        public IServiceResult UpdateClientInfo(int clientID, string username, string email)
+        public IServiceResult UpdateClientInfo(int clientID, EditClientInfo editClientInfo)
         {
-            bool usernameEmpty = string.IsNullOrWhiteSpace(username);
+            bool usernameEmpty = string.IsNullOrWhiteSpace(editClientInfo.Username);
             Regex usernameRegex = new Regex(@"^[a-zA-Z][a-zA-Z0-9]{5,60}$");
-            bool emailEmpty = string.IsNullOrWhiteSpace(email);
+            bool emailEmpty = string.IsNullOrWhiteSpace(editClientInfo.Email);
             Regex emailRegex = new Regex(@"^[a-zA-Z]([a-zA-Z0-9]|[\.\-_]){0,100}\@[a-z]{1,40}\.[a-z]{1,40}$");
 
             if (usernameEmpty && emailEmpty)
                 return new ServiceResult(HttpStatusCode.BadRequest, new Error("Username and e-mail are null"));
-            else if (!usernameEmpty && !usernameRegex.IsMatch(username))
+            else if (!usernameEmpty && !usernameRegex.IsMatch(editClientInfo.Username))
                 return new ServiceResult(HttpStatusCode.BadRequest, new Error("Invalid (or too short/long) username"));
-            else if (!emailEmpty && !emailRegex.IsMatch(email))
+            else if (!emailEmpty && !emailRegex.IsMatch(editClientInfo.Email))
                 return new ServiceResult(HttpStatusCode.BadRequest, new Error("Invalid (or too short/long) e-mail"));
 
             _transaction.BeginTransaction();
-            _dataAccess.UpdateClientInfo(clientID, username, email);
+            _dataAccess.UpdateClientInfo(clientID, editClientInfo);
             _transaction.CommitTransaction();
 
             return new ServiceResult(HttpStatusCode.OK);

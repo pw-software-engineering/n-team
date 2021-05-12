@@ -10,12 +10,12 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
-namespace Server.Authentication
+namespace Server.Authentication.Hotel
 {
     public class HotelTokenScheme
         : AuthenticationHandler<HotelTokenSchemeOptions>
     {
-        private IHotelTokenDataAccess hotelTokenDataAcess;
+        private IHotelTokenDataAccess _hotelTokenDataAcess;
         private HotelTokenSchemeOptions _options;
         public HotelTokenScheme(IHotelTokenDataAccess hotelTokenDataAcess,
             IOptionsMonitor<HotelTokenSchemeOptions> options,
@@ -24,7 +24,7 @@ namespace Server.Authentication
             ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
-            this.hotelTokenDataAcess = hotelTokenDataAcess;
+            _hotelTokenDataAcess = hotelTokenDataAcess;
            // this.hotellTokenDataAcess = hotellTokenDataAcess;
             _options = options.CurrentValue;
         }
@@ -41,12 +41,12 @@ namespace Server.Authentication
                 //return Task.FromResult(AuthenticateResult.Fail(e));
             }
 
-            int? hotelId = hotelTokenDataAcess.GetHotelIdFromToken(hotelToken);
+            int? hotelId = _hotelTokenDataAcess.GetHotelIdFromToken(hotelToken);
             if ( !hotelId.HasValue )
             {
                 return Task.FromResult(AuthenticateResult.NoResult());
             }
-            var claims = new[] { new Claim("hotelId", hotelId.Value.ToString()) };
+            var claims = new[] { new Claim(HotelTokenManagerOptions.HotelIdClaimName, hotelId.Value.ToString()) };
             var identity = new ClaimsIdentity(claims, HotelTokenDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, HotelTokenDefaults.AuthenticationScheme);
@@ -80,7 +80,7 @@ namespace Server.Authentication
 
     public static class HotelTokenDefaults
     {
-        public static string AuthenticationScheme { get; } = "HotelTokenScheme";
+        public const string AuthenticationScheme = "HotelTokenScheme";
         public const string TokenHeaderName = "x-hotel-token";
     }
 }

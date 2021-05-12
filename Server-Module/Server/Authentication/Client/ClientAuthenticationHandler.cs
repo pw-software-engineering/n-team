@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
+using Server.Authentication.Hotel;
 using Server.Database;
 using Server.Database.DataAccess;
 using Server.Services.Result;
@@ -27,11 +28,6 @@ namespace Server.Authentication.Client
     {
         private IClientTokenManager _tokenManager;
         private ClientTokenSchemeOptions _options;
-
-        public string Error
-        {
-            get => _errorString;
-        }
 
         private string _errorString = null;
         public ClientTokenScheme(
@@ -66,7 +62,7 @@ namespace Server.Authentication.Client
             }
             var ticket = new AuthenticationTicket(
                 _tokenManager.CreatePrincipal(clientToken),
-                HotelTokenDefaults.AuthenticationScheme
+                ClientTokenDefaults.AuthenticationScheme
             );
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }

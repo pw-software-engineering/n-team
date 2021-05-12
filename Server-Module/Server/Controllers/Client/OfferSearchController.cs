@@ -28,12 +28,11 @@ namespace Server.Controllers.Client
         [HttpGet("hotels/{hotelID:int}/offers")]
         public IActionResult GetHotelOffers([FromRoute] int hotelID, [FromQuery] Paging paging, [FromQuery] OfferFilter offerFilter)
         {
-            //Console.WriteLine($"hotelID: {hotelID}\nPaging: {paging.pageNumber} | {paging.pageSize}\nOffer Filter: {offerFilter.FromTime?.ToString()} -> {offerFilter.ToTime?.ToString()} : {offerFilter.CostMin} | {offerFilter.CostMax} | {offerFilter.MinGuests}");
             return _offerSearchService.GetHotelOffers(hotelID, paging, offerFilter);
         }
 
         [HttpGet("hotels/{hotelID:int}/offers/{offerID:int}")]
-        public IActionResult GetHotelOfferDetails(int hotelID, int offerID)
+        public IActionResult GetHotelOfferDetails([FromRoute] int hotelID, [FromRoute] int offerID)
         {
             return _offerSearchService.GetHotelOfferDetails(hotelID, offerID);
         }
