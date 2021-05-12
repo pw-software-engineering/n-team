@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Server.RequestModels;
 
 namespace Server.Controllers.Client
 {
@@ -41,9 +42,9 @@ namespace Server.Controllers.Client
         }
         
         [HttpPatch("client")]
-        public IActionResult PatchClientInfo(string username, string email)
+        public IActionResult PatchClientInfo([FromBody] EditClientInfo clientInfo)
         {
-            return service.UpdateClientInfo(_clientID, username, email);
+            return service.UpdateClientInfo(_clientID, clientInfo.Username, clientInfo.Email);
         }
     }
 }

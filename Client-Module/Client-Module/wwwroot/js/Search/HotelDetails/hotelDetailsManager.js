@@ -16,11 +16,11 @@
                 return data;
             },
             (jqXHR, textStatus, errorThrown) => {
-                var errorDesc = "";
-                if ("error" in jqXHR.responseJSON) {
-                    errorDesc = ` - ${jqXHR.responseJSON.error}`;
+                var errorInfo = `Error has occured - ${textStatus} (status code: ${jqXHR.status})`;
+                if (jqXHR.responseJSON && "error" in jqXHR.responseJSON) {
+                    errorInfo += `: ${jqXHR.responseJSON.error}`;
                 }
-                throw new Error(`Request failed. Reason: ${textStatus}${errorDesc}`);
+                throw new Error(errorInfo);
             }
         );
     }

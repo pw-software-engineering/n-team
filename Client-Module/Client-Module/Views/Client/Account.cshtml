@@ -161,6 +161,10 @@
                 return;
             }
             isPendingUpdateRequest = true;
+            console.log({
+                username: clientUsernameValidator.GetInputHandle().val(),
+                email: clientEmailValidator.GetInputHandle().val()
+            });
             $.ajax({
                 method: "PATCH",
                 url: "@ServerApiConfig.BaseUrl/client",
