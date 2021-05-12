@@ -1,4 +1,5 @@
-﻿@using Client_Module.ViewsTagID.Search; 
+﻿@using Client_Module.ViewsTagID.Search;
+@model Client_Module.Models.HotelOfferSearchModel
 @{
     ViewData["Title"] = "Search Offers";
     HotelOffersTagID tagIDs = new HotelOffersTagID();
@@ -13,17 +14,17 @@
         <div class="form-inline d-inline-block col-md-6 my-1">
             <div class="input-group m-0 flex-wrap-nowrap">
                 <div class="input-group-prepend">
-                    <div class="input-group-text bg-light">From :</div>
+                    <div class="input-group-text bg-light font-weight-500">From :</div>
                 </div>
-                <input type="date" class="form-control w-100" placeholder="Hotel name">
+                <input type="date" class="form-control w-100" id="@tagIDs.FilterFromTimeInputID" value="@DateTime.Now.ToString("yyyy-MM-dd")">
             </div>
         </div>
         <div class="form-inline d-inline-block col-md-6 my-1">
             <div class="input-group m-0 flex-wrap-nowrap">
                 <div class="input-group-prepend">
-                    <div class="input-group-text bg-light">To :</div>
+                    <div class="input-group-text bg-light font-weight-500">To :</div>
                 </div>
-                <input type="date" class="form-control w-100" placeholder="Hotel name">
+                <input type="date" class="form-control w-100" id="@tagIDs.FilterToTimeInputID" value="@DateTime.Now.ToString("yyyy-MM-dd")">
             </div>
         </div>
     </div>
@@ -31,30 +32,30 @@
         <div class="form-inline d-inline-block col-md-4 my-1">
             <div class="input-group m-0 flex-wrap-nowrap">
                 <div class="input-group-prepend">
-                    <div class="input-group-text bg-light">Min. cost :</div>
+                    <div class="input-group-text bg-light font-weight-500">Min. cost :</div>
                 </div>
-                <input type="number" class="form-control w-100" placeholder="">
+                <input type="number" class="form-control w-100" placeholder="" id="@tagIDs.FilterMinCostInputID">
             </div>
         </div>
         <div class="form-inline d-inline-block col-md-4 my-1">
             <div class="input-group m-0 flex-wrap-nowrap">
                 <div class="input-group-prepend">
-                    <div class="input-group-text bg-light">Max. cost :</div>
+                    <div class="input-group-text bg-light font-weight-500">Max. cost :</div>
                 </div>
-                <input type="number" class="form-control w-100" placeholder="">
+                <input type="number" class="form-control w-100" placeholder="" id="@tagIDs.FilterMaxCostInputID">
             </div>
         </div>
         <div class="form-inline d-inline-block col-md-4 my-1">
             <div class="input-group m-0 flex-wrap-nowrap">
                 <div class="input-group-prepend">
-                    <div class="input-group-text bg-light">Min. guests :</div>
+                    <div class="input-group-text bg-light font-weight-500">Min. guests :</div>
                 </div>
-                <input type="number" min="1" max="10" class="form-control w-100">
+                <input type="number" min="1" max="10" class="form-control w-100" id="@tagIDs.FilterMinGuestsInputID">
             </div>
         </div>
     </div>
     <div class="row w-100 m-0">
-        <button class="mx-auto my-1 btn btn-success">Apply filter</button>
+        <button class="mx-auto my-1 btn btn-success" id="@tagIDs.ApplyFilterBtn">Apply filter</button>
     </div>
 </div>
 
@@ -76,68 +77,7 @@
 </ul>
 <hr class="mt-3 mb-3" />
 <div class="card w-100 border-0 bg-website">
-    <ul class="list-group">
-
-
-        <li class="list-group-item rounded-0 m-1 mb-3 bg-light reservation-list-entry">
-            <div>
-                <p class="m-0 text-align-center"><i style="font-size: 22px">Example offer name</i></p>
-            </div>
-            <hr class="my-1 border-secondary" />
-
-            <small class="d-block text-secondary mt-1">(Offer ID: 42)</small>
-            @*justify-content: center to horizontally center flex items after they're wrapped*@
-            <div class="d-flex flex-row" style="flex-wrap: wrap; justify-content: center">
-                <div class="flex-grow-0 p-2">
-                    <div class="d-block rounded mx-auto" style="width: 260px; height: 200px; background-color: red"></div>
-                </div>
-                <div class="flex-grow-1 p-2">
-                    <p class="flex-grow-1 mb-2 mx-1" style="font-size: 19px"><b>Max. number of guests: </b><span class="mx-2">4</span></p>
-                    <b class="m-1" style="font-size: 19px">Cost per person:</b>
-                    <ul class="pl-4" style="list-style-type: none">
-                        <li>
-                            <i class="fas fa-user-tie mx-2"></i>
-                            <span class="m-0"><span style="color: gray">Adults:</span><span class="mx-3">125 zł</span></span>
-                        </li>
-                        <li>
-                            <i class="fas fa-child mx-2"></i>
-                            <span class="m-0"><span style="color: gray">Children:</span><span class="mx-3">67 zł</span></span>
-                        </li>
-                    </ul>
-                    <button class="w-100 my-2 btn btn-secondary mt-4">Find out more<i class="ml-2 fas fa-chevron-right"></i></button>
-                </div>
-            </div>
-        </li>
-
-        <li class="list-group-item rounded-0 m-1 mb-3 bg-light reservation-list-entry">
-            <div>
-                <p class="m-0 text-align-center"><i style="font-size: 22px">Example offer name</i></p>
-            </div>
-            <hr class="my-1 border-secondary" />
-
-            <small class="d-block text-secondary mt-1">(Offer ID: 42)</small>
-            @*justify-content: center to horizontally center flex items after they're wrapped*@
-            <div class="d-flex flex-row" style="flex-wrap: wrap; justify-content: center">
-                <div class="flex-grow-0 p-2">
-                    <div class="d-block rounded mx-auto" style="width: 260px; height: 200px; background-color: red"></div>
-                </div>
-                <div class="flex-grow-1 p-2">
-                    <p class="flex-grow-1 mb-2 mx-1" style="font-size: 19px"><b>Max. number of guests: </b><span class="mx-2">4</span></p>
-                    <b class="m-1" style="font-size: 19px">Cost per person:</b>
-                    <ul class="pl-4" style="list-style-type: none">
-                        <li>
-                            <i class="fas fa-user-tie mx-2"></i>
-                            <span class="m-0"><span style="color: gray">Adults:</span><span class="mx-3">125 zł</span></span>
-                        </li>
-                        <li>
-                            <i class="fas fa-child mx-2"></i>
-                            <span class="m-0"><span style="color: gray">Children:</span><span class="mx-3">67 zł</span></span>
-                        </li>
-                    </ul>
-                    <button class="w-100 my-2 btn btn-secondary mt-4">Find out more<i class="ml-2 fas fa-chevron-right"></i></button>
-                </div>
-            </div>
-        </li>
+    <ul class="list-group" id="@tagIDs.HotelOffersListID">
 
     </ul>
 
@@ -157,3 +97,211 @@
         </li>
     </ul>
 </div>
+
+@section Scripts {
+    <script src="~/js/Search/HotelOffers/hotelOfferEntry.js"></script>
+    <script src="~/js/Search/HotelOffers/hotelOffersManager.js"></script>
+    <script src="~/js/Shared/inputValidator.js"></script>
+    <script src="~/js/Shared/pager.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Setup API config and save hotelID from URL
+            var hotelID = @Model.HotelID;
+            var apiConfig = {
+                apiBaseUrl: "@ServerApiConfig.BaseUrl",
+                apiTokenCookieName: "@ClientTokenCookieDefaults.AuthCookieName",
+                apiTokenHeaderName: "@ServerApiConfig.TokenHeaderName"
+            }
+
+            // Create HotelOffersManager instance in order to fetch data from the server
+            var hotelOffersManager = new HotelOffersManager({
+                hotelID: hotelID,
+                apiConfig: apiConfig
+            });
+
+            // Create new PagerInstance with a calback that displays hotel offers
+            var pager = new Pager(DisplayHotelOffers);
+
+            // Add both top and bottom pager inputs as listeners
+            pager.addPageNumberInput($("#@tagIDs.BottomPagerInputID"));
+            pager.addPageNumberInput($("#@tagIDs.TopPagerInputID"));
+
+            // Setup "previous" and "next" top pager button behaviour and top pager input behaviour
+            $("#@tagIDs.BottomPagerNextBtnID").on("click", function () {
+                var pageInput = $("#@tagIDs.BottomPagerInputID");
+                pager.setPageNumber(Number(pageInput.val()) + 1);
+            });
+            $("#@tagIDs.BottomPagerPreviousBtnID").on("click", function () {
+                var pageInput = $("#@tagIDs.BottomPagerInputID");
+                pager.setPageNumber(Number(pageInput.val()) - 1);
+            });
+            $("#@tagIDs.BottomPagerInputID").on("change", function () {
+                pager.setPageNumber($(this).val());
+            });
+
+            // Setup "previous" and "next" bottom pager button behaviour and bottom pager input behaviour
+            $("#@tagIDs.TopPagerNextBtnID").on("click", function () {
+                var pageInput = $("#@tagIDs.TopPagerInputID");
+                pager.setPageNumber(Number(pageInput.val()) + 1);
+            });
+            $("#@tagIDs.TopPagerPreviousBtnID").on("click", function () {
+                var pageInput = $("#@tagIDs.TopPagerInputID");
+                pager.setPageNumber(Number(pageInput.val()) - 1);
+            });
+            $("#@tagIDs.TopPagerInputID").on("change", function () {
+                pager.setPageNumber($(this).val());
+            });
+
+            var fromTimeInput = $("#@tagIDs.FilterFromTimeInputID");
+            var toTimeInput = $("#@tagIDs.FilterToTimeInputID");
+
+            // Setup fromTime and toTime inputs behaviour:
+            // - cannot set date earlier than current date
+            // - an attempt to set a from date that's later than to date or to date that's earlier 
+            // than from date causest the opposite input to change it's value to the value of input 
+            // under consideration 
+            fromTimeInput.focusout(function () {
+                var input = $(this);
+                var inputData = input.val();
+                if (!inputData || new Date(inputData) < new Date("@DateTime.Now.ToString("yyyy-MM-dd")")) {
+                    //input.val(new Date().toISOString().split('T')[0]);
+                    input.val("@DateTime.Now.ToString("yyyy-MM-dd")");
+                    return;
+                }
+                if (new Date(inputData) > new Date(toTimeInput.val())) {
+                    toTimeInput.val(inputData);
+                }
+                console.log(inputData);
+            });
+            toTimeInput.focusout(function () {
+                var input = $(this);
+                var inputData = input.val();
+                if (!inputData || new Date(inputData) < new Date("@DateTime.Now.ToString("yyyy-MM-dd")")) {
+                    //input.val(new Date().toISOString().split('T')[0]);
+                    input.val("@DateTime.Now.ToString("yyyy-MM-dd")");
+                    return;
+                }
+                if (new Date(inputData) < new Date(fromTimeInput.val())) {
+                    fromTimeInput.val(inputData);
+                }
+                console.log(inputData);
+            });
+
+            var minCostInput = $("#@tagIDs.FilterMinCostInputID");
+            var maxCostInput = $("#@tagIDs.FilterMaxCostInputID");
+
+            // Setup minCost and maxCost inputs behaviour:
+            // - cannot input a negative number; inputting a negative number causes input's value to be set to 0
+            // - an attempt to set minCost greater than maxCost ot maxCost lesser than minCost causes the opposite
+            // input to change it's value to the value of input under consideration
+            minCostInput.focusout(function () {
+                var inputData = $(this).val();
+                if (!inputData) {
+                    return;
+                }
+                if (Number(inputData) < 0) {
+                    inputData = 0;
+                    $(this).val(0);
+                }
+                var maxInputData = maxCostInput.val();
+                if (maxInputData && Number(inputData) > Number(maxInputData)) {
+                    maxCostInput.val(inputData);
+                }
+            });
+            maxCostInput.focusout(function () {
+                var inputData = $(this).val();
+                if (!inputData) {
+                    return;
+                }
+                if (Number(inputData) < 0) {
+                    inputData = 0;
+                    $(this).val(0);
+                }
+                var minInputData = minCostInput.val();
+                if (minInputData && Number(inputData) < Number(minInputData)) {
+                    minCostInput.val(inputData);
+                }
+            });
+
+            // Setup minGuests input behaviour:
+            // - cannot input a negative number; inputting a negative number causes input's value to be set to 0
+            $("#@tagIDs.FilterMinGuestsInputID").focusout(function () {
+                var inputData = $(this).val();
+                if (!inputData) {
+                    return;
+                }
+                if (Number(inputData) < 0) {
+                    $(this).val(0);
+                }
+            });
+
+            // Display hotel offers with set filter values and paging when "Apply Filter" is clicked
+            $("#@tagIDs.ApplyFilterBtn").on('click', DisplayHotelOffers);
+
+            var hotelOffersList = $("#@tagIDs.HotelOffersListID");
+            async function DisplayHotelOffers() {
+                hotelOffersList.empty();
+                //Show a loading box while AJAX is fetching hotel offers info
+                var loadingBox = $("<li>")
+                    .attr("class", "list-group-item rounded-0 m-1 mb-3 bg-light reservation-list-entry")
+                    .append(
+                        $("<img>")
+                            .attr("class", "d-block mx-auto mt-2")
+                            .attr("style", "width: 75px").attr("src", "/resources/loading.gif"),
+                        $("<p>")
+                            .attr("class", "text-center h5 mt-2")
+                            .text("Loading hotel offer page...")
+                );
+                hotelOffersList.append(loadingBox);
+                try {
+                    //Setup filter object using filter inputs and Pager instance
+                    var filter = {
+                        from: $("#@tagIDs.FilterFromTimeInputID").val(),
+                        to: $("#@tagIDs.FilterToTimeInputID").val(),
+                        minCost: $("#@tagIDs.FilterMinCostInputID").val(),
+                        maxCost: $("#@tagIDs.FilterMaxCostInputID").val(),
+                        minGuests: $("#@tagIDs.FilterMinGuestsInputID").val(),
+                        pageNumber: pager.getPageNumber(),
+                        pageSize: pager.getPageSize()
+                    };
+                    console.log(filter);
+                    var data = await hotelOffersManager.getHotelOffers(filter);
+                } catch (error) {
+                    // Display server error when something went wrong with the request
+                    loadingBox.empty();
+                    loadingBox.append(
+                        $("<p>")
+                            .attr("class", "text-center text-danger h3")
+                            .text("Could not fetch data from the server"),
+                        $("<p>")
+                            .attr("class", "text-center text-danger h5")
+                            .text(error.message)
+                    );
+                    return;
+                }
+                if (data.length === 0) {
+                    // If server doesn't return any hotel offer previews then display information
+                    // that this page does not contain any information
+                    loadingBox.empty();
+                    loadingBox.append(
+                        $("<p>")
+                            .attr("class", "h4 my-4 text-secondary text-center")
+                            .text("There are no offers on this page")
+                    );
+                    return;
+                }
+                hotelOffersList.empty();
+                // Create new HotelOfferEntry instances, generate and display hotel offer preview components
+                for (var i = 0; i < data.length; i++) {
+                    var hotelOfferEntry = new HotelOfferEntry({
+                        hotelOfferData: data[i]
+                    });
+                    hotelOffersList.append(hotelOfferEntry.component);
+                }
+            }
+
+            // Initialize UI by setting page number to 1 and, by extension, call DisplayHotelOffers
+            pager.setPageNumber(1);
+        });
+    </script>
+}

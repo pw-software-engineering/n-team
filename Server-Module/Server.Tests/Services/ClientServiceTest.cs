@@ -154,11 +154,28 @@ namespace Server.Tests.Services
 
         #region Login
         [Fact]
-        public void Login_MissingOrEmptyUsernameOrPasswordProperties_400()
+        public void Login_ClientCredentialsArgumentNull_ThrowsArgumentNullException()
         {
-            IServiceResult resultNull = _clientService.Login(null, null);
-            IServiceResult resultEmpty = _clientService.Login(string.Empty, string.Empty);
-            IServiceResult resultPartial = _clientService.Login("ValidUsername", string.Empty);
+            Assert.Throws<ArgumentNullException>(() => _clientService.Login(null));
+        }
+        [Fact]
+        public void Login_MissingOrEmptyClientLoginOrPasswordProperties_400()
+        {
+            ClientCredentials nullCredentials = new ClientCredentials();
+            ClientCredentials emptyStringCredentials = new ClientCredentials()
+            {
+                Login = string.Empty,
+                Password = string.Empty
+            };
+            ClientCredentials onlyPasswordEmptyStringCredentials = new ClientCredentials()
+            {
+                Login = "ValidLogin",
+                Password = string.Empty
+            };
+
+            IServiceResult resultNull = _clientService.Login(nullCredentials);
+            IServiceResult resultEmpty = _clientService.Login(emptyStringCredentials);
+            IServiceResult resultPartial = _clientService.Login(onlyPasswordEmptyStringCredentials);
 
             Assert.Equal(HttpStatusCode.BadRequest, resultNull.StatusCode);
             Assert.Equal(HttpStatusCode.BadRequest, resultEmpty.StatusCode);
@@ -166,31 +183,38 @@ namespace Server.Tests.Services
         }
 
         [Fact]
-        public void Login_UsernameAndPasswordDoNotExistOrIncorrect_401()
+        public void Login_ClientLoginAndPasswordDoNotExistOrIncorrect_401()
         {
-            string username = "NonexistentUsername#@!";
-            string password = "password123#@!";
-            _dataAccessMock.Setup(da => da.GetRegisteredClientID(username, password)).Returns((int?)null);
+            ClientCredentials clientCredentials = new ClientCredentials()
+            {
+                Login = "NonexistentLogin#@!",
+                Password = "password123#@!"
+            };
+            _dataAccessMock.Setup(da => da.GetRegisteredClientID(clientCredentials.Login, clientCredentials.Password)).Returns((int?)null);
 
-            IServiceResult result = _clientService.Login(username, password);
+            IServiceResult result = _clientService.Login(clientCredentials);
 
             Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
-            _dataAccessMock.Verify(da => da.GetRegisteredClientID(username, password), Times.Once);
+            _dataAccessMock.Verify(da => da.GetRegisteredClientID(clientCredentials.Login, clientCredentials.Password), Times.Once);
         }
 
         [Fact]
-        public void Login_UsernameAndPasswordValid_200_ClientToken()
+        public void Login_ClientLoginAndPasswordValid_200_ClientToken()
         {
-            string username = "ValidUsername";
-            string password = "ValidPassword";
+            ClientCredentials clientCredentials = new ClientCredentials()
+            {
+                Login = "ValidLogin",
+                Password = "ValidPassword"
+            };
             int clientID = 1;
-            _dataAccessMock.Setup(da => da.GetRegisteredClientID(username, password)).Returns(clientID);
+            _dataAccessMock.Setup(da => da.GetRegisteredClientID(clientCredentials.Login, clientCredentials.Password)).Returns(clientID);
 
-            IServiceResult result = _clientService.Login(username, password);
+            IServiceResult result = _clientService.Login(clientCredentials);
             ClientToken clientToken = (ClientToken)result.Result;
+
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.Equal(clientID, clientToken.ID);
-            _dataAccessMock.Verify(da => da.GetRegisteredClientID(username, password), Times.Once);
+            _dataAccessMock.Verify(da => da.GetRegisteredClientID(clientCredentials.Login, clientCredentials.Password), Times.Once);
         }
         #endregion
     }

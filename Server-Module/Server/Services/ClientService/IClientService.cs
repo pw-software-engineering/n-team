@@ -1,5 +1,6 @@
 ﻿using Server.Database.Models;
 using Server.Models;
+using Server.RequestModels;
 using Server.Services.Result;
 using Server.ViewModels;
 using System;
@@ -17,7 +18,7 @@ namespace Server.Services.ClientService
         #endregion
 
         #region /client/login
-        public IServiceResult Login(string username, string password);
+        public IServiceResult Login(ClientCredentials clientCredentials);
         #endregion
     }
 }

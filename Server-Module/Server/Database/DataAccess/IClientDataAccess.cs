@@ -17,7 +17,7 @@ namespace Server.Database.DataAccess
 		#endregion
 
 		#region /client/login
-		public int? GetRegisteredClientID(string username, string password);
+		public int? GetRegisteredClientID(string login, string password);
         #endregion
     }
 }

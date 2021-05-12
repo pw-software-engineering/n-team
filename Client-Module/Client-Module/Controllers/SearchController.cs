@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Client_Module.Controllers
 {
-    [Authorize(AuthenticationSchemes = ClientTokenCookieDefaults.AuthenticationScheme)]
+    [Authorize]
     public class SearchController : Controller
     {
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -39,9 +39,13 @@ namespace Client_Module.Controllers
         }
 
         [HttpGet("/hotels/{hotelID}/offers")]
-        public IActionResult HotelOffers(int hotelID, HotelOffersModel hotelOffersModel)
+        public IActionResult HotelOffers(int hotelID)
         {
-            return View();
+            HotelOfferSearchModel model = new HotelOfferSearchModel()
+            {
+                HotelID = hotelID
+            };
+            return View(model);
         }
 
         [HttpGet("/hotels/{hotelID}/offers/{offerID}")]

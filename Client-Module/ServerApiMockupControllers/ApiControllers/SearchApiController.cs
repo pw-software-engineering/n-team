@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -10,13 +11,13 @@ using System.Threading;
 
 namespace ServerApiMockup.MockupApiControllers
 {
-    [Route("api-client/hotels")]
+    [Route("api-client")]
     [ApiController]
     public class SearchApiController : ControllerBase
     {
         public SearchApiController() { }
 
-        [HttpGet("")]
+        [HttpGet("hotels")]
         public IActionResult GetHotels(string hotelName = null, string country = null, string city = null, int pageNumber = 1, int pageSize = 10)
         {
             byte[] imgRaw = System.IO.File.ReadAllBytes($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Resources/picture.png");
@@ -54,7 +55,7 @@ namespace ServerApiMockup.MockupApiControllers
                 });
         }
 
-        [HttpGet("{hotelID}")]
+        [HttpGet("hotels/{hotelID}")]
         public IActionResult GetHotelDetails(int hotelID)
         {
             //Thread.Sleep(3000);
@@ -82,7 +83,88 @@ namespace ServerApiMockup.MockupApiControllers
                     IgnoreNullValues = true
                 });
         }
+
+        [HttpGet("hotels/{hotelID}/offers")]
+        public IActionResult GetHotelOffers([FromRoute] int hotelID, [FromQuery] OfferFilter offerFilter, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        {
+            Console.WriteLine("GET HOTEL OFFERS");
+            if(pageNumber > 2)
+            {
+                return new JsonResult(new List<OfferPreviewInfo>());
+            }
+            List<OfferPreviewInfo> offers = new List<OfferPreviewInfo>();
+            byte[] imgRawRoom = System.IO.File.ReadAllBytes($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Resources/picture.png");
+            string imgBase64Room = "data:image/png;base64," + Convert.ToBase64String(imgRawRoom);
+            OfferPreviewInfo previewInfo = new OfferPreviewInfo()
+            {
+                OfferID = 1,
+                CostPerAdult = 10.4,
+                CostPerChild = 8.5,
+                MaxGuests = 10,
+                OfferTitle = "Best Offer",
+                OfferPreviewPicture = imgBase64Room
+            };
+            for(int i = 0; i < 3; i++)
+            {
+                OfferPreviewInfo offerPreview = previewInfo.Clone();
+                offerPreview.OfferID = i + 1;
+                offerPreview.CostPerAdult = previewInfo.CostPerAdult * (i + 1);
+                offerPreview.CostPerChild = previewInfo.CostPerChild * (i + 1);
+                offerPreview.OfferTitle += (i + 1).ToString();
+                offers.Add(offerPreview);
+            }
+            return new JsonResult(
+                offers,
+                new JsonSerializerOptions()
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    IgnoreNullValues = true
+                });
+        }
     }
+    public class OfferFilter
+    {
+        [FromQuery]
+        [Required]
+        public DateTime? FromTime { get; set; }
+
+        [FromQuery]
+        [Required]
+        public DateTime? ToTime { get; set; }
+
+        [FromQuery]
+        public int? MinGuests { get; set; }
+
+        [FromQuery]
+        public int? CostMin { get; set; }
+
+        [FromQuery]
+        public int? CostMax { get; set; }
+    }
+
+    class OfferPreviewInfo
+    {
+        public int OfferID { get; set; }
+        public string OfferTitle { get; set; }
+        public int MaxGuests { get; set; }
+        public double CostPerChild { get; set; }
+        public double CostPerAdult { get; set; }
+        public string OfferPreviewPicture { get; set; }
+
+        public OfferPreviewInfo Clone()
+        {
+            return new OfferPreviewInfo()
+            {
+                OfferID = OfferID,
+                OfferTitle = OfferTitle,
+                MaxGuests = MaxGuests,
+                CostPerChild = CostPerChild,
+                CostPerAdult = CostPerAdult,
+                OfferPreviewPicture = OfferPreviewPicture
+            };
+        }
+    }
+
 
     class HotelPreviewInfo
     {

@@ -18,9 +18,9 @@ namespace Server.Database.DataAccess
             _dbContext = dbContext;
         }
 
-        public int? GetRegisteredClientID(string username, string password)
+        public int? GetRegisteredClientID(string login, string password)
         {
-            return _dbContext.Clients.FirstOrDefault(client => client.Username == username && client.Password == password)?.ClientID;
+            return _dbContext.Clients.FirstOrDefault(client => client.Email == login && client.Password == password)?.ClientID;
         }
 
         public ClientInfoView GetClientInfo(int clientID)

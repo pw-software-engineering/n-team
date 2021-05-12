@@ -40,7 +40,7 @@ namespace ServerApiMockup.MockupApiControllers
             //Console.WriteLine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             byte[] imgRaw = System.IO.File.ReadAllBytes($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Resources/picture.png");
             string imgBase64 = "data:image/png;base64," + Convert.ToBase64String(imgRaw);
-            reservationData.OfferInfoPreview = new OfferInfoPreview()
+            reservationData.OfferInfoPreview = new ReservationOfferInfoPreview()
             {
                 OfferID = 2,
                 OfferTitle = "Best offer",
@@ -129,7 +129,7 @@ namespace ServerApiMockup.MockupApiControllers
     {
         public HotelInfoPreview HotelInfoPreview { get; set; }
         public ReservationInfo ReservationInfo { get; set; }
-        public OfferInfoPreview OfferInfoPreview { get; set; }
+        public ReservationOfferInfoPreview OfferInfoPreview { get; set; }
 
         public ReservationData Clone()
         {
@@ -184,15 +184,15 @@ namespace ServerApiMockup.MockupApiControllers
         }
     }
 
-    public class OfferInfoPreview
+    public class ReservationOfferInfoPreview
     {
         public int OfferID { get; set; }
         public string OfferTitle { get; set; }
         public string OfferPreviewPicture { get; set; }
 
-        public OfferInfoPreview Clone()
+        public ReservationOfferInfoPreview Clone()
         {
-            return new OfferInfoPreview()
+            return new ReservationOfferInfoPreview()
             {
                 OfferID = OfferID,
                 OfferTitle = OfferTitle,

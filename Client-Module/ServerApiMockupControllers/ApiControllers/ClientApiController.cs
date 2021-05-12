@@ -40,7 +40,7 @@ namespace ServerApiMockup.MockupApiControllers
             {
                 sr.Dispose();
             }
-            //Console.WriteLine($"Login: {secrets.Login} ({secrets.Login == null})\nPassword: {secrets.Password} ({secrets.Password == null})");
+            Console.WriteLine($"Login: {secrets.Login} ({secrets.Login == null})\nPassword: {secrets.Password} ({secrets.Password == null})");
             if (secrets.Login != "TestUser" || secrets.Password != "password123")
             {
                 return Unauthorized(new { error = "Provided credentials are incorrect" });
