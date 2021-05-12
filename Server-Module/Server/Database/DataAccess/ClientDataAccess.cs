@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Server.Database.Models;
+using Server.RequestModels;
 using Server.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -28,11 +29,11 @@ namespace Server.Database.DataAccess
             return _mapper.Map<ClientInfoView>(_dbContext.Clients.Find(clientID));
         }
 
-        public void UpdateClientInfo(int clientID, string username, string email)
+        public void UpdateClientInfo(int clientID, EditClientInfo editClientInfo)
         {
             var client = _dbContext.Clients.Find(clientID);
-            client.Username = string.IsNullOrWhiteSpace(username) ? client.Username : username;
-            client.Email = string.IsNullOrWhiteSpace(email) ? client.Email : email;
+            client.Username = string.IsNullOrWhiteSpace(editClientInfo.Username) ? client.Username : editClientInfo.Username;
+            client.Email = string.IsNullOrWhiteSpace(editClientInfo.Email) ? client.Email : editClientInfo.Email;
             _dbContext.SaveChanges();
         }
     }

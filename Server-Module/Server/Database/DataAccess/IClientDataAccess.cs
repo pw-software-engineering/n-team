@@ -1,4 +1,5 @@
-﻿using Server.ViewModels;
+﻿using Server.RequestModels;
+using Server.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Server.Database.DataAccess
         #endregion
 
         #region /client PATCH
-        public void UpdateClientInfo(int clientID, string username, string email);
+        public void UpdateClientInfo(int clientID, EditClientInfo editClientInfo);
 		#endregion
 
 		#region /client/login

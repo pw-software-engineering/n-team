@@ -26,12 +26,11 @@ namespace Server.Controllers.Client
         [HttpGet("hotels")]
         public IActionResult GetHotels([FromQuery] Paging paging, [FromQuery] HotelFilter hotelFilter)
         {
-            //Console.WriteLine($"{paging.pageNumber} | {paging.pageSize} [|] {hotelFilter.City} | {hotelFilter.Country} | {hotelFilter.HotelName}");
             return _hotelSearchService.GetHotels(paging, hotelFilter);
         }
 
         [HttpGet("hotels/{hotelID:int}")]
-        public IActionResult GetHotelDetails(int hotelID)
+        public IActionResult GetHotelDetails([FromRoute] int hotelID)
         {
             return _hotelSearchService.GetHotelDetails(hotelID);
         }

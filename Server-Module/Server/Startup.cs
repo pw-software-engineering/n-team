@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
-using Server.Authentication;
+using Server.Authentication.Hotel;
 using Server.Authentication.Client;
 using Server.Database;
 using Server.Database.DataAccess;

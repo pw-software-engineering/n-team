@@ -19,7 +19,7 @@ namespace Server.Controllers.Client
     [Route("/api-client")]
     public class ClientAccountController : Controller
     {
-        private readonly IClientService service;
+        private readonly IClientService _service;
         private int _clientID;
         public override void OnActionExecuting(ActionExecutingContext context)
         {
@@ -31,20 +31,19 @@ namespace Server.Controllers.Client
         }
         public ClientAccountController(IClientService service)
         {
-            this.service = service;
-            
+            _service = service;    
         }
         
         [HttpGet("client")]
         public IActionResult GetClientInfo()
         {
-            return service.GetClientInfo(_clientID);
+            return _service.GetClientInfo(_clientID);
         }
         
         [HttpPatch("client")]
-        public IActionResult PatchClientInfo([FromBody] EditClientInfo clientInfo)
+        public IActionResult PatchClientInfo([FromBody] EditClientInfo editClientInfo)
         {
-            return service.UpdateClientInfo(_clientID, clientInfo.Username, clientInfo.Email);
+            return _service.UpdateClientInfo(_clientID, editClientInfo);
         }
     }
 }
