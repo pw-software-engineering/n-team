@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Server.AutoMapper;
 using Server.Database;
 using Server.Database.DataAccess;
+using Server.Database.DataAccess.Hotel;
 using Server.Database.Models;
 using System;
 using System.Collections.Generic;
@@ -33,12 +34,12 @@ namespace Server.Tests.Database
             _context = new ServerDbContext(builder.Options);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
-            if (!_context.HotelInfos.Any())
+            if (!_context.Hotels.Any())
                 Seed();
 
             var config = new MapperConfiguration(opts =>
             {
-                opts.AddProfile(new ClientAutoMapperProfile());
+                opts.AddProfile(new HotelAutoMapperProfile());
             });
             _mapper = config.CreateMapper();
 
@@ -55,7 +56,7 @@ namespace Server.Tests.Database
             using (var transaction = _context.Database.BeginTransaction())
             {
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos ON");
-                _context.HotelInfos.AddRange(
+                _context.Hotels.AddRange(
                     new HotelDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
                     new HotelDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
                     new HotelDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });

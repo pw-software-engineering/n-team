@@ -4,9 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Server.AutoMapper;
 using Server.Database;
 using Server.Database.DataAccess;
+using Server.Database.DataAccess.Hotel;
 using Server.Database.Models;
-using Server.Models;
 using Server.RequestModels;
+using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,7 @@ namespace Server.Tests.Database
 
             var config = new MapperConfiguration(opts =>
             {
-                opts.AddProfile(new ClientAutoMapperProfile());
+                opts.AddProfile(new HotelAutoMapperProfile());
             });
             _mapper = config.CreateMapper();
 
@@ -47,7 +48,7 @@ namespace Server.Tests.Database
             using (var transaction = _context.Database.BeginTransaction())
             {
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos ON");
-                _context.HotelInfos.AddRange(
+                _context.Hotels.AddRange(
                     new HotelDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
                     new HotelDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
                     new HotelDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
@@ -128,7 +129,8 @@ namespace Server.Tests.Database
                 new HotelRoomView{ RoomID = 2}
             };
 
-            _dataAccess.GetOffersForRooms(hotelRooms);
+            foreach(HotelRoomView room in hotelRooms)
+                room.OfferID = _dataAccess.GetOfferIDsForRoom(room.RoomID);
             List<int> offers = _context.OfferHotelRooms
                                 .Where(ohr => ohr.RoomID == hotelRooms[0].RoomID)
                                 .Select(ohr => ohr.OfferID)
@@ -148,7 +150,8 @@ namespace Server.Tests.Database
                  new HotelRoomView{ RoomID = 3},
             };
 
-            _dataAccess.GetOffersForRooms(hotelRooms);
+            foreach(HotelRoomView room in hotelRooms)
+                room.OfferID = _dataAccess.GetOfferIDsForRoom(room.RoomID);
 
             for (int i = 0; i < hotelRooms.Count; i++)
                 Assert.Equal(_context.OfferHotelRooms.Where(ohr => ohr.RoomID == hotelRooms[i].RoomID).Count(), hotelRooms[i].OfferID.Count);
@@ -159,7 +162,7 @@ namespace Server.Tests.Database
             int hotelID = 3;
             Paging paging = new Paging();
 
-            List<HotelRoomView> hotelRoomsTest = _dataAccess.GetRooms(paging, hotelID);
+            List<HotelRoomView> hotelRoomsTest = _dataAccess.GetRooms(hotelID, paging);
             List<HotelRoomDb> hotelRooms = _context.HotelRooms.Where(hr => hr.HotelID == hotelID).ToList();
 
             Assert.Equal(hotelRooms.Count, hotelRoomsTest.Count);
@@ -176,7 +179,7 @@ namespace Server.Tests.Database
             string roomNumber = "TestHotelRoomNumber3";
             Paging paging = new Paging();
 
-            List<HotelRoomView> hotelRoomsTest = _dataAccess.GetRooms(paging, hotelID, roomNumber);
+            List<HotelRoomView> hotelRoomsTest = _dataAccess.GetRooms(hotelID, paging, roomNumber);
             List<HotelRoomDb> hotelRooms = _context.HotelRooms.Where(hr => hr.HotelID == hotelID && hr.HotelRoomNumber == roomNumber).ToList();
 
             Assert.Equal(hotelRooms.Count, hotelRoomsTest.Count);
@@ -200,7 +203,7 @@ namespace Server.Tests.Database
         {
             int roomID = 2;
 
-            bool hasReservations = _dataAccess.DoesRoomHaveAnyUnfinishedReservations(roomID);
+            bool hasReservations = _dataAccess.CheckAnyUnfinishedReservations(roomID);
 
             Assert.True(hasReservations);
         }
@@ -209,7 +212,7 @@ namespace Server.Tests.Database
         {
             int roomID = 1;
 
-            bool hasReservations = _dataAccess.DoesRoomHaveAnyUnfinishedReservations(roomID);
+            bool hasReservations = _dataAccess.CheckAnyUnfinishedReservations(roomID);
 
             Assert.False(hasReservations);
         }

@@ -36,6 +36,8 @@ namespace Server.Services.Hotel
 
         public IServiceResult UpdateHotelInfo(int hotelId, HotelInfoUpdate hotelInfoUpdate)
         {
+            if (hotelInfoUpdate == null)
+                throw new ArgumentNullException("hotelInfoUpdate");
             _transaction.BeginTransaction();
             if (hotelInfoUpdate.HotelPictures != null)
             {

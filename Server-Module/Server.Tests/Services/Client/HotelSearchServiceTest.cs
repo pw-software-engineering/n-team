@@ -2,19 +2,21 @@
 using Moq;
 using Server.AutoMapper;
 using Server.Database.DataAccess;
+using Server.Database.DataAccess.Client;
 using Server.Database.DatabaseTransaction;
-using Server.Models;
 using Server.RequestModels;
-using Server.Services.HotelSearchService;
+using Server.RequestModels.Client;
+using Server.Services.Client;
 using Server.Services.Result;
 using Server.ViewModels;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using Xunit;
 
-namespace Server.Tests.Services
+namespace Server.Tests.Services.Client
 {
     public class HotelSearchServiceTest
     {
@@ -41,7 +43,7 @@ namespace Server.Tests.Services
         {
             Paging paging = new Paging(-1, 10);
 
-            IServiceResult serviceResult = _hotelSearchService.GetHotels(paging, new HotelFilter());
+            IServiceResult serviceResult = _hotelSearchService.GetHotels(new HotelFilter(), paging);
 
             Assert.Equal(HttpStatusCode.BadRequest, serviceResult.StatusCode);
             Assert.True(serviceResult.Result is ErrorView);
@@ -52,7 +54,7 @@ namespace Server.Tests.Services
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                IServiceResult serviceResult = _hotelSearchService.GetHotels(new Paging(), null);
+                IServiceResult serviceResult = _hotelSearchService.GetHotels(null, new Paging());
             });
         }
 
@@ -61,7 +63,7 @@ namespace Server.Tests.Services
         {
             Paging paging = new Paging();
             HotelFilter hotelFilter = new HotelFilter();
-            HotelPreview hotelPreview = new HotelPreview()
+            HotelPreviewView hotelPreview = new HotelPreviewView()
             {
                 HotelID = 1,
                 City = "TestCity",
@@ -69,18 +71,18 @@ namespace Server.Tests.Services
                 HotelName = "TestHotelName",
                 PreviewPicture = "TestPreviewPicture"
             };
-            _hotelSearchDataAccessMock.Setup(da => da.GetHotels(paging, hotelFilter)).Returns(new List<HotelPreview>()
+            _hotelSearchDataAccessMock.Setup(da => da.GetHotels(hotelFilter, paging)).Returns(new List<HotelPreviewView>()
             {
                 hotelPreview,
                 hotelPreview,
                 hotelPreview
             });
 
-            IServiceResult serviceResult = _hotelSearchService.GetHotels(paging, hotelFilter);
+            IServiceResult serviceResult = _hotelSearchService.GetHotels(hotelFilter, paging);
 
             Assert.Equal(HttpStatusCode.OK, serviceResult.StatusCode);
-            Assert.Equal(3, (serviceResult.Result as List<HotelSearchPreviewView>).Count);
-            foreach(HotelSearchPreviewView preview in serviceResult.Result as List<HotelSearchPreviewView>)
+            Assert.Equal(3, (serviceResult.Result as List<HotelPreviewView>).Count);
+            foreach(HotelPreviewView preview in serviceResult.Result as List<HotelPreviewView>)
             {
                 Assert.Equal(hotelPreview.HotelID, preview.HotelID);
                 Assert.Equal(hotelPreview.City, preview.City);
@@ -96,7 +98,7 @@ namespace Server.Tests.Services
         public void GetHotelDetails_NonExistentID_404()
         {
             int hotelID = -1;
-            _hotelSearchDataAccessMock.Setup(da => da.GetHotelDetails(hotelID)).Returns((Hotel)null);
+            _hotelSearchDataAccessMock.Setup(da => da.GetHotelDetails(hotelID)).Returns(null as HotelView);
 
             IServiceResult serviceResult = _hotelSearchService.GetHotelDetails(hotelID);
 
@@ -112,7 +114,7 @@ namespace Server.Tests.Services
                 "TestPicture1",
                 "TestPicture2"
             };
-            Hotel hotel = new Hotel()
+            HotelView hotel = new HotelView()
             {
                 Country = "TestCountry",
                 City = "TestCity",
@@ -124,7 +126,7 @@ namespace Server.Tests.Services
             _hotelSearchDataAccessMock.Setup(da => da.GetHotelPictures(hotelID)).Returns(hotelPictures);
 
             IServiceResult serviceResult = _hotelSearchService.GetHotelDetails(hotelID);
-            HotelSearchView hotelView = serviceResult.Result as HotelSearchView;
+            HotelView hotelView = serviceResult.Result as HotelView;
 
             Assert.Equal(HttpStatusCode.OK, serviceResult.StatusCode);
             Assert.Equal(hotel.Country, hotelView.Country);

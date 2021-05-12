@@ -29,7 +29,11 @@ namespace Server.AutoMapper
 
             #region Request -> Model -> Db
             CreateMap<ReservationInfo, Reservation>();
-            CreateMap<Reservation, ClientReservationDb>();
+            CreateMap<Reservation, ClientReservationDb>().AfterMap((r, cr) =>
+            {
+                cr.FromTime = r.From;
+                cr.ToTime = r.To;
+            });
             #endregion
         }
     }

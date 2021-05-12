@@ -86,7 +86,7 @@ namespace Server.Services.Client
 
             return new ServiceResult(
                 HttpStatusCode.OK,
-                _offerSearchDataAccess.GetHotelOffers(hotelID, paging, offerFilter));
+                _offerSearchDataAccess.GetHotelOffers(hotelID, offerFilter, paging));
         }
 
         public IServiceResult GetHotelOfferDetails(int hotelID, int offerID)

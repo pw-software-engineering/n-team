@@ -21,7 +21,7 @@ namespace Server.Database.DataAccess.Client
             _dbContext = dbContext;
         }
 
-        public List<OfferPreviewView> GetHotelOffers(int hotelID, Paging paging, OfferFilter offerFilter)
+        public List<OfferPreviewView> GetHotelOffers(int hotelID, OfferFilter offerFilter,  Paging paging)
         {
             if(paging == null)
             {

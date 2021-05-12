@@ -17,7 +17,7 @@ namespace Server.Database.Models
         //OfferInfo Properties
         public double CostPerChild { get; set; }
         public double CostPerAdult { get; set; }
-        public uint MaxGuests { get; set; }
+        public int MaxGuests { get; set; }
         public string Description { get; set; }
         //Navigational Properties
         public HotelDb Hotel { get; set; }

@@ -20,8 +20,11 @@ namespace Server.AutoMapper
             #endregion
 
             #region Db -> View
-            CreateMap<HotelDb, HotelInfoView>();
-            CreateMap<OfferHotelRoomDb, HotelRoomView>();
+            CreateMap<HotelDb, HotelInfoView>().AfterMap((h, hi) =>
+            {
+                hi.HotelDesc = h.HotelDescription;
+            });
+            CreateMap<HotelRoomDb, HotelRoomView>();
             CreateMap<OfferDb, OfferView>();
             CreateMap<OfferDb, OfferPreviewView>();
             #endregion

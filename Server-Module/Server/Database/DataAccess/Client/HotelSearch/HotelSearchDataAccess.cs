@@ -20,7 +20,7 @@ namespace Server.Database.DataAccess.Client
             _mapper = mapper;
             _dbContext = dbContext;
         }
-        public List<HotelPreviewView> GetHotels(Paging paging, HotelFilter hotelFilter)
+        public List<HotelPreviewView> GetHotels(HotelFilter hotelFilter, Paging paging)
         {
             IQueryable<HotelDb> ret = _dbContext.Hotels;
 

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Server.Database;
 using Server.Database.DataAccess;
+using Server.Database.DataAccess.Client;
 using Server.Database.Models;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace Server.Tests.Database
+namespace Server.Tests.Database.Client
 {
     public class ClientTokenDataAccessTest : IDisposable
     {
@@ -29,7 +30,7 @@ namespace Server.Tests.Database
             _context = new ServerDbContext(builder.Options);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
-            if (!_context.HotelInfos.Any())
+            if (!_context.Hotels.Any())
                 Seed();
 
             _tokenAccess = new ClientTokenDataAccess(_context);

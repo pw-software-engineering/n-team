@@ -4,17 +4,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Server.AutoMapper;
 using Server.Database;
 using Server.Database.DataAccess;
-using Server.Database.DataAccess.ReservationsManagement;
+using Server.Database.DataAccess.Client;
 using Server.Database.Models;
-using Server.Models;
 using Server.RequestModels;
+using Server.Services.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace Server.Tests.Database
+namespace Server.Tests.Database.Client
 {
     public class ReservationDataAccessTest : IDisposable
     {
@@ -32,7 +32,7 @@ namespace Server.Tests.Database
             _context = new ServerDbContext(builder.Options);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
-            if (!_context.HotelInfos.Any())
+            if (!_context.Hotels.Any())
                 Seed();
 
             var config = new MapperConfiguration(opts =>
@@ -48,7 +48,7 @@ namespace Server.Tests.Database
             using (var transaction = _context.Database.BeginTransaction())
             {
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos ON");
-                _context.HotelInfos.AddRange(
+                _context.Hotels.AddRange(
                     new HotelDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
                     new HotelDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
                     new HotelDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
@@ -178,30 +178,27 @@ namespace Server.Tests.Database
         {
             Reservation reservation = new Reservation()
             {
-                ClientID = null,
-                FromTime = DateTime.Now,
-                ToTime = DateTime.Now,
+                ClientID = 1,
+                From = DateTime.Now,
+                To = DateTime.Now,
                 HotelID = 2,
                 OfferID = 1,
                 RoomID = 1,
                 NumberOfAdults = 2,
-                NumberOfChildren = 2,
-                ReviewID = null
+                NumberOfChildren = 2
             };
-            int numberOfReservations = _context.ClientReservations.Count();
 
-            _dataAccess.AddReservation(reservation);
-            ClientReservationDb addedReservation = _context.ClientReservations.Find(numberOfReservations + 1);
+            int reservationID = _dataAccess.AddReservation(reservation);
+            ClientReservationDb addedReservation = _context.ClientReservations.Find(reservationID);
 
             Assert.Equal(reservation.ClientID, addedReservation.ClientID);
-            Assert.Equal(reservation.FromTime, addedReservation.FromTime);
-            Assert.Equal(reservation.ToTime, addedReservation.ToTime);
+            Assert.Equal(reservation.From, addedReservation.FromTime);
+            Assert.Equal(reservation.To, addedReservation.ToTime);
             Assert.Equal(reservation.HotelID, addedReservation.HotelID);
             Assert.Equal(reservation.OfferID, addedReservation.OfferID);
             Assert.Equal(reservation.RoomID, addedReservation.RoomID);
             Assert.Equal(reservation.NumberOfAdults, addedReservation.NumberOfAdults);
             Assert.Equal(reservation.NumberOfChildren, addedReservation.NumberOfChildren);
-            Assert.Equal(reservation.ReviewID, addedReservation.ReviewID);
         }
         [Fact]
         public void GetOfferRoomIDs_ReturnListOfOfferRoomIDs()
@@ -246,7 +243,7 @@ namespace Server.Tests.Database
         }
         public void Dispose()
         {
-            //_context.Database.EnsureDeleted();
+            _context.Database.EnsureDeleted();
         }
     }
 }

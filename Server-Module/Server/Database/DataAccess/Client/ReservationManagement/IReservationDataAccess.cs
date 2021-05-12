@@ -10,7 +10,7 @@ namespace Server.Database.DataAccess.Client
     {
         List<int> GetOfferRoomIDs(int offerID);
         bool IsRoomAvailable(int roomID, DateTime from, DateTime to);
-        void AddReservation(Reservation reservation);
+        int AddReservation(Reservation reservation);
         bool HasReservationBegun(int reservationID);
         void RemoveReservation(int ReservationID);
 

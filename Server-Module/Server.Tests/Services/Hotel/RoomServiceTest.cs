@@ -3,19 +3,20 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Server.AutoMapper;
 using Server.Database.DataAccess;
+using Server.Database.DataAccess.Hotel;
 using Server.Database.DatabaseTransaction;
-using Server.Models;
 using Server.RequestModels;
+using Server.Services.Hotel;
 using Server.Services.Result;
-using Server.Services.RoomService;
 using Server.ViewModels;
+using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using Xunit;
 
-namespace Server.Tests.Services
+namespace Server.Tests.Services.Hotel
 {
     public class RoomServiceTest
     {
@@ -23,7 +24,7 @@ namespace Server.Tests.Services
         {
             var config = new MapperConfiguration(opts =>
             {
-                opts.AddProfile(new ClientAutoMapperProfile());
+                opts.AddProfile(new HotelAutoMapperProfile());
             });
             _mapper = config.CreateMapper();
             _dataAccessMock = new Mock<IRoomDataAccess>();
@@ -58,7 +59,7 @@ namespace Server.Tests.Services
             IServiceResult result = _roomService.AddRoom(hotelID, hotelRoomNumber);
 
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-            Assert.Equal(roomID, ((RoomIDView)result.Result).RoomID);
+            Assert.Equal(roomID, (result.Result as RoomIDView).RoomID);
         }
         [Fact]
         public void DeleteRoom_200()
@@ -67,7 +68,7 @@ namespace Server.Tests.Services
             int roomID = 1;
             int ownerID = 1;
             _dataAccessMock.Setup(da => da.FindRoomAndGetOwner(roomID)).Returns(ownerID);
-            _dataAccessMock.Setup(da => da.DoesRoomHaveAnyUnfinishedReservations(roomID)).Returns(false);
+            _dataAccessMock.Setup(da => da.CheckAnyUnfinishedReservations(roomID)).Returns(false);
 
             IServiceResult result = _roomService.DeleteRoom(hotelID, roomID);
 
@@ -103,7 +104,7 @@ namespace Server.Tests.Services
             int roomID = 1;
             int ownerID = 1;
             _dataAccessMock.Setup(da => da.FindRoomAndGetOwner(roomID)).Returns(ownerID);
-            _dataAccessMock.Setup(da => da.DoesRoomHaveAnyUnfinishedReservations(roomID)).Returns(true);
+            _dataAccessMock.Setup(da => da.CheckAnyUnfinishedReservations(roomID)).Returns(true);
 
             IServiceResult result = _roomService.DeleteRoom(hotelID, roomID);
 
@@ -115,9 +116,10 @@ namespace Server.Tests.Services
             int hotelID = 1;
             Paging paging = new Paging();
             List<HotelRoomView> rooms = new List<HotelRoomView>();
-            _dataAccessMock.Setup(da => da.GetRooms(paging, hotelID, null)).Returns(rooms);
+            _dataAccessMock.Setup(da => da.GetRooms(hotelID, paging, null)).Returns(rooms);
 
-            IServiceResult result = _roomService.GetHotelRooms(paging, hotelID);
+            IServiceResult result = _roomService.GetHotelRooms(hotelID, paging);
+
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.Equal(_mapper.Map<List<HotelRoomView>>(rooms), result.Result);
         }
@@ -128,7 +130,7 @@ namespace Server.Tests.Services
             Paging paging = new Paging(-1, -1);
             List<HotelRoomView> rooms = new List<HotelRoomView>();
 
-            IServiceResult result = _roomService.GetHotelRooms(paging, hotelID);
+            IServiceResult result = _roomService.GetHotelRooms(hotelID, paging);
 
             Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         }
@@ -139,7 +141,7 @@ namespace Server.Tests.Services
             int hotelID = 1;
             _dataAccessMock.Setup(da => da.FindRoomAndGetOwner(roomID)).Returns((int?)null);
 
-            IServiceResult result = _roomService.CheckExistanceAndOwnership(roomID, hotelID);
+            IServiceResult result = _roomService.CheckExistanceAndOwnership(hotelID, roomID);
 
             Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         }
@@ -151,21 +153,21 @@ namespace Server.Tests.Services
             int ownerID = -1;
             _dataAccessMock.Setup(da => da.FindRoomAndGetOwner(roomID)).Returns(ownerID);
 
-            IServiceResult result = _roomService.CheckExistanceAndOwnership(roomID, hotelID);
+            IServiceResult result = _roomService.CheckExistanceAndOwnership(hotelID, roomID);
 
             Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
         }
         [Fact]
-        public void CheckExistanceAndOwnership_200()
+        public void CheckExistanceAndOwnership_ReturnsNull()
         {
             int roomID = 1;
             int hotelID = 1;
             int ownerID = 1;
             _dataAccessMock.Setup(da => da.FindRoomAndGetOwner(roomID)).Returns(ownerID);
 
-            IServiceResult result = _roomService.CheckExistanceAndOwnership(roomID, hotelID);
+            IServiceResult result = _roomService.CheckExistanceAndOwnership(hotelID, roomID);
 
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Null(result);
         }
     }
 }

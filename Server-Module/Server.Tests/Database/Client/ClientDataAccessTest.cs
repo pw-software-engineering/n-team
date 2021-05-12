@@ -4,17 +4,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Server.AutoMapper;
 using Server.Database;
 using Server.Database.DataAccess;
+using Server.Database.DataAccess.Client;
 using Server.Database.Models;
-using Server.Models;
 using Server.RequestModels;
+using Server.RequestModels.Client;
 using Server.ViewModels;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace Server.Tests.Database
+namespace Server.Tests.Database.Client
 {
     public class ClientDataAccessTest : IDisposable
     {
@@ -96,9 +98,13 @@ namespace Server.Tests.Database
         public void UpdateClientInfo_UsernameAndEmailNull_DoesNothing()
         {
             int clientID = 1;
-            string username = null, email = null;
+            ClientInfoUpdate clientInfoUpdate = new ClientInfoUpdate()
+            {
+                Username = null,
+                Email = null
+            };
 
-            _dataAccess.UpdateClientInfo(clientID, username, email);
+            _dataAccess.UpdateClientInfo(clientID, clientInfoUpdate);
             ClientDb client = _context.Clients.Find(clientID);
 
             Assert.NotNull(client);
@@ -109,40 +115,52 @@ namespace Server.Tests.Database
         public void UpdateClientInfo_UsernameNullEmailGiven_UpdatesEmail()
         {
             int clientID = 2;
-            string username = null, email = "jelonek@melonek.eu";
+            ClientInfoUpdate clientInfoUpdate = new ClientInfoUpdate()
+            {
+                Username = null,
+                Email = "jelonek@melonek.eu"
+            };
 
-            _dataAccess.UpdateClientInfo(clientID, username, email);
+            _dataAccess.UpdateClientInfo(clientID, clientInfoUpdate);
             ClientDb client = _context.Clients.Find(clientID);
 
             Assert.NotNull(client);
             Assert.NotNull(client.Username);
-            Assert.Equal(client.Email, email);
+            Assert.Equal(clientInfoUpdate.Email, client.Email);
         }
         [Fact]
         public void UpdateClientInfo_UsernameGivenEmailNull_UpdatesUsername()
         {
             int clientID = 1;
-            string username = "jelonek", email = null;
+            ClientInfoUpdate clientInfoUpdate = new ClientInfoUpdate()
+            {
+                Username = "jelonek",
+                Email = null
+            };
 
-            _dataAccess.UpdateClientInfo(clientID, username, email);
+            _dataAccess.UpdateClientInfo(clientID, clientInfoUpdate);
             ClientDb client = _context.Clients.Find(clientID);
 
             Assert.NotNull(client);
-            Assert.Equal(client.Username, username);
             Assert.NotNull(client.Email);
+            Assert.Equal(clientInfoUpdate.Username, client.Username);
         }
         [Fact]
         public void UpdateClientInfo_UsernameAndEmailGiven_UpdatesUsernameAndEmail()
         {
             int clientID = 3;
-            string username = "jelonek", email = "jelonek@melonek.eu";
+            ClientInfoUpdate clientInfoUpdate = new ClientInfoUpdate()
+            {
+                Username = "jelonek",
+                Email = "jelonek@melonek.eu"
+            };
 
-            _dataAccess.UpdateClientInfo(clientID, username, email);
+            _dataAccess.UpdateClientInfo(clientID, clientInfoUpdate);
             ClientDb client = _context.Clients.Find(clientID);
 
             Assert.NotNull(client);
-            Assert.Equal(client.Username, username);
-            Assert.Equal(client.Email, email);
+            Assert.Equal(clientInfoUpdate.Username, client.Username);
+            Assert.Equal(clientInfoUpdate.Email, client.Email);
         }
         #endregion
 

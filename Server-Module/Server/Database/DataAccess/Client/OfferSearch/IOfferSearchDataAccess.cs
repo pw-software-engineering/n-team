@@ -12,7 +12,7 @@ namespace Server.Database.DataAccess.Client
     public interface IOfferSearchDataAccess
     {
         bool CheckHotelExistence(int hotelID);
-        List<OfferPreviewView> GetHotelOffers(int hotelID, Paging paging, OfferFilter offerFilter);
+        List<OfferPreviewView> GetHotelOffers(int hotelID, OfferFilter offerFilter, Paging paging);
 
         bool CheckHotelOfferExistence(int hotelID, int offerID);
         OfferView GetHotelOfferDetails(int offerID);

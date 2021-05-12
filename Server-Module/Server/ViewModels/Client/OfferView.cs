@@ -7,6 +7,7 @@ namespace Server.ViewModels.Client
 {
     public class OfferView
     {
+        public int OfferID { get; set; }
         public string OfferTitle { get; set; }
         public string OfferDescription { get; set; }
         public List<string> OfferPictures { get; set; }

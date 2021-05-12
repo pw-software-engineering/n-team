@@ -8,14 +8,16 @@ using Server.Authentication.Client;
 using Server.AutoMapper;
 using Server.Database.DataAccess;
 using Server.Database.DatabaseTransaction;
-using Server.Models;
-using Server.Services.ClientService;
 using Server.Services.Result;
 using Server.RequestModels;
 using Xunit;
 using Server.ViewModels;
+using Server.Database.DataAccess.Client;
+using Server.Services.Client;
+using Server.ViewModels.Client;
+using Server.RequestModels.Client;
 
-namespace Server.Tests.Services
+namespace Server.Tests.Services.Client
 {
     public class ClientServiceTest
     {
@@ -29,9 +31,9 @@ namespace Server.Tests.Services
             _dataAccessMock = new Mock<IClientDataAccess>();
             _transactionMock = new Mock<IDatabaseTransaction>();
 
-            _clientService = new ClientService(_dataAccessMock.Object, _mapper, _transactionMock.Object);
+            _clientService = new ClientAccountService(_dataAccessMock.Object, _mapper, _transactionMock.Object);
         }
-        private ClientService _clientService;
+        private ClientAccountService _clientService;
         private Mock<IClientDataAccess> _dataAccessMock;
         private Mock<IDatabaseTransaction> _transactionMock;
         private IMapper _mapper;
@@ -75,80 +77,104 @@ namespace Server.Tests.Services
 
         #region UpdateClientInfo
         [Fact]
-		public void UpdateClientInfo_UsernameAndEmailEmpty_400_UsernameAndEmailEmptyError()
-		{
+        public void UpdateClientInfo_UsernameAndEmailEmpty_400_UsernameAndEmailEmptyError()
+        {
             int clientID = 1;
-            string username = "", email = null;
-            _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, username, email));
+            ClientInfoUpdate clientInfoUpdate = new ClientInfoUpdate()
+            {
+                Username = "",
+                Email = null
+            };
+            _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, clientInfoUpdate));
 
-            IServiceResult response = _clientService.UpdateClientInfo(clientID, username, email);
+            IServiceResult response = _clientService.UpdateClientInfo(clientID, clientInfoUpdate);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, It.IsAny<string>(), It.IsAny<string>()), Times.Never());
+            _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, It.IsAny<ClientInfoUpdate>()), Times.Never());
             Assert.Equal("Username and e-mail are null", ((ErrorView)response.Result).Error);
         }
         [Fact]
         public void UpdateClientInfo_UsernameInvalid_400_UsernameInvalidFormatError()
         {
             int clientID = 2;
-            string username = "🐈", email = "jelonek@melonek.eu";
-            _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, username, email));
+            ClientInfoUpdate clientInfoUpdate = new ClientInfoUpdate()
+            {
+                Username = "🐈",
+                Email = "jelonek@melonek.eu"
+            };
+            _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, clientInfoUpdate));
 
-            IServiceResult response = _clientService.UpdateClientInfo(clientID, username, email);
+            IServiceResult response = _clientService.UpdateClientInfo(clientID, clientInfoUpdate);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, username, email), Times.Never());
+            _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, clientInfoUpdate), Times.Never());
             Assert.Equal("Invalid (or too short/long) username", ((ErrorView)response.Result).Error);
         }
         [Fact]
         public void UpdateClientInfo_UsernameOkEmailInvalid_400_EmailInvalidFormatError()
         {
             int clientID = 3;
-            string username = "jelonek", email = "jelonekbezdomeny";
-            _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, username, email));
+            ClientInfoUpdate clientInfoUpdate = new ClientInfoUpdate()
+            {
+                Username = "jelonek",
+                Email = "jelonekbezdomeny"
+            };
+            _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, clientInfoUpdate));
 
-            IServiceResult response = _clientService.UpdateClientInfo(clientID, username, email);
+            IServiceResult response = _clientService.UpdateClientInfo(clientID, clientInfoUpdate);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, username, email), Times.Never());
+            _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, clientInfoUpdate), Times.Never());
             Assert.Equal("Invalid (or too short/long) e-mail", ((ErrorView)response.Result).Error);
         }
         [Fact]
         public void UpdateClientInfo_UsernameOkEmailEmpty_200_UsernameChanged()
         {
             int clientID = 2;
-            string username = "jelonek", email = "";
-            _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, username, email));
+            ClientInfoUpdate clientInfoUpdate = new ClientInfoUpdate()
+            {
+                Username = "jelonek",
+                Email = ""
+            };
+            _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, clientInfoUpdate));
 
-            IServiceResult response = _clientService.UpdateClientInfo(clientID, username, email);
+            IServiceResult response = _clientService.UpdateClientInfo(clientID, clientInfoUpdate);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, username, email), Times.Once());
+            _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, clientInfoUpdate), Times.Once());
 
         }
         [Fact]
         public void UpdateClientInfo_UsernameEmptyEmailOk_200_EmailChanged()
         {
             int clientID = 3;
-            string username = null, email = "jelonek@melonek.eu";
-            _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, username, email));
+            ClientInfoUpdate clientInfoUpdate = new ClientInfoUpdate()
+            {
+                Username = null,
+                Email = "jelonek@melonek.eu"
+            };
+            _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, clientInfoUpdate));
 
-            IServiceResult response = _clientService.UpdateClientInfo(clientID, username, email);
+            IServiceResult response = _clientService.UpdateClientInfo(clientID, clientInfoUpdate);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, username, email), Times.Once());
+            _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, clientInfoUpdate), Times.Once());
         }
         [Fact]
         public void UpdateClientInfo_UsernameAndEmailOk_200_UsernameEmailChanged()
         {
             int clientID = 1;
-            string username = "jelonek", email = "jelonek@melonek.eu";
-            _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, username, email));
+            ClientInfoUpdate clientInfoUpdate = new ClientInfoUpdate()
+            {
+                Username = "jelonek",
+                Email = "jelonek@melonek.eu"
+            };
+            _dataAccessMock.Setup(da => da.UpdateClientInfo(clientID, clientInfoUpdate));
 
-            IServiceResult response = _clientService.UpdateClientInfo(clientID, username, email);
+            IServiceResult response = _clientService.UpdateClientInfo(clientID, clientInfoUpdate);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, username, email), Times.Once());
+            _dataAccessMock.Verify(da => da.UpdateClientInfo(clientID, clientInfoUpdate), Times.Once());
         }
         #endregion
 

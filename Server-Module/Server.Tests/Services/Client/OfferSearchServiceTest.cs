@@ -1,19 +1,21 @@
 ﻿using AutoMapper;
 using Moq;
 using Server.AutoMapper;
-using Server.Database.DataAccess.OfferSearch;
+using Server.Database.DataAccess.Client;
 using Server.Database.DatabaseTransaction;
-using Server.Models;
 using Server.RequestModels;
-using Server.Services.OfferSearchService;
+using Server.RequestModels.Client;
+using Server.Services.Client;
 using Server.Services.Result;
+using Server.ViewModels;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using Xunit;
 
-namespace Server.Tests.Services
+namespace Server.Tests.Services.Client
 {
     public class OfferSearchServiceTest
     {
@@ -42,8 +44,8 @@ namespace Server.Tests.Services
         [Fact]
         public void GetHotelOffers_NullPagingOrNullOfferFilter_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => _offerSearchService.GetHotelOffers(-1, new Paging(), null));
-            Assert.Throws<ArgumentNullException>(() => _offerSearchService.GetHotelOffers(-1, null, new OfferFilter()));
+            Assert.Throws<ArgumentNullException>(() => _offerSearchService.GetHotelOffers(-1, null, new Paging()));
+            Assert.Throws<ArgumentNullException>(() => _offerSearchService.GetHotelOffers(-1, new OfferFilter(), null));
             Assert.Throws<ArgumentNullException>(() => _offerSearchService.GetHotelOffers(-1, null, null));
         }
 
@@ -52,7 +54,7 @@ namespace Server.Tests.Services
         {
             int hotelID = -1;
 
-            IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, new Paging(), new OfferFilter());
+            IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, new OfferFilter(), new Paging());
 
             Assert.Equal(HttpStatusCode.NotFound, serviceResult.StatusCode);
         }
@@ -63,7 +65,7 @@ namespace Server.Tests.Services
             int hotelID = 1;
             Paging paging = new Paging(-1, -1);
 
-            IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, paging, new OfferFilter());
+            IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, new OfferFilter(), paging);
 
             Assert.Equal(HttpStatusCode.BadRequest, serviceResult.StatusCode);
             Assert.True(serviceResult.Result is ErrorView);
@@ -80,7 +82,7 @@ namespace Server.Tests.Services
                 ToTime = new DateTime(1999, 10, 10)
             };
 
-            IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, paging, offerFilter);
+            IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, offerFilter, paging);
 
             Assert.Equal(HttpStatusCode.BadRequest, serviceResult.StatusCode);
             Assert.True(serviceResult.Result is ErrorView);
@@ -98,7 +100,7 @@ namespace Server.Tests.Services
                 MinGuests = -1
             };
 
-            IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, paging, offerFilter);
+            IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, offerFilter, paging);
 
             Assert.Equal(HttpStatusCode.BadRequest, serviceResult.StatusCode);
             Assert.True(serviceResult.Result is ErrorView);
@@ -122,8 +124,8 @@ namespace Server.Tests.Services
                 CostMax = -1
             };
 
-            IServiceResult serviceResultMinCost = _offerSearchService.GetHotelOffers(hotelID, paging, offerFilterMinCost);
-            IServiceResult serviceResultMaxCost = _offerSearchService.GetHotelOffers(hotelID, paging, offerFilterMaxCost);
+            IServiceResult serviceResultMinCost = _offerSearchService.GetHotelOffers(hotelID, offerFilterMinCost, paging);
+            IServiceResult serviceResultMaxCost = _offerSearchService.GetHotelOffers(hotelID, offerFilterMaxCost, paging);
 
             Assert.Equal(HttpStatusCode.BadRequest, serviceResultMinCost.StatusCode);
             Assert.True(serviceResultMinCost.Result is ErrorView);
@@ -144,7 +146,7 @@ namespace Server.Tests.Services
                 CostMax = 5
             };
 
-            IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, paging, offerFilter);
+            IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, offerFilter, paging);
 
             Assert.Equal(HttpStatusCode.BadRequest, serviceResult.StatusCode);
             Assert.True(serviceResult.Result is ErrorView);
@@ -163,7 +165,7 @@ namespace Server.Tests.Services
                 CostMax = 10,
                 MinGuests = 0
             };
-            ClientOfferPreview offerPreview = new ClientOfferPreview()
+            OfferPreviewView offerPreview = new OfferPreviewView()
             {
                 OfferID = 1,
                 CostPerAdult = 10.0,
@@ -172,16 +174,16 @@ namespace Server.Tests.Services
                 OfferTitle = "TestTitle",
                 OfferPreviewPicture = "TestPicture"
             };
-            List<ClientOfferPreview> offerPreviews = new List<ClientOfferPreview>()
+            List<OfferPreviewView> offerPreviews = new List<OfferPreviewView>()
             {
                 offerPreview,
                 offerPreview,
                 offerPreview
             };
-            _offerSearchDataAccessMock.Setup(da => da.GetHotelOffers(hotelID, paging, offerFilter)).Returns(offerPreviews);
+            _offerSearchDataAccessMock.Setup(da => da.GetHotelOffers(hotelID, offerFilter, paging)).Returns(offerPreviews);
 
-            IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, paging, offerFilter);
-            List<ClientOfferPreview> clientOfferPreviews = serviceResult.Result as List<ClientOfferPreview>;
+            IServiceResult serviceResult = _offerSearchService.GetHotelOffers(hotelID, offerFilter, paging);
+            List<OfferPreviewView> clientOfferPreviews = serviceResult.Result as List<OfferPreviewView>;
 
             Assert.Equal(HttpStatusCode.OK, serviceResult.StatusCode);
             Assert.Equal(offerPreviews.Count, clientOfferPreviews.Count);
@@ -219,7 +221,7 @@ namespace Server.Tests.Services
                 "TestPicture1",
                 "TestPicture2"
             };
-            ClientOffer clientOffer = new ClientOffer()
+            OfferView clientOffer = new OfferView()
             {
                 IsDeleted = false,
                 IsActive = true,
@@ -233,7 +235,7 @@ namespace Server.Tests.Services
             _offerSearchDataAccessMock.Setup(da => da.GetHotelOfferDetails(offerID)).Returns(clientOffer);
 
             IServiceResult serviceResult = _offerSearchService.GetHotelOfferDetails(hotelID, offerID);
-            ClientOffer resultClientOffer = serviceResult.Result as ClientOffer;
+            OfferView resultClientOffer = serviceResult.Result as OfferView;
 
             Assert.Equal(HttpStatusCode.OK, serviceResult.StatusCode);
             Assert.Equal(clientOffer.IsDeleted, resultClientOffer.IsDeleted);

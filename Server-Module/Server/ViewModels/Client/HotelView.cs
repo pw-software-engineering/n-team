@@ -7,6 +7,7 @@ namespace Server.ViewModels.Client
 {
     public class HotelView
     {
+        public int HotelID { get; set; }
         public string HotelName { get; set; }
         public string HotelDescription { get; set; }
         public string Country { get; set; }

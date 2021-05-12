@@ -4,17 +4,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Server.AutoMapper;
 using Server.Database;
 using Server.Database.DataAccess;
-using Server.Database.DataAccess.OfferSearch;
+using Server.Database.DataAccess.Client;
 using Server.Database.Models;
-using Server.Models;
 using Server.RequestModels;
+using Server.RequestModels.Client;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace Server.Tests.Database
+namespace Server.Tests.Database.Client
 {
     public class OfferSearchDataAccessTest : IDisposable
     {
@@ -32,7 +33,7 @@ namespace Server.Tests.Database
             _context = new ServerDbContext(builder.Options);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
-            if (!_context.HotelInfos.Any())
+            if (!_context.Hotels.Any())
                 Seed();
 
             var config = new MapperConfiguration(opts =>
@@ -48,7 +49,7 @@ namespace Server.Tests.Database
             using (var transaction = _context.Database.BeginTransaction())
             {
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos ON");
-                _context.HotelInfos.AddRange(
+                _context.Hotels.AddRange(
                     new HotelDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
                     new HotelDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
                     new HotelDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
@@ -161,8 +162,8 @@ namespace Server.Tests.Database
         [Fact]
         public void GetHotelOffers_PagingNullOrFilterNull_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => _dataAccess.GetHotelOffers(-1, new Paging(), null));
-            Assert.Throws<ArgumentNullException>(() => _dataAccess.GetHotelOffers(-1, null, new OfferFilter()));
+            Assert.Throws<ArgumentNullException>(() => _dataAccess.GetHotelOffers(-1, null, new Paging()));
+            Assert.Throws<ArgumentNullException>(() => _dataAccess.GetHotelOffers(-1, new OfferFilter(), null));
             Assert.Throws<ArgumentNullException>(() => _dataAccess.GetHotelOffers(-1, null, null));
         }
 
@@ -177,11 +178,11 @@ namespace Server.Tests.Database
                 ToTime = new DateTime(4000, 10, 11)
             };
 
-            List<ClientOfferPreview> clientOfferPreviews = _dataAccess.GetHotelOffers(hotelID, paging, offerFilter);
+            List<OfferPreviewView> clientOfferPreviews = _dataAccess.GetHotelOffers(hotelID, offerFilter, paging);
             List<OfferDb> allOffers = _context.Offers.Where(o => o.IsActive && !o.IsDeleted && o.HotelID == hotelID).ToList();
 
             Assert.Equal(allOffers.Count, clientOfferPreviews.Count);
-            foreach(ClientOfferPreview preview in clientOfferPreviews)
+            foreach(OfferPreviewView preview in clientOfferPreviews)
             {
                 Assert.Contains(allOffers, odb => odb.OfferID == preview.OfferID);
             }
@@ -199,7 +200,7 @@ namespace Server.Tests.Database
                 CostMax = 100
             };
 
-            List<ClientOfferPreview> clientOfferPreviews = _dataAccess.GetHotelOffers(hotelID, paging, offerFilter);
+            List<OfferPreviewView> clientOfferPreviews = _dataAccess.GetHotelOffers(hotelID, offerFilter, paging);
             List<OfferDb> allOffers = _context.Offers.Where(o => 
                 o.IsActive && 
                 !o.IsDeleted && 
@@ -208,7 +209,7 @@ namespace Server.Tests.Database
                 o.CostPerAdult <= offerFilter.CostMax).ToList();
 
             Assert.Equal(allOffers.Count, clientOfferPreviews.Count);
-            foreach (ClientOfferPreview preview in clientOfferPreviews)
+            foreach (OfferPreviewView preview in clientOfferPreviews)
             {
                 Assert.Contains(allOffers, odb => odb.OfferID == preview.OfferID);
             }
@@ -226,7 +227,7 @@ namespace Server.Tests.Database
                 CostMin = 100
             };
 
-            List<ClientOfferPreview> clientOfferPreviews = _dataAccess.GetHotelOffers(hotelID, paging, offerFilter);
+            List<OfferPreviewView> clientOfferPreviews = _dataAccess.GetHotelOffers(hotelID, offerFilter, paging);
             List<OfferDb> allOffers = _context.Offers.Where(o =>
                 o.IsActive &&
                 !o.IsDeleted &&
@@ -235,7 +236,7 @@ namespace Server.Tests.Database
                 o.CostPerAdult >= offerFilter.CostMin).ToList();
 
             Assert.Equal(allOffers.Count, clientOfferPreviews.Count);
-            foreach (ClientOfferPreview preview in clientOfferPreviews)
+            foreach (OfferPreviewView preview in clientOfferPreviews)
             {
                 Assert.Contains(allOffers, odb => odb.OfferID == preview.OfferID);
             }
@@ -253,7 +254,7 @@ namespace Server.Tests.Database
                 MinGuests = 10
             };
 
-            List<ClientOfferPreview> clientOfferPreviews = _dataAccess.GetHotelOffers(hotelID, paging, offerFilter);
+            List<OfferPreviewView> clientOfferPreviews = _dataAccess.GetHotelOffers(hotelID, offerFilter, paging);
             List<OfferDb> allOffers = _context.Offers.Where(o =>
                 o.IsActive &&
                 !o.IsDeleted &&
@@ -261,7 +262,7 @@ namespace Server.Tests.Database
                 o.MaxGuests >= offerFilter.MinGuests).ToList();
 
             Assert.Equal(allOffers.Count, clientOfferPreviews.Count);
-            foreach (ClientOfferPreview preview in clientOfferPreviews)
+            foreach (OfferPreviewView preview in clientOfferPreviews)
             {
                 Assert.Contains(allOffers, odb => odb.OfferID == preview.OfferID);
             }
@@ -308,7 +309,7 @@ namespace Server.Tests.Database
         {
             int offerID = -1;
 
-            ClientOffer clientOffer = _dataAccess.GetHotelOfferDetails(offerID);
+            OfferView clientOffer = _dataAccess.GetHotelOfferDetails(offerID);
 
             Assert.Null(clientOffer);
         }
@@ -318,20 +319,20 @@ namespace Server.Tests.Database
         {
             int offerID = 3;
 
-            ClientOffer clientOffer = _dataAccess.GetHotelOfferDetails(offerID);
+            OfferView clientOffer = _dataAccess.GetHotelOfferDetails(offerID);
             OfferDb offerDb = _context.Offers.Find(offerID);
 
             Assert.Equal(offerDb.OfferID, clientOffer.OfferID);
         }
 
         [Fact]
-        public void GetHotelOfferPictures_NonExistentOffer_ReturnsNull()
+        public void GetHotelOfferPictures_NonExistentOffer_ReturnsEmptyList()
         {
-            int offerID = 100;
+            int offerID = -1;
 
             List<string> offerPictures = _dataAccess.GetHotelOfferPictures(offerID);
 
-            Assert.Null(offerPictures);
+            Assert.Empty(offerPictures);
         }
 
         [Fact]

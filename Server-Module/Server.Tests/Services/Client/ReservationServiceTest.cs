@@ -7,17 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Server.AutoMapper;
 using Server.Database.DataAccess;
-using Server.Database.DataAccess.ReservationsManagement;
+using Server.Database.DataAccess.Client;
 using Server.Database.DatabaseTransaction;
-using Server.Models;
 using Server.RequestModels;
-using Server.Services.OfferService;
-using Server.Services.ReservationService;
+using Server.RequestModels.Client;
+using Server.Services.Client;
 using Server.Services.Result;
 using Server.ViewModels;
 using Xunit;
 
-namespace Server.Tests.Services
+namespace Server.Tests.Services.Client
 {
     public class ReservationServiceTest
     {

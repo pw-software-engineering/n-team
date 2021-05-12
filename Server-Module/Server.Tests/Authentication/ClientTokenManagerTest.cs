@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Security.Claims;
 using System.Linq;
+using Server.Database.DataAccess.Client;
 
 namespace Server.Tests.Authentication
 {

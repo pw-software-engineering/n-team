@@ -17,11 +17,12 @@ namespace Server.Database.DataAccess.Client
             _mapper = mapper;
             _dbContext = dbContext;
         }
-        public void AddReservation(Reservation reservation)
+        public int AddReservation(Reservation reservation)
         {
             ClientReservationDb reservationDb = _mapper.Map<ClientReservationDb>(reservation);
             _dbContext.ClientReservations.Add(reservationDb);
             _dbContext.SaveChanges();
+            return reservationDb.ReservationID;
         }
 
         public bool IsRoomAvailable(int roomID, DateTime from, DateTime to)

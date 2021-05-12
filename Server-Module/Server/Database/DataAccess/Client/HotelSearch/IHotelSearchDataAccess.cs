@@ -12,7 +12,7 @@ namespace Server.Database.DataAccess.Client
     public interface IHotelSearchDataAccess
     {
         #region api-client/hotels GET
-        List<HotelPreviewView> GetHotels(Paging paging, HotelFilter hotelFilter);
+        List<HotelPreviewView> GetHotels(HotelFilter hotelFilter, Paging paging);
         #endregion
 
         #region api-client/hotels/{hotelID} GET

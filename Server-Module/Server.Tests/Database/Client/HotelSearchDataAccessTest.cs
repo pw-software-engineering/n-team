@@ -4,16 +4,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Server.AutoMapper;
 using Server.Database;
 using Server.Database.DataAccess;
+using Server.Database.DataAccess.Client;
 using Server.Database.Models;
-using Server.Models;
 using Server.RequestModels;
+using Server.RequestModels.Client;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace Server.Tests.Database
+namespace Server.Tests.Database.Client
 {
     public class HotelSearchDataAccessTest : IDisposable
     {
@@ -31,7 +33,7 @@ namespace Server.Tests.Database
             _context = new ServerDbContext(builder.Options);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
-            if (!_context.HotelInfos.Any())
+            if (!_context.Hotels.Any())
                 Seed();
 
             var config = new MapperConfiguration(opts =>
@@ -47,7 +49,7 @@ namespace Server.Tests.Database
             using (var transaction = _context.Database.BeginTransaction())
             {
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos ON");
-                _context.HotelInfos.AddRange(
+                _context.Hotels.AddRange(
                     new HotelDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
                     new HotelDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
                     new HotelDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
@@ -77,9 +79,9 @@ namespace Server.Tests.Database
             Paging paging = new Paging(1000, 1);
             HotelFilter hotelFilter = new HotelFilter();
 
-            List<HotelPreview> hotelPreviews = _dataAccess.GetHotels(paging, hotelFilter);
+            List<HotelPreviewView> hotelPreviews = _dataAccess.GetHotels(hotelFilter, paging);
 
-            Assert.Equal(_context.HotelInfos.Count(), hotelPreviews.Count);
+            Assert.Equal(_context.Hotels.Count(), hotelPreviews.Count);
         }
 
         [Fact]
@@ -91,7 +93,7 @@ namespace Server.Tests.Database
                 HotelName = "telName2"
             };
 
-            List<HotelPreview> hotelPreviews = _dataAccess.GetHotels(paging, hotelFilter);
+            List<HotelPreviewView> hotelPreviews = _dataAccess.GetHotels(hotelFilter, paging);
 
             Assert.Single(hotelPreviews);
             Assert.Equal(2, hotelPreviews[0].HotelID);
@@ -107,7 +109,7 @@ namespace Server.Tests.Database
                 HotelName = "ABCD1234$#@!"
             };
 
-            List<HotelPreview> hotelPreviews = _dataAccess.GetHotels(paging, hotelFilter);
+            List<HotelPreviewView> hotelPreviews = _dataAccess.GetHotels(hotelFilter, paging);
 
             Assert.Empty(hotelPreviews);
         }
@@ -117,7 +119,7 @@ namespace Server.Tests.Database
         {
             int hotelID = -1;
 
-            Hotel hotel = _dataAccess.GetHotelDetails(hotelID);
+            HotelView hotel = _dataAccess.GetHotelDetails(hotelID);
 
             Assert.Null(hotel);
         }
@@ -127,7 +129,7 @@ namespace Server.Tests.Database
         {
             int hotelID = 3;
 
-            Hotel hotel = _dataAccess.GetHotelDetails(hotelID);
+            HotelView hotel = _dataAccess.GetHotelDetails(hotelID);
 
             Assert.NotNull(hotel);
             Assert.Equal("TestCity3", hotel.City);
@@ -137,13 +139,13 @@ namespace Server.Tests.Database
         }
 
         [Fact]
-        public void GetHotelPictures_NonExistentID_ReturnsNull()
+        public void GetHotelPictures_NonExistentID_ReturnsEmptyList()
         {
             int hotelID = -1;
 
             List<string> hotelPictures = _dataAccess.GetHotelPictures(hotelID);
 
-            Assert.Null(hotelPictures);
+            Assert.Empty(hotelPictures);
         }
 
         [Fact]

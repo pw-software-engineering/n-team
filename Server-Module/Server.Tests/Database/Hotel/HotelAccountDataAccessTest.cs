@@ -4,8 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Server.AutoMapper;
 using Server.Database;
 using Server.Database.DataAccess;
+using Server.Database.DataAccess.Hotel;
 using Server.Database.Models;
+using Server.RequestModels.Hotel;
 using Server.ViewModels;
+using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,22 +37,16 @@ namespace Server.Tests.Database
             _context = new ServerDbContext(builder.Options);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
-            if (!_context.HotelInfos.Any())
+            if (!_context.Hotels.Any())
                 Seed();
 
             var config = new MapperConfiguration(opts =>
             {
-                opts.AddProfile(new 
-                    ());
+                opts.AddProfile(new HotelAutoMapperProfile());
             });
             _mapper = config.CreateMapper();
 
             _dataAccess = new HotelAccountDataAccess( _context, _mapper);
-        }
-
-        public void Dispose()
-        {
-            _context.Database.EnsureDeleted();
         }
 
         private void Seed()
@@ -57,7 +54,7 @@ namespace Server.Tests.Database
             using (var transaction = _context.Database.BeginTransaction())
             {
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos ON");
-                _context.HotelInfos.AddRange(
+                _context.Hotels.AddRange(
                     new HotelDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" , HotelPictures = new List<HotelPictureDb>()},
                     new HotelDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2", HotelPictures = new List<HotelPictureDb>() },
                     new HotelDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3", HotelPictures = new List<HotelPictureDb>() });
@@ -79,7 +76,7 @@ namespace Server.Tests.Database
             }
         }
         
-        private bool Same(HotelInfoView a, HotelInfoView b)
+        private bool Compare(HotelInfoView a, HotelInfoView b)
         {
             if (a.City != b.City || a.Country != b.Country || a.HotelDesc != b.HotelDesc
                 || a.HotelName != b.HotelName ||  a.HotelPreviewPicture != b.HotelPreviewPicture)
@@ -102,52 +99,68 @@ namespace Server.Tests.Database
         
         #region GetInfo
         [Fact]
-        public void GetInfo_GoodId_ReturnsHotelGetInfo()
+        public void GetInfo_ValidId_ReturnsHotelInfoView()
         {
             int hotelId = 1;
-            var wahtWeWant = new HotelInfoView() { City = "TestCity1", Country = "TestCountry1", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1", HotelPictures = new List<string>() };
-            //var wahtWeWant = _context.HotelInfos.
-            //var a = _context.HotelInfos.Find(2);
-            var whatWeGet = _dataAccess.GetInfo(hotelId);
+            HotelInfoView hotelInfo = new HotelInfoView() 
+            { 
+                Country = "TestCountry1",
+                City = "TestCity1",
+                HotelDesc = "TestHotelDesc1", 
+                HotelName = "TestHotelName1", 
+                HotelPreviewPicture = "TestHotelPreviewPicture1", 
+                HotelPictures = new List<string>() 
+            };
 
-            Assert.True(Same(whatWeGet, wahtWeWant));
+            HotelInfoView hotelInfoTest = _dataAccess.GetHotelInfo(hotelId);
+
+            Assert.True(Compare(hotelInfo, hotelInfoTest));
         }
     
         [Fact]
-        public void GetInfo_BadId_ThrowsExepcion()
+        public void GetHotelInfo_InvalidId_ReturnsNullObject()
         {
-            Assert.Throws<Exception>(() => _dataAccess.GetInfo(44));
+            int hotelID = 44;
+
+            HotelInfoView hotelInfo = _dataAccess.GetHotelInfo(hotelID); 
+
+            Assert.Null(hotelInfo);
         }
         #endregion
 
         #region UpdateInfo
         [Fact]
-        public void UpdateInfo_GoodId_ReturnsVoid()
+        public void UpdateHotelInfo_ValidId_UpdatesHotelInfo()
         {
             int hotelId = 3;
-            var whatWeWant = new HotelInfoView() { City = "TestCity3", Country = "TestCountry3", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" , HotelPictures  = new List<string>()};
-            _dataAccess.UpdateInfo(hotelId, whatWeWant);
-            var whatWeGet = _dataAccess.GetInfo(3);
-            Assert.True(Same(whatWeGet, whatWeWant));
+            HotelInfoUpdate hotelInfo = new HotelInfoUpdate() 
+            { 
+                HotelDesc = "TestHotelDesc1", 
+                HotelName = "TestHotelName1", 
+                HotelPreviewPicture = "TestHotelPreviewPicture1", 
+                HotelPictures  = new List<string>()
+            };
+
+            _dataAccess.UpdateHotelInfo(hotelId, hotelInfo);
+            HotelInfoView hotelInfoTest = _dataAccess.GetHotelInfo(3);
+
+            Assert.Equal(hotelInfo.HotelDesc, hotelInfoTest.HotelDesc);
+            Assert.Equal(hotelInfo.HotelName, hotelInfoTest.HotelName);
+            Assert.Equal(hotelInfo.HotelPreviewPicture, hotelInfoTest.HotelPreviewPicture);
         }
-
         [Fact]
-        public void UpdateInfo_BadId_ThrowsExepcion()
-        {
-
-            var whatWeWant = new HotelInfoView() { City = "TestCity1", Country = "TestCountry1", HotelDesc = "TestHotelDesc1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" };
-            int hotelId = 44;
-            Assert.Throws<Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException>(() => _dataAccess.UpdateInfo(hotelId, whatWeWant));
-        }
-
-        [Fact]
-        public void UpdateInfo_NullPArametr_ThrowsExepcion()
+        public void UpdateInfo_NullHotelInfoUpdate_ThrowsArgumentNullException()
         {
             int hotelId = 1;
-            Assert.Throws<NullReferenceException>(() => _dataAccess.UpdateInfo(hotelId,null));
+
+            Action action = () => _dataAccess.UpdateHotelInfo(hotelId, null);
+
+            Assert.Throws<ArgumentNullException>(action);
         }
         #endregion
-
-        
+        public void Dispose()
+        {
+            _context.Database.EnsureDeleted();
+        }
     }
 }

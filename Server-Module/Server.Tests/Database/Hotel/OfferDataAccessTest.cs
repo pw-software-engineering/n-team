@@ -4,20 +4,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Server.AutoMapper;
 using Server.Database;
 using Server.Database.DataAccess;
+using Server.Database.DataAccess.Hotel;
 using Server.Database.Models;
-using Server.Models;
 using Server.RequestModels;
+using Server.RequestModels.Hotel;
+using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
-////Optional
-//[assembly: CollectionBehavior(DisableTestParallelization = true)]
-////Optional
-//[assembly: TestCaseOrderer("Xunit.Extensions.Ordering.TestCaseOrderer", "Xunit.Extensions.Ordering")]
-////Optional
-//[assembly: TestCollectionOrderer("Xunit.Extensions.Ordering.CollectionOrderer", "Xunit.Extensions.Ordering")]
 
 namespace Server.Tests.Database
 {
@@ -37,12 +33,12 @@ namespace Server.Tests.Database
             _context = new ServerDbContext(builder.Options);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
-            if (!_context.HotelInfos.Any())
+            if (!_context.Hotels.Any())
                 Seed();
 
             var config = new MapperConfiguration(opts =>
             {
-                opts.AddProfile(new ClientAutoMapperProfile());
+                opts.AddProfile(new HotelAutoMapperProfile());
             });
             _mapper = config.CreateMapper();
 
@@ -53,7 +49,7 @@ namespace Server.Tests.Database
             using (var transaction = _context.Database.BeginTransaction())
             {
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos ON");
-                _context.HotelInfos.AddRange(
+                _context.Hotels.AddRange(
                     new HotelDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
                     new HotelDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
                     new HotelDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
@@ -82,7 +78,7 @@ namespace Server.Tests.Database
                     new HotelRoomDb { RoomID = 2, HotelID = 3, HotelRoomNumber = "TestHotelRoomNumber2" },
                     new HotelRoomDb { RoomID = 3, HotelID = 3, HotelRoomNumber = "TestHotelRoomNumber3" });
                 _context.SaveChanges();
-                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelRoom OFF");
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelRooms OFF");
 
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReservations ON");
                 _context.ClientReservations.AddRange(
@@ -151,14 +147,11 @@ namespace Server.Tests.Database
         {
             int OfferID = 1;
 
-            Offer offerTest = _dataAccess.GetOffer(OfferID);
+            OfferView offerTest = _dataAccess.GetOffer(OfferID);
             OfferDb offer = _context.Offers.Find(OfferID);
 
-            Assert.Equal(offer.HotelID, offerTest.HotelID);
             Assert.Equal(offer.IsActive, offerTest.IsActive);
-            Assert.Equal(offer.IsDeleted, offerTest.IsDeleted);
             Assert.Equal(offer.MaxGuests, offerTest.MaxGuests);
-            Assert.Equal(offer.OfferID, offerTest.OfferID);
             Assert.Equal(offer.OfferPreviewPicture, offerTest.OfferPreviewPicture);
             Assert.Equal(offer.OfferTitle, offerTest.OfferTitle);
             Assert.Equal(offer.Description, offerTest.Description);
@@ -171,7 +164,7 @@ namespace Server.Tests.Database
         {
             int offerID = -1;
 
-            Offer offer = _dataAccess.GetOffer(offerID);
+            OfferView offer = _dataAccess.GetOffer(offerID);
 
             Assert.Null(offer);
         }
@@ -183,7 +176,7 @@ namespace Server.Tests.Database
             Paging paging = new Paging();
             bool? isActive = true;
 
-            List<OfferPreview> offersPreviewsTest = _dataAccess.GetHotelOffers(paging, hotelID, isActive);
+            List<OfferPreviewView> offersPreviewsTest = _dataAccess.GetHotelOffers(hotelID, paging, isActive);
             List<OfferDb> offersPreviews = _context.Offers.Where(o => o.HotelID == hotelID && o.IsActive == isActive).ToList();
 
             Assert.Equal(offersPreviews.Count, offersPreviewsTest.Count);
@@ -191,7 +184,7 @@ namespace Server.Tests.Database
             for (int i = 0; i < offersPreviews.Count; i++)
             {
                 OfferDb offer = offersPreviews[i];
-                OfferPreview offerTest = offersPreviewsTest[i];
+                OfferPreviewView offerTest = offersPreviewsTest[i];
 
                 Assert.Equal(offer.IsActive, offerTest.IsActive);
                 Assert.Equal(offer.MaxGuests, offerTest.MaxGuests);
@@ -208,7 +201,7 @@ namespace Server.Tests.Database
             Paging paging = new Paging();
             bool? isActive = false;
 
-            List<OfferPreview> offersPreviewsTest = _dataAccess.GetHotelOffers(paging, hotelID, isActive);
+            List<OfferPreviewView> offersPreviewsTest = _dataAccess.GetHotelOffers(hotelID, paging, isActive);
             List<OfferDb> offersPreviews = _context.Offers.Where(o => o.HotelID == hotelID && o.IsActive == isActive).ToList();
 
             Assert.Equal(offersPreviews.Count, offersPreviewsTest.Count);
@@ -220,7 +213,7 @@ namespace Server.Tests.Database
             Paging paging = new Paging();
             bool? isActive = null;
 
-            List<OfferPreview> offersPreviewsTest = _dataAccess.GetHotelOffers(paging, hotelID, isActive);
+            List<OfferPreviewView> offersPreviewsTest = _dataAccess.GetHotelOffers(hotelID, paging, isActive);
             List<OfferDb> offersPreviews = _context.Offers.Where(o => o.HotelID == hotelID).ToList();
 
             Assert.Equal(offersPreviews.Count, offersPreviewsTest.Count);
@@ -244,49 +237,26 @@ namespace Server.Tests.Database
 
             Assert.Equal(owner, ownerTest);
         }
-
-        [Fact]
-        public void AddOfferPicture_OfferPictureIsAdded()
-        {
-            int offerID = 1;
-            OfferPictureDb picture = new OfferPictureDb 
-            { 
-                OfferID = offerID, 
-                Picture = "TESTPICTURE" 
-            };
-
-            int offerPicturesCount = _context.OfferPictures.Where(op => op.OfferID == offerID).Count();
-            _dataAccess.AddOfferPicture(picture.Picture, picture.OfferID);
-            int offerPicturesUpdatedCount = _context.OfferPictures.Where(op => op.OfferID == offerID).Count();
-            OfferPictureDb offerPicture = _context.OfferPictures.Where(op => op.OfferID == offerID && op.Picture == picture.Picture).First();
-
-            Assert.NotNull(offerPicture);
-            Assert.Equal(offerPicturesCount + 1, offerPicturesUpdatedCount);
-            Assert.Equal(offerPicture.Picture, picture.Picture);
-            Assert.Equal(offerPicture.OfferID, offerID);
-        }
         [Fact]
         public void AddOffer_OfferIsAdded()
         {
-            Offer offer = new Offer
+            OfferInfo offer = new OfferInfo
             { 
-                HotelID = 2, 
                 OfferTitle = "TestOfferTitle4", 
                 OfferPreviewPicture = "TestOfferPreviewPicture4", 
                 IsActive = true, 
-                IsDeleted = false, 
                 CostPerChild = 40, 
                 CostPerAdult = 44, 
                 MaxGuests = 4, 
                 Description = "TestDescription4" 
             };
+            int hotelID = 2;
 
-            int offerID = _dataAccess.AddOffer(offer);
+            int offerID = _dataAccess.AddOffer(hotelID, offer);
             OfferDb offerTest = _context.Offers.Find(offerID);
 
-            Assert.Equal(offer.HotelID, offerTest.HotelID);
+            Assert.Equal(hotelID, offerTest.HotelID);
             Assert.Equal(offer.IsActive, offerTest.IsActive);
-            Assert.Equal(offer.IsDeleted, offerTest.IsDeleted);
             Assert.Equal(offer.MaxGuests, offerTest.MaxGuests);
             Assert.Equal(offer.OfferPreviewPicture, offerTest.OfferPreviewPicture);
             Assert.Equal(offer.OfferTitle, offerTest.OfferTitle);
@@ -306,7 +276,7 @@ namespace Server.Tests.Database
             int offerID = 2;
 
             int offerPicturesCount = _context.OfferPictures.Where(op => op.OfferID == offerID).Count();
-            _dataAccess.AddOfferPictures(pictures, offerID);
+            _dataAccess.AddOfferPictures(offerID, pictures);
             int offerPicturesUpdatedCount = _context.OfferPictures.Where(op => op.OfferID == offerID).Count();
 
             Assert.Equal(offerPicturesCount + pictures.Count, offerPicturesUpdatedCount);
@@ -315,7 +285,7 @@ namespace Server.Tests.Database
         public void UpdateOffer_OfferIsUpdated()
         {
             int offerID = 1;
-            OfferUpdateInfo offerUpdate = new OfferUpdateInfo
+            OfferInfoUpdate offerUpdate = new OfferInfoUpdate
             { 
                 OfferTitle = "TestOfferTitle4", 
                 OfferPreviewPicture = "TestOfferPreviewPicture4", 

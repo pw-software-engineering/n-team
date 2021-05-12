@@ -88,7 +88,7 @@ namespace Server.Services.Hotel
             return new ServiceResult(HttpStatusCode.OK);
         }
 
-        private IServiceResult CheckExistanceAndOwnership(int hotelID, int offerID)
+        public IServiceResult CheckExistanceAndOwnership(int hotelID, int offerID)
         {
             int? ownerID = _dataAccess.FindOfferAndGetOwner(offerID);
             if (ownerID == null)
