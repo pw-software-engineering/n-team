@@ -20,6 +20,6 @@ namespace Server.Database.Models
         public OfferDb Offer { get; set; }
         public ClientDb Client { get; set; }
         public ClientReservationDb Reservation { get; set; }
-        public HotelInfoDb Hotel { get; set; }
+        public HotelDb Hotel { get; set; }
     }
 }

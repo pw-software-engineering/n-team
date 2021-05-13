@@ -1,70 +1,63 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Server.Models;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Server.Authentication.Hotel;
 using Server.RequestModels;
-using Server.Services.OfferService;
+using Server.RequestModels.Hotel;
+using Server.Services.Hotel;
 using Server.ViewModels;
+using Server.ViewModels.Hotel;
 using System;
 using System.Linq;
 
 namespace Server.Controllers.Hotel
 {
     [ApiController]
-    [Route("/api-hotel/")]
-    [Authorize(AuthenticationSchemes = "HotelTokenScheme")]
+    [Route("/api-hotel")]
+    [Authorize(AuthenticationSchemes = HotelTokenDefaults.AuthenticationScheme)]
     public class HotelOffersController : Controller
     {
-        private readonly IOfferService service;
-
+        private readonly IOfferService _service;
+        private int _hotelID;
         public HotelOffersController(IOfferService service)
         {
-            this.service = service;
+            _service = service;
         }
-
-        [HttpGet("offers")]
-        public IActionResult GetOffers(bool? isActive, int pageNumber = 1, int pageSize = 10)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
-            int hotelId = GetHotelID();
-
-            return service.GetHotelOffers(new Paging(pageSize, pageNumber), hotelId, isActive);
+            var ids = from claim in HttpContext.User.Claims
+                      where claim.Type == HotelTokenManagerOptions.HotelIdClaimName
+                      select claim.Value;
+            _hotelID = Convert.ToInt32(ids.Single());
+            base.OnActionExecuting(context);
+        }
+        [HttpGet("offers")]
+        public IActionResult GetOffers([FromQuery] bool? isActive, [FromQuery] Paging paging)
+        {
+            return _service.GetHotelOffers(_hotelID, paging, isActive);
         }
         [HttpGet("offers/{offerID}")]
-        public IActionResult GetOffer(int offerID)
+        public IActionResult GetOffer([FromRoute] int offerID)
         {
-            int hotelId = GetHotelID();
-            return service.GetOffer(offerID, hotelId);
+            return _service.GetOffer(offerID, _hotelID);
         }
 
         [HttpPost("offers")]
-        public IActionResult AddOffer([FromBody] OfferView offer)
+        public IActionResult AddOffer([FromBody] OfferInfo offer)
         {
-            int hotelId = GetHotelID();
-
-            return service.AddOffer(offer, hotelId);
+            return _service.AddOffer(_hotelID, offer);
         }
 
         [HttpPatch("offers/{offerID}")]
-        public IActionResult EditOffer(int offerID, OfferUpdateInfo updateInfo)
+        public IActionResult EditOffer([FromRoute] int offerID, [FromBody] OfferInfoUpdate offerInfoUpdate)
         {
-            int hotelId = GetHotelID();
-
-            return service.UpdateOffer(offerID, hotelId, updateInfo);
+            return _service.UpdateOffer(_hotelID, offerID, offerInfoUpdate);
         }
 
         [HttpDelete("offers/{offerID}")]
-        public IActionResult DeleteOffer(int offerID)
+        public IActionResult DeleteOffer([FromRoute] int offerID)
         {
-            int hotelId = GetHotelID();
-
-            return service.DeleteOffer(offerID, hotelId);
-        }
-
-        private int GetHotelID()
-        {
-            var ids = from claim in HttpContext.User.Claims
-                      where claim.Type == "hotelId"
-                      select claim.Value;
-            return Convert.ToInt32(ids.Single());
+            return _service.DeleteOffer(_hotelID, offerID);
         }
     }
 }

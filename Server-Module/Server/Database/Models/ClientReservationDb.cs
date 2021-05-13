@@ -17,10 +17,10 @@ namespace Server.Database.Models
         public int? OfferID { get; set; }
         public DateTime FromTime { get; set; }
         public DateTime ToTime { get; set; }
-        public uint NumberOfChildren { get; set; }
-        public uint NumberOfAdults { get; set; }
+        public int NumberOfChildren { get; set; }
+        public int NumberOfAdults { get; set; }
         //Navigational Properties
-        public HotelInfoDb Hotel { get; set; }
+        public HotelDb Hotel { get; set; }
         public OfferDb Offer { get; set; }
         public ClientDb Client { get; set; }
         public HotelRoomDb Room { get; set; }

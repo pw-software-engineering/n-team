@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Server.Authentication.Client;
 using Server.RequestModels;
-using Server.Services.OfferSearchService;
+using Server.RequestModels.Client;
+using Server.Services.Client;
 using Server.Services.Result;
 
 namespace Server.Controllers.Client
@@ -26,14 +27,13 @@ namespace Server.Controllers.Client
 
         //[HotelOfferSearchValidateModel]
         [HttpGet("hotels/{hotelID:int}/offers")]
-        public IActionResult GetHotelOffers([FromRoute] int hotelID, [FromQuery] Paging paging, [FromQuery] OfferFilter offerFilter)
+        public IActionResult GetHotelOffers([FromRoute] int hotelID, [FromQuery] OfferFilter offerFilter, [FromQuery] Paging paging)
         {
-            //Console.WriteLine($"hotelID: {hotelID}\nPaging: {paging.pageNumber} | {paging.pageSize}\nOffer Filter: {offerFilter.FromTime?.ToString()} -> {offerFilter.ToTime?.ToString()} : {offerFilter.CostMin} | {offerFilter.CostMax} | {offerFilter.MinGuests}");
-            return _offerSearchService.GetHotelOffers(hotelID, paging, offerFilter);
+            return _offerSearchService.GetHotelOffers(hotelID, offerFilter, paging);
         }
 
         [HttpGet("hotels/{hotelID:int}/offers/{offerID:int}")]
-        public IActionResult GetHotelOfferDetails(int hotelID, int offerID)
+        public IActionResult GetHotelOfferDetails([FromRoute] int hotelID, [FromRoute] int offerID)
         {
             return _offerSearchService.GetHotelOfferDetails(hotelID, offerID);
         }

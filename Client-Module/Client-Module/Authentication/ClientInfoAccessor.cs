@@ -36,12 +36,20 @@ namespace Client_Module.Authentication
             }
             string responseJSON = response.Content.ReadAsStringAsync().Result;
             //Console.WriteLine(responseJSON);
-            ClientInfo clientInfo = JsonConvert.DeserializeObject<ClientInfo>(
-                responseJSON,
-                new JsonSerializerSettings()
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                });
+            ClientInfo clientInfo = null;
+            try
+            {
+                clientInfo = JsonConvert.DeserializeObject<ClientInfo>(
+                    responseJSON,
+                    new JsonSerializerSettings()
+                    {
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    });
+            }
+            catch(JsonException)
+            {
+                serverError = "Invalid client info JSON object format";
+            }
             serverError = null;
             return clientInfo;
         }

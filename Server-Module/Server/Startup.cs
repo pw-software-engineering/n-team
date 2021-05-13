@@ -8,19 +8,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
-using Server.Authentication;
+using Server.Authentication.Hotel;
 using Server.Authentication.Client;
 using Server.Database;
 using Server.Database.DataAccess;
-using Server.Services.HotelAccountService;
-using Server.Database.DataAccess.OfferSearch;
-using Server.Database.DataAccess.ReservationsManagement;
 using Server.Database.DatabaseTransaction;
-using Server.Services.ClientService;
-using Server.Services.HotelSearchService;
-using Server.Services.OfferSearchService;
-using Server.Services.OfferService;
-using Server.Services.ReservationService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +21,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Server.Database.Models;
 using Server.ViewModels;
+using Server.Services.Hotel;
+using Server.Services.Client;
+using Server.Database.DataAccess.Hotel;
+using Server.Database.DataAccess.Client;
+using Server.AutoMapper;
 
 namespace Server
 {
@@ -46,11 +43,16 @@ namespace Server
         {
             services.AddControllers();
 
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(opts =>
+            {
+                opts.AddProfile(new ClientAutoMapperProfile());
+                opts.AddProfile(new HotelAutoMapperProfile());
+            },
+            typeof(Startup));
 
             services.AddScoped<IDatabaseTransaction, DatabaseTransaction>();
             services.AddTransient<IOfferService, OfferService>();
-            services.AddTransient<IClientService, ClientService>();
+            services.AddTransient<IClientAccountService, ClientAccountService>();
             services.AddTransient<IOfferDataAccess, OfferDataAccess>();
             services.AddTransient<IClientDataAccess, ClientDataAccess>();
             services.AddTransient<IRoomDataAccess, RoomDataAccess>();

@@ -7,9 +7,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
+using Server.Authentication.Hotel;
 using Server.Database;
 using Server.Database.DataAccess;
 using Server.Services.Result;
+using Server.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,11 +29,6 @@ namespace Server.Authentication.Client
     {
         private IClientTokenManager _tokenManager;
         private ClientTokenSchemeOptions _options;
-
-        public string Error
-        {
-            get => _errorString;
-        }
 
         private string _errorString = null;
         public ClientTokenScheme(
@@ -66,7 +63,7 @@ namespace Server.Authentication.Client
             }
             var ticket = new AuthenticationTicket(
                 _tokenManager.CreatePrincipal(clientToken),
-                HotelTokenDefaults.AuthenticationScheme
+                ClientTokenDefaults.AuthenticationScheme
             );
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }
@@ -74,7 +71,7 @@ namespace Server.Authentication.Client
         protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
         {
             Console.WriteLine($"CHALLANGE: {Response.StatusCode} | {_errorString}");
-            IServiceResult result = new ServiceResult(HttpStatusCode.Unauthorized, new Error(_errorString));
+            IServiceResult result = new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView(_errorString));
             RouteData routeData = new RouteData(Context.Request.RouteValues);
             ActionDescriptor actionDescriptor = new ActionDescriptor();
             await result.ExecuteResultAsync(new ActionContext(Context, routeData, actionDescriptor));
