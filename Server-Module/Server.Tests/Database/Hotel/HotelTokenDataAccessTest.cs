@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace Server.Tests.Database
+namespace Server.Tests.Database.Hotel
 {
     public class HotelTokenDataAccessTest : IDisposable
     {
@@ -31,11 +31,10 @@ namespace Server.Tests.Database
             builder.UseSqlServer($"Server=(localdb)\\mssqllocaldb;Database=ServerDbHotelTokenTests;Trusted_Connection=True;MultipleActiveResultSets=true")
                     .UseInternalServiceProvider(serviceProvider);
 
-            _context = new ServerDbContext(builder.Options);
+            _context = new ServerDbContext(builder.Options, false);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
-            if (!_context.Hotels.Any())
-                Seed();
+            Seed();
 
             var config = new MapperConfiguration(opts =>
             {
@@ -45,23 +44,17 @@ namespace Server.Tests.Database
 
             _dataAccess = new HotelTokenDataAccess(_mapper, _context);
         }
-
-        public void Dispose()
-        {
-            _context.Database.EnsureDeleted();
-        }
-
         private void Seed()
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
-                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos ON");
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Hotels ON");
                 _context.Hotels.AddRange(
                     new HotelDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
                     new HotelDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
                     new HotelDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
                 _context.SaveChanges();
-                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos OFF;");
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Hotels OFF;");
 
                 transaction.Commit();
             }
@@ -85,5 +78,9 @@ namespace Server.Tests.Database
             Assert.True(!id.HasValue);
         }
         #endregion
+        public void Dispose()
+        {
+            _context.Database.EnsureDeleted();
+        }
     }
 }

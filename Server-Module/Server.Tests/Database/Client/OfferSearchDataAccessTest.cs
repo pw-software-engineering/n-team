@@ -30,11 +30,10 @@ namespace Server.Tests.Database.Client
             builder.UseSqlServer($"Server=(localdb)\\mssqllocaldb;Database=ServerDbTestsOfferSearch;Trusted_Connection=True;MultipleActiveResultSets=true")
                     .UseInternalServiceProvider(serviceProvider);
 
-            _context = new ServerDbContext(builder.Options);
+            _context = new ServerDbContext(builder.Options, false);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
-            if (!_context.Hotels.Any())
-                Seed();
+            Seed();
 
             var config = new MapperConfiguration(opts =>
             {
@@ -48,13 +47,13 @@ namespace Server.Tests.Database.Client
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
-                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos ON");
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Hotels ON");
                 _context.Hotels.AddRange(
                     new HotelDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
                     new HotelDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
                     new HotelDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
                 _context.SaveChanges();
-                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelInfos OFF");
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Hotels OFF");
 
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Offers ON");
                 _context.Offers.AddRange(
@@ -81,7 +80,7 @@ namespace Server.Tests.Database.Client
                     new HotelRoomDb { RoomID = 2, HotelID = 3, HotelRoomNumber = "TestHotelRoomNumber2" },
                     new HotelRoomDb { RoomID = 3, HotelID = 3, HotelRoomNumber = "TestHotelRoomNumber3" });
                 _context.SaveChanges();
-                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelRoom OFF");
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelRooms OFF");
 
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReservations ON");
                 _context.ClientReservations.AddRange(
@@ -91,14 +90,15 @@ namespace Server.Tests.Database.Client
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReservations OFF");
 
-                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT OfferHotelRooms ON");
                 _context.OfferHotelRooms.AddRange(
                     new OfferHotelRoomDb { OfferID = 1, RoomID = 1 },
                     new OfferHotelRoomDb { OfferID = 2, RoomID = 2 },
                     new OfferHotelRoomDb { OfferID = 3, RoomID = 2 },
+                    new OfferHotelRoomDb { OfferID = 4, RoomID = 2 },
+                    new OfferHotelRoomDb { OfferID = 5, RoomID = 2 },
+                    new OfferHotelRoomDb { OfferID = 6, RoomID = 2 },
                     new OfferHotelRoomDb { OfferID = 3, RoomID = 3 });
                 _context.SaveChanges();
-                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT OfferHotelRooms OFF");
 
                 transaction.Commit();
             }

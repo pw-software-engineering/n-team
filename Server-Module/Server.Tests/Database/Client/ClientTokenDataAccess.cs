@@ -27,11 +27,10 @@ namespace Server.Tests.Database.Client
             builder.UseSqlServer($"Server=(localdb)\\mssqllocaldb;Database=ServerDbTests;Trusted_Connection=True;MultipleActiveResultSets=true")
                     .UseInternalServiceProvider(serviceProvider);
 
-            _context = new ServerDbContext(builder.Options);
+            _context = new ServerDbContext(builder.Options, false);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
-            if (!_context.Hotels.Any())
-                Seed();
+            Seed();
 
             _tokenAccess = new ClientTokenDataAccess(_context);
         }

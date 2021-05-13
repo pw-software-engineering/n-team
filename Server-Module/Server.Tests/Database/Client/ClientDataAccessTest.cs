@@ -31,11 +31,10 @@ namespace Server.Tests.Database.Client
             builder.UseSqlServer($"Server=(localdb)\\mssqllocaldb;Database=ServerDbTestsClients;Trusted_Connection=True;MultipleActiveResultSets=true")
                     .UseInternalServiceProvider(serviceProvider);
 
-            _context = new ServerDbContext(builder.Options);
+            _context = new ServerDbContext(builder.Options, false);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
-            if (!_context.HotelRooms.Any())
-                Seed();
+            Seed();
 
             var config = new MapperConfiguration(opts =>
             {
@@ -170,7 +169,7 @@ namespace Server.Tests.Database.Client
         {
             int? clientIDNull = _dataAccess.GetRegisteredClientID(null, null);
             int? clientIDEmpty = _dataAccess.GetRegisteredClientID(string.Empty, string.Empty);
-            int? clientIDPartial = _dataAccess.GetRegisteredClientID("TestLoginEmail1", string.Empty);
+            int? clientIDPartial = _dataAccess.GetRegisteredClientID("TestEmail1@testdomain.com", string.Empty);
 
             Assert.False(clientIDNull.HasValue);
             Assert.False(clientIDEmpty.HasValue);
@@ -181,7 +180,7 @@ namespace Server.Tests.Database.Client
         public void GetRegisteredClientID_InvalidUsernameOrPassword_Null()
         {
             int? clientIDPassword = _dataAccess.GetRegisteredClientID("NonexistentLoginEmail", "TestPassword1");
-            int? clientIDUsername = _dataAccess.GetRegisteredClientID("TestLoginEmail1", "InvalidPassword123#@!");
+            int? clientIDUsername = _dataAccess.GetRegisteredClientID("TestEmail1@testdomain.com", "InvalidPassword123#@!");
 
             Assert.False(clientIDPassword.HasValue);
             Assert.False(clientIDUsername.HasValue);
@@ -191,7 +190,7 @@ namespace Server.Tests.Database.Client
         public void GetRegisteredClientID_ValidUsernameAndPassword_DatabaseClientID()
         {
             int expectedClientID = 1;
-            string login = "TestEmail1";
+            string login = "TestEmail1@testdomain.com";
             string password = "TestPassword1";
 
             int? clientID = _dataAccess.GetRegisteredClientID(login, password);

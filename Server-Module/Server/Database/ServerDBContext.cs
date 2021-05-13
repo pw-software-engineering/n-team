@@ -9,8 +9,10 @@ namespace Server.Database
 {
     public class ServerDbContext : DbContext
     {
-        public ServerDbContext(DbContextOptions<ServerDbContext> options) : base(options)
+        private readonly bool _addSeeding;
+        public ServerDbContext(DbContextOptions<ServerDbContext> options, bool addSeeding = true) : base(options)
         {
+            _addSeeding = addSeeding;
         }
         #region Tables
         //Client Tables
@@ -136,52 +138,55 @@ namespace Server.Database
             #endregion
 
             #region Seeding
-            modelBuilder.Entity<ClientDb>().HasData(
-                new ClientDb { ClientID = 1, Username = "TestUsername1", Email = "TestEmail1", Name = "TestName1", Surname = "TestSurname1", Password = "TestPassword1" },
-                new ClientDb { ClientID = 2, Username = "TestUsername2", Email = "TestEmail2", Name = "TestName2", Surname = "TestSurname2", Password = "TestPassword2" },
-                new ClientDb { ClientID = 3, Username = "TestUsername3", Email = "TestEmail3", Name = "TestName3", Surname = "TestSurname3", Password = "TestPassword3" });
+            if (_addSeeding)
+            {
+                modelBuilder.Entity<ClientDb>().HasData(
+                    new ClientDb { ClientID = 1, Username = "TestUsername1", Email = "TestEmail1", Name = "TestName1", Surname = "TestSurname1", Password = "TestPassword1" },
+                    new ClientDb { ClientID = 2, Username = "TestUsername2", Email = "TestEmail2", Name = "TestName2", Surname = "TestSurname2", Password = "TestPassword2" },
+                    new ClientDb { ClientID = 3, Username = "TestUsername3", Email = "TestEmail3", Name = "TestName3", Surname = "TestSurname3", Password = "TestPassword3" });
 
-            modelBuilder.Entity<HotelDb>().HasData(
-                new HotelDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
-                new HotelDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
-                new HotelDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
+                modelBuilder.Entity<HotelDb>().HasData(
+                    new HotelDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
+                    new HotelDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
+                    new HotelDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });
 
-            modelBuilder.Entity<HotelPictureDb>().HasData(
-                new HotelPictureDb { PictureID = 1, HotelID = 2, Picture = "TestPicture1" },
-                new HotelPictureDb { PictureID = 2, HotelID = 3, Picture = "TestPicture2" },
-                new HotelPictureDb { PictureID = 3, HotelID = 3, Picture = "TestPicture3" });
+                modelBuilder.Entity<HotelPictureDb>().HasData(
+                    new HotelPictureDb { PictureID = 1, HotelID = 2, Picture = "TestPicture1" },
+                    new HotelPictureDb { PictureID = 2, HotelID = 3, Picture = "TestPicture2" },
+                    new HotelPictureDb { PictureID = 3, HotelID = 3, Picture = "TestPicture3" });
 
-            modelBuilder.Entity<HotelRoomDb>().HasData(
-                new HotelRoomDb { RoomID = 1, HotelID = 2, HotelRoomNumber = "TestHotelRoomNumber1" },
-                new HotelRoomDb { RoomID = 2, HotelID = 3, HotelRoomNumber = "TestHotelRoomNumber2" },
-                new HotelRoomDb { RoomID = 3, HotelID = 3, HotelRoomNumber = "TestHotelRoomNumber3" },
-                new HotelRoomDb { RoomID = 4, HotelID = 3, HotelRoomNumber = "TestHotelRoomNumber4" });
+                modelBuilder.Entity<HotelRoomDb>().HasData(
+                    new HotelRoomDb { RoomID = 1, HotelID = 2, HotelRoomNumber = "TestHotelRoomNumber1" },
+                    new HotelRoomDb { RoomID = 2, HotelID = 3, HotelRoomNumber = "TestHotelRoomNumber2" },
+                    new HotelRoomDb { RoomID = 3, HotelID = 3, HotelRoomNumber = "TestHotelRoomNumber3" },
+                    new HotelRoomDb { RoomID = 4, HotelID = 3, HotelRoomNumber = "TestHotelRoomNumber4" });
 
-            modelBuilder.Entity<OfferDb>().HasData(
-                new OfferDb { OfferID = 1, HotelID = 2, OfferTitle = "TestOfferTitle1", OfferPreviewPicture = "TestOfferPreviewPicture1", IsActive = true, IsDeleted = false, CostPerChild = 10, CostPerAdult = 11, MaxGuests = 1, Description = "TestDescription1" },
-                new OfferDb { OfferID = 2, HotelID = 3, OfferTitle = "TestOfferTitle2", OfferPreviewPicture = "TestOfferPreviewPicture2", IsActive = true, IsDeleted = false, CostPerChild = 20, CostPerAdult = 22, MaxGuests = 2, Description = "TestDescription2" },
-                new OfferDb { OfferID = 3, HotelID = 3, OfferTitle = "TestOfferTitle3", OfferPreviewPicture = "TestOfferPreviewPicture3", IsActive = false, IsDeleted = true, CostPerChild = 30, CostPerAdult = 33, MaxGuests = 3, Description = "TestDescription3" });
+                modelBuilder.Entity<OfferDb>().HasData(
+                    new OfferDb { OfferID = 1, HotelID = 2, OfferTitle = "TestOfferTitle1", OfferPreviewPicture = "TestOfferPreviewPicture1", IsActive = true, IsDeleted = false, CostPerChild = 10, CostPerAdult = 11, MaxGuests = 1, Description = "TestDescription1" },
+                    new OfferDb { OfferID = 2, HotelID = 3, OfferTitle = "TestOfferTitle2", OfferPreviewPicture = "TestOfferPreviewPicture2", IsActive = true, IsDeleted = false, CostPerChild = 20, CostPerAdult = 22, MaxGuests = 2, Description = "TestDescription2" },
+                    new OfferDb { OfferID = 3, HotelID = 3, OfferTitle = "TestOfferTitle3", OfferPreviewPicture = "TestOfferPreviewPicture3", IsActive = false, IsDeleted = true, CostPerChild = 30, CostPerAdult = 33, MaxGuests = 3, Description = "TestDescription3" });
 
-            modelBuilder.Entity<OfferPictureDb>().HasData(
-                new OfferPictureDb { PictureID = 1, OfferID = 2, Picture = "TestPicture1" },
-                new OfferPictureDb { PictureID = 2, OfferID = 3, Picture = "TestPicture2" },
-                new OfferPictureDb { PictureID = 3, OfferID = 3, Picture = "TestPicture3" });
+                modelBuilder.Entity<OfferPictureDb>().HasData(
+                    new OfferPictureDb { PictureID = 1, OfferID = 2, Picture = "TestPicture1" },
+                    new OfferPictureDb { PictureID = 2, OfferID = 3, Picture = "TestPicture2" },
+                    new OfferPictureDb { PictureID = 3, OfferID = 3, Picture = "TestPicture3" });
 
-            modelBuilder.Entity<OfferHotelRoomDb>().HasData(
-                new OfferHotelRoomDb { OfferID = 1, RoomID = 1 },
-                new OfferHotelRoomDb { OfferID = 2, RoomID = 2 },
-                new OfferHotelRoomDb { OfferID = 3, RoomID = 2 },
-                new OfferHotelRoomDb { OfferID = 3, RoomID = 3 });
+                modelBuilder.Entity<OfferHotelRoomDb>().HasData(
+                    new OfferHotelRoomDb { OfferID = 1, RoomID = 1 },
+                    new OfferHotelRoomDb { OfferID = 2, RoomID = 2 },
+                    new OfferHotelRoomDb { OfferID = 3, RoomID = 2 },
+                    new OfferHotelRoomDb { OfferID = 3, RoomID = 3 });
 
-            modelBuilder.Entity<ClientReviewDb>().HasData(
-               new ClientReviewDb { ReviewID = 1, OfferID = 2, ClientID = 2, HotelID = 2, Content = "TestContent1", Rating = 1, ReviewDate = new DateTime(2001, 1, 1) },
-               new ClientReviewDb { ReviewID = 2, OfferID = 3, ClientID = 3, HotelID = 3, Content = "TestContent2", Rating = 2, ReviewDate = new DateTime(2001, 2, 2) },
-               new ClientReviewDb { ReviewID = 3, OfferID = 3, ClientID = 3, HotelID = 3, Content = "TestContent3", Rating = 3, ReviewDate = new DateTime(2001, 3, 3) });
+                modelBuilder.Entity<ClientReviewDb>().HasData(
+                   new ClientReviewDb { ReviewID = 1, OfferID = 2, ClientID = 2, HotelID = 2, Content = "TestContent1", Rating = 1, ReviewDate = new DateTime(2001, 1, 1) },
+                   new ClientReviewDb { ReviewID = 2, OfferID = 3, ClientID = 3, HotelID = 3, Content = "TestContent2", Rating = 2, ReviewDate = new DateTime(2001, 2, 2) },
+                   new ClientReviewDb { ReviewID = 3, OfferID = 3, ClientID = 3, HotelID = 3, Content = "TestContent3", Rating = 3, ReviewDate = new DateTime(2001, 3, 3) });
 
-            modelBuilder.Entity<ClientReservationDb>().HasData(
-                new ClientReservationDb { ReservationID = 1, OfferID = 2, ClientID = 2, HotelID = 2, RoomID = 2, ReviewID = 1, NumberOfAdults = 1, NumberOfChildren = 0, FromTime = new DateTime(2001, 1, 1), ToTime = new DateTime(2001, 1, 2) },
-                new ClientReservationDb { ReservationID = 2, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 2, ReviewID = 2, NumberOfAdults = 1, NumberOfChildren = 1, FromTime = new DateTime(2001, 2, 2), ToTime = new DateTime(3001, 2, 4) },
-                new ClientReservationDb { ReservationID = 3, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 3, ReviewID = 3, NumberOfAdults = 1, NumberOfChildren = 2, FromTime = new DateTime(3001, 3, 3), ToTime = new DateTime(3001, 3, 6) });
+                modelBuilder.Entity<ClientReservationDb>().HasData(
+                    new ClientReservationDb { ReservationID = 1, OfferID = 2, ClientID = 2, HotelID = 2, RoomID = 2, ReviewID = 1, NumberOfAdults = 1, NumberOfChildren = 0, FromTime = new DateTime(2001, 1, 1), ToTime = new DateTime(2001, 1, 2) },
+                    new ClientReservationDb { ReservationID = 2, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 2, ReviewID = 2, NumberOfAdults = 1, NumberOfChildren = 1, FromTime = new DateTime(2001, 2, 2), ToTime = new DateTime(3001, 2, 4) },
+                    new ClientReservationDb { ReservationID = 3, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 3, ReviewID = 3, NumberOfAdults = 1, NumberOfChildren = 2, FromTime = new DateTime(3001, 3, 3), ToTime = new DateTime(3001, 3, 6) });
+            }
             #endregion
         }
     }
