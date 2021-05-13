@@ -17,7 +17,7 @@ using Xunit;
 
 namespace Server.Tests.Database.Hotel
 {
-    public class HotelAccountDataAccessTest
+    public class HotelAccountDataAccessTest: IDisposable
     {
         private ServerDbContext _context;
         private IMapper _mapper;
