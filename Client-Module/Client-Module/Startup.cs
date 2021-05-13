@@ -19,6 +19,8 @@ namespace Client_Module
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            ServerApiConfig.BaseUrl = Configuration.GetSection("ServerApiConfig").GetValue<string>("BaseUrl");
+            ServerApiConfig.TokenHeaderName = Configuration.GetSection("ServerApiConfig").GetValue<string>("TokenHeaderName");
         }
 
         public IConfiguration Configuration { get; }
