@@ -65,5 +65,11 @@ namespace Server.Database.DataAccess.Client
             _dbContext.ClientReservations.Remove(reservationDb);
             _dbContext.SaveChanges();
         }
+
+        public List<ClientReservationDb> GetReservations(int userID)
+        {
+            return _dbContext.ClientReservations.Where(reservation => reservation.ClientID == userID)
+                                                .ToList();
+        }
     }
 }

@@ -10,6 +10,10 @@ namespace Server.Services.Client
 {
     public interface IReservationService
     {
+        #region /reservations
+        public IServiceResult GetReservations(int userID);
+        #endregion
+
         #region /reservations/{reservationID}
         public IServiceResult CancelReservation(int reservationID, int userID);
         #endregion

@@ -44,5 +44,11 @@ namespace Server.Controllers.Client
         {
             return _reservationService.CancelReservation(reservationID, _clientID);
         }
+
+        [HttpGet("reservations")]
+        public IActionResult GetReservations()
+        {
+            return _reservationService.GetReservations(_clientID);
+        }
     }
 }
