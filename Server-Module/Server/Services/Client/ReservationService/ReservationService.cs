@@ -70,8 +70,7 @@ namespace Server.Services.Client
 
         public IServiceResult GetReservations(int userID)
 		{
-            return new ServiceResult(HttpStatusCode.OK, _dataAccess.GetReservations(userID)
-                                                                   .Select(reservation => _mapper.Map<Reservation>(reservation)));
+            return new ServiceResult(HttpStatusCode.OK, _dataAccess.GetReservations(userID));
 		}
 
         public IServiceResult CheckReservationExistanceAndOwnership(int reservationID, int userID)
