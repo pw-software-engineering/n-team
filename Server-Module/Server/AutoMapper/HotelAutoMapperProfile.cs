@@ -27,6 +27,8 @@ namespace Server.AutoMapper
             CreateMap<HotelRoomDb, HotelRoomView>();
             CreateMap<OfferDb, OfferView>();
             CreateMap<OfferDb, OfferPreviewView>();
+            CreateMap<ClientReservationDb, ReservationView>();
+            CreateMap<ClientDb, ClientView>();
             #endregion
         }
     }
