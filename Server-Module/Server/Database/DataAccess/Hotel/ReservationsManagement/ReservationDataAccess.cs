@@ -23,11 +23,11 @@ namespace Server.Database.DataAccess.Hotel
             return _dbContext.HotelRooms.Find(roomID)?.HotelID;
         }
 
-        public List<ReservationObjectView> GetReservations(int hotelID, int? roomID, bool currentOnly, Paging paging)
+        public List<ReservationObjectView> GetReservations(int hotelID, int? roomID, bool? currentOnly, Paging paging)
         {
             List<ClientReservationDb> reservations = _dbContext.ClientReservations.Where(cr => cr.HotelID == hotelID).ToList();
 
-            if (currentOnly)
+            if (currentOnly.HasValue && currentOnly.Value)
                 reservations = reservations.Where(r => r.FromTime <= DateTime.Now &&
                                                        r.ToTime > DateTime.Now).ToList();
             if (roomID.HasValue)

@@ -24,7 +24,7 @@ namespace Server.Services.Hotel
             _mapper = mapper;
             _transaction = transaction;
         }
-        public IServiceResult GetReservations(int hotelID, Paging paging, bool currentOnly, int? roomID)
+        public IServiceResult GetReservations(int hotelID, bool? currentOnly, int? roomID, Paging paging)
         {
             if (paging.PageNumber < 1 || paging.PageSize < 1)
                 return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Invalid paging arguments"));

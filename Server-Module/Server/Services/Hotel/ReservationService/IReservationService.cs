@@ -9,6 +9,6 @@ namespace Server.Services.Hotel
 {
     public interface IReservationService
     {
-        public IServiceResult GetReservations(int hotelID, Paging paging, bool currentOnly, int? roomID);
+        public IServiceResult GetReservations(int hotelID, bool? currentOnly, int? roomID, Paging paging);
     }
 }
