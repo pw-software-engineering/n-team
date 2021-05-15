@@ -27,8 +27,13 @@ namespace Server.AutoMapper
             CreateMap<HotelRoomDb, HotelRoomView>();
             CreateMap<OfferDb, OfferView>();
             CreateMap<OfferDb, OfferPreviewView>();
-            CreateMap<ClientReservationDb, ReservationView>();
+            CreateMap<ClientReservationDb, ReservationView>().AfterMap((cr, rv) =>
+            {
+                rv.AdultsCount = cr.NumberOfAdults;
+                rv.ChildrenCount = cr.NumberOfChildren;
+            });
             CreateMap<ClientDb, ClientView>();
+            CreateMap<HotelRoomDb, RoomView>();
             #endregion
         }
     }

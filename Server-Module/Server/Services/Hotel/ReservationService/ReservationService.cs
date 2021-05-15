@@ -31,7 +31,7 @@ namespace Server.Services.Hotel
 
             if(roomID.HasValue)
             {
-                IServiceResult result = CheckExistanceAndOwnership(hotelID, roomID.Value);
+                IServiceResult result = CheckRoomExistanceAndOwnership(hotelID, roomID.Value);
                 if (result != null)
                     return result;
             }
@@ -47,7 +47,7 @@ namespace Server.Services.Hotel
 
             return new ServiceResult(HttpStatusCode.OK, reservationObjects);
         }
-        public IServiceResult CheckExistanceAndOwnership(int hotelID, int roomID)
+        public IServiceResult CheckRoomExistanceAndOwnership(int hotelID, int roomID)
         {
             int? ownerID = _dataAccess.FindRoomAndGetOwner(roomID);
             if (ownerID == null)

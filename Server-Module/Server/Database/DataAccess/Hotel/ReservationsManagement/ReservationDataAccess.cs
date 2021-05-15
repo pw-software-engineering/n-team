@@ -25,13 +25,14 @@ namespace Server.Database.DataAccess.Hotel
 
         public List<ReservationObjectView> GetReservations(int hotelID, int? roomID, bool? currentOnly, Paging paging)
         {
-            List<ClientReservationDb> reservations = _dbContext.ClientReservations.Where(cr => cr.HotelID == hotelID).ToList();
+            List<ClientReservationDb> reservations = _dbContext.ClientReservations.Where(cr => cr.HotelID == hotelID &&
+                                                                                               cr.ToTime > DateTime.Now).ToList();
 
             if (currentOnly.HasValue && currentOnly.Value)
-                reservations = reservations.Where(r => r.FromTime <= DateTime.Now &&
-                                                       r.ToTime > DateTime.Now).ToList();
+                reservations = reservations.Where(r => r.FromTime <= DateTime.Now).ToList();
             if (roomID.HasValue)
                 reservations = reservations.Where(r => r.RoomID == roomID).ToList();
+
             reservations = reservations.Skip((paging.PageNumber - 1) * paging.PageSize)
                                        .Take(paging.PageSize)
                                        .ToList();
@@ -40,6 +41,8 @@ namespace Server.Database.DataAccess.Hotel
             foreach(ClientReservationDb reservation in reservations)
             {
                 ReservationObjectView reservationView = new ReservationObjectView();
+                reservationView.Client = new ClientView();
+                reservationView.Room = new RoomView();
                 reservationView.Reservation = _mapper.Map<ReservationView>(reservation);
                 reservationView.Room.RoomID = reservation.RoomID.Value;
                 reservationView.Client.ClientID = reservationView.Client.ClientID;
