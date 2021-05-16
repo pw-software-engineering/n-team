@@ -40,14 +40,14 @@ namespace Server.Services.Client
                     new ErrorView("Invalid paging arguments"));
             }
 
-            List<HotelPreviewView> hotelPreviews = _mapper.Map<List<HotelPreviewView>>(_hotelSearchDataAccess.GetHotels(hotelFilter, paging));
+            List<HotelPreviewView> hotelPreviews = _hotelSearchDataAccess.GetHotels(hotelFilter, paging);
             
             return new ServiceResult(HttpStatusCode.OK, hotelPreviews);
         }
         public IServiceResult GetHotelDetails(int hotelID)
         {
             _transaction.BeginTransaction();
-            HotelView hotelView = _mapper.Map<HotelView>(_hotelSearchDataAccess.GetHotelDetails(hotelID));
+            HotelView hotelView = _hotelSearchDataAccess.GetHotelDetails(hotelID);
             if(hotelView == null)
             {
                 return new ServiceResult(HttpStatusCode.NotFound);

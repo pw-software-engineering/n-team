@@ -35,7 +35,7 @@ namespace Server.Tests.Services.Hotel
         private IMapper _mapper;
 
         [Fact]
-        public void CheckRoomExistenceAndOwnership_RoomExistsAndOwner_ReturnsNull()
+        public void CheckRoomExistenceAndOwnership_RoomExistsAndHotelIsOwner_ReturnsNull()
         {
             int hotelID = 1;
             int roomID = 1;
