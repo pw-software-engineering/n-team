@@ -9,11 +9,13 @@ using Server.AutoMapper;
 using Server.Database.DataAccess;
 using Server.Database.DataAccess.Client;
 using Server.Database.DatabaseTransaction;
+using Server.Database.Models;
 using Server.RequestModels;
 using Server.RequestModels.Client;
 using Server.Services.Client;
 using Server.Services.Result;
 using Server.ViewModels;
+using Server.ViewModels.Client;
 using Xunit;
 
 namespace Server.Tests.Services.Client
@@ -164,6 +166,62 @@ namespace Server.Tests.Services.Client
             IServiceResult result = _reservationService.CancelReservation(reservationID, userID);
 
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        }
+        [Fact]
+        public void GetReservations_NoClientReservations_200()
+		{
+            int userID = 1;
+            _dataAccessMock.Setup(da => da.GetReservations(userID)).Returns(new List<ClientReservationDb>());
+
+            IServiceResult result = _reservationService.GetReservations(userID);
+            List<ReservationData> collection = result.Result as List<ReservationData>;
+
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.NotNull(collection);
+            Assert.Empty(collection);
+        }
+
+        [Fact]
+        public void GetReservations_ClientHasReservations_200()
+        {
+            int userID = 3, sampleHotelId = 1, sampleOfferId1 = 1, sampleOfferId2 = 7;
+            HotelDb sampleHotel = new HotelDb() { HotelID = sampleHotelId };
+            var daReturnObj = new List<ClientReservationDb>()
+            {
+                new ClientReservationDb()
+                {
+                    ReservationID = 1,
+                    ClientID = userID,
+                    HotelID = sampleHotelId,
+                    OfferID = sampleOfferId1,
+                    Hotel = sampleHotel,
+                    Offer = new OfferDb() { OfferID = sampleOfferId1 }
+                },
+                new ClientReservationDb()
+                {
+                    ReservationID = 2,
+                    ClientID = userID,
+                    HotelID = sampleHotelId,
+                    OfferID = sampleOfferId2,
+                    Hotel = sampleHotel,
+                    Offer = new OfferDb() { OfferID = sampleOfferId2 }
+                }
+            };
+            int collectionLength = daReturnObj.Count;
+            _dataAccessMock.Setup(da => da.GetReservations(userID)).Returns(daReturnObj);
+
+            IServiceResult result = _reservationService.GetReservations(userID);
+            List<ReservationData> reservations = result.Result as List<ReservationData>;
+            
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.NotNull(reservations);
+            Assert.Equal(collectionLength, reservations.Count);
+            reservations.ForEach(rd =>
+            {
+                Assert.NotNull(rd.ReservationInfo);
+                Assert.NotNull(rd.HotelInfoPreview);
+                Assert.NotNull(rd.OfferInfoPreview);
+            });
         }
     }
 }

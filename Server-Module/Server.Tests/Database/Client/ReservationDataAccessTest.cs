@@ -238,6 +238,36 @@ namespace Server.Tests.Database.Client
 
             Assert.Null(_context.ClientReservations.Find(reservationID));
         }
+        [Fact]
+        public void GetReservations_NoClientReservations_ReturnsEmptyList()
+		{
+            int clientID = 1;
+
+            var reservations = _dataAccess.GetReservations(clientID);
+
+            Assert.NotNull(reservations);
+            Assert.Empty(reservations);
+		}
+        [Fact]
+        public void GetReservations_ReturnsReservations()
+		{
+            int clientID = 3;
+
+            var reservations = _dataAccess.GetReservations(clientID);
+
+            Assert.NotNull(reservations);
+            Assert.NotEmpty(reservations);
+            reservations.ForEach(reservation =>
+            {
+                // check if they are actually that client's
+                Assert.Equal(reservation.ClientID, clientID);
+                // check if navigational properties are set correctly
+                Assert.NotNull(reservation.Offer);
+                Assert.Equal(reservation.Offer.OfferID, reservation.OfferID);
+                Assert.NotNull(reservation.Hotel);
+                Assert.Equal(reservation.Hotel.HotelID, reservation.HotelID);
+            });
+        }
         public void Dispose()
         {
             _context.Database.EnsureDeleted();

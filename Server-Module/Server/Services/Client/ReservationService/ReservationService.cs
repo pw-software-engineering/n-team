@@ -71,13 +71,15 @@ namespace Server.Services.Client
 
         public IServiceResult GetReservations(int userID)
 		{
-            return new ServiceResult(HttpStatusCode.OK, _dataAccess.GetReservations(userID)
-                                                                   .Select(rdb => new ReservationData()
-                                                                   {
-                                                                       HotelInfoPreview = _mapper.Map<HotelInfoPreview>(rdb.Hotel),
-                                                                       ReservationInfo = _mapper.Map<ReservationInfoView>(rdb),
-                                                                       OfferInfoPreview = _mapper.Map<ReservationOfferInfoPreview>(rdb.Offer)
-                                                                   }));
+            return new ServiceResult(HttpStatusCode.OK,
+                _dataAccess.GetReservations(userID)
+                .Select(rdb => new ReservationData()
+                {
+                    HotelInfoPreview = _mapper.Map<HotelInfoPreview>(rdb.Hotel),
+                    ReservationInfo = _mapper.Map<ReservationInfoView>(rdb),
+                    OfferInfoPreview = _mapper.Map<ReservationOfferInfoPreview>(rdb.Offer)
+                })
+                .ToList());
 		}
 
         public IServiceResult CheckReservationExistanceAndOwnership(int reservationID, int userID)
