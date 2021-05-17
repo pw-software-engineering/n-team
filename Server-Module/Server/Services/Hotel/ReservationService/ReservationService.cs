@@ -38,11 +38,6 @@ namespace Server.Services.Hotel
 
             _transaction.BeginTransaction();
             List<ReservationObjectView> reservationObjects = _dataAccess.GetReservations(hotelID, roomID, currentOnly, paging);
-            foreach(ReservationObjectView reservationObject in reservationObjects)
-            {
-                reservationObject.Client = _dataAccess.GetClientDetails(reservationObject.Client.ClientID);
-                reservationObject.Room = _dataAccess.GetRoomDetails(reservationObject.Room.RoomID);
-            }
             _transaction.CommitTransaction();
 
             return new ServiceResult(HttpStatusCode.OK, reservationObjects);

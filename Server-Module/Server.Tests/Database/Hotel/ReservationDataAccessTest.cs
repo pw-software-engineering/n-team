@@ -115,7 +115,29 @@ namespace Server.Tests.Database.Hotel
                 Assert.Equal(reservations[i].ToTime, testReservationObjects[i].Reservation.ToTime);
             }
         }
+        private void AssertClientsDetailsListEqual(List<ReservationObjectView> reservations)
+        {
+            foreach(ReservationObjectView reservation in reservations)
+            {
+                ClientView testedClient = reservation.Client;
+                ClientDb client = _context.Clients.Find(testedClient.ClientID);
 
+                Assert.NotNull(client);
+                Assert.Equal(client.Name, testedClient.Name);
+                Assert.Equal(client.Surname, testedClient.Surname);
+            }
+        }
+        private void AssertRoomDetailsListEqual(List<ReservationObjectView> reservations)
+        {
+            foreach (ReservationObjectView reservation in reservations)
+            {
+                RoomView testedRoom = reservation.Room;
+                HotelRoomDb room = _context.HotelRooms.Find(testedRoom.RoomID);
+
+                Assert.NotNull(room);
+                Assert.Equal(room.HotelRoomNumber, testedRoom.HotelRoomNumber);
+            }
+        }
         [Fact]
         public void FindRoomAndGetOwner_NoRoom_ReturnsNull()
         {
@@ -152,6 +174,8 @@ namespace Server.Tests.Database.Hotel
                                                                                 .ToList();
 
             AssertReservationsListsEqual(reservations, testReservationObjects);
+            AssertClientsDetailsListEqual(testReservationObjects);
+            AssertRoomDetailsListEqual(testReservationObjects);
         }
         [Fact]
         public void GetReservations_CurrentOnlyReservationsAndRoomDefined_ReturnsListOfCurrentReservationsForRoom()
@@ -169,6 +193,8 @@ namespace Server.Tests.Database.Hotel
                                                                                 .ToList();
 
             AssertReservationsListsEqual(reservations, testReservationObjects);
+            AssertClientsDetailsListEqual(testReservationObjects);
+            AssertRoomDetailsListEqual(testReservationObjects);
         }
         [Fact]
         public void GetReservations_CurrentOnlyReservationsAndRoomNotDefined_ReturnsListOfCurrentReservations()
@@ -186,6 +212,8 @@ namespace Server.Tests.Database.Hotel
                                                                                 .ToList();
 
             AssertReservationsListsEqual(reservations, testReservationObjects);
+            AssertClientsDetailsListEqual(testReservationObjects);
+            AssertRoomDetailsListEqual(testReservationObjects);
         }
         [Fact]
         public void GetReservations_AllReservationsAndRoomNotDefined_ReturnsListOfAllReservations()
@@ -200,47 +228,8 @@ namespace Server.Tests.Database.Hotel
                                                                                 .ToList();
 
             AssertReservationsListsEqual(reservations, testReservationObjects);
-        }
-        [Fact] 
-        public void GetClientDetails_ReturnsClientDetails()
-        {
-            int clientID = 1;
-
-            ClientView testClient = _dataAccess.GetClientDetails(clientID);
-            ClientDb client = _context.Clients.Find(clientID);
-
-            Assert.Equal(clientID, testClient.ClientID);
-            Assert.Equal(client.Name, testClient.Name);
-            Assert.Equal(client.Surname, testClient.Surname);
-        }
-        [Fact]
-        public void GetClientDetails_InvalidClientID_ReturnsNullObject()
-        {
-            int clientID = -1;
-
-            ClientView testClient = _dataAccess.GetClientDetails(clientID);
-
-            Assert.Null(testClient);
-        }
-        [Fact]
-        public void GetRoomDetails_ReturnsRoomDetails()
-        {
-            int roomID = 1;
-
-            RoomView testRoom = _dataAccess.GetRoomDetails(roomID);
-            HotelRoomDb room = _context.HotelRooms.Find(roomID);
-
-            Assert.Equal(roomID, testRoom.RoomID);
-            Assert.Equal(room.HotelRoomNumber, testRoom.HotelRoomNumber);
-        }
-        [Fact]
-        public void GetRoomDetails_InvalidRoomID_ReturnsNullObject()
-        {
-            int roomID = -1;
-
-            RoomView testRoom = _dataAccess.GetRoomDetails(roomID);
-
-            Assert.Null(testRoom);
+            AssertClientsDetailsListEqual(testReservationObjects);
+            AssertRoomDetailsListEqual(testReservationObjects);
         }
         public void Dispose()
         {

@@ -111,20 +111,12 @@ namespace Server.Tests.Services.Hotel
             ReservationObjectView reservationObject = new ReservationObjectView()
             {
                 Reservation = reservation,
-                Client = new ClientView()
-                {
-                    ClientID = client.ClientID
-                },
-                Room = new RoomView()
-                {
-                    RoomID = room.RoomID
-                }
+                Client = client,
+                Room = room
             };
             List<ReservationObjectView> reservationObjects = new List<ReservationObjectView>() { reservationObject };
             _dataAccessMock.Setup(da => da.FindRoomAndGetOwner(roomID)).Returns(hotelID);
             _dataAccessMock.Setup(da => da.GetReservations(hotelID, roomID, currentOnly, paging)).Returns(reservationObjects);
-            _dataAccessMock.Setup(da => da.GetClientDetails(client.ClientID)).Returns(client);
-            _dataAccessMock.Setup(da => da.GetRoomDetails(room.RoomID)).Returns(room);
 
             IServiceResult result = _reservationService.GetReservations(hotelID, currentOnly, roomID, paging);
 
@@ -163,19 +155,11 @@ namespace Server.Tests.Services.Hotel
             ReservationObjectView reservationObject = new ReservationObjectView()
             {
                 Reservation = reservation,
-                Client = new ClientView()
-                {
-                    ClientID = client.ClientID
-                },
-                Room = new RoomView()
-                {
-                    RoomID = room.RoomID
-                }
+                Client = client,
+                Room = room
             };
             List<ReservationObjectView> reservationObjects = new List<ReservationObjectView>() { reservationObject };
             _dataAccessMock.Setup(da => da.GetReservations(hotelID, null, currentOnly, paging)).Returns(reservationObjects);
-            _dataAccessMock.Setup(da => da.GetClientDetails(client.ClientID)).Returns(client);
-            _dataAccessMock.Setup(da => da.GetRoomDetails(room.RoomID)).Returns(room);
 
             IServiceResult result = _reservationService.GetReservations(hotelID, currentOnly, null, paging);
 

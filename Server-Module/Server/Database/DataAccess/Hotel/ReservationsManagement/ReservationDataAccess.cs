@@ -41,22 +41,20 @@ namespace Server.Database.DataAccess.Hotel
             foreach(ClientReservationDb reservation in reservations)
             {
                 ReservationObjectView reservationView = new ReservationObjectView();
-                reservationView.Client = new ClientView();
-                reservationView.Room = new RoomView();
                 reservationView.Reservation = _mapper.Map<ReservationView>(reservation);
-                reservationView.Room.RoomID = reservation.RoomID.Value;
-                reservationView.Client.ClientID = reservationView.Client.ClientID;
+                reservationView.Room = GetRoomDetails(reservation.RoomID.Value);
+                reservationView.Client = GetClientDetails(reservation.ClientID.Value);                
                 reservationViews.Add(reservationView);
             }
             return reservationViews;
         }
 
-        public ClientView GetClientDetails(int clientID)
+        private ClientView GetClientDetails(int clientID)
         {
             return _mapper.Map<ClientView>(_dbContext.Clients.Find(clientID));
         }
 
-        public RoomView GetRoomDetails(int roomID)
+        private RoomView GetRoomDetails(int roomID)
         {
             return _mapper.Map<RoomView>(_dbContext.HotelRooms.Find(roomID));
         }
