@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Server.Database.Models;
 using Server.Services.Client;
 using System;
@@ -66,10 +67,11 @@ namespace Server.Database.DataAccess.Client
             _dbContext.SaveChanges();
         }
 
-        public List<Reservation> GetReservations(int userID)
+        public List<ClientReservationDb> GetReservations(int userID)
         {
             return _dbContext.ClientReservations.Where(reservation => reservation.ClientID == userID)
-                                                .Select(reservation => _mapper.Map<Reservation>(reservation))
+                                                .Include(reservation => reservation.Hotel)
+                                                .Include(reservation => reservation.Offer)
                                                 .ToList();
         }
     }

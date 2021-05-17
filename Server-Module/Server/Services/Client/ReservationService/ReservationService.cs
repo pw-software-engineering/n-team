@@ -5,6 +5,7 @@ using Server.RequestModels;
 using Server.RequestModels.Client;
 using Server.Services.Result;
 using Server.ViewModels;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,7 +71,13 @@ namespace Server.Services.Client
 
         public IServiceResult GetReservations(int userID)
 		{
-            return new ServiceResult(HttpStatusCode.OK, _dataAccess.GetReservations(userID));
+            return new ServiceResult(HttpStatusCode.OK, _dataAccess.GetReservations(userID)
+                                                                   .Select(rdb => new ReservationData()
+                                                                   {
+                                                                       HotelInfoPreview = _mapper.Map<HotelInfoPreview>(rdb.Hotel),
+                                                                       ReservationInfo = _mapper.Map<ReservationInfoView>(rdb),
+                                                                       OfferInfoPreview = _mapper.Map<ReservationOfferInfoPreview>(rdb.Offer)
+                                                                   }));
 		}
 
         public IServiceResult CheckReservationExistanceAndOwnership(int reservationID, int userID)

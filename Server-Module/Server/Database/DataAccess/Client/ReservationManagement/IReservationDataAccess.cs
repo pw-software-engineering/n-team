@@ -14,7 +14,7 @@ namespace Server.Database.DataAccess.Client
         int AddReservation(Reservation reservation);
         bool HasReservationBegun(int reservationID);
         void RemoveReservation(int ReservationID);
-        List<Reservation> GetReservations(int userID);
+        List<ClientReservationDb> GetReservations(int userID);
 
         int? FindReservationAndGetOwner(int reservationID);
         int? FindOfferAndGetOwner(int offerID);

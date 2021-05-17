@@ -14,6 +14,7 @@ using Server.ViewModels;
 
 namespace Server.Controllers.Client
 {
+    [Authorize(AuthenticationSchemes = ClientTokenDefaults.AuthenticationScheme)]
     [ApiController]
     [Route("/api-client")]
     public class ReservationController : Controller
