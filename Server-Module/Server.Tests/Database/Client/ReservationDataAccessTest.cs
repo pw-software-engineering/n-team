@@ -249,8 +249,8 @@ namespace Server.Tests.Database.Client
             Assert.NotNull(reservations);
             Assert.Empty(reservations);
 		}
-        [Fact]
-        /*public void GetReservations_ReturnsReservations()
+        /*[Fact]
+        public void GetReservations_ReturnsReservations()
         {
             int clientID = 3;
 
