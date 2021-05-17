@@ -8,6 +8,7 @@ using Server.Database.DataAccess.Client;
 using Server.Database.Models;
 using Server.RequestModels;
 using Server.Services.Client;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -249,25 +250,40 @@ namespace Server.Tests.Database.Client
             Assert.Empty(reservations);
 		}
         [Fact]
-        public void GetReservations_ReturnsReservations()
-		{
+        /*public void GetReservations_ReturnsReservations()
+        {
             int clientID = 3;
+
+
+            List<ReservationData> data = new List<ReservationData>
+            {
+                new ReservationData()
+                {
+                    ReservationInfo = new ReservationInfoView()
+                    {
+                        ReservationID = 1,
+                        From = DateTime.Now,
+                        To = DateTime.Now,
+                        NumberOfAdults = 0,
+                        NumberOfChildren = 1
+                    },
+                    OfferInfoPreview = new ReservationOfferInfoPreview()
+                    {
+
+                    },
+                    HotelInfoPreview = new HotelInfoPreview()
+					{
+
+					}
+                }
+            };
 
             var reservations = _dataAccess.GetReservations(clientID);
 
             Assert.NotNull(reservations);
             Assert.NotEmpty(reservations);
-            reservations.ForEach(reservation =>
-            {
-                // check if they are actually that client's
-                Assert.Equal(reservation.ClientID, clientID);
-                // check if navigational properties are set correctly
-                Assert.NotNull(reservation.Offer);
-                Assert.Equal(reservation.Offer.OfferID, reservation.OfferID);
-                Assert.NotNull(reservation.Hotel);
-                Assert.Equal(reservation.Hotel.HotelID, reservation.HotelID);
-            });
-        }
+        }*/
+
         public void Dispose()
         {
             _context.Database.EnsureDeleted();

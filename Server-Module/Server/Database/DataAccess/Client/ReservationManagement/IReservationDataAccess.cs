@@ -1,4 +1,5 @@
 ﻿using Server.Services.Client;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using Server.Database.Models;
@@ -14,7 +15,7 @@ namespace Server.Database.DataAccess.Client
         int AddReservation(Reservation reservation);
         bool HasReservationBegun(int reservationID);
         void RemoveReservation(int ReservationID);
-        List<ClientReservationDb> GetReservations(int userID);
+        List<ReservationData> GetReservations(int userID);
 
         int? FindReservationAndGetOwner(int reservationID);
         int? FindOfferAndGetOwner(int offerID);
