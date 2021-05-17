@@ -271,8 +271,8 @@ namespace Server.Tests.Database.Hotel
                 "Pic3" 
             };
             int offerID = 2;
-
             int offerPicturesCount = _context.OfferPictures.Where(op => op.OfferID == offerID).Count();
+
             _dataAccess.AddOfferPictures(offerID, pictures);
             int offerPicturesUpdatedCount = _context.OfferPictures.Where(op => op.OfferID == offerID).Count();
 

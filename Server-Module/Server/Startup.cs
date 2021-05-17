@@ -63,8 +63,10 @@ namespace Server
             services.AddTransient<IHotelSearchService, HotelSearchService>();
             services.AddTransient<IOfferSearchDataAccess, OfferSearchDataAccess>();
             services.AddTransient<IOfferSearchService, OfferSearchService>();
-            services.AddTransient<IReservationDataAccess, ReservationDataAccess>();
-            services.AddTransient<IReservationService, ReservationService>();
+            services.AddTransient<Database.DataAccess.Client.IReservationDataAccess, Database.DataAccess.Client.ReservationDataAccess>();
+            services.AddTransient<Services.Client.IReservationService, Services.Client.ReservationService>();
+            services.AddTransient<Database.DataAccess.Hotel.IReservationDataAccess, Database.DataAccess.Hotel.ReservationDataAccess>();
+            services.AddTransient<Services.Hotel.IReservationService, Services.Hotel.ReservationService>();
 
             services.AddTransient<IClientTokenManager, ClientTokenManager>();
             services.AddTransient<IClientTokenDataAccess, ClientTokenDataAccess>();

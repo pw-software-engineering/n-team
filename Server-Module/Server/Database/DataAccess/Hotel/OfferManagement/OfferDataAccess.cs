@@ -56,9 +56,7 @@ namespace Server.Database.DataAccess.Hotel
         }
         public int? FindOfferAndGetOwner(int offerID)
         {
-            return _dbContext.Offers.Where(o => o.OfferID == offerID)
-                                    .Select(o => (int?)o.HotelID)
-                                    .FirstOrDefault();
+            return _dbContext.Offers.Find(offerID)?.HotelID;
         }
         public void UpdateOffer(int offerID, OfferInfoUpdate offerInfoUpdate)
         {

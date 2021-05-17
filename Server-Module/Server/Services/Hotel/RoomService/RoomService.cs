@@ -67,7 +67,7 @@ namespace Server.Services.Hotel
             foreach(HotelRoomView room in rooms)
                 room.OfferID = _dataAccess.GetOfferIDsForRoom(room.RoomID);
 
-            return new ServiceResult(HttpStatusCode.OK, _mapper.Map<List<HotelRoomView>>(rooms));
+            return new ServiceResult(HttpStatusCode.OK, rooms);
         }
         public IServiceResult CheckExistanceAndOwnership(int hotelID, int roomID)
         {

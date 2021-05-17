@@ -35,16 +35,12 @@ namespace Server.Database.DataAccess.Client
 
         public int? FindOfferAndGetOwner(int offerID)
         {
-            return _dbContext.Offers.Where(o => o.OfferID == offerID)
-                                    .Select(o => (int?)o.HotelID)
-                                    .FirstOrDefault();
+            return _dbContext.Offers.Find(offerID)?.HotelID;
         }
 
         public int? FindReservationAndGetOwner(int reservationID)
         {
-            return _dbContext.ClientReservations.Where(cr => cr.ReservationID == reservationID)
-                                                .Select(cr => (int?)cr.ClientID)
-                                                .FirstOrDefault();
+            return _dbContext.ClientReservations.Find(reservationID)?.ClientID;
         }
 
         public List<int> GetOfferRoomIDs(int offerID)
