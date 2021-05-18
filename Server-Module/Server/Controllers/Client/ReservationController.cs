@@ -35,7 +35,7 @@ namespace Server.Controllers.Client
         }
 
         [HttpPost("hotels/{hotelID:int}/offers/{offerID:int}/reservations")]
-        public IActionResult AddReservation([FromRoute] int hotelID, [FromRoute] int offerID, [FromQuery] ReservationInfo reservation)
+        public IActionResult AddReservation([FromRoute] int hotelID, [FromRoute] int offerID, [FromBody] ReservationInfo reservation)
         {
             return _reservationService.AddReservation(hotelID, offerID, _clientID, reservation);
         }
