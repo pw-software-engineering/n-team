@@ -121,6 +121,12 @@ namespace ServerApiMockup.MockupApiControllers
                     IgnoreNullValues = true
                 });
         }
+
+        [HttpGet("hotels/{hotelID}/offers/{offerID}")]
+        public IActionResult GetHotelOfferDetails([FromRoute] int hotelID, [FromRoute] int offerID)
+        {
+            throw new NotImplementedException();
+        }
     }
     public class OfferFilter
     {
