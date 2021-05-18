@@ -30,6 +30,28 @@ namespace Server.Services.Hotel
         }
         public IServiceResult AddOffer(int hotelID, OfferInfo offerInfo)
         {
+            if(offerInfo == null)
+            {
+                throw new ArgumentNullException("offerInfo");
+            }
+            if(!offerInfo.MaxGuests.HasValue || offerInfo.MaxGuests.Value <= 0)
+            {
+                return new ServiceResult(
+                    HttpStatusCode.BadRequest,
+                    new ErrorView("MaxGuests property is required and must contain a positive integer value"));
+            }
+            if(!offerInfo.CostPerAdult.HasValue || offerInfo.CostPerAdult.Value < 0)
+            {
+                return new ServiceResult(
+                    HttpStatusCode.BadRequest,
+                    new ErrorView("CostPerAdult property is required and must contain a positive real number"));
+            }
+            if(!offerInfo.CostPerChild.HasValue || offerInfo.CostPerChild.Value < 0)
+            {
+                return new ServiceResult(
+                    HttpStatusCode.BadRequest,
+                    new ErrorView("CostPerChild property is required and must contain a positive real number"));
+            }
             _transaction.BeginTransaction();
             int offerID = _dataAccess.AddOffer(hotelID, offerInfo);
             _dataAccess.AddOfferPictures(offerID, offerInfo.Pictures);
