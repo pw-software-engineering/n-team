@@ -33,7 +33,7 @@ namespace Server.Controllers.Client
             base.OnActionExecuting(context);
         }
 
-        [HttpPost("hotels/{hotelID:int}/offers/{offerID:int}")]
+        [HttpPost("hotels/{hotelID:int}/offers/{offerID:int}/reservations")]
         public IActionResult AddReservation([FromRoute] int hotelID, [FromRoute] int offerID, [FromQuery] ReservationInfo reservation)
         {
             return _reservationService.AddReservation(hotelID, offerID, _clientID, reservation);
