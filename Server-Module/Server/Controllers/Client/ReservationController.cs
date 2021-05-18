@@ -16,6 +16,7 @@ namespace Server.Controllers.Client
 {
     [ApiController]
     [Route("/api-client")]
+    [Authorize(AuthenticationSchemes = ClientTokenDefaults.AuthenticationScheme)]
     public class ReservationController : Controller
     {
         private readonly IReservationService _reservationService;
