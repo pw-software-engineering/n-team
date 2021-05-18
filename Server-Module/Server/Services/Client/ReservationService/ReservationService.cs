@@ -5,6 +5,7 @@ using Server.RequestModels;
 using Server.RequestModels.Client;
 using Server.Services.Result;
 using Server.ViewModels;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,6 +68,12 @@ namespace Server.Services.Client
 
             return new ServiceResult(HttpStatusCode.OK);
         }
+
+        public IServiceResult GetReservations(int userID)
+		{
+            return new ServiceResult(HttpStatusCode.OK, _dataAccess.GetReservations(userID));
+		}
+
         public IServiceResult CheckReservationExistanceAndOwnership(int reservationID, int userID)
         {
             int? ownerID = _dataAccess.FindReservationAndGetOwner(reservationID);

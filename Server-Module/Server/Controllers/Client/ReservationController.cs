@@ -14,6 +14,7 @@ using Server.ViewModels;
 
 namespace Server.Controllers.Client
 {
+    [Authorize(AuthenticationSchemes = ClientTokenDefaults.AuthenticationScheme)]
     [ApiController]
     [Route("/api-client")]
     public class ReservationController : Controller
@@ -43,6 +44,12 @@ namespace Server.Controllers.Client
         public IActionResult CancelReservation([FromRoute] int reservationID)
         {
             return _reservationService.CancelReservation(reservationID, _clientID);
+        }
+
+        [HttpGet("reservations")]
+        public IActionResult GetReservations()
+        {
+            return _reservationService.GetReservations(_clientID);
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Server.Database.Models;
 using Server.Services.Client;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +62,20 @@ namespace Server.Database.DataAccess.Client
             ClientReservationDb reservationDb = _dbContext.ClientReservations.Find(reservationID);
             _dbContext.ClientReservations.Remove(reservationDb);
             _dbContext.SaveChanges();
+        }
+
+        public List<ReservationData> GetReservations(int userID)
+        {
+            return _dbContext.ClientReservations
+                .Where(reservation => reservation.ClientID == userID)
+                .Include(reservation => reservation.Hotel)
+                .Include(reservation => reservation.Offer)
+                .Select(rdb => new ReservationData()
+                {
+                    HotelInfoPreview = _mapper.Map<HotelInfoPreview>(rdb.Hotel),
+                    ReservationInfo = _mapper.Map<ReservationInfoView>(rdb),
+                    OfferInfoPreview = _mapper.Map<ReservationOfferInfoPreview>(rdb.Offer)
+                }).ToList();
         }
     }
 }

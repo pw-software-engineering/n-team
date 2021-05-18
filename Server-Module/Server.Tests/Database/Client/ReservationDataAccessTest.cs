@@ -8,6 +8,7 @@ using Server.Database.DataAccess.Client;
 using Server.Database.Models;
 using Server.RequestModels;
 using Server.Services.Client;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -238,6 +239,51 @@ namespace Server.Tests.Database.Client
 
             Assert.Null(_context.ClientReservations.Find(reservationID));
         }
+        [Fact]
+        public void GetReservations_NoClientReservations_ReturnsEmptyList()
+		{
+            int clientID = 1;
+
+            var reservations = _dataAccess.GetReservations(clientID);
+
+            Assert.NotNull(reservations);
+            Assert.Empty(reservations);
+		}
+        /*[Fact]
+        public void GetReservations_ReturnsReservations()
+        {
+            int clientID = 3;
+
+
+            List<ReservationData> data = new List<ReservationData>
+            {
+                new ReservationData()
+                {
+                    ReservationInfo = new ReservationInfoView()
+                    {
+                        ReservationID = 1,
+                        From = DateTime.Now,
+                        To = DateTime.Now,
+                        NumberOfAdults = 0,
+                        NumberOfChildren = 1
+                    },
+                    OfferInfoPreview = new ReservationOfferInfoPreview()
+                    {
+
+                    },
+                    HotelInfoPreview = new HotelInfoPreview()
+					{
+
+					}
+                }
+            };
+
+            var reservations = _dataAccess.GetReservations(clientID);
+
+            Assert.NotNull(reservations);
+            Assert.NotEmpty(reservations);
+        }*/
+
         public void Dispose()
         {
             _context.Database.EnsureDeleted();

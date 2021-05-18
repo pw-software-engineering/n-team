@@ -22,9 +22,17 @@ namespace Server.AutoMapper
             #region Db -> View
             CreateMap<HotelDb, HotelPreviewView>();
             CreateMap<HotelDb, HotelView>();
+            CreateMap<HotelDb, HotelInfoPreview>();
             CreateMap<OfferDb, OfferPreviewView>();
             CreateMap<OfferDb, OfferView>();
+            CreateMap<OfferDb, ReservationOfferInfoPreview>();
             CreateMap<ClientDb, ClientInfoView>();
+            CreateMap<ClientReservationDb, ReservationInfoView>().AfterMap((cr, r) =>
+            {
+                r.From = cr.FromTime;
+                r.To = cr.ToTime;
+            });
+            //CreateMap<ClientReviewDb, ReviewInfoView>();
             #endregion
 
             #region Request -> Model -> Db
