@@ -17,6 +17,7 @@ namespace Server.Controllers.Client
     [Authorize(AuthenticationSchemes = ClientTokenDefaults.AuthenticationScheme)]
     [ApiController]
     [Route("/api-client")]
+    [Authorize(AuthenticationSchemes = ClientTokenDefaults.AuthenticationScheme)]
     public class ReservationController : Controller
     {
         private readonly IReservationService _reservationService;
@@ -34,8 +35,8 @@ namespace Server.Controllers.Client
             base.OnActionExecuting(context);
         }
 
-        [HttpPost("hotels/{hotelID:int}/offers/{offerID:int}")]
-        public IActionResult AddReservation([FromRoute] int hotelID, [FromRoute] int offerID, [FromQuery] ReservationInfo reservation)
+        [HttpPost("hotels/{hotelID:int}/offers/{offerID:int}/reservations")]
+        public IActionResult AddReservation([FromRoute] int hotelID, [FromRoute] int offerID, [FromBody] ReservationInfo reservation)
         {
             return _reservationService.AddReservation(hotelID, offerID, _clientID, reservation);
         }

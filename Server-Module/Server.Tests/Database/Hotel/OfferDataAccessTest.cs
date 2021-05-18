@@ -230,7 +230,12 @@ namespace Server.Tests.Database.Hotel
             int offerID = 3;
 
             int? ownerTest = _dataAccess.FindOfferAndGetOwner(offerID);
-            int? owner = _context.Offers.Find(offerID).HotelID;
+            int? owner;
+            OfferDb offer = _context.Offers.Find(offerID);
+            if (offer is null || offer.IsDeleted)
+                owner = null;
+            else
+                owner = offer.HotelID;
 
             Assert.Equal(owner, ownerTest);
         }
