@@ -64,9 +64,8 @@
                 )
             )
         );
-        var offerDetailsBtn = $("<a>")
+        var offerDetailsBtn = $("<button>")
             .attr("class", "w-100 btn btn-secondary mt-auto")
-            .attr("href", `/hotels/${this.hotelOfferData.hotelID}/offers/${this.hotelOfferData.offerID}`)
             .text("Find out more")
             .append($('<i class="ml-2 fas fa-chevron-right">'));
         offerDetailsBtn.on('click', this.hotelOfferEvents.onOfferDetails.bind(null, this));
