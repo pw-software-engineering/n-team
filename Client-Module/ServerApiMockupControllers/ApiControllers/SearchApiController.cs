@@ -175,7 +175,60 @@ namespace ServerApiMockup.MockupApiControllers
             {
                 return NotFound();
             }
-            throw new NotImplementedException();
+            if(paging.PageNumber == 10)
+            {
+                return BadRequest(new { error = "Test error result" });
+            }
+            List<OfferReview> offerReviews = new List<OfferReview>();
+            if(paging.PageNumber > 3)
+            {
+                return new JsonResult(
+                offerReviews,
+                new JsonSerializerOptions()
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    IgnoreNullValues = true
+                });
+            }
+            Random rng = new Random();
+            for(int i = 0; i < 10; i++)
+            {
+                offerReviews.Add(new OfferReview()
+                {
+                    ReviewID = i + 1,
+                    ReviewerUsername = $"TestUsername_{i}",
+                    CreationDate = new DateTime(2020, i + 1, 10 + i),
+                    Content = "This is test\nReview with some\nnewlines in between.",
+                    Rating = rng.Next(1, 6)
+                });
+            }
+            return new JsonResult(
+                offerReviews,
+                new JsonSerializerOptions()
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    IgnoreNullValues = true
+                });
+        }
+    }
+
+    public class OfferReview
+    {
+        public int ReviewID { get; set; }
+        public string Content { get; set; }
+        public int Rating { get; set; }
+        public DateTime CreationDate { get; set; }
+        public string ReviewerUsername { get; set; }
+        public OfferReview Clone()
+        {
+            return new OfferReview()
+            {
+                ReviewID = ReviewID,
+                Content = Content,
+                Rating = Rating,
+                CreationDate = CreationDate,
+                ReviewerUsername = ReviewerUsername
+            };
         }
     }
 

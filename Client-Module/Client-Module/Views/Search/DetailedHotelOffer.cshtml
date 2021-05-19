@@ -78,7 +78,7 @@
         </li>
     </ul>
 
-    <ul class="list-unstyled offer-reviews-list w-75 m-0 py-2 mx-auto" id="@tagIDs.OfferReviewsListID">
+    <ul class="list-unstyled offer-reviews-list w-75 m-0 py-2 mx-auto" id="@tagIDs.OfferReviewsListID" style="min-height: 300px">
         <li class="offer-review p-3">
             <div class="d-flex w-100 flex-row-reverse flex-wrap">
                 <div class="align-self-start text-nowrap">
@@ -127,14 +127,7 @@
 
         <li class="offer-review p-3">
             <div class="d-flex w-100 flex-row-reverse flex-wrap">
-                <div class="align-self-start text-nowrap">
-                    <b class="text-secondary">Rating: </b>
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="far fa-star text-warning"></i>
-                    <i class="far fa-star text-warning"></i>
-                </div>
+                <div class="align-self-start text-nowrap"><b class="text-secondary">Rating: </b><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="far fa-star text-warning"></i><i class="far fa-star text-warning"></i></div>
                 <div class="mr-auto">
                     <i class="fas fa-user mr-2"></i>
                     <span class="text-secondary">[Username]</span>
@@ -151,17 +144,17 @@
 
     <ul class="pagination justify-content-center mx-auto w-100 my-3">
         <li class="page-item ml-auto">
-            <button class="page-link" href="" id="@tagIDs.ReviewBottomPagerPreviousBtnID">
+            <a class="page-link" href="#@tagIDs.ReviewTopPagerInputID" id="@tagIDs.ReviewBottomPagerPreviousBtnID">
                 <i class="fas fa-chevron-left text-dark"></i>
-            </button>
+            </a>
         </li>
         <li class="page-item">
             <input class="page-link text-dark text-center font-weight-bold p-2" id="@tagIDs.ReviewBottomPagerInputID" style="width: 60px" type="number" min="1" value="1" />
         </li>
         <li class="page-item">
-            <button class="page-link" href="" id="@tagIDs.ReviewBottomPagerNextBtnID">
+            <a class="page-link" href="#@tagIDs.ReviewTopPagerInputID" id="@tagIDs.ReviewBottomPagerNextBtnID">
                 <i class="fas fa-chevron-right text-dark"></i>
-            </button>
+            </a>
         </li>
     </ul>
 </div>
@@ -211,6 +204,12 @@
 <script src="~/js/Shared/carouselPicturesManager.js"></script>
 <script>
     (function () {
+        var offerDetailsLoadedResolve, offerDetailsLoadedReject;
+        offerDetailsLoadedPromise = new Promise((resolve, reject) => {
+            offerDetailsLoadedResolve = resolve;
+            offerDetailsLoadedReject = reject;
+        });
+
         var apiConfig = {
             apiBaseUrl: "@ServerApiConfig.BaseUrl",
             apiTokenCookieName: "@ClientTokenCookieDefaults.AuthCookieName",
@@ -241,6 +240,7 @@
                     $("<p>").attr("class", "text-center text-danger h5").text(error.message)
                 );
                 $("#@tagIDs.MainContentDivID").remove();
+                offerDetailsLoadedReject();
                 return;
             }
             $("#@tagIDs.OfferTitleTextID").text(data.offerTitle);
@@ -285,14 +285,18 @@
 
             $("#@tagIDs.LoadingDataDivID").addClass("d-none");
             $("#@tagIDs.MainContentDivID").removeClass("d-none");
+
+            offerDetailsLoadedResolve();
         })();
     })();
+    var offerDetailsLoadedPromise;
 </script>
 <script src="~/js/Search/HotelOfferDetails/hotelOfferReviewsManager.js"></script>
 <script src="~/js/Search/HotelOfferDetails/hotelOfferReviewEntry.js"></script>
 <script src="~/js/Shared/pager.js"></script>
 <script>
-    (function () {
+    offerDetailsLoadedPromise.then(function () {
+        console.log("LOADING REVIEWS");
         var apiConfig = {
             apiBaseUrl: "@ServerApiConfig.BaseUrl",
             apiTokenCookieName: "@ClientTokenCookieDefaults.AuthCookieName",
@@ -338,7 +342,9 @@
         });
 
         var offerReviewsList = $("#@tagIDs.OfferReviewsListID");
+        var currentActionID = 0;
         async function DisplayOfferReviews() {
+            var actionID = ++currentActionID;
             offerReviewsList.empty();
             //Show a loading box while AJAX is fetching hotel offers info
             var loadingBox = $("<li>")
@@ -349,8 +355,8 @@
                         .attr("style", "width: 75px").attr("src", "/resources/loading.gif"),
                     $("<p>")
                         .attr("class", "text-center h5 mt-2")
-                        .text("Loading offer reviews page...")
-            );
+                        .text("Loading offer reviews...")
+                );
             offerReviewsList.append(loadingBox);
 
             try {
@@ -360,6 +366,9 @@
                 });
             } catch (error) {
                 // Display server error when something went wrong with the request
+                if (actionID !== currentActionID) {
+                    return;
+                }
                 loadingBox.empty();
                 loadingBox.append(
                     $("<p>")
@@ -369,6 +378,9 @@
                         .attr("class", "text-center text-danger h5")
                         .text(error.message)
                 );
+                return;
+            }
+            if (actionID !== currentActionID) {
                 return;
             }
             if (data.length === 0) {
@@ -383,7 +395,7 @@
                 return;
             }
             offerReviewsList.empty();
-            // Create new HotelOfferEntry instances, generate and display hotel offer preview components
+            // Create new HotelOfferReviewEntry instances, generate and display offer review components
             for (var i = 0; i < data.length; i++) {
                 var offerReviewEntry = new HotelOfferReviewEntry({
                     reviewData: data[i]
@@ -391,6 +403,8 @@
                 offerReviewsList.append(offerReviewEntry.component);
             }
         }
-    })();
+
+        pager.setPageNumber(1, true);
+    }, () => { });
 </script>
 }
