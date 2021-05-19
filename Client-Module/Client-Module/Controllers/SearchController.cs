@@ -49,7 +49,7 @@ namespace Client_Module.Controllers
         }
 
         [HttpGet("/hotels/{hotelID}/offers/{offerID}")]
-        public IActionResult DetailedHotelOffer(int hotelID, int offerID, [FromQuery] DateTime fromTime, [FromQuery] DateTime toTime)
+        public IActionResult DetailedHotelOffer(int hotelID, int offerID, [FromQuery] DateTime? fromTime, [FromQuery] DateTime? toTime)
         {
             HotelOfferDetailsModel model = new HotelOfferDetailsModel()
             {

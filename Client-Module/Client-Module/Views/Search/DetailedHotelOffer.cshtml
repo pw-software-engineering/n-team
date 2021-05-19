@@ -120,7 +120,7 @@
     </ul>
 </div>
 
-<div class="modal fade bd-example-modal-lg" id="reservationModal" tabindex="-1" role="dialog">
+<div class="modal fade bd-example-modal-lg" id="@tagIDs.ReservationModalID" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-light">
@@ -145,15 +145,35 @@
                 <div class="d-flex flex-row flex-wrap">
                     <div class="flex-grow-1 mx-3">
                         <p class="text-muted my-0 mx-2">From:</p>
-                        <input class="form-control flex-grow-1 w-100" type="date" />
+                        <input class="form-control flex-grow-1 w-100" type="date" id="@tagIDs.ReservationFromTimeInputID" value="@(Model.FromTime.HasValue ? Model.FromTime.Value.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
                     </div>
                     <div class="flex-grow-1 mx-3">
                         <p class="text-muted my-0 mx-2">To:</p>
-                        <input class="form-control flex-grow-1 w-100" type="date" />
+                        <input class="form-control flex-grow-1 w-100" type="date" id="@tagIDs.ReservationToTimeInputID" value="@(Model.ToTime.HasValue ? Model.ToTime.Value.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
                     </div>
                 </div>
+                <hr style="border-top: 1px dashed lightgray" />
+                <h3 class="font-weight-normal text-center mb-3">Select number of guests</h3>
+                <div class="d-flex flex-row flex-wrap">
+                    <div class="flex-grow-1 mx-3">
+                        <p class="text-muted my-0 mx-2">
+                            <i class="fas fa-user-tie mx-2"></i>
+                            <span>Number of adults:</span>
+                        </p>
+                        <input class="form-control flex-grow-1 w-100" id="@tagIDs.ReservationNumberOfAdultsInputID" type="number" />
+                    </div>
+                    <div class="flex-grow-1 mx-3">
+                        <p class="text-muted my-0 mx-2">
+                            <i class="fas fa-child mx-2"></i>
+                            <span>Number of children:</span>
+                        </p>
+                        <input class="form-control flex-grow-1 w-100" id="@tagIDs.ReservationNumberOfChildrenInputID" type="number" />
+                    </div>
+                </div>
+                <p class="text-center text-danger d-none mt-2" id="guests-validation-error">Server/validation error</p>
+
                 <hr />
-                <button class="d-block btn btn-success w-50 mx-auto my-4 font-weight-bold" style="font-size: 18px; min-width: 150px">Create reservation</button>
+                <button class="d-block btn btn-success w-50 mx-auto my-4 font-weight-bold" style="font-size: 18px; min-width: 150px" id="@tagIDs.ReservationModalCreateButtonID">Create reservation</button>
             </div>
         </div>
     </div>
@@ -247,7 +267,7 @@
             $("#@tagIDs.LoadingDataDivID").addClass("d-none");
             $("#@tagIDs.MainContentDivID").removeClass("d-none");
 
-            offerDetailsLoadedResolve();
+            offerDetailsLoadedResolve(data);
         })();
     })();
     var offerDetailsLoadedPromise;
@@ -366,6 +386,24 @@
         }
 
         pager.setPageNumber(1, true);
+    }, () => { });
+</script>
+<script src="~/js/Search/OfferReservations/hotelOfferReservationManager.js"></script>
+<script src="~/js/Search/OfferReservations/hotelOfferReservationModal.js"></script>
+<script>
+    offerDetailsLoadedPromise.then(function (offerData) {
+        var reservationModal = new HotelOfferReservationModal({
+            hotelOfferData: offerData,
+            modalHandle: $("#@tagIDs.ReservationModalID"),
+            createReservationButtonHandle: $("#@tagIDs.ReservationModalCreateButtonID"),
+            inputHandles: {
+                fromTimeInput: $("#@tagIDs.ReservationFromTimeInputID"),
+                toTimeInput: $("#@tagIDs.ReservationToTimeInputID"),
+                numberOfAdultsInput: $("#@tagIDs.ReservationNumberOfAdultsInputID"),
+                numberOfChildrenInput: $("#@tagIDs.ReservationNumberOfChildrenInputID")
+            }
+        });
+        reservationModal.createSession();
     }, () => { });
 </script>
 }

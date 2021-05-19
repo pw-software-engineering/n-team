@@ -18,7 +18,7 @@ function getCookie(cname) {
     return "";
 }
 
-function formatDate(date) {
+function formatDate(date, sep = '.') {
     var d = new Date(date),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
@@ -29,5 +29,5 @@ function formatDate(date) {
     if (day.length < 2)
         day = '0' + day;
 
-    return [day, month, year].join('.');
+    return [day, month, year].join(sep);
 }
