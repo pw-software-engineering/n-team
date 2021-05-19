@@ -125,9 +125,63 @@ namespace ServerApiMockup.MockupApiControllers
         [HttpGet("hotels/{hotelID}/offers/{offerID}")]
         public IActionResult GetHotelOfferDetails([FromRoute] int hotelID, [FromRoute] int offerID)
         {
-            throw new NotImplementedException();
+            if(hotelID == 10 && offerID == 10)
+            {
+                return NotFound();
+            }
+            byte[] imgRawRoom = System.IO.File.ReadAllBytes($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Resources/picture.png");
+            string imgBase64Room = "data:image/png;base64," + Convert.ToBase64String(imgRawRoom);
+            byte[] imgRawStock = System.IO.File.ReadAllBytes($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Resources/stock-photo.jpg");
+            string imgBase64Stock = "data:image/jpg;base64," + Convert.ToBase64String(imgRawStock);
+            bool isDeleted = false, isActive = true;
+            if(offerID == 2)
+            {
+                isActive = false;
+            }
+            else if(offerID == 3)
+            {
+                isActive = false;
+                isDeleted = true;
+            }
+            OfferView offerView = new OfferView()
+            {
+                OfferID = 1,
+                OfferTitle = "The best offer in the world",
+                OfferDescription = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.",
+                IsDeleted = isDeleted,
+                IsActive = isActive,
+                CostPerChild = 10.32,
+                CostPerAdult = 15.01,
+                MaxGuests = 5,
+                OfferPictures = new List<string>()
+                {
+                    imgBase64Room,
+                    imgBase64Stock
+                }
+            };
+            return new JsonResult(
+                offerView,
+                new JsonSerializerOptions()
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    IgnoreNullValues = true
+                });
         }
     }
+
+    public class OfferView
+    {
+        public int OfferID { get; set; }
+        public string OfferTitle { get; set; }
+        public string OfferDescription { get; set; }
+        public List<string> OfferPictures { get; set; }
+        public int MaxGuests { get; set; }
+        public double CostPerChild { get; set; }
+        public double CostPerAdult { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDeleted { get; set; }
+    }
+
     public class OfferFilter
     {
         [FromQuery]

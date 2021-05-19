@@ -51,7 +51,12 @@ namespace Client_Module.Controllers
         [HttpGet("/hotels/{hotelID}/offers/{offerID}")]
         public IActionResult DetailedHotelOffer(int hotelID, int offerID)
         {
-            return View();
+            HotelOfferDetailsModel model = new HotelOfferDetailsModel()
+            {
+                HotelID = hotelID,
+                OfferID = offerID
+            };
+            return View(model);
         }
     }
 }
