@@ -122,7 +122,7 @@ namespace ServerApiMockup.MockupApiControllers
                 });
         }
 
-        [HttpGet("hotels/{hotelID}/offers/{offerID}")]
+        [HttpGet("hotels/{hotelID:int}/offers/{offerID:int}")]
         public IActionResult GetHotelOfferDetails([FromRoute] int hotelID, [FromRoute] int offerID)
         {
             if(hotelID == 10 && offerID == 10)
@@ -166,6 +166,31 @@ namespace ServerApiMockup.MockupApiControllers
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     IgnoreNullValues = true
                 });
+        }
+
+        [HttpGet("hotels/{hotelID:int}/offers/{offerID:int}/reviews")]
+        public IActionResult GetHotelOfferReviews([FromRoute] int hotelID, [FromRoute] int offerID, [FromQuery] Paging paging)
+        {
+            if (hotelID == 10 && offerID == 10)
+            {
+                return NotFound();
+            }
+            throw new NotImplementedException();
+        }
+    }
+
+    public class Paging
+    {
+        [FromQuery]
+        public int PageSize { get; set; }
+
+        [FromQuery]
+        public int PageNumber { get; set; }
+        public Paging() : this(10, 1) { }
+        public Paging(int size, int number)
+        {
+            PageSize = size;
+            PageNumber = number;
         }
     }
 

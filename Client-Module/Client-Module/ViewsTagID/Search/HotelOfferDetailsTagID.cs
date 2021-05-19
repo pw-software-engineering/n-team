@@ -19,5 +19,13 @@ namespace Client_Module.ViewsTagID.Search
         public string CostPerChildTextID { get; } = "cost-per-child-text";
         public string OfferStatusBoxID { get; } = "offer-status-box";
         public string CreateReservationBtnID { get; } = "create-reservation-btn";
+
+        public string ReviewTopPagerNextBtnID { get; } = "review-top-pager-next-btn";
+        public string ReviewTopPagerPreviousBtnID { get; } = "review-top-pager-previous-btn";
+        public string ReviewTopPagerInputID { get; } = "review-top-pager-input";
+        public string ReviewBottomPagerNextBtnID { get; } = "review-bottom-pager-next-btn";
+        public string ReviewBottomPagerPreviousBtnID { get; } = "review-bottom-pager-previous-btn";
+        public string ReviewBottomPagerInputID { get; } = "review-bottom-pager-input";
+        public string OfferReviewsListID { get; } = "offer-reviews-list";
     }
 }
