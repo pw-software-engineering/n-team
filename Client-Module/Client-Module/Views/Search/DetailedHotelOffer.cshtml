@@ -131,7 +131,7 @@
             <div class="modal-body py-0">
                 <h3 class="font-weight-normal text-center mt-3 mb-1">Offer availability</h3>
                 <small class="text-muted d-block w-75 mx-auto text-center mb-3">You can make a reservation for a period of time within the range of any time interval below</small>
-                <ul class="list-unstyled text-center offer-availability-list">
+                <ul class="list-unstyled text-center offer-availability-list" id="@tagIDs.ReservationModalOfferAvailabilityListID">
                     <li class="offer-availability-list-item p-2">20.09.2020<span class="text-secondary mx-3">&mdash;</span>23.10.2020</li>
                     <li class="offer-availability-list-item p-2">20.09.2020<span class="text-secondary mx-3">&mdash;</span>23.10.2020</li>
                     <li class="offer-availability-list-item p-2">20.09.2020<span class="text-secondary mx-3">&mdash;</span>23.10.2020</li>
@@ -404,7 +404,8 @@
                 numberOfChildrenInput: $("#@tagIDs.ReservationNumberOfChildrenInputID")
             },
             guestInputsValidationBox: $("#@tagIDs.ReservationModalGuestInputsErrorBoxID"),
-            serverErrorBox: $("#@tagIDs.ReservationModalServerErrorBoxID")
+            serverErrorBox: $("#@tagIDs.ReservationModalServerErrorBoxID"),
+            offerAvailabilityListHandle: $("#@tagIDs.ReservationModalOfferAvailabilityListID")
         });
 
         var apiConfig = {

@@ -36,5 +36,6 @@ namespace Client_Module.ViewsTagID.Search
         public string ReservationModalCreateButtonID { get; } = "reservation-create-button";
         public string ReservationModalGuestInputsErrorBoxID { get; } = "reservation-guest-inputs-error-box";
         public string ReservationModalServerErrorBoxID { get; } = "reservation-server-error-box";
+        public string ReservationModalOfferAvailabilityListID { get; } = "reservation-availability-list";
     }
 }

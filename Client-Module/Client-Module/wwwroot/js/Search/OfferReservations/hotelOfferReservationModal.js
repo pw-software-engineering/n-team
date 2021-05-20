@@ -10,6 +10,7 @@
         guestInputsValidationBox = null,
         createReservationButtonHandle = null,
         serverErrorBox = null,
+        offerAvailabilityListHandle = null,
         hotelOfferData = null
     } = {}) {
         this.modalHandle = modalHandle;
@@ -18,9 +19,30 @@
         this.hotelOfferData = hotelOfferData;
         this.guestInputsValidationBox = guestInputsValidationBox;
         this.serverErrorBox = serverErrorBox;
+        this.offerAvailabilityListHandle = offerAvailabilityListHandle;
 
         this.currentUserInputPromiseResolve = null;
         this.currentUserInputPromiseReject = null;
+
+        this.offerAvailabilityListHandle.empty();
+        // cast undefined result from null coalescing to 0
+        if (this.hotelOfferData.availabilityTimeIntervals?.length == 0) {
+            this.offerAvailabilityListHandle.append(
+                $("<li>")
+                    .addClass("offer-availability-list-item p-2")
+                    .text("This offer is not available during next 6 months")
+            );
+        } else {
+            for (var i = 0; i < this.hotelOfferData.availabilityTimeIntervals.length; i++) {
+                this.offerAvailabilityListHandle.append(
+                    $("<li>").addClass("offer-availability-list-item p-2").append(
+                        $("<span>").text(formatDate(this.hotelOfferData.availabilityTimeIntervals[i].startDate)),
+                        $("<span>").addClass("text-secondary mx-3").html('&mdash;'),
+                        $("<span>").text(formatDate(this.hotelOfferData.availabilityTimeIntervals[i].endDate))
+                    )
+                );
+            }
+        }
 
         var fromTimeInput = this.inputHandles.fromTimeInput;
         fromTimeInput.focusout(function () {
