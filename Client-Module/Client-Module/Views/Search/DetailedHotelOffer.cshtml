@@ -1,22 +1,30 @@
-﻿@{
+﻿@using Client_Module.ViewsTagID.Search;
+@model HotelOfferDetailsModel;
+@{
     ViewData["Title"] = "Offer details";
+    HotelOfferDetailsTagID tagIDs = new HotelOfferDetailsTagID();
 }
 
-<div class="w-100 shadow-border bg-light p-4">
+<div class="w-100 shadow-border bg-light p-4" id="@tagIDs.LoadingDataDivID">
+    <img class="d-block mx-auto" style="width: 75px" src="~/resources/loading.gif" />
+    <p class="text-center h5 mt-2">Loading hotel offer data...</p>
+</div>
+
+<div class="w-100 shadow-border bg-light p-4 d-none" id="@tagIDs.MainContentDivID">
     <div class="text-center">
-        <h1 class="display-5" style="font-weight: 400"><i>[Offer title]</i></h1>
+        <h1 class="display-5 font-italic" style="font-weight: 400" id="@tagIDs.OfferTitleTextID"></h1>
     </div>
     <hr />
     <div class="mx-auto my-4 border-0 rounded picture-carousel-display shadow-border">
         <div class="d-flex flex-row h-100">
             <div class="flex-grow-0 h-100">
-                <button class="btn btn-secondary h-100 rounded-right-0 p-0" style="width: 35px;"><i class="fas fa-2x fa-chevron-left"></i></button>
+                <button class="btn btn-secondary h-100 rounded-right-0 p-0" style="width: 35px;" id="@tagIDs.PreviousCarouselPictureBtnID"><i class="fas fa-2x fa-chevron-left"></i></button>
             </div>
             <div class="flex-grow-1 h-100 bg-light">
-                <img class="d-block mx-auto carousel-picture" src="~/resources/stock-photo-online-booking-concept.jpg" />
+                <img class="d-block mx-auto carousel-picture" id="@tagIDs.CarouselPictureImgID"/>
             </div>
             <div class="flex-grow-0 h-100">
-                <button class="btn btn-secondary h-100 rounded-left-0 p-0" style="width: 35px"><i class="fas fa-2x fa-chevron-right"></i></button>
+                <button class="btn btn-secondary h-100 rounded-left-0 p-0" style="width: 35px" id="@tagIDs.NextCarouselPictureBtnID"><i class="fas fa-2x fa-chevron-right"></i></button>
             </div>
         </div>
     </div>
@@ -24,33 +32,31 @@
     <div class="text-center">
         <h1 class="font-weight-light">Offer description</h1>
     </div>
-    <p class="m-0 px-4 mt-4 text-justify">
-        [a long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long description]
-    </p>
+    <p class="m-0 px-4 mt-4 text-justify" id="@tagIDs.OfferDescriptionTextID"></p>
     <br />
     <br />
     <p class="flex-grow-1 mb-2 text-align-center" style="font-size: 19px">
         <b class="mx-1">Max. number of guests: </b>
-        <span class="mx-1">4</span>
+        <span class="mx-1" id="@tagIDs.MaxGuestsTextID"></span>
     </p>
     <ul class="mt-2 p-0" style="list-style-type: none; font-size: 20px">
         <li class="m-2 text-align-center">
             <i class="fas fa-user-tie mx-2"></i>
-            <span class="m-0"><span style="color: gray">Adults:</span><span class="mx-3">125 zł / adult</span></span>
+            <span class="m-0"><span style="color: gray">Adults:</span><span class="mx-3" id="@tagIDs.CostPerAdultTextID"></span></span>
         </li>
         <li class="m-2 text-align-center">
             <i class="fas fa-child mx-2"></i>
-            <span class="m-0"><span style="color: gray">Children:</span><span class="mx-3">67 zł / child</span></span>
+            <span class="m-0"><span style="color: gray">Children:</span><span class="mx-3" id="@tagIDs.CostPerChildTextID"></span></span>
         </li>
     </ul>
     <hr class="my-3" />
-    <p class="text-center" style="font-size: 18px">
+    <p class="text-center" style="font-size: 18px" id="@tagIDs.OfferStatusBoxID">
         <span style="font-weight: 500">Offer status:</span>
-        <span class="text-success mx-2"><i class="far fa-check-circle" style="color: green"></i> Active</span>
-        <br />
-        <span class="text-secondary">Press the button below and book a room!</span>
     </p>
-    <button class="d-block mx-auto w-50 mt-2 mb-4 btn btn-success shadow-border font-weight-bold" data-toggle="modal" data-target="#reservationModal" style="font-size: 18px">Create reservation<i class="ml-2 fas fa-chevron-right"></i></button>
+    <button class="d-block mx-auto w-50 mt-2 mb-4 btn btn-success shadow-border font-weight-bold" data-toggle="modal" data-target="#reservationModal" style="font-size: 18px" id="@tagIDs.CreateReservationBtnID">
+        <span>Create reservation</span>
+        <i class="ml-2 fas fa-chevron-right"></i>
+    </button>
     <hr class="my-3" />
     <div class="text-center">
         <h1 class="font-weight-light">Offer reviews</h1>
@@ -58,22 +64,22 @@
 
     <ul class="pagination justify-content-center my-3">
         <li class="page-item">
-            <a class="page-link" href="" aria-label="Previous">
+            <button class="page-link" href="" id="@tagIDs.ReviewTopPagerPreviousBtnID">
                 <i class="fas fa-chevron-left text-dark"></i>
-            </a>
+            </button>
         </li>
         <li class="page-item">
-            <input class="page-link text-dark text-center font-weight-bold p-2" style="width: 60px" type="number" min="1" value="1" />
+            <input class="page-link text-dark text-center font-weight-bold p-2" id="@tagIDs.ReviewTopPagerInputID" style="width: 60px" type="number" min="1" value="1" />
         </li>
         <li class="page-item">
-            <a class="page-link" href="" aria-label="Next">
+            <button class="page-link" href="" id="@tagIDs.ReviewTopPagerNextBtnID">
                 <i class="fas fa-chevron-right text-dark"></i>
-            </a>
+            </button>
         </li>
     </ul>
 
-    <ul class="list-unstyled offer-reviews-list w-75 m-0 py-2 mx-auto">
-        <li class="offer-review p-3">
+    <ul class="list-unstyled offer-reviews-list w-75 m-0 py-2 mx-auto" id="@tagIDs.OfferReviewsListID" style="min-height: 300px">
+        @*<li class="offer-review p-3">
             <div class="d-flex w-100 flex-row-reverse flex-wrap">
                 <div class="align-self-start text-nowrap">
                     <b class="text-secondary">Rating: </b>
@@ -94,73 +100,27 @@
             <hr class="my-2" style="border-top: 1px dashed lightgray" />
             <p class="px-3 m-0">[Review content that can be really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long ]</p>
             <hr class="my-2" style="border-top: 1px dashed lightgray" />
-        </li>
-
-        <li class="offer-review p-3">
-            <div class="d-flex w-100 flex-row-reverse flex-wrap">
-                <div class="align-self-start text-nowrap">
-                    <b class="text-secondary">Rating: </b>
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="far fa-star text-warning"></i>
-                    <i class="far fa-star text-warning"></i>
-                </div>
-                <div class="mr-auto">
-                    <i class="fas fa-user mr-2"></i>
-                    <span class="text-secondary">[Username]</span>
-                    <br />
-                    <i class="fas fa-bed mr-2"></i>
-                    <span class="text-secondary">[Date from] &mdash; [Date to]</span>
-                </div>
-            </div>
-            <hr class="my-2" style="border-top: 1px dashed lightgray" />
-            <p class="px-3 m-0">[Review content that can be really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long ]</p>
-            <hr class="my-2" style="border-top: 1px dashed lightgray" />
-        </li>
-
-        <li class="offer-review p-3">
-            <div class="d-flex w-100 flex-row-reverse flex-wrap">
-                <div class="align-self-start text-nowrap">
-                    <b class="text-secondary">Rating: </b>
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="far fa-star text-warning"></i>
-                    <i class="far fa-star text-warning"></i>
-                </div>
-                <div class="mr-auto">
-                    <i class="fas fa-user mr-2"></i>
-                    <span class="text-secondary">[Username]</span>
-                    <br />
-                    <i class="fas fa-bed mr-2"></i>
-                    <span class="text-secondary">[Date from] &mdash; [Date to]</span>
-                </div>
-            </div>
-            <hr class="my-2" style="border-top: 1px dashed lightgray" />
-            <p class="px-3 m-0">[Review content that can be really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long ]</p>
-            <hr class="my-2" style="border-top: 1px dashed lightgray" />
-        </li>
+        </li>*@
     </ul>
 
-    <ul class="pagination justify-content-center mx-auto w-75 my-3">
+    <ul class="pagination justify-content-center mx-auto w-100 my-3">
         <li class="page-item ml-auto">
-            <a class="page-link" href="" aria-label="Previous">
+            <a class="page-link" href="#@tagIDs.ReviewTopPagerInputID" id="@tagIDs.ReviewBottomPagerPreviousBtnID">
                 <i class="fas fa-chevron-left text-dark"></i>
             </a>
         </li>
         <li class="page-item">
-            <input class="page-link text-dark text-center font-weight-bold p-2" style="width: 60px" type="number" min="1" value="1" />
+            <input class="page-link text-dark text-center font-weight-bold p-2" id="@tagIDs.ReviewBottomPagerInputID" style="width: 60px" type="number" min="1" value="1" />
         </li>
         <li class="page-item">
-            <a class="page-link" href="" aria-label="Next">
+            <a class="page-link" href="#@tagIDs.ReviewTopPagerInputID" id="@tagIDs.ReviewBottomPagerNextBtnID">
                 <i class="fas fa-chevron-right text-dark"></i>
             </a>
         </li>
     </ul>
 </div>
 
-<div class="modal fade bd-example-modal-lg"  id="reservationModal" tabindex="-1" role="dialog">
+<div class="modal fade bd-example-modal-lg" id="reservationModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-light">
@@ -199,30 +159,213 @@
     </div>
 </div>
 
-@section Scripts { 
+@section Scripts {
+<script src="~/js/Shared/serverApiManager.js"></script>
+<script src="~/js/Search/HotelOfferDetails/hotelOfferDetailsManager.js"></script>
+<script src="~/js/Shared/carouselPicturesManager.js"></script>
 <script>
-    // data-backdrop="static"
-    
-    //var modalJQ = $("#reservationModal");
-    //// Disallow closing modal window by clicking anywhere outside
-    //var lockModal = true;
+    (function () {
+        var offerDetailsLoadedResolve, offerDetailsLoadedReject;
+        offerDetailsLoadedPromise = new Promise((resolve, reject) => {
+            offerDetailsLoadedResolve = resolve;
+            offerDetailsLoadedReject = reject;
+        });
 
-    //function ShowReservationModal() {
-    //    modalJQ.modal("show");
-    //}
+        var apiConfig = {
+            apiBaseUrl: "@ServerApiConfig.BaseUrl",
+            apiTokenCookieName: "@ClientTokenCookieDefaults.AuthCookieName",
+            apiTokenHeaderName: "@ServerApiConfig.TokenHeaderName"
+        };
+        var hotelOfferDetailsManager = new HotelOfferDetailsManager({
+            hotelID: @Model.HotelID,
+            offerID: @Model.OfferID,
+            apiConfig: apiConfig
+        });
 
-    //function HideReservationModal() {
-    //    // Unlock modal, as immidiatelly after this function returns, a "hide" event will be fires
-    //    lockModal = false;
-    //    modalJQ.modal("hide");
-    //}
+        var carouselPicturesManager = new CarouselPictureManager($("#@tagIDs.CarouselPictureImgID"));
+        $("#@tagIDs.NextCarouselPictureBtnID").on('click', function () {
+            carouselPicturesManager.showNextPicture();
+        });
+        $("#@tagIDs.PreviousCarouselPictureBtnID").on('click', function () {
+            carouselPicturesManager.showPreviousPicture();
+        });
 
-    //modalJQ.on("hide.bs.modal", function (e) {
-    //    if (lockModal) {
-    //        e.preventDefault();
-    //    }
-    //    // if HideReservationModal was fired, reset lockModal back to true
-    //    lockModal = true;
-    //});
+        (async function () {
+            try {
+                var data = await hotelOfferDetailsManager.getHotelOfferDetails();
+            } catch (error) {
+                var loadingDataDiv = $("#@tagIDs.LoadingDataDivID");
+                loadingDataDiv.empty();
+                loadingDataDiv.append(
+                    $("<p>").attr("class", "text-center text-danger h3").text("Error"),
+                    $("<p>").attr("class", "text-center text-danger h5").text(error.message)
+                );
+                $("#@tagIDs.MainContentDivID").remove();
+                offerDetailsLoadedReject();
+                return;
+            }
+            $("#@tagIDs.OfferTitleTextID").text(data.offerTitle);
+            $("#@tagIDs.OfferDescriptionTextID").text(data.offerDescription);
+            $("#@tagIDs.MaxGuestsTextID").text(data.maxGuests);
+
+            var numberFormatterOptions = {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            };
+            $("#@tagIDs.CostPerAdultTextID").text(`${Number(data.costPerAdult).toLocaleString('en-US', numberFormatterOptions)} zł / adult`);
+            $("#@tagIDs.CostPerChildTextID").text(`${Number(data.costPerChild).toLocaleString('en-US', numberFormatterOptions)} zł / child`);
+
+            var offerStatusBox = $("#@tagIDs.OfferStatusBoxID");
+            if (data.isActive === true) {
+                offerStatusBox.append(
+                    $('<i class="far fa-check-circle mx-1" style="color: green">'),
+                    $("<span>").attr("class", "text-success").text("Active"),
+                    $("<br>"),
+                    $("<span>").attr("class", "text-secondary").text("Press the button below and book a room!")
+                );
+            } else {
+                $("#@tagIDs.CreateReservationBtnID").remove();
+                if (data.isDeleted === false) {
+                    offerStatusBox.append(
+                        $('<i class="far fa-pause-circle text-warning mx-1">'),
+                        $("<span>").attr("class", "text-warning").text("Inactive"),
+                        $("<br>"),
+                        $("<span>").attr("class", "text-secondary").text("This offer has been deactivated. Please wait for activation in order to create a reservation.")
+                    );
+                } else {
+                    offerStatusBox.append(
+                        $('<i class="fas fa-ban text-danger mx-1">'),
+                        $("<span>").attr("class", "text-danger").text("Deleted"),
+                        $("<br>"),
+                        $("<span>").attr("class", "text-secondary").text("This offer has been deleted. You cannot make a reservation for this offer but feel free to read the reviews below!")
+                    );
+                }
+            }
+
+            carouselPicturesManager.pictures = data.offerPictures;
+
+            $("#@tagIDs.LoadingDataDivID").addClass("d-none");
+            $("#@tagIDs.MainContentDivID").removeClass("d-none");
+
+            offerDetailsLoadedResolve();
+        })();
+    })();
+    var offerDetailsLoadedPromise;
+</script>
+<script src="~/js/Search/HotelOfferDetails/hotelOfferReviewsManager.js"></script>
+<script src="~/js/Search/HotelOfferDetails/hotelOfferReviewEntry.js"></script>
+<script src="~/js/Shared/pager.js"></script>
+<script>
+    offerDetailsLoadedPromise.then(function () {
+        console.log("LOADING REVIEWS");
+        var apiConfig = {
+            apiBaseUrl: "@ServerApiConfig.BaseUrl",
+            apiTokenCookieName: "@ClientTokenCookieDefaults.AuthCookieName",
+            apiTokenHeaderName: "@ServerApiConfig.TokenHeaderName"
+        };
+        var hotelOfferReviewsManager = new HotelOfferReviewsManager({
+            hotelID: @Model.HotelID,
+            offerID: @Model.OfferID,
+            apiConfig: apiConfig
+        });
+
+        // Create new PagerInstance with a calback that displays hotel offers
+        var pager = new Pager(DisplayOfferReviews);
+
+        // Add both top and bottom pager inputs as listeners
+        pager.addPageNumberInput($("#@tagIDs.ReviewBottomPagerInputID"));
+        pager.addPageNumberInput($("#@tagIDs.ReviewTopPagerInputID"));
+
+        // Setup "previous" and "next" top pager button behaviour and review top pager input behaviour
+        $("#@tagIDs.ReviewBottomPagerNextBtnID").on("click", function () {
+            var pageInput = $("#@tagIDs.ReviewBottomPagerInputID");
+            pager.setPageNumber(Number(pageInput.val()) + 1);
+        });
+        $("#@tagIDs.ReviewBottomPagerPreviousBtnID").on("click", function () {
+            var pageInput = $("#@tagIDs.ReviewBottomPagerInputID");
+            pager.setPageNumber(Number(pageInput.val()) - 1);
+        });
+        $("#@tagIDs.ReviewBottomPagerInputID").on("change", function () {
+            pager.setPageNumber($(this).val());
+        });
+
+        // Setup "previous" and "next" bottom pager button behaviour and review bottom pager input behaviour
+        $("#@tagIDs.ReviewTopPagerNextBtnID").on("click", function () {
+            var pageInput = $("#@tagIDs.ReviewTopPagerInputID");
+            pager.setPageNumber(Number(pageInput.val()) + 1);
+        });
+        $("#@tagIDs.ReviewTopPagerPreviousBtnID").on("click", function () {
+            var pageInput = $("#@tagIDs.ReviewTopPagerInputID");
+            pager.setPageNumber(Number(pageInput.val()) - 1);
+        });
+        $("#@tagIDs.ReviewTopPagerInputID").on("change", function () {
+            pager.setPageNumber($(this).val());
+        });
+
+        var offerReviewsList = $("#@tagIDs.OfferReviewsListID");
+        var currentActionID = 0;
+        async function DisplayOfferReviews() {
+            var actionID = ++currentActionID;
+            offerReviewsList.empty();
+            //Show a loading box while AJAX is fetching hotel offers info
+            var loadingBox = $("<li>")
+                .attr("class", "p-3 bg-light")
+                .append(
+                    $("<img>")
+                        .attr("class", "d-block mx-auto mt-2")
+                        .attr("style", "width: 75px").attr("src", "/resources/loading.gif"),
+                    $("<p>")
+                        .attr("class", "text-center h5 mt-2")
+                        .text("Loading offer reviews...")
+                );
+            offerReviewsList.append(loadingBox);
+
+            try {
+                var data = await hotelOfferReviewsManager.getHotelOfferReviews({
+                    pageNumber: pager.getPageNumber(),
+                    pageSize: pager.getPageSize()
+                });
+            } catch (error) {
+                // Display server error when something went wrong with the request
+                if (actionID !== currentActionID) {
+                    return;
+                }
+                loadingBox.empty();
+                loadingBox.append(
+                    $("<p>")
+                        .attr("class", "text-center text-danger h3")
+                        .text("Could not fetch data from the server"),
+                    $("<p>")
+                        .attr("class", "text-center text-danger h5")
+                        .text(error.message)
+                );
+                return;
+            }
+            if (actionID !== currentActionID) {
+                return;
+            }
+            if (data.length === 0) {
+                // If server doesn't return any offer reviews then display information
+                // that this page does not contain any information
+                loadingBox.empty();
+                loadingBox.append(
+                    $("<p>")
+                        .attr("class", "h4 my-4 text-secondary text-center")
+                        .text("There are no offers reviews on this page")
+                );
+                return;
+            }
+            offerReviewsList.empty();
+            // Create new HotelOfferReviewEntry instances, generate and display offer review components
+            for (var i = 0; i < data.length; i++) {
+                var offerReviewEntry = new HotelOfferReviewEntry({
+                    reviewData: data[i]
+                });
+                offerReviewsList.append(offerReviewEntry.component);
+            }
+        }
+
+        pager.setPageNumber(1, true);
+    }, () => { });
 </script>
 }
