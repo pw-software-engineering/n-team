@@ -301,7 +301,7 @@
                                 var queryParameters = [];
                                 queryParameters.push(`fromTime=${$("#@tagIDs.FilterFromTimeInputID").val()}`);
                                 queryParameters.push(`toTime=${$("#@tagIDs.FilterToTimeInputID").val()}`);
-                                window.location.href = `/hotels/{@Model.HotelID}/offers/${entry.hotelOfferData.offerID}?${queryParameters.join('&')}`;
+                                window.location.href = `/hotels/@Model.HotelID/offers/${entry.hotelOfferData.offerID}?${queryParameters.join('&')}`;
                             }
                         }
                     });

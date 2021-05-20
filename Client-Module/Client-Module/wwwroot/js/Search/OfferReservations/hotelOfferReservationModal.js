@@ -7,21 +7,17 @@
             numberOfAdultsInput: null,
             numberOfChildrenInput: null
         },
+        guestInputsValidationBox = null,
         createReservationButtonHandle = null,
+        serverErrorBox = null,
         hotelOfferData = null
     } = {}) {
         this.modalHandle = modalHandle;
         this.inputHandles = inputHandles;
         this.createReservationButtonHandle = createReservationButtonHandle;
         this.hotelOfferData = hotelOfferData;
-
-        this.modalHandle.on('hide.bs.modal', (e) => {
-            //e.preventDefault();
-        });
-
-        this.modalHandle.on('show.bs.modal', (e) => {
-
-        });
+        this.guestInputsValidationBox = guestInputsValidationBox;
+        this.serverErrorBox = serverErrorBox;
 
         this.currentUserInputPromiseResolve = null;
         this.currentUserInputPromiseReject = null;
@@ -70,28 +66,24 @@
             input.val(Math.max(0, Math.floor(Number(input.val()))));
         });
 
-        var guestInputsValidationBox = $("#guests-validation-error");
         this.createReservationButtonHandle.on('click', () => {
-            guestInputsValidationBox.addClass("d-none");
+            this.guestInputsValidationBox.addClass("d-none");
             var numberOfAdults = Number(this.inputHandles.numberOfAdultsInput.val());
             var numberOfChildren = Number(this.inputHandles.numberOfChildrenInput.val());
-            console.log(numberOfAdults);
-            console.log(numberOfChildren);
-            console.log(this.hotelOfferData.maxGuests);
             if (!numberOfAdults || !numberOfChildren) {
-                guestInputsValidationBox
+                this.guestInputsValidationBox
                     .removeClass("d-none")
                     .text("Both fields 'Number of adults' and 'Number of children' must contain a non-negative integer");
                 return;
             }
             if (numberOfAdults + numberOfChildren > this.hotelOfferData.maxGuests) {
-                guestInputsValidationBox
+                this.guestInputsValidationBox
                     .removeClass("d-none")
                     .text(`Number of children and adults combined must be less or equal than maximum number of guests: ${this.hotelOfferData.maxGuests}`);
                 return;
             }
             if (numberOfAdults + numberOfChildren <= 0) {
-                guestInputsValidationBox
+                this.guestInputsValidationBox
                     .removeClass("d-none")
                     .text(`Number of children and adults combined must be greater or equal to 0`);
                 return;
@@ -103,25 +95,38 @@
                 numberOfAdults: numberOfAdults
             };
             this.currentUserInputPromiseResolve?.(resolveResult);
-            console.log(resolveResult);
+            this.currentUserInputPromiseResolve = null;
+            this.currentUserInputPromiseReject = null;
+        });
+
+        this.modalHandle.on('hide.bs.modal', (e) => {
+            //e.preventDefault();
+            if (!this.isModalActive) {
+                return;
+            }
+            this.isModalActive = false;
+            this.currentUserInputPromiseReject?.(new Error("Modal has been forcibly closed by the user"));
             this.currentUserInputPromiseResolve = null;
             this.currentUserInputPromiseReject = null;
         });
 
         this.currentSessionID = 0;
         this.isModalActive = false;
+
+        this.onDisplayStateChanged = () => { };
     }
 
     createSession() {
+        this.onDisplayStateChanged?.();
+        this.guestInputsValidationBox.addClass("d-none");
         this.isModalActive = true;
         this.modalHandle.modal('show');
-        $("#guests-validation-error").addClass("d-none");
         return ++this.currentSessionID;
     }
 
     getUserInput(sessionID) {
-        if (sessionID !== this.currentSessionID) {
-            throw new Error("Invalid session ID");
+        if (sessionID !== this.currentSessionID || !this.isModalActive) {
+            return false;
         }
         return new Promise((resolve, reject) => {
             this.currentUserInputPromiseResolve = resolve;
@@ -129,10 +134,73 @@
         });
     }
 
-    closeSession(sessionID) {
-        if (sessionID !== this.currentSessionID) {
-            throw new Error("Invalid session ID");
+    displayLoading(sessionID) {
+        if (sessionID !== this.currentSessionID || !this.isModalActive) {
+            return false;
         }
+        this.onDisplayStateChanged?.();
+        this.createReservationButtonHandle.attr("disabled", true);
+        this.serverErrorBox.empty();
+        this.serverErrorBox.append(
+            $("<p>").attr("class", "text-center h3").append(
+                $("<img>")
+                    .attr("src", "/resources/loading.gif")
+                    .attr("style", "width: 50px; height: 50px")
+                    .attr("class", "d-inline-block mr-3"),
+                $("<span>").attr("class", "text-secondary").css("vertical-align", "middle").text("Processing...")
+            )
+        );
+        this.onDisplayStateChanged = () => {
+            this.createReservationButtonHandle.attr("disabled", false);
+            this.serverErrorBox.empty();
+            this.onDisplayStateChanged = null;
+        }
+        return true;
+    }
+
+    displayServerError(sessionID, errorText) {
+        if (sessionID !== this.currentSessionID || !this.isModalActive) {
+            return false;
+        }
+        this.onDisplayStateChanged?.();
+        this.serverErrorBox.append(
+            $("<p>")
+                .attr("class", "text-center text-danger h3")
+                .text("Could not create the reservation"),
+            $("<p>")
+                .attr("class", "text-center text-danger h5")
+                .text(errorText)
+        )
+        this.onDisplayStateChanged = () => {
+            this.serverErrorBox.empty();
+            this.onDisplayStateChanged = null;
+        };
+        return true;
+    }
+
+    displaySuccess(sessionID) {
+        if (sessionID !== this.currentSessionID || !this.isModalActive) {
+            return false;
+        }
+        this.onDisplayStateChanged?.();
+        this.serverErrorBox.append(
+            $("<p>")
+                .attr("class", "text-center text-success h5")
+                .text("Operation completed successfully")
+        )
+        this.onDisplayStateChanged = () => {
+            this.serverErrorBox.empty();
+            this.onDisplayStateChanged = null;
+        };
+        return true;
+    }
+
+    closeSession(sessionID) {
+        if (sessionID !== this.currentSessionID || !this.isModalActive) {
+            return false;
+        }
+        this.isModalActive = false;
         this.modalHandle.modal('hide');
+        return true;
     }
 }

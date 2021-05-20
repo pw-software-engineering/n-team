@@ -210,6 +210,13 @@ namespace ServerApiMockup.MockupApiControllers
                     IgnoreNullValues = true
                 });
         }
+
+        [HttpPost("hotels/{hotelID:int}/offers/{offerID:int}/reservations")]
+        public IActionResult CreateHotelOfferReservation([FromRoute] int hotelID, [FromRoute] int offerID)
+        {
+            Thread.Sleep(5000);
+            return Ok();
+        }
     }
 
     public class OfferReview

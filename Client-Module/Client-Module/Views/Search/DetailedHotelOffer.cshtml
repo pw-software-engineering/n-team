@@ -170,9 +170,10 @@
                         <input class="form-control flex-grow-1 w-100" id="@tagIDs.ReservationNumberOfChildrenInputID" type="number" />
                     </div>
                 </div>
-                <p class="text-center text-danger d-none mt-2" id="guests-validation-error">Server/validation error</p>
+                <p class="text-center text-danger d-none mt-2" id="@tagIDs.ReservationModalGuestInputsErrorBoxID"></p>
 
                 <hr />
+                <div id="@tagIDs.ReservationModalServerErrorBoxID"></div>
                 <button class="d-block btn btn-success w-50 mx-auto my-4 font-weight-bold" style="font-size: 18px; min-width: 150px" id="@tagIDs.ReservationModalCreateButtonID">Create reservation</button>
             </div>
         </div>
@@ -401,9 +402,26 @@
                 toTimeInput: $("#@tagIDs.ReservationToTimeInputID"),
                 numberOfAdultsInput: $("#@tagIDs.ReservationNumberOfAdultsInputID"),
                 numberOfChildrenInput: $("#@tagIDs.ReservationNumberOfChildrenInputID")
-            }
+            },
+            guestInputsValidationBox: $("#@tagIDs.ReservationModalGuestInputsErrorBoxID"),
+            serverErrorBox: $("#@tagIDs.ReservationModalServerErrorBoxID")
         });
-        reservationModal.createSession();
+
+        var apiConfig = {
+            apiBaseUrl: "@ServerApiConfig.BaseUrl",
+            apiTokenCookieName: "@ClientTokenCookieDefaults.AuthCookieName",
+            apiTokenHeaderName: "@ServerApiConfig.TokenHeaderName"
+        };
+        var reservationManager = new HotelOfferReservationManager({
+            hotelID: @Model.HotelID,
+            offerID: @Model.OfferID,
+            apiConfig: apiConfig,
+            reservationModal: reservationModal
+        });
+
+        $("#@tagIDs.CreateReservationBtnID").on('click', function () {
+            reservationManager.createReservation();
+        });
     }, () => { });
 </script>
 }
