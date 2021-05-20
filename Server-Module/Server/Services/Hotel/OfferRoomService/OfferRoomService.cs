@@ -34,6 +34,9 @@ namespace Server.Services.Hotel
             if (result != null)
                 return result;
 
+            if (_dataAccess.IsRoomAlreadyAddedToOffer(roomID, offerID))
+                return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Room with given ID is already added to offer with given ID"));
+
             _transaction.BeginTransaction();
             _dataAccess.AddRoomToOffer(roomID, offerID);
             _transaction.CommitTransaction();
@@ -54,9 +57,7 @@ namespace Server.Services.Hotel
             if (result != null)
                 return result;
 
-            _transaction.BeginTransaction();
-            List<OfferRoomView> offerRoomViews = _dataAccess.GetOfferRooms(offerID, hotelRoomNumber, paging);
-            _transaction.CommitTransaction();
+            List<OfferRoomView> offerRoomViews = _dataAccess.GetOfferRooms(offerID, paging, hotelRoomNumber);
 
             return new ServiceResult(HttpStatusCode.OK, offerRoomViews);
         }
@@ -70,6 +71,9 @@ namespace Server.Services.Hotel
             result = CheckOfferExistanceAndOwnership(offerID, hotelID);
             if (result != null)
                 return result;
+
+            if (_dataAccess.DoesRoomHaveUnfinishedReservations(roomID, offerID))
+                return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Room with given ID has unfinished reservtions"));
 
             _transaction.BeginTransaction();
             _dataAccess.UnpinRoomFromOffer(roomID, offerID);
@@ -105,6 +109,5 @@ namespace Server.Services.Hotel
                 return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView("Offer does not belong to this hotel"));
             return null;
         }
-
     }
 }

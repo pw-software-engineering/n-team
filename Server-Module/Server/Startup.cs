@@ -67,6 +67,8 @@ namespace Server
             services.AddTransient<Services.Client.IReservationService, Services.Client.ReservationService>();
             services.AddTransient<Database.DataAccess.Hotel.IReservationDataAccess, Database.DataAccess.Hotel.ReservationDataAccess>();
             services.AddTransient<Services.Hotel.IReservationService, Services.Hotel.ReservationService>();
+            services.AddTransient<IOfferRoomDataAccess, OfferRoomDataAccess>();
+            services.AddTransient<IOfferRoomService, OfferRoomService>();
 
             services.AddTransient<IClientTokenManager, ClientTokenManager>();
             services.AddTransient<IClientTokenDataAccess, ClientTokenDataAccess>();
