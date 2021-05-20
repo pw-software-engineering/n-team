@@ -112,6 +112,7 @@ namespace Server.Database.DataAccess.Client
             List<AvailabilityTimeInterval> roomAvailability = new List<AvailabilityTimeInterval>();
             if(roomUnavailability.Count == 0)
             {
+                roomAvailability.Add(new AvailabilityTimeInterval(fromTime, toTime));
                 return roomAvailability;
             }
             
@@ -123,9 +124,9 @@ namespace Server.Database.DataAccess.Client
             for(int i = 1; i < roomUnavailability.Count; i++)
             {
                 AvailabilityTimeInterval timeInterval = new AvailabilityTimeInterval(
-                    roomUnavailability[i - 1].EndDate,
+                    roomUnavailability[i - 1].EndDate.AddDays(1),
                     roomUnavailability[i].StartDate.AddDays(-1));
-                if(timeInterval.EndDate == timeInterval.StartDate)
+                if(timeInterval.EndDate < timeInterval.StartDate)
                 {
                     continue;
                 }
@@ -134,7 +135,7 @@ namespace Server.Database.DataAccess.Client
 
             if (roomUnavailability[roomUnavailability.Count - 1].EndDate < toTime)
             {
-                roomAvailability.Add(new AvailabilityTimeInterval(roomUnavailability[roomUnavailability.Count - 1].EndDate, toTime));
+                roomAvailability.Add(new AvailabilityTimeInterval(roomUnavailability[roomUnavailability.Count - 1].EndDate.AddDays(1), toTime));
             }
 
             return roomAvailability;
@@ -151,10 +152,12 @@ namespace Server.Database.DataAccess.Client
                 if(it1 == availabilityTimeIntervals1.Count)
                 {
                     resultTimeIntervals.Add(availabilityTimeIntervals2[it2++]);
+                    continue;
                 }
                 else if(it2 == availabilityTimeIntervals2.Count)
                 {
                     resultTimeIntervals.Add(availabilityTimeIntervals1[it1++]);
+                    continue;
                 }
                 AvailabilityTimeInterval interval1 = availabilityTimeIntervals1[it1];
                 AvailabilityTimeInterval interval2 = availabilityTimeIntervals2[it2];

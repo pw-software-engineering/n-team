@@ -28,5 +28,20 @@ namespace Server.ViewModels.Client
         }
         public DateTime StartDate { get; }
         public DateTime EndDate { get; }
+
+        public override bool Equals(object obj)
+        {
+            if(!(obj is AvailabilityTimeInterval))
+            {
+                return false;
+            }
+            AvailabilityTimeInterval other = obj as AvailabilityTimeInterval;
+            return StartDate == other.StartDate && EndDate == other.EndDate;
+        }
+
+        public override int GetHashCode()
+        {
+            return StartDate.GetHashCode() ^ EndDate.GetHashCode();
+        }
     }
 }
