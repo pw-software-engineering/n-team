@@ -168,7 +168,7 @@
                 .attr("class", "text-center text-danger h3")
                 .text("Could not create the reservation"),
             $("<p>")
-                .attr("class", "text-center text-danger h5")
+                .attr("class", "text-center text-danger h5 px-3")
                 .text(errorText)
         )
         this.onDisplayStateChanged = () => {
@@ -185,7 +185,7 @@
         this.onDisplayStateChanged?.();
         this.serverErrorBox.append(
             $("<p>")
-                .attr("class", "text-center text-success h5")
+                .attr("class", "text-center text-success h5 px-3")
                 .text("Operation completed successfully")
         )
         this.onDisplayStateChanged = () => {

@@ -212,9 +212,14 @@ namespace ServerApiMockup.MockupApiControllers
         }
 
         [HttpPost("hotels/{hotelID:int}/offers/{offerID:int}/reservations")]
-        public IActionResult CreateHotelOfferReservation([FromRoute] int hotelID, [FromRoute] int offerID)
+        public IActionResult CreateHotelOfferReservation([FromRoute] int hotelID, [FromRoute] int offerID, [FromBody] CreateReservationInfo reservationInfo)
         {
-            Thread.Sleep(5000);
+            Console.WriteLine(reservationInfo.From);
+            Thread.Sleep(4000);
+            if (reservationInfo.To > new DateTime(2021, 07, 01))
+            {
+                return BadRequest(new { error = "Cannot make a reservation further than 2021-07-01" });
+            }
             return Ok();
         }
     }
@@ -237,6 +242,14 @@ namespace ServerApiMockup.MockupApiControllers
                 ReviewerUsername = ReviewerUsername
             };
         }
+    }
+
+    public class CreateReservationInfo
+    {
+        public DateTime From { get; set; }
+        public DateTime To { get; set; }
+        public int NumberOfChildren { get; set; }
+        public int NumberOfAdults { get; set; }
     }
 
     public class Paging
