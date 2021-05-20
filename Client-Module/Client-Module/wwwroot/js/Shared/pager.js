@@ -6,6 +6,7 @@
 }
 
 Pager.prototype.setPageNumber = function (number, forceChange = false) {
+    number = Math.floor(number);
     if (number <= 0) {
         number = 1;
     }
