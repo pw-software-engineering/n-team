@@ -43,7 +43,7 @@ namespace Server.Database.DataAccess.Hotel
 
         public int? FindRoomAndGetOwner(string hotelRoomNumber)
         {
-            return _dbContext.HotelRooms.FirstOrDefault()?.HotelID;
+            return _dbContext.HotelRooms.FirstOrDefault(hr => hr.HotelRoomNumber == hotelRoomNumber)?.HotelID;
         }
 
         public int? FindRoomAndGetOwner(int roomID)

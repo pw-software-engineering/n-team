@@ -53,9 +53,12 @@ namespace Server.Services.Hotel
             if (result != null)
                 return result;
 
-            result = CheckRoomExistanceAndOwnership(hotelRoomNumber, hotelID);
-            if (result != null)
-                return result;
+            if (hotelRoomNumber != null)
+            {
+                result = CheckRoomExistanceAndOwnership(hotelRoomNumber, hotelID);
+                if (result != null)
+                    return result;
+            }
 
             List<OfferRoomView> offerRoomViews = _dataAccess.GetOfferRooms(offerID, paging, hotelRoomNumber);
 
