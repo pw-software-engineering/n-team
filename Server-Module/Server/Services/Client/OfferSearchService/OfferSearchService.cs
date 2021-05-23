@@ -98,6 +98,9 @@ namespace Server.Services.Client
             _transaction.BeginTransaction();
             OfferView offer = _offerSearchDataAccess.GetHotelOfferDetails(offerID);
             offer.OfferPictures = _offerSearchDataAccess.GetHotelOfferPictures(offerID);
+            DateTime fromTime = DateTime.Now;
+            fromTime = new DateTime(fromTime.Year, fromTime.Month, fromTime.Day);
+            offer.AvailabilityTimeIntervals = _offerSearchDataAccess.GetHotelOfferAvailability(hotelID, offerID, fromTime, fromTime.AddMonths(6));
             _transaction.CommitTransaction();
 
             return new ServiceResult(HttpStatusCode.OK, offer);

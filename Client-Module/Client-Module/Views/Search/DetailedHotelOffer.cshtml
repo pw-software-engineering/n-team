@@ -120,7 +120,7 @@
     </ul>
 </div>
 
-<div class="modal fade bd-example-modal-lg" id="reservationModal" tabindex="-1" role="dialog">
+<div class="modal fade bd-example-modal-lg" id="@tagIDs.ReservationModalID" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-light">
@@ -131,7 +131,7 @@
             <div class="modal-body py-0">
                 <h3 class="font-weight-normal text-center mt-3 mb-1">Offer availability</h3>
                 <small class="text-muted d-block w-75 mx-auto text-center mb-3">You can make a reservation for a period of time within the range of any time interval below</small>
-                <ul class="list-unstyled text-center offer-availability-list">
+                <ul class="list-unstyled text-center offer-availability-list" id="@tagIDs.ReservationModalOfferAvailabilityListID">
                     <li class="offer-availability-list-item p-2">20.09.2020<span class="text-secondary mx-3">&mdash;</span>23.10.2020</li>
                     <li class="offer-availability-list-item p-2">20.09.2020<span class="text-secondary mx-3">&mdash;</span>23.10.2020</li>
                     <li class="offer-availability-list-item p-2">20.09.2020<span class="text-secondary mx-3">&mdash;</span>23.10.2020</li>
@@ -145,15 +145,36 @@
                 <div class="d-flex flex-row flex-wrap">
                     <div class="flex-grow-1 mx-3">
                         <p class="text-muted my-0 mx-2">From:</p>
-                        <input class="form-control flex-grow-1 w-100" type="date" />
+                        <input class="form-control flex-grow-1 w-100" type="date" id="@tagIDs.ReservationFromTimeInputID" value="@(Model.FromTime.HasValue ? Model.FromTime.Value.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
                     </div>
                     <div class="flex-grow-1 mx-3">
                         <p class="text-muted my-0 mx-2">To:</p>
-                        <input class="form-control flex-grow-1 w-100" type="date" />
+                        <input class="form-control flex-grow-1 w-100" type="date" id="@tagIDs.ReservationToTimeInputID" value="@(Model.ToTime.HasValue ? Model.ToTime.Value.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
                     </div>
                 </div>
+                <hr style="border-top: 1px dashed lightgray" />
+                <h3 class="font-weight-normal text-center mb-3">Select number of guests</h3>
+                <div class="d-flex flex-row flex-wrap">
+                    <div class="flex-grow-1 mx-3">
+                        <p class="text-muted my-0 mx-2">
+                            <i class="fas fa-user-tie mx-2"></i>
+                            <span>Number of adults:</span>
+                        </p>
+                        <input class="form-control flex-grow-1 w-100" id="@tagIDs.ReservationNumberOfAdultsInputID" type="number" />
+                    </div>
+                    <div class="flex-grow-1 mx-3">
+                        <p class="text-muted my-0 mx-2">
+                            <i class="fas fa-child mx-2"></i>
+                            <span>Number of children:</span>
+                        </p>
+                        <input class="form-control flex-grow-1 w-100" id="@tagIDs.ReservationNumberOfChildrenInputID" type="number" />
+                    </div>
+                </div>
+                <p class="text-center text-danger d-none mt-2" id="@tagIDs.ReservationModalGuestInputsErrorBoxID"></p>
+
                 <hr />
-                <button class="d-block btn btn-success w-50 mx-auto my-4 font-weight-bold" style="font-size: 18px; min-width: 150px">Create reservation</button>
+                <div id="@tagIDs.ReservationModalServerErrorBoxID"></div>
+                <button class="d-block btn btn-success w-50 mx-auto my-4 font-weight-bold" style="font-size: 18px; min-width: 150px" id="@tagIDs.ReservationModalCreateButtonID">Create reservation</button>
             </div>
         </div>
     </div>
@@ -247,7 +268,7 @@
             $("#@tagIDs.LoadingDataDivID").addClass("d-none");
             $("#@tagIDs.MainContentDivID").removeClass("d-none");
 
-            offerDetailsLoadedResolve();
+            offerDetailsLoadedResolve(data);
         })();
     })();
     var offerDetailsLoadedPromise;
@@ -366,6 +387,42 @@
         }
 
         pager.setPageNumber(1, true);
+    }, () => { });
+</script>
+<script src="~/js/Search/OfferReservations/hotelOfferReservationManager.js"></script>
+<script src="~/js/Search/OfferReservations/hotelOfferReservationModal.js"></script>
+<script>
+    offerDetailsLoadedPromise.then(function (offerData) {
+        var reservationModal = new HotelOfferReservationModal({
+            hotelOfferData: offerData,
+            modalHandle: $("#@tagIDs.ReservationModalID"),
+            createReservationButtonHandle: $("#@tagIDs.ReservationModalCreateButtonID"),
+            inputHandles: {
+                fromTimeInput: $("#@tagIDs.ReservationFromTimeInputID"),
+                toTimeInput: $("#@tagIDs.ReservationToTimeInputID"),
+                numberOfAdultsInput: $("#@tagIDs.ReservationNumberOfAdultsInputID"),
+                numberOfChildrenInput: $("#@tagIDs.ReservationNumberOfChildrenInputID")
+            },
+            guestInputsValidationBox: $("#@tagIDs.ReservationModalGuestInputsErrorBoxID"),
+            serverErrorBox: $("#@tagIDs.ReservationModalServerErrorBoxID"),
+            offerAvailabilityListHandle: $("#@tagIDs.ReservationModalOfferAvailabilityListID")
+        });
+
+        var apiConfig = {
+            apiBaseUrl: "@ServerApiConfig.BaseUrl",
+            apiTokenCookieName: "@ClientTokenCookieDefaults.AuthCookieName",
+            apiTokenHeaderName: "@ServerApiConfig.TokenHeaderName"
+        };
+        var reservationManager = new HotelOfferReservationManager({
+            hotelID: @Model.HotelID,
+            offerID: @Model.OfferID,
+            apiConfig: apiConfig,
+            reservationModal: reservationModal
+        });
+
+        $("#@tagIDs.CreateReservationBtnID").on('click', function () {
+            reservationManager.createReservation();
+        });
     }, () => { });
 </script>
 }

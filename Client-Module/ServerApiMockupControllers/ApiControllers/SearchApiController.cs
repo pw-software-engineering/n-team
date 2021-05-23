@@ -157,6 +157,13 @@ namespace ServerApiMockup.MockupApiControllers
                 {
                     imgBase64Room,
                     imgBase64Stock
+                },
+                AvailabilityTimeIntervals = new List<AvailabilityTimeInterval>()
+                {
+                    new AvailabilityTimeInterval(new DateTime(2020, 1, 1), new DateTime(2020, 1, 15)),
+                    new AvailabilityTimeInterval(new DateTime(2020, 1, 4), new DateTime(2020, 2, 3)),
+                    new AvailabilityTimeInterval(new DateTime(2020, 1, 20), new DateTime(2020, 1, 26)),
+                    new AvailabilityTimeInterval(new DateTime(2020, 2, 10), new DateTime(2020, 2, 15))
                 }
             };
             return new JsonResult(
@@ -199,7 +206,7 @@ namespace ServerApiMockup.MockupApiControllers
                     ReviewerUsername = $"TestUsername_{i}",
                     CreationDate = new DateTime(2020, i + 1, 10 + i),
                     Content = "This is test\nReview with some\nnewlines in between.",
-                    Rating = rng.Next(1, 6)
+                    Rating = rng.Next(1, 6),
                 });
             }
             return new JsonResult(
@@ -209,6 +216,18 @@ namespace ServerApiMockup.MockupApiControllers
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     IgnoreNullValues = true
                 });
+        }
+
+        [HttpPost("hotels/{hotelID:int}/offers/{offerID:int}/reservations")]
+        public IActionResult CreateHotelOfferReservation([FromRoute] int hotelID, [FromRoute] int offerID, [FromBody] CreateReservationInfo reservationInfo)
+        {
+            Console.WriteLine(reservationInfo.From);
+            Thread.Sleep(4000);
+            if (reservationInfo.To > new DateTime(2021, 07, 01))
+            {
+                return BadRequest(new { error = "Cannot make a reservation further than 2021-07-01" });
+            }
+            return Ok();
         }
     }
 
@@ -230,6 +249,14 @@ namespace ServerApiMockup.MockupApiControllers
                 ReviewerUsername = ReviewerUsername
             };
         }
+    }
+
+    public class CreateReservationInfo
+    {
+        public DateTime From { get; set; }
+        public DateTime To { get; set; }
+        public int NumberOfChildren { get; set; }
+        public int NumberOfAdults { get; set; }
     }
 
     public class Paging
@@ -258,6 +285,18 @@ namespace ServerApiMockup.MockupApiControllers
         public double CostPerAdult { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
+        public List<AvailabilityTimeInterval> AvailabilityTimeIntervals { get; set; }
+    }
+
+    public class AvailabilityTimeInterval
+    {
+        public AvailabilityTimeInterval(DateTime startDate, DateTime endDate)
+        {
+            StartDate = startDate;
+            EndDate = endDate;
+        }
+        public DateTime StartDate { get; }
+        public DateTime EndDate { get; }
     }
 
     public class OfferFilter

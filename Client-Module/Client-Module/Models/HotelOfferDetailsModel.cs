@@ -9,7 +9,7 @@ namespace Client_Module.Models
     {
         public int HotelID { get; set; }
         public int OfferID { get; set; }
-        public DateTime FromTime { get; set; }
-        public DateTime ToTime { get; set; }
+        public DateTime? FromTime { get; set; }
+        public DateTime? ToTime { get; set; }
     }
 }

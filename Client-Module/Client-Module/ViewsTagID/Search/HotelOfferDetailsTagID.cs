@@ -27,5 +27,15 @@ namespace Client_Module.ViewsTagID.Search
         public string ReviewBottomPagerPreviousBtnID { get; } = "review-bottom-pager-previous-btn";
         public string ReviewBottomPagerInputID { get; } = "review-bottom-pager-input";
         public string OfferReviewsListID { get; } = "offer-reviews-list";
+
+        public string ReservationModalID { get; } = "reservation-modal";
+        public string ReservationFromTimeInputID { get; } = "reservation-from-time-input";
+        public string ReservationToTimeInputID { get; } = "reservation-to-time-input";
+        public string ReservationNumberOfAdultsInputID { get; } = "reservation-number-of-adults-input";
+        public string ReservationNumberOfChildrenInputID { get; } = "reservation-number-of-children-input";
+        public string ReservationModalCreateButtonID { get; } = "reservation-create-button";
+        public string ReservationModalGuestInputsErrorBoxID { get; } = "reservation-guest-inputs-error-box";
+        public string ReservationModalServerErrorBoxID { get; } = "reservation-server-error-box";
+        public string ReservationModalOfferAvailabilityListID { get; } = "reservation-availability-list";
     }
 }

@@ -85,5 +85,99 @@ namespace Server.Database.DataAccess.Client
             return _dbContext.Hotels.Any(h => h.HotelID == hotelID);
         }
 
+        public List<AvailabilityTimeInterval> GetHotelOfferAvailability(int hotelID, int offerID, DateTime fromTime, DateTime toTime)
+        {
+            if(!CheckHotelOfferExistence(hotelID, offerID))
+            {
+                return null;
+            }
+            List<AvailabilityTimeInterval> availabilityTimeIntervals = new List<AvailabilityTimeInterval>();
+            foreach (OfferHotelRoomDb offerRoom in _dbContext.OfferHotelRooms.Where(ohr => ohr.OfferID == offerID))
+            {
+                List<AvailabilityTimeInterval> roomAvailability = GetRoomAvailabilityTimeIntervals(offerRoom.RoomID, fromTime, toTime);
+                availabilityTimeIntervals = MergeAvailabilityTimeIntervals(availabilityTimeIntervals, roomAvailability);
+            }
+            return availabilityTimeIntervals;
+        }
+
+        List<AvailabilityTimeInterval> GetRoomAvailabilityTimeIntervals(int roomID, DateTime fromTime, DateTime toTime)
+        {
+            List<AvailabilityTimeInterval> roomUnavailability =
+                _dbContext.ClientReservations
+                .Where(cr => cr.RoomID == roomID && !(cr.ToTime < fromTime || cr.FromTime > toTime))
+                .OrderBy(cdb => cdb.FromTime)
+                .Select(cdb => new AvailabilityTimeInterval(cdb.FromTime, cdb.ToTime))
+                .ToList();
+
+            List<AvailabilityTimeInterval> roomAvailability = new List<AvailabilityTimeInterval>();
+            if(roomUnavailability.Count == 0)
+            {
+                roomAvailability.Add(new AvailabilityTimeInterval(fromTime, toTime));
+                return roomAvailability;
+            }
+            
+            if(roomUnavailability[0].StartDate > fromTime)
+            {
+                roomAvailability.Add(new AvailabilityTimeInterval(fromTime, roomUnavailability[0].StartDate.AddDays(-1)));
+            }
+
+            for(int i = 1; i < roomUnavailability.Count; i++)
+            {
+                AvailabilityTimeInterval timeInterval = new AvailabilityTimeInterval(
+                    roomUnavailability[i - 1].EndDate.AddDays(1),
+                    roomUnavailability[i].StartDate.AddDays(-1));
+                if(timeInterval.EndDate < timeInterval.StartDate)
+                {
+                    continue;
+                }
+                roomAvailability.Add(timeInterval);
+            }
+
+            if (roomUnavailability[roomUnavailability.Count - 1].EndDate < toTime)
+            {
+                roomAvailability.Add(new AvailabilityTimeInterval(roomUnavailability[roomUnavailability.Count - 1].EndDate.AddDays(1), toTime));
+            }
+
+            return roomAvailability;
+        }
+
+        List<AvailabilityTimeInterval> MergeAvailabilityTimeIntervals(
+            List<AvailabilityTimeInterval> availabilityTimeIntervals1,
+            List<AvailabilityTimeInterval> availabilityTimeIntervals2)
+        {
+            List<AvailabilityTimeInterval> resultTimeIntervals = new List<AvailabilityTimeInterval>();
+            int it1 = 0, it2 = 0;
+            while(it1 < availabilityTimeIntervals1.Count || it2 < availabilityTimeIntervals2.Count)
+            {
+                if(it1 == availabilityTimeIntervals1.Count)
+                {
+                    resultTimeIntervals.Add(availabilityTimeIntervals2[it2++]);
+                    continue;
+                }
+                else if(it2 == availabilityTimeIntervals2.Count)
+                {
+                    resultTimeIntervals.Add(availabilityTimeIntervals1[it1++]);
+                    continue;
+                }
+                AvailabilityTimeInterval interval1 = availabilityTimeIntervals1[it1];
+                AvailabilityTimeInterval interval2 = availabilityTimeIntervals2[it2];
+                if(interval1.StartDate >= interval2.StartDate)
+                {
+                    if(interval1.EndDate <= interval2.EndDate)
+                    {
+                        it1++;
+                        continue;
+                    }
+                    resultTimeIntervals.Add(interval2);
+                    it2++;
+                }
+                else
+                {
+                    resultTimeIntervals.Add(interval1);
+                    it1++;
+                }
+            }
+            return resultTimeIntervals;
+        }
     }
 }

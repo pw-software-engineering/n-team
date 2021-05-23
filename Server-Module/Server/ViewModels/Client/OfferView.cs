@@ -16,5 +16,32 @@ namespace Server.ViewModels.Client
         public double CostPerAdult { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
+        public List<AvailabilityTimeInterval> AvailabilityTimeIntervals { get; set; }
+    }
+
+    public class AvailabilityTimeInterval
+    {
+        public AvailabilityTimeInterval(DateTime startDate, DateTime endDate)
+        {
+            StartDate = startDate;
+            EndDate = endDate;
+        }
+        public DateTime StartDate { get; }
+        public DateTime EndDate { get; }
+
+        public override bool Equals(object obj)
+        {
+            if(!(obj is AvailabilityTimeInterval))
+            {
+                return false;
+            }
+            AvailabilityTimeInterval other = obj as AvailabilityTimeInterval;
+            return StartDate == other.StartDate && EndDate == other.EndDate;
+        }
+
+        public override int GetHashCode()
+        {
+            return StartDate.GetHashCode() ^ EndDate.GetHashCode();
+        }
     }
 }

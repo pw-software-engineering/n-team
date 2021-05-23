@@ -17,6 +17,6 @@ namespace Server.Database.DataAccess.Client
         bool CheckHotelOfferExistence(int hotelID, int offerID);
         OfferView GetHotelOfferDetails(int offerID);
         List<string> GetHotelOfferPictures(int offerID);
-        //List<(DateTime begin, DateTime end)> GetHotelOfferAvailability(int hotelID, int offerID, DateTime from, DateTime to);
+        List<AvailabilityTimeInterval> GetHotelOfferAvailability(int hotelID, int offerID, DateTime from, DateTime to);
     }
 }
