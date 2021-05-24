@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Client_Module.Authentication
+namespace Hotel_Module.Authentication
 {
     public class HotelCookieTokenManager : IHotelCookieTokenManager
     {
@@ -27,7 +27,7 @@ namespace Client_Module.Authentication
             }
             var claims = new[]
             {
-                new Claim("authString", hotel.Name),
+                new Claim("authString", hotel.hotelName),
             };
             var identity = new ClaimsIdentity(claims, "jwt");
             return new ClaimsPrincipal(identity);

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Client_Module.Authentication
+namespace Hotel_Module.Authentication
 {
     public interface IHotelCookieTokenManager
     {

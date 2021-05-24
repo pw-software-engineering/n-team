@@ -7,7 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Client_Module.Authentication
+namespace Hotel_Module.Authentication
 {
     public interface IHotelInfoAccessor
     {

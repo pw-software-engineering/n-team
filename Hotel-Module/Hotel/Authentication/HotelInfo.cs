@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Client_Module.Authentication
+namespace Hotel_Module.Authentication
 {
     public class HotelInfo
     {

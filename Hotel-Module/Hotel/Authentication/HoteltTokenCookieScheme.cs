@@ -16,7 +16,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Client_Module.Authentication
+namespace Hotel_Module.Authentication
 {
     public class HoteltTokenCookieScheme
         : AuthenticationHandler<HotelTokenCookieSchemeOptions>
