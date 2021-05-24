@@ -30,6 +30,12 @@ namespace Hotel.Controllers
             return View();
         }
 
+        public IActionResult Log_in()
+        {
+            
+            return null;
+        }
+
         public IActionResult Privacy()
         { 
             return View();

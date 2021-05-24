@@ -28,9 +28,16 @@ namespace Hotel
             services.AddHttpClient<DefaultHttpClient>(c =>
             {
                 c.BaseAddress = new Uri("https://localhost:5001/api-hotel/");
-                c.DefaultRequestHeaders.Add("x-hotel-token", "TestAccessToken1");   // TODO: change it
+                //c.DefaultRequestHeaders.Add("x-hotel-token", "TestAccessToken1");   // TODO: change it
             });
             services.AddControllersWithViews();
+            services.AddAuthentication(Hotel_Module.Authentication.HotelTokenCookieDefaults.AuthenticationScheme).AddScheme<Hotel_Module.Authentication.HotelTokenCookieSchemeOptions, Hotel_Module.Authentication.HoteltTokenCookieScheme>(
+                Hotel_Module.Authentication.HotelTokenCookieDefaults.AuthenticationScheme, (Hotel_Module.Authentication.HotelTokenCookieSchemeOptions opt) =>
+                 {
+                     opt.ClaimsIssuer = "localhost";
+                 });
+            services.AddSingleton<Hotel_Module.Authentication.IHotelInfoAccessor, Hotel_Module.Authentication.HotelInfoAccessor>();
+            services.AddSingleton<Hotel_Module.Authentication.IHotelCookieTokenManager, Hotel_Module.Authentication.HotelCookieTokenManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
