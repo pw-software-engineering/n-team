@@ -65,9 +65,21 @@ namespace Hotel.Controllers
         [HttpDelete("/rooms/{roomID}")]
         public async Task<IActionResult> RemoveRoom([FromRoute] int roomID)
         {
+
+            return await CheckForConnectionError(_httpClient.DeleteAsync("rooms/" + roomID));
+        }
+
+        [HttpPost("/rooms")]
+        public async Task<IActionResult> AddRoom([FromForm] string roomNumber)
+        {
+            return await CheckForConnectionError(_httpClient.PostAsJsonAsync("/rooms", new { hotelRoomNumber = roomNumber }));
+        }
+
+        private async Task<StatusCodeResult> CheckForConnectionError(Task<HttpResponseMessage> responseTask)
+        {
             try
             {
-                HttpResponseMessage response = await _httpClient.DeleteAsync("rooms/" + roomID);
+                HttpResponseMessage response = await responseTask;
                 return StatusCode((int)response.StatusCode);
             }
             catch (HttpRequestException e)
