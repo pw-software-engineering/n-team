@@ -53,6 +53,7 @@ namespace Hotel.Controllers
             try
             {
                 Offer offer = await _httpClient.GetFromJsonAsync<Offer>("offers/" + offerID.ToString());
+                offer.OfferID = offerID;
                 return View(offer);
             }
             catch (HttpRequestException e)
@@ -71,6 +72,7 @@ namespace Hotel.Controllers
             try
             {
                 Offer offer = await _httpClient.GetFromJsonAsync<Offer>("offers/" + offerID.ToString());
+                offer.OfferID = offerID;
                 return View(new OfferEditViewModel(offer));
             }
             catch (HttpRequestException e)
