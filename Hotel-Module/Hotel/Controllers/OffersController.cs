@@ -132,6 +132,12 @@ namespace Hotel.Controllers
             return await CheckForConnectionError(_httpClient.DeleteAsync("offers/" + offerID.ToString()));
         }
 
+        [HttpPost("/offers/{offerID}/rooms/{roomID}")]
+        public async Task<IActionResult> DetachRoom([FromRoute] int offerID, [FromRoute] int roomID)
+        {
+            return await CheckForConnectionError(_httpClient.DeleteAsync("offers/" + offerID.ToString() + "/rooms/" + roomID.ToString()));
+        }
+
         private async Task<StatusCodeResult> CheckForConnectionError(Task<HttpResponseMessage> responseTask)
         {
             try

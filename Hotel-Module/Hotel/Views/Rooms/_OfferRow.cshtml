@@ -1,4 +1,4 @@
-﻿@model Hotel.Models.Offer
+﻿@model Hotel.ViewModels.OfferRowViewModel
 
 @if (Model is null)
 {
@@ -14,25 +14,33 @@ else
         <td>
             <div class="row align-items-center m-0">
                 <div class="container-fluid col-sm-3">
-                    <img src="data:image/png;base64,@Model.OfferPreviewPicture" class="img float-left rounded w-100" />
+                    <img src="data:image/png;base64,@Model.Offer.OfferPreviewPicture" class="img float-left rounded w-100" />
                 </div>
                 <div class="col-sm">
-                    <h3 class="m-0">@Model.OfferTitle</h3>
+                    <h3 class="m-0">@Model.Offer.OfferTitle</h3>
                     <dl class="row" style="line-height: 15px">
                         <dt class="col-sm-3">Adult</dt>
-                        <dd class="col-sm-9">@Model.CostPerAdult$</dd>
+                        <dd class="col-sm-9">@Model.Offer.CostPerAdult$</dd>
                         <dt class="col-sm-3">Child</dt>
-                        <dd class="col-sm-9">@Model.CostPerChild$</dd>
+                        <dd class="col-sm-9">@Model.Offer.CostPerChild$</dd>
                         <dt class="col-sm-3">Max guests</dt>
-                        <dd class="col-sm-9">@Model.MaxGuests</dd>
+                        <dd class="col-sm-9">@Model.Offer.MaxGuests</dd>
                     </dl>
                 </div>
                 <div class="btn-group-vertical btn-group-sm col-sm-2">
-                    <button class="btn btn-sm btn-outline-danger">
+                    <form id="detachForm_@Model.Offer.OfferID" method="post"
+                       asp-controller="offers"
+                       asp-action="@nameof(Hotel.Controllers.OffersController.DetachRoom)",
+                       asp-route-offerID="@Model.Offer.OfferID"
+                       asp-route-roomID="@Model.RoomID">
+                    </form>
+                    <button form="detachForm_@Model.Offer.OfferID" type="submit" class="btn btn-sm btn-outline-danger">
                         <span class="fa fa-unlink"></span>
                         Detach from offer
                     </button>
-                    <a class="btn btn-sm btn-primary" asp-controller="@nameof(Hotel.Controllers.OffersController)" asp-action="@nameof(Hotel.Controllers.OffersController.Details)">Details</a>
+                    <a class="btn btn-sm btn-primary" asp-controller="offers"
+                       asp-action="@nameof(Hotel.Controllers.OffersController.Details)"
+                       asp-route-offerID="@Model.Offer.OfferID">Details</a>
                 </div>
             </div>
         </td>

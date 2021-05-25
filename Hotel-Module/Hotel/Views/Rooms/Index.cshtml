@@ -172,7 +172,8 @@ else
                 ajaxes[index] = $.ajax({
                     url: "/rooms/offerRowPartial",
                     data: {
-                        "offerID": offerID
+                        "offerID": offerID,
+                        "roomID": activeRoomID
                     },
                     success: function (partial) {
                         offersBody.insertAdjacentHTML('beforeend', partial);

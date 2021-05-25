@@ -92,14 +92,15 @@ namespace Hotel.Controllers
             }
         }
 
-        public async Task<PartialViewResult> OfferRowPartial(int offerID)
+        public async Task<PartialViewResult> OfferRowPartial(int offerID, int roomID)
         {
             try
             {
                 Offer offer = await _httpClient.GetFromJsonAsync<Offer>("offers/" + offerID.ToString());
                 offer.OfferID = offerID;
+                OfferRowViewModel offerRowVM = new OfferRowViewModel { Offer = offer, RoomID = roomID };
                 ViewBag.ErrorCode = null;
-                return PartialView("_OfferRow", offer);
+                return PartialView("_OfferRow", offerRowVM);
             }
             catch (HttpRequestException e)
             {
