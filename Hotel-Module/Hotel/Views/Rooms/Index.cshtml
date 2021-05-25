@@ -6,13 +6,72 @@
 <h1>Rooms in your hotel</h1>
 <br />
 
-<form>
+@*<form>
     <div class="form-group">
         <input type="text" class="form-control" placeholder="Filter" />
         <label class="form-control-placeholder">Room number</label>
         <span class="fa fa-fw fa-lg fa-sort-alpha-up field-icon toggle-sort"></span>
     </div>
-</form>
+</form>*@
+
+<div class="row">
+    <form asp-action="Index" method="get" class="row">
+        <div class="form-group col-sm-4 m-3">
+            <input asp-for="HotelRoomNumber" class="form-control" placeholder="Filter" />
+            <label class="form-control-placeholder">Room number</label>
+            @*<span class="fa fa-fw fa-lg fa-sort-alpha-up field-icon toggle-sort"></span>*@
+        </div>
+
+        <div class="form-group col-sm-4 m-3">
+            @Html.DropDownListFor(vm => vm.Paging.PageSize,
+                new SelectList(
+                    new[]
+                    {
+                        new { Value = "5", Text = "5"},
+                        new { Value = "10", Text = "10"},
+                        new { Value = "20", Text = "20"},
+                        new { Value = "50", Text = "50"}
+                    }, "Value", "Text", Model.Paging.PageSize
+                ),
+                new { @class = "form-control" }
+            )
+            <label class="form-control-placeholder">Entries per page</label>
+        </div>
+
+        <input asp-for="Paging.PageNumber" id="pageNumber" hidden />
+
+        <div class="form-group col-sm-1 m-3">
+            <button type="submit" id="applyBtn" class="btn btn-primary">Apply</button>
+        </div>
+    </form>
+</div>
+<nav aria-label="Offers pages">
+    <ul class="pagination justify-content-center">
+        <li class="page-item
+            @if (Model.Paging.PageNumber < 2)
+            {
+                @:disabled
+            }
+        ">
+            <button id="prevPageBtn" class="page-link" aria-label="Previous">
+                <span class="fa fa-chevron-left"></span>
+            </button>
+        </li>
+
+        <li class="page-item"><a class="page-link">@Model.Paging.PageNumber</a></li>
+
+        <li class="page-item
+            @if (Model.Rooms.Count() < Model.Paging.PageSize)
+            {
+                @:disabled
+            }
+        ">
+            <button id="nextPageBtn" class="page-link" aria-label="Next">
+                <span class="fa fa-chevron-right"></span>
+            </button>
+        </li>
+    </ul>
+</nav>
 <hr />
 
 @if (Model.Rooms is null || !Model.Rooms.Any())
@@ -80,9 +139,9 @@ else
 
 @section Scripts {
     <script type="text/javascript">
-        $(".toggle-sort").click(function () {
-            $(this).toggleClass("fa-sort-alpha-up fa-sort-alpha-down");
-        });
+        //$(".toggle-sort").click(function () {         // <- this can be potentially easy implemented with server cooperation
+        //    $(this).toggleClass("fa-sort-alpha-up fa-sort-alpha-down");
+        //});
 
         var activeRoomID;
 

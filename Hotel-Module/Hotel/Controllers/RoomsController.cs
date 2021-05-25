@@ -23,11 +23,11 @@ namespace Hotel.Controllers
 
 
         [HttpGet("/rooms")]
-        public async Task<IActionResult> Index([FromQuery] string roomNumber, [FromQuery] Paging paging)
+        public async Task<IActionResult> Index([FromQuery] string hotelRoomNumber, [FromQuery] Paging paging)
         {
             NameValueCollection query = HttpUtility.ParseQueryString("");
-            if (!string.IsNullOrWhiteSpace(roomNumber))
-                query["roomNumber"] = roomNumber.ToString();
+            if (!string.IsNullOrWhiteSpace(hotelRoomNumber))
+                query["roomNumber"] = hotelRoomNumber.ToString();
             query["pageNumber"] = paging.PageNumber.ToString();
             query["pageSize"] = paging.PageSize.ToString();
 
@@ -49,7 +49,7 @@ namespace Hotel.Controllers
                         OfferID = new List<int>{1, 2, 3, 4}
                     }
                 };
-                RoomsIndexViewModel roomsVM = new RoomsIndexViewModel(rooms, paging, roomNumber);
+                RoomsIndexViewModel roomsVM = new RoomsIndexViewModel(rooms, paging, hotelRoomNumber);
                 return View(roomsVM);
             }
             catch (HttpRequestException e)
