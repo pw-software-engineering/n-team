@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -52,6 +51,24 @@ namespace Hotel.Controllers
                 };
                 RoomsIndexViewModel roomsVM = new RoomsIndexViewModel(rooms, paging, roomNumber);
                 return View(roomsVM);
+            }
+            catch (HttpRequestException e)
+            {
+                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
+            }
+            catch (Exception)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpDelete("/rooms/{roomID}")]
+        public async Task<IActionResult> RemoveRoom([FromRoute] int roomID)
+        {
+            try
+            {
+                HttpResponseMessage response = await _httpClient.DeleteAsync("rooms/" + roomID);
+                return StatusCode((int)response.StatusCode);
             }
             catch (HttpRequestException e)
             {
