@@ -23,6 +23,7 @@ namespace Hotel.Controllers
         }
 
 
+        [HttpGet("/rooms")]
         public async Task<IActionResult> Index([FromQuery] string roomNumber, [FromQuery] Paging paging)
         {
             NameValueCollection query = HttpUtility.ParseQueryString("");
@@ -33,7 +34,22 @@ namespace Hotel.Controllers
 
             try
             {
-                IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>("rooms?" + query.ToString());
+                //IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>("rooms?" + query.ToString());
+                IEnumerable<Room> rooms = new List<Room>
+                {
+                    new Room
+                    {
+                        RoomID = 1,
+                        HotelRoomNumber = "1",
+                        OfferID = new List<int>{102, 103}
+                    },
+                    new Room
+                    {
+                        RoomID = 2,
+                        HotelRoomNumber = "2",
+                        OfferID = new List<int>{1, 2, 3, 4}
+                    }
+                };
                 RoomsIndexViewModel roomsVM = new RoomsIndexViewModel(rooms, paging, roomNumber);
                 return View(roomsVM);
             }
@@ -47,19 +63,25 @@ namespace Hotel.Controllers
             }
         }
 
-        public PartialViewResult OfferRowPartial(uint offerID)
+        public async Task<PartialViewResult> OfferRowPartial(int offerID)
         {
-            // get data from server
-            Offer offer = new Offer
+            try
             {
-                OfferPreviewPicture = "iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAARElEQVR42u3PMREAAAgEIE1u9DeDqwcN6FSmHmgRERERERERERERERERERERERERERERERERERERERERERERERERkYsFbE58nZm0+8AAAAAASUVORK5CYII=",
-                OfferTitle = "Limitless Offer",
-                CostPerAdult = 120.00,
-                CostPerChild = 100.00,
-                MaxGuests = 3
-            };
-
-            return PartialView("_OfferRow", offer);
+                Offer offer = await _httpClient.GetFromJsonAsync<Offer>("offers/" + offerID.ToString());
+                offer.OfferID = offerID;
+                ViewBag.ErrorCode = null;
+                return PartialView("_OfferRow", offer);
+            }
+            catch (HttpRequestException e)
+            {
+                ViewBag.ErrorCode = (int)(e.StatusCode ?? HttpStatusCode.InternalServerError);
+                return PartialView("_OfferRow", null);
+            }
+            catch (Exception)
+            {
+                ViewBag.ErrorCode = (int)HttpStatusCode.InternalServerError;
+                return PartialView("_OfferRow", null);
+            }
         }
     }
 }

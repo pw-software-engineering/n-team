@@ -15,12 +15,23 @@
 </form>
 <hr />
 
-<ul class="list-inline">
-    <li class="list-inline-item"><button type="button" id="test" class="room-text btn btn-link" data-toggle="modal" data-target="#roomOffersModal" data-offers='[1, 2, 3, 4]'>12</button></li>
-    <li class="list-inline-item"><button type="button" class="room-text btn btn-link">13</button></li>
-    <li class="list-inline-item"><button type="button" class="room-text btn btn-link">14</button></li>
-    <li class="list-inline-item"><button type="button" class="room-text btn btn-link">15</button></li>
-</ul>
+@if (Model.Rooms is null || !Model.Rooms.Any())
+{ 
+    <p>There are no rooms in your hotel.</p>
+}
+else
+{ 
+    <ul class="list-inline">
+        @foreach (Room room in Model.Rooms)
+        {
+            <li class="list-inline-item"><button type="button" id="test" class="room-text btn btn-link"
+                                                    data-toggle="modal"
+                                                    data-target="#roomOffersModal"
+                                                    data-offers="@Newtonsoft.Json.JsonConvert.SerializeObject(room.OfferID)">@room.HotelRoomNumber</button>
+            </li>
+        }
+    </ul>
+}
 <hr />
 
 <form>
@@ -79,20 +90,36 @@
             var roomNr = a.text();
             var offerIDs = a.data('offers');
             var modal = $(this);
-            var offersBody = modal.find('#offersBody');
+            var offersBody = modal.find('#offersBody')[0];
+            offersBody.innerHTML = '';
 
             modal.find('.modal-title').text('Room ' + roomNr);
 
+            // ukradzione z client-module
+            var loadingBox = `<tr>
+                        <td>
+                            <img class="d-block mx-auto mt-2", style="width: 75px", src="/img/loading.gif"></img>
+                            <p class="text-center h5 mt-2">Loading offers...</p>
+                        </td>
+                    </tr>`;
+            offersBody.insertAdjacentHTML('beforeend', loadingBox);
+
             // AJAX each offer and add table row inside #offersBody
+            var ajaxes = new Array;
             offerIDs.forEach(function (offerID, index) {
 
-                $.ajax({
+                ajaxes[index] = $.ajax({
                     url: "/rooms/offerRowPartial",
-                    data: offerID,
+                    data: {
+                        "offerID": offerID
+                    },
                     success: function (partial) {
-                        offersBody.append(partial);
+                        offersBody.insertAdjacentHTML('beforeend', partial);
                     }
                 });
+            });
+            $.when.apply($, ajaxes).done(function () {
+                offersBody.removeChild(offersBody.firstElementChild);
             });
         });
     </script>
