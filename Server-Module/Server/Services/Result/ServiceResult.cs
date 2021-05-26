@@ -26,26 +26,23 @@ namespace Server.Services.Result
             StatusCode = code;
         }
 
-        public Task ExecuteResultAsync(ActionContext context)
+        public async Task ExecuteResultAsync(ActionContext context)
         {
-            return Task.Run(async () =>
-                {
-                    context.HttpContext.Response.StatusCode = (int)StatusCode;
-                    if(Result == null)
-                    {
-                        return;
-                    }
-                    JsonSerializerSettings serializerSettings = new JsonSerializerSettings()
-                    {
-                        ContractResolver = new CamelCasePropertyNamesContractResolver()
-                    };
-                    string json = JsonConvert.SerializeObject(Result, serializerSettings);
+            context.HttpContext.Response.StatusCode = (int)StatusCode;
+            if(Result == null)
+            {
+                return;
+            }
+            JsonSerializerSettings serializerSettings = new JsonSerializerSettings()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+            string json = JsonConvert.SerializeObject(Result, serializerSettings);
 
-                    byte[] data = Encoding.UTF8.GetBytes(json);
-                    context.HttpContext.Response.ContentType = "application/json";
-                    await context.HttpContext.Response.Body.WriteAsync(data, 0, data.Length);
-                    await context.HttpContext.Response.Body.FlushAsync();
-                });
+            byte[] data = Encoding.UTF8.GetBytes(json);
+            context.HttpContext.Response.ContentType = "application/json";
+            await context.HttpContext.Response.Body.WriteAsync(data, 0, data.Length);
+            await context.HttpContext.Response.Body.FlushAsync();
         }
     }
 }
