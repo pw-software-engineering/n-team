@@ -50,7 +50,7 @@ namespace Server.Services.Client
             HotelView hotelView = _hotelSearchDataAccess.GetHotelDetails(hotelID);
             if(hotelView == null)
             {
-                return new ServiceResult(HttpStatusCode.NotFound);
+                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Hotel with ID equal to {hotelID} does not exist"));
             }
             hotelView.HotelPictures = _hotelSearchDataAccess.GetHotelPictures(hotelID);
             _transaction.CommitTransaction();
