@@ -6,16 +6,8 @@
 <h1>Rooms in your hotel</h1>
 <br />
 
-@*<form>
-    <div class="form-group">
-        <input type="text" class="form-control" placeholder="Filter" />
-        <label class="form-control-placeholder">Room number</label>
-        <span class="fa fa-fw fa-lg fa-sort-alpha-up field-icon toggle-sort"></span>
-    </div>
-</form>*@
-
 <div class="row">
-    <form asp-action="Index" method="get" class="row">
+    <form asp-action="Index" method="get" class="row" id="filterForm">
         <div class="form-group col-sm-4 m-3">
             <input asp-for="HotelRoomNumber" class="form-control" placeholder="Filter" />
             <label class="form-control-placeholder">Room number</label>
@@ -143,65 +135,82 @@ else
         //    $(this).toggleClass("fa-sort-alpha-up fa-sort-alpha-down");
         //});
 
-        var activeRoomID;
+        $(document).ready(function () {
+            var activeRoomID;
 
-        // adjust modal to clicked room
-        $('#roomOffersModal').on('show.bs.modal', function (event) {
-            var a = $(event.relatedTarget);
-            var room = a.data('room');
-            var modal = $(this);
-            var offersBody = modal.find('#offersBody')[0];
+            // adjust modal to clicked room
+            $('#roomOffersModal').on('show.bs.modal', function (event) {
+                var a = $(event.relatedTarget);
+                var room = a.data('room');
+                var modal = $(this);
+                var offersBody = modal.find('#offersBody')[0];
 
-            offersBody.innerHTML = '';
-            modal.find('.modal-title').text('Room ' + room.HotelRoomNumber);
-            activeRoomID = room.RoomID;
+                offersBody.innerHTML = '';
+                modal.find('.modal-title').text('Room ' + room.HotelRoomNumber);
+                activeRoomID = room.RoomID;
 
-            // ukradzione z client-module
-            var loadingBox = `<tr>
+                // ukradzione z client-module
+                var loadingBox = `<tr>
                         <td>
                             <img class="d-block mx-auto mt-2", style="width: 75px", src="/img/loading.gif"></img>
                             <p class="text-center h5 mt-2">Loading offers...</p>
                         </td>
                     </tr>`;
-            offersBody.insertAdjacentHTML('beforeend', loadingBox);
+                offersBody.insertAdjacentHTML('beforeend', loadingBox);
 
-            // AJAX each offer and add table row inside #offersBody
-            var ajaxes = new Array;
-            room.OfferID.forEach(function (offerID, index) {
+                // AJAX each offer and add table row inside #offersBody
+                var ajaxes = new Array;
+                room.OfferID.forEach(function (offerID, index) {
 
-                ajaxes[index] = $.ajax({
-                    url: "/rooms/offerRowPartial",
-                    data: {
-                        "offerID": offerID,
-                        "roomID": activeRoomID
-                    },
-                    success: function (partial) {
-                        offersBody.insertAdjacentHTML('beforeend', partial);
-                    }
+                    ajaxes[index] = $.ajax({
+                        url: "/rooms/offerRowPartial",
+                        data: {
+                            "offerID": offerID,
+                            "roomID": activeRoomID
+                        },
+                        success: function (partial) {
+                            offersBody.insertAdjacentHTML('beforeend', partial);
+                        }
+                    });
+                });
+                $.when.apply($, ajaxes).done(function () {
+                    offersBody.removeChild(offersBody.firstElementChild);
                 });
             });
-            $.when.apply($, ajaxes).done(function () {
-                offersBody.removeChild(offersBody.firstElementChild);
-            });
-        });
 
-        // removing a room
-        $('#removeRoomBtn').on('click', async function () {
-            if (!confirm('Are you sure you want to permanently delete this room? This action is irreversible!'))
-                return;
+            // removing a room
+            $('#removeRoomBtn').on('click', async function () {
+                if (!confirm('Are you sure you want to permanently delete this room? This action is irreversible!'))
+                    return;
 
-            await fetch(`/rooms/${activeRoomID}`, {
-                method: 'DELETE'
-            }).then((response) => {
-                if (response.ok) {
-                    alert("Room deleted succesfully.");
-                    window.location.replace('@Url.Action(nameof(Hotel.Controllers.RoomsController.Index))');
-                } else {
-                    alert("error: " + response.status);
-                }
-            }).catch((error) => {
-                console.error('fetch error: ', error);
+                await fetch(`/rooms/${activeRoomID}`, {
+                    method: 'DELETE'
+                }).then((response) => {
+                    if (response.ok) {
+                        alert("Room deleted succesfully.");
+                        window.location.replace('@Url.Action(nameof(Hotel.Controllers.RoomsController.Index))');
+                    } else {
+                        alert("error: " + response.status);
+                    }
+                }).catch((error) => {
+                    console.error('fetch error: ', error);
+                });
             });
+
+            // paging
+            var form = document.getElementById('filterForm');
+            var pageNumElem = document.getElementById('pageNumber');
+            document.getElementById('nextPageBtn').onclick = function () {
+                pageNumElem.value = parseInt(pageNumElem.value) + 1;
+                form.submit();
+            };
+            document.getElementById('prevPageBtn').onclick = function () {
+                pageNumElem.value = parseInt(pageNumElem.value) - 1;
+                form.submit();
+            };
+            document.getElementById('applyBtn').onclick = function () {
+                pageNumElem.value = 1;
+            };
         });
     </script>
 }
