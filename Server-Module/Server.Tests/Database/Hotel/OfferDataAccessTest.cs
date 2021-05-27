@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Server.AutoMapper;
 using Server.Database;
@@ -11,6 +12,7 @@ using Server.RequestModels.Hotel;
 using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Xunit;
@@ -26,8 +28,9 @@ namespace Server.Tests.Database.Hotel
             .AddEntityFrameworkSqlServer()
             .BuildServiceProvider();
 
+            var configurationBuilder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appSettings.json").Build();
             var builder = new DbContextOptionsBuilder<ServerDbContext>();
-            builder.UseSqlServer($"Server=(localdb)\\mssqllocaldb;Database=ServerDbTestsOffer;Trusted_Connection=True;MultipleActiveResultSets=true")
+            builder.UseSqlServer(configurationBuilder.GetConnectionString("OfferDAHotelTest"))
                     .UseInternalServiceProvider(serviceProvider);
 
             _context = new ServerDbContext(builder.Options, false);
@@ -230,7 +233,12 @@ namespace Server.Tests.Database.Hotel
             int offerID = 3;
 
             int? ownerTest = _dataAccess.FindOfferAndGetOwner(offerID);
-            int? owner = _context.Offers.Find(offerID).HotelID;
+            int? owner;
+            OfferDb offer = _context.Offers.Find(offerID);
+            if (offer is null || offer.IsDeleted)
+                owner = null;
+            else
+                owner = offer.HotelID;
 
             Assert.Equal(owner, ownerTest);
         }
@@ -271,8 +279,8 @@ namespace Server.Tests.Database.Hotel
                 "Pic3" 
             };
             int offerID = 2;
-
             int offerPicturesCount = _context.OfferPictures.Where(op => op.OfferID == offerID).Count();
+
             _dataAccess.AddOfferPictures(offerID, pictures);
             int offerPicturesUpdatedCount = _context.OfferPictures.Where(op => op.OfferID == offerID).Count();
 

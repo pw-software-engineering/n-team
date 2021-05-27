@@ -52,13 +52,17 @@ namespace Server.Database.DataAccess.Hotel
 
         public OfferView GetOffer(int offerID)
         {
+            OfferDb offer = _dbContext.Offers.Find(offerID);
+            if (offer is null || offer.IsDeleted)
+                return null;
             return _mapper.Map<OfferView>(_dbContext.Offers.Find(offerID));
         }
         public int? FindOfferAndGetOwner(int offerID)
         {
-            return _dbContext.Offers.Where(o => o.OfferID == offerID)
-                                    .Select(o => (int?)o.HotelID)
-                                    .FirstOrDefault();
+            OfferDb offer = _dbContext.Offers.Find(offerID);
+            if (offer is null || offer.IsDeleted)
+                return null;
+            return offer.HotelID;
         }
         public void UpdateOffer(int offerID, OfferInfoUpdate offerInfoUpdate)
         {

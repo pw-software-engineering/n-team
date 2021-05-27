@@ -61,10 +61,7 @@ namespace Server.Database.DataAccess.Hotel
         }
         public int? FindRoomAndGetOwner(int roomID)
         {
-            return _dbContext.HotelRooms
-                             .Where(hr => hr.RoomID == roomID)
-                             .Select(hr => (int?)hr.HotelID)
-                             .FirstOrDefault();
+            return _dbContext.HotelRooms.Find(roomID)?.HotelID;
         }
 
         public bool CheckAnyUnfinishedReservations(int roomID)

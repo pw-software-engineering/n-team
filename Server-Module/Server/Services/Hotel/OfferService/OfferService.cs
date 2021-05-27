@@ -30,6 +30,28 @@ namespace Server.Services.Hotel
         }
         public IServiceResult AddOffer(int hotelID, OfferInfo offerInfo)
         {
+            if(offerInfo == null)
+            {
+                throw new ArgumentNullException("offerInfo");
+            }
+            if(!offerInfo.MaxGuests.HasValue || offerInfo.MaxGuests.Value <= 0)
+            {
+                return new ServiceResult(
+                    HttpStatusCode.BadRequest,
+                    new ErrorView("MaxGuests property is required and must contain a positive integer value"));
+            }
+            if(!offerInfo.CostPerAdult.HasValue || offerInfo.CostPerAdult.Value < 0)
+            {
+                return new ServiceResult(
+                    HttpStatusCode.BadRequest,
+                    new ErrorView("CostPerAdult property is required and must contain a positive real number"));
+            }
+            if(!offerInfo.CostPerChild.HasValue || offerInfo.CostPerChild.Value < 0)
+            {
+                return new ServiceResult(
+                    HttpStatusCode.BadRequest,
+                    new ErrorView("CostPerChild property is required and must contain a positive real number"));
+            }
             _transaction.BeginTransaction();
             int offerID = _dataAccess.AddOffer(hotelID, offerInfo);
             _dataAccess.AddOfferPictures(offerID, offerInfo.Pictures);
@@ -45,7 +67,7 @@ namespace Server.Services.Hotel
                 return response;
 
             if (_dataAccess.AreThereUnfinishedReservationsForOffer(offerID))
-                return new ServiceResult(HttpStatusCode.Conflict, new ErrorView("There are still pending reservations for this offer"));
+                return new ServiceResult(HttpStatusCode.Conflict, new ErrorView($"There are still pending reservations for offer with ID equal to {offerID}"));
 
             _transaction.BeginTransaction();
             _dataAccess.UnpinRoomsFromOffer(offerID);
@@ -92,9 +114,9 @@ namespace Server.Services.Hotel
         {
             int? ownerID = _dataAccess.FindOfferAndGetOwner(offerID);
             if (ownerID == null)
-                return new ServiceResult(HttpStatusCode.NotFound);
+                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Offer with ID equal to {offerID} does not exist"));
             if (ownerID != hotelID)
-                return new ServiceResult(HttpStatusCode.Unauthorized);
+                return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView($"Offer with ID equal to {offerID} does not belong to hotel with ID equal to {hotelID}"));
             return null;
         }
     }

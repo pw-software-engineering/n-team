@@ -93,11 +93,14 @@ namespace Server.Services.Client
         {
             if(!_offerSearchDataAccess.CheckHotelOfferExistence(hotelID, offerID))
             {
-                return new ServiceResult(HttpStatusCode.NotFound);
+                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Hotel with ID equal to {hotelID} does not exist or has no offer with ID equal to {offerID}"));
             }
             _transaction.BeginTransaction();
             OfferView offer = _offerSearchDataAccess.GetHotelOfferDetails(offerID);
             offer.OfferPictures = _offerSearchDataAccess.GetHotelOfferPictures(offerID);
+            DateTime fromTime = DateTime.Now;
+            fromTime = new DateTime(fromTime.Year, fromTime.Month, fromTime.Day);
+            offer.AvailabilityTimeIntervals = _offerSearchDataAccess.GetHotelOfferAvailability(hotelID, offerID, fromTime, fromTime.AddMonths(6));
             _transaction.CommitTransaction();
 
             return new ServiceResult(HttpStatusCode.OK, offer);

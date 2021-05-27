@@ -5,6 +5,7 @@ using Server.RequestModels;
 using Server.RequestModels.Client;
 using Server.Services.Result;
 using Server.ViewModels;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,20 +68,26 @@ namespace Server.Services.Client
 
             return new ServiceResult(HttpStatusCode.OK);
         }
+
+        public IServiceResult GetReservations(int userID)
+		{
+            return new ServiceResult(HttpStatusCode.OK, _dataAccess.GetReservations(userID));
+		}
+
         public IServiceResult CheckReservationExistanceAndOwnership(int reservationID, int userID)
         {
-            int? ownerID = _dataAccess.FindReservationAndGetOwner(reservationID);
+            int? ownerID = _dataAccess.FindReservationAndGetOwner(reservationID); 
             if (ownerID == null)
-                return new ServiceResult(HttpStatusCode.NotFound);
+                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Reservation with ID equal to {reservationID} does not exist"));
             if (ownerID != userID)
-                return new ServiceResult(HttpStatusCode.Unauthorized);
+                return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView("You are not owner of requested reservation"));
             return null;
         }
-        public IServiceResult CheckOfferExistanceAndOwnership(int offerID, int userID)
+        public IServiceResult CheckOfferExistanceAndOwnership(int offerID, int hotelID)
         {
             int? ownerID = _dataAccess.FindOfferAndGetOwner(offerID);
-            if (ownerID == null || ownerID != userID)
-                return new ServiceResult(HttpStatusCode.NotFound);
+            if (ownerID == null || ownerID != hotelID)
+                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Hotel with ID equal to {hotelID} does not exist or has no offer with ID equal to {offerID}"));
             return null;
         }
     }

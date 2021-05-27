@@ -33,7 +33,11 @@ HotelManager.prototype.getHotels = function ({
             return data;
         },
         (jqXHR, textStatus, errorThrown) => {
-            throw new Error(`GetHotels failed - ${textStatus}`);
+            var errorInfo = `Error has occured - ${textStatus} (status code: ${jqXHR.status})`;
+            if (jqXHR.responseJSON && "error" in jqXHR.responseJSON) {
+                errorInfo += `: ${jqXHR.responseJSON.error}`;
+            }
+            throw new Error(errorInfo);
         }
     );
 }

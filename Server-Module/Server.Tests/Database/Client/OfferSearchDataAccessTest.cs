@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Server.AutoMapper;
 using Server.Database;
@@ -11,6 +12,7 @@ using Server.RequestModels.Client;
 using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Xunit;
@@ -26,8 +28,9 @@ namespace Server.Tests.Database.Client
             .AddEntityFrameworkSqlServer()
             .BuildServiceProvider();
 
+            var configurationBuilder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appSettings.json").Build();
             var builder = new DbContextOptionsBuilder<ServerDbContext>();
-            builder.UseSqlServer($"Server=(localdb)\\mssqllocaldb;Database=ServerDbTestsOfferSearch;Trusted_Connection=True;MultipleActiveResultSets=true")
+            builder.UseSqlServer(configurationBuilder.GetConnectionString("OfferSearchDAClientTest"))
                     .UseInternalServiceProvider(serviceProvider);
 
             _context = new ServerDbContext(builder.Options, false);
@@ -349,6 +352,38 @@ namespace Server.Tests.Database.Client
             for(int i = 0; i < offerPictures.Count; i++)
             {
                 Assert.Equal(offerPicturesDb[i], offerPictures[i]);
+            }
+        }
+
+        [Fact]
+        public void GetHotelOfferAvailability_FromAndToInsideReservationPeriod_ReturnsEmptyAvailabilityList()
+        {
+            int hotelID = 3;
+            int offerID = 2;
+
+            List<AvailabilityTimeInterval> timeIntervals = _dataAccess.GetHotelOfferAvailability(hotelID, offerID, new DateTime(2001, 1, 1), new DateTime(2001, 1, 2));
+
+            Assert.Empty(timeIntervals);
+        }
+
+        [Fact]
+        public void GetHotelOfferAvailability_TwoReservationsExclusivelyInsideFromAndToPerioD_ReturnsAvailabilityListWith3TimeIntervals()
+        {
+            int hotelID = 3;
+            int offerID = 2;
+            List<AvailabilityTimeInterval> expectedTimeIntervals = new List<AvailabilityTimeInterval>()
+            {
+                new AvailabilityTimeInterval(new DateTime(2000, 1, 1), new DateTime(2001, 1, 1).AddDays(-1)),
+                new AvailabilityTimeInterval(new DateTime(2001, 1, 2).AddDays(1), new DateTime(2001, 2, 2).AddDays(-1)),
+                new AvailabilityTimeInterval(new DateTime(3001, 2, 4).AddDays(1), new DateTime(3002, 1, 1))
+            };
+
+            List<AvailabilityTimeInterval> timeIntervals = _dataAccess.GetHotelOfferAvailability(hotelID, offerID, new DateTime(2000, 1, 1), new DateTime(3002, 1, 1));
+
+            Assert.Equal(3, timeIntervals.Count);
+            for(int i = 0; i < timeIntervals.Count; i++)
+            {
+                Assert.Equal(expectedTimeIntervals[i], timeIntervals[i]);
             }
         }
 

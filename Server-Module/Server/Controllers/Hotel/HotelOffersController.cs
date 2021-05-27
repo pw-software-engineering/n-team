@@ -8,6 +8,7 @@ using Server.Services.Hotel;
 using Server.ViewModels;
 using Server.ViewModels.Hotel;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Server.Controllers.Hotel
@@ -39,7 +40,7 @@ namespace Server.Controllers.Hotel
         [HttpGet("offers/{offerID}")]
         public IActionResult GetOffer([FromRoute] int offerID)
         {
-            return _service.GetOffer(offerID, _hotelID);
+            return _service.GetOffer(_hotelID, offerID);
         }
 
         [HttpPost("offers")]

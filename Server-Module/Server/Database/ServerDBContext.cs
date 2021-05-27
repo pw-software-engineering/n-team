@@ -140,12 +140,14 @@ namespace Server.Database
             #region Seeding
             if (_addSeeding)
             {
-                modelBuilder.Entity<ClientDb>().HasData(
+                 modelBuilder.Entity<ClientDb>().HasData(
+                    new ClientDb { ClientID = -1, Username = "client", Email = "client", Name = "TestName0", Surname = "TestSurname0", Password = "client" },
                     new ClientDb { ClientID = 1, Username = "TestUsername1", Email = "TestEmail1", Name = "TestName1", Surname = "TestSurname1", Password = "TestPassword1" },
                     new ClientDb { ClientID = 2, Username = "TestUsername2", Email = "TestEmail2", Name = "TestName2", Surname = "TestSurname2", Password = "TestPassword2" },
                     new ClientDb { ClientID = 3, Username = "TestUsername3", Email = "TestEmail3", Name = "TestName3", Surname = "TestSurname3", Password = "TestPassword3" });
 
                 modelBuilder.Entity<HotelDb>().HasData(
+                    new HotelDb { HotelID = -1, City = "TestCity0", Country = "TestCountry0", HotelDescription = "TestHotelDesc0", AccessToken = "{\"id\":99999999,\"createdAt\":\"2021-05-11T18:21:50Z\"}", HotelName = "TestHotelName0", HotelPreviewPicture = "TestHotelPreviewPicture0" },
                     new HotelDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
                     new HotelDb { HotelID = 2, City = "TestCity2", Country = "TestCountry2", HotelDescription = "TestHotelDesc2", AccessToken = "TestAccessToken2", HotelName = "TestHotelName2", HotelPreviewPicture = "TestHotelPreviewPicture2" },
                     new HotelDb { HotelID = 3, City = "TestCity3", Country = "TestCountry3", HotelDescription = "TestHotelDesc3", AccessToken = "TestAccessToken3", HotelName = "TestHotelName3", HotelPreviewPicture = "TestHotelPreviewPicture3" });

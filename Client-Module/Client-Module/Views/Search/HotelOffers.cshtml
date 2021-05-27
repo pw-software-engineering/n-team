@@ -157,9 +157,9 @@
 
             // Setup fromTime and toTime inputs behaviour:
             // - cannot set date earlier than current date
-            // - an attempt to set a from date that's later than to date or to date that's earlier 
-            // than from date causest the opposite input to change it's value to the value of input 
-            // under consideration 
+            // - an attempt to set a from date that's later than to date or to date that's earlier
+            // than from date causest the opposite input to change it's value to the value of input
+            // under consideration
             fromTimeInput.focusout(function () {
                 var input = $(this);
                 var inputData = input.val();
@@ -294,7 +294,16 @@
                 // Create new HotelOfferEntry instances, generate and display hotel offer preview components
                 for (var i = 0; i < data.length; i++) {
                     var hotelOfferEntry = new HotelOfferEntry({
-                        hotelOfferData: data[i]
+                        hotelOfferData: data[i],
+                        hotelOfferEvents: {
+                            onOfferDetails: function (entry) {
+                                console.log("AAA");
+                                var queryParameters = [];
+                                queryParameters.push(`fromTime=${$("#@tagIDs.FilterFromTimeInputID").val()}`);
+                                queryParameters.push(`toTime=${$("#@tagIDs.FilterToTimeInputID").val()}`);
+                                window.location.href = `/hotels/@Model.HotelID/offers/${entry.hotelOfferData.offerID}?${queryParameters.join('&')}`;
+                            }
+                        }
                     });
                     hotelOffersList.append(hotelOfferEntry.component);
                 }
