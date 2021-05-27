@@ -28,7 +28,7 @@ namespace Server.Services.Hotel
         public IServiceResult AddRoom(int hotelID, string hotelRoomNumber)
         {
             if (_dataAccess.DoesRoomAlreadyExist(hotelID, hotelRoomNumber))
-                return new ServiceResult(HttpStatusCode.Conflict, new ErrorView("Room with given number already exists"));
+                return new ServiceResult(HttpStatusCode.Conflict, new ErrorView($"Room with RoomNumber equal to {hotelRoomNumber} already exists"));
 
             _transaction.BeginTransaction();
             int roomID = _dataAccess.AddRoom(hotelID, hotelRoomNumber);
@@ -47,7 +47,7 @@ namespace Server.Services.Hotel
             {
                 _dataAccess.ChangeActivationMark(roomID, false);
                 _transaction.CommitTransaction();
-                return new ServiceResult(HttpStatusCode.Conflict, new ErrorView("There are still pending reservations for this room"));
+                return new ServiceResult(HttpStatusCode.Conflict, new ErrorView($"There are still pending reservations for room with ID equal to {roomID}"));
             }
 
             _dataAccess.UnpinRoomFromAnyOffers(roomID);
@@ -73,9 +73,9 @@ namespace Server.Services.Hotel
         {
             int? ownerID = _dataAccess.FindRoomAndGetOwner(roomID);
             if (ownerID == null)
-                return new ServiceResult(HttpStatusCode.NotFound);
+                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Room with ID equal to {roomID} does not exist"));
             if (ownerID != hotelID)
-                return new ServiceResult(HttpStatusCode.Unauthorized);
+                return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView($"Room with ID equal to {roomID} does not belong to hotel with ID equal to {hotelID}"));
             return null;
         }
     }

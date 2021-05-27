@@ -67,7 +67,7 @@ namespace Server.Services.Hotel
                 return response;
 
             if (_dataAccess.AreThereUnfinishedReservationsForOffer(offerID))
-                return new ServiceResult(HttpStatusCode.Conflict, new ErrorView("There are still pending reservations for this offer"));
+                return new ServiceResult(HttpStatusCode.Conflict, new ErrorView($"There are still pending reservations for offer with ID equal to {offerID}"));
 
             _transaction.BeginTransaction();
             _dataAccess.UnpinRoomsFromOffer(offerID);
@@ -114,9 +114,9 @@ namespace Server.Services.Hotel
         {
             int? ownerID = _dataAccess.FindOfferAndGetOwner(offerID);
             if (ownerID == null)
-                return new ServiceResult(HttpStatusCode.NotFound);
+                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Offer with ID equal to {offerID} does not exist"));
             if (ownerID != hotelID)
-                return new ServiceResult(HttpStatusCode.Unauthorized);
+                return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView($"Offer with ID equal to {offerID} does not belong to hotel with ID equal to {hotelID}"));
             return null;
         }
     }

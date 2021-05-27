@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Protocols;
 using Server.AutoMapper;
 using Server.Database;
 using Server.Database.DataAccess;
@@ -12,6 +14,7 @@ using Server.ViewModels;
 using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Xunit;
@@ -24,11 +27,11 @@ namespace Server.Tests.Database.Client
         public ClientDataAccessTest()
         {
             var serviceProvider = new ServiceCollection()
-            .AddEntityFrameworkSqlServer()
-            .BuildServiceProvider();
-
+                                    .AddEntityFrameworkSqlServer()
+                                    .BuildServiceProvider();
+            var configurationBuilder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appSettings.json").Build();
             var builder = new DbContextOptionsBuilder<ServerDbContext>();
-            builder.UseSqlServer($"Server=(localdb)\\mssqllocaldb;Database=ServerDbTestsClients;Trusted_Connection=True;MultipleActiveResultSets=true")
+            builder.UseSqlServer(configurationBuilder.GetConnectionString("ClientDAClientTest"))
                     .UseInternalServiceProvider(serviceProvider);
 
             _context = new ServerDbContext(builder.Options, false);

@@ -35,7 +35,7 @@ namespace Server.Services.Hotel
                 return result;
 
             if (_dataAccess.IsRoomAlreadyAddedToOffer(roomID, offerID))
-                return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Room with given ID is already added to offer with given ID"));
+                return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView($"Room with ID equal to {roomID} is already added to offer ID equal to {offerID}"));
 
             _transaction.BeginTransaction();
             _dataAccess.AddRoomToOffer(roomID, offerID);
@@ -47,7 +47,7 @@ namespace Server.Services.Hotel
         public IServiceResult GetOfferRooms(int offerID, int hotelID, string hotelRoomNumber, Paging paging)
         {
             if (paging.PageSize < 0 || paging.PageNumber < 0)
-                return new ServiceResult(HttpStatusCode.BadRequest);
+                return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Invalid paging arguments"));
 
             IServiceResult result = CheckOfferExistanceAndOwnership(offerID, hotelID);
             if (result != null)
@@ -76,7 +76,7 @@ namespace Server.Services.Hotel
                 return result;
 
             if (_dataAccess.DoesRoomHaveUnfinishedReservations(roomID, offerID))
-                return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Room with given ID has unfinished reservtions"));
+                return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView($"Room with ID equal to {roomID} has unfinished reservations"));
 
             _transaction.BeginTransaction();
             _dataAccess.UnpinRoomFromOffer(roomID, offerID);
@@ -89,27 +89,27 @@ namespace Server.Services.Hotel
         {
             int? ownerID = _dataAccess.FindRoomAndGetOwner(hotelRoomNumber);
             if (ownerID == null)
-                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView("Room with given ID does not exist"));
+                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Room with RoomNumber equal to {hotelRoomNumber} does not exist"));
             if (ownerID != hotelID)
-                return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView("Room does not belong to this hotel"));
+                return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView($"Room with RoomNumber equal to {hotelRoomNumber} does not belong to hotel with ID equal to {hotelID}"));
             return null;
         }
         public IServiceResult CheckRoomExistanceAndOwnership(int roomID, int hotelID)
         {
             int? ownerID = _dataAccess.FindRoomAndGetOwner(roomID);
             if (ownerID == null)
-                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView("Room with given ID does not exist"));
+                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Room with ID equal to {roomID} does not exist"));
             if (ownerID != hotelID)
-                return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView("Room does not belong to this hotel"));
+                return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView($"Room with ID equal to {roomID} does not belong to hotel with ID equal to {hotelID}"));
             return null;
         }
         public IServiceResult CheckOfferExistanceAndOwnership(int offerID, int hotelID)
         {
             int? ownerID = _dataAccess.FindOfferAndGetOwner(offerID);
             if (ownerID == null)
-                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView("Offer with given ID does not exist"));
+                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Offer with ID equal to {offerID} does not exist"));
             if (ownerID != hotelID)
-                return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView("Offer does not belong to this hotel"));
+                return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView($"Offer with ID equal to {offerID} does not belong to hotel with ID equal to {hotelID}"));
             return null;
         }
     }

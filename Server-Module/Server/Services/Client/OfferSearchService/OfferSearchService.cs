@@ -93,7 +93,7 @@ namespace Server.Services.Client
         {
             if(!_offerSearchDataAccess.CheckHotelOfferExistence(hotelID, offerID))
             {
-                return new ServiceResult(HttpStatusCode.NotFound);
+                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Hotel with ID equal to {hotelID} does not exist or has no offer with ID equal to {offerID}"));
             }
             _transaction.BeginTransaction();
             OfferView offer = _offerSearchDataAccess.GetHotelOfferDetails(offerID);
