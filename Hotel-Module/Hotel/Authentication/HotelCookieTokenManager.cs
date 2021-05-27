@@ -19,15 +19,15 @@ namespace Hotel_Module.Authentication
             _hotelInfoAccessor = hotelInfoAccessor;
         }
 
-        public ClaimsPrincipal CreatePrincipal(HotelInfo hotel)
+        public ClaimsPrincipal CreatePrincipal(string auth)
         {
-            if(hotel == null)
+            if(auth == null)
             {
                 throw new ArgumentNullException("hotelToken");
             }
             var claims = new[]
             {
-                new Claim("authString", hotel.hotelName),
+                new Claim("authString", auth),
             };
             var identity = new ClaimsIdentity(claims, "jwt");
             return new ClaimsPrincipal(identity);

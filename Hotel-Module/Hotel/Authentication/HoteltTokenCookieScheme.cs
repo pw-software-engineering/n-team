@@ -42,13 +42,13 @@ namespace Hotel_Module.Authentication
                 return Task.FromResult(AuthenticateResult.NoResult());
             }
             string clientCookieToken = Request.Cookies[HotelTokenCookieDefaults.AuthCookieName];
-
+/*
             HotelInfo clientInfo = _cookieTokenManager.ValidateCookieToken(clientCookieToken, out string validationError);
             if (clientInfo == null)
             {
                 return Task.FromResult(AuthenticateResult.NoResult());
-            }
-            var principal = _cookieTokenManager.CreatePrincipal(clientInfo);
+            }*/
+            var principal = _cookieTokenManager.CreatePrincipal(clientCookieToken);
             var ticket = new AuthenticationTicket(principal, HotelTokenCookieDefaults.AuthenticationScheme);
 
             return Task.FromResult(AuthenticateResult.Success(ticket));

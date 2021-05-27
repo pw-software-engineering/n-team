@@ -9,6 +9,6 @@ namespace Hotel_Module.Authentication
     public interface IHotelCookieTokenManager
     {
         HotelInfo ValidateCookieToken(string cookieToken, out string validationError);
-        ClaimsPrincipal CreatePrincipal(HotelInfo clientToken);
+        ClaimsPrincipal CreatePrincipal(string auth);
     }
 }
