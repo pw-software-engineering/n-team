@@ -73,6 +73,12 @@ namespace Hotel.Controllers
             {
                 Offer offer = await _httpClient.GetFromJsonAsync<Offer>("offers/" + offerID.ToString());
                 offer.OfferID = offerID;
+                //IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>("offers/" + offerID.ToString() + "/rooms");
+                IEnumerable<Room> rooms = new List<Room>
+                {
+                    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
+                    new Room { HotelRoomNumber = "2", RoomID = 2, OfferID = new List<int> { offerID, 103 } }
+                };
                 return View(new OfferEditViewModel(offer));
             }
             catch (HttpRequestException e)
@@ -132,10 +138,53 @@ namespace Hotel.Controllers
             return await CheckForConnectionError(_httpClient.DeleteAsync("offers/" + offerID.ToString()));
         }
 
-        [HttpPost("/offers/{offerID}/rooms/{roomID}")]
+        [HttpGet("/offers/{offerID}/rooms")]
+        public async Task<IActionResult> GetOfferRooms([FromRoute] int offerID, [FromQuery] Paging paging)
+        {
+            IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>("offers/" + offerID.ToString() + "/rooms");
+            //IEnumerable<Room> rooms = paging.PageNumber == 1 ? new List<Room>
+            //{
+            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
+            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
+            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
+            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
+            //    new Room { HotelRoomNumber = "2", RoomID = 2, OfferID = new List<int> { offerID, 103 } }
+            //} : paging.PageNumber == 2 ?
+            //new List<Room>
+            //{
+            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
+            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
+            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
+            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
+            //    new Room { HotelRoomNumber = "2", RoomID = 2, OfferID = new List<int> { offerID, 103 } }
+            //} :
+            //new List<Room>();
+            return new JsonResult(rooms);
+        }
+
+        [HttpDelete("/offers/{offerID}/rooms/{roomID}")]
         public async Task<IActionResult> DetachRoom([FromRoute] int offerID, [FromRoute] int roomID)
         {
             return await CheckForConnectionError(_httpClient.DeleteAsync("offers/" + offerID.ToString() + "/rooms/" + roomID.ToString()));
+        }
+
+        [HttpPost("/offers/{offerID}/rooms")]
+        public async Task<IActionResult> AttachRoom([FromRoute]int offerID, [FromForm]string roomNumber)
+        {
+            Room[] room;
+            try
+            {
+                room = await _httpClient.GetFromJsonAsync<Room[]>("offers/" + offerID.ToString() + "/rooms?roomNumber=" + roomNumber);
+            }
+            catch (HttpRequestException e)
+            {
+                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
+            }
+            catch (Exception)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+            return await CheckForConnectionError(_httpClient.PostAsJsonAsync("offers/" + offerID.ToString() + "/rooms", new { roomID = room[0].RoomID }));
         }
 
         private async Task<StatusCodeResult> CheckForConnectionError(Task<HttpResponseMessage> responseTask)
