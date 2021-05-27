@@ -1,5 +1,7 @@
 ﻿using Hotel.Models;
 using Hotel.ViewModels;
+using Hotel_Module.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,6 +14,7 @@ using System.Web;
 
 namespace Hotel.Controllers
 {
+    [Authorize(AuthenticationSchemes = HotelTokenCookieDefaults.AuthenticationScheme)]
     public class OffersController : Controller
     {
         private readonly HttpClient _httpClient;

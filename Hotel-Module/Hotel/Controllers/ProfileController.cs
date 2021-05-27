@@ -1,4 +1,5 @@
 ﻿using Hotel_Module.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Hotel.Controllers
 {
+    [Authorize(AuthenticationSchemes = HotelTokenCookieDefaults.AuthenticationScheme)]
     public class ProfileController : Controller
     {
         private readonly IHttpClientFactory clientFactory;

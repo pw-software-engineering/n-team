@@ -1,4 +1,6 @@
 ﻿using Hotel.Models;
+using Hotel_Module.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -7,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Hotel.Controllers
 {
+    [Authorize(AuthenticationSchemes = HotelTokenCookieDefaults.AuthenticationScheme)]
     public class RoomsController : Controller
     {
         public IActionResult Index()

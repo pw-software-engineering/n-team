@@ -28,8 +28,15 @@ namespace Hotel.Controllers
             //httpClient = httpClientFactory.CreateClient();
             //var t = httpClient.GetAsync("endpoint");
         }
+
+        [HttpGet("/login")]
+        public IActionResult Login()
+        {
+            return View("~/Views/Login/Index.cshtml");
+        }
+
         [HttpPost("/login")]
-        public async Task<IActionResult> LogIn(string loginString)
+        public async Task<IActionResult> Login([FromForm] string loginString)
         {
             ClientSecrets secrets = new ClientSecrets(loginString);
             HttpClient httpClient = httpClientFactory.CreateClient();
@@ -71,7 +78,7 @@ namespace Hotel.Controllers
             };
             return View(viewModel);*/
             //return Redirect("/profile");
-            return View();
+            return View("~/Views/Login/Index.cshtml");
         }
 
         [HttpGet("/logout")]

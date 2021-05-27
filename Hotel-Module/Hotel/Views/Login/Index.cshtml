@@ -35,14 +35,14 @@
                             </div>
 
                             <!-- sign-in FORM -->
-                            <form action="#" class="signin-form">
+                            <form method="post" action="/login" class="signin-form">
                                 <div class="form-group mt-3">
-                                    <input type="text" class="form-control" required>
-                                    <label class="form-control-placeholder" for="username">Identyfication String</label>
+                                    <input name="loginString" type="text" class="form-control" required>
+                                    <label class="form-control-placeholder" for="username">Identification String</label>
                                 </div>
                                 
                                 <div class="form-group">
-                                    <a class="form-control btn btn-primary rounded submit px-3" asp-controller="login" asp-action="logIn">Sign In</a>
+                                    <button type="submit" class="form-control btn btn-primary rounded submit px-3">Sign In</button>
                                     @*<button type="submit" class="form-control btn btn-primary rounded submit px-3">Sign In</button>*@
                                 </div>
                             </form>

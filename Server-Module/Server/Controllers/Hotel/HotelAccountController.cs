@@ -34,13 +34,13 @@ namespace Server.Controllers.Hotel
             _logger = logger;
         }
 
-        [HttpPatch("/hotelInfo")]
+        [HttpPatch("hotelInfo")]
         public IActionResult UpdateHotelInfo([FromBody] HotelInfoUpdate hotelInfoUpdate)
         {
             return _hotelAccountService.UpdateHotelInfo(_hotelID, hotelInfoUpdate);
         }
 
-        [HttpGet("/hotelInfo")]
+        [HttpGet("hotelInfo")]
         public IActionResult GetHotelInfo()
         {
             return _hotelAccountService.GetHotelInfo(_hotelID);

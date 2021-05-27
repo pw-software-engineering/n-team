@@ -27,8 +27,8 @@ namespace Hotel
         {
             services.AddHttpClient<DefaultHttpClient>(c =>
             {
-                c.BaseAddress = new Uri($"{Hotel_Module.Authentication.ServerApiConfig.BaseUrl}");
-                //c.BaseAddress = new Uri("https://localhost:5001/api-hotel/");
+                //c.BaseAddress = new Uri($"{Hotel_Module.Authentication.ServerApiConfig.BaseUrl}");
+                c.BaseAddress = new Uri("https://localhost:6001/api-hotel/");
                 //c.DefaultRequestHeaders.Add("x-hotel-token", "TestAccessToken1");   // TODO: change it
             });
             services.AddControllersWithViews();
