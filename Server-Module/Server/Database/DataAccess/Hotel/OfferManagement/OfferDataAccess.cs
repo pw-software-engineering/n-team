@@ -82,12 +82,15 @@ namespace Server.Database.DataAccess.Hotel
 
         public void AddOfferPictures(int offerID, List<string> pictures)
         {
-            List<OfferPictureDb> picturesDb = new List<OfferPictureDb>();
-            foreach (string picture in pictures)
-                picturesDb.Add(new OfferPictureDb(picture, offerID));
+            if (!(pictures is null))
+            {
+                List<OfferPictureDb> picturesDb = new List<OfferPictureDb>();
+                foreach (string picture in pictures)
+                    picturesDb.Add(new OfferPictureDb(picture, offerID));
 
-            _dbContext.OfferPictures.AddRange(picturesDb);
-            _dbContext.SaveChanges();
+                _dbContext.OfferPictures.AddRange(picturesDb);
+                _dbContext.SaveChanges();
+            }
         }
 
         public bool AreThereUnfinishedReservationsForOffer(int offerID)
