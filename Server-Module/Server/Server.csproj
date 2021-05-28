@@ -5,6 +5,9 @@
     <UserSecretsId>ee006f15-5ab3-4103-9cb1-6bd5c092454e</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
+  <PropertyGroup>
+    <DefineConstants Condition=" '$(CompileConstants)' != '' ">$(DefineConstants);$(CompileConstants)</DefineConstants>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
