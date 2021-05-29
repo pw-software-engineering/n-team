@@ -4,9 +4,13 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>ee006f15-5ab3-4103-9cb1-6bd5c092454e</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <Configurations>Debug;Release;Release-Production</Configurations>
   </PropertyGroup>
   <PropertyGroup>
     <DefineConstants Condition=" '$(CompileConstants)' != '' ">$(DefineConstants);$(CompileConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Production|AnyCPU'">
+    <DefineConstants>TRACE;PRODUCTION</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
