@@ -27,6 +27,9 @@ namespace Server.Services.Hotel
         }
         public IServiceResult AddRoom(int hotelID, string hotelRoomNumber)
         {
+            if (hotelRoomNumber is null)
+                return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("hotelRoomNumber property is required"));
+
             if (_dataAccess.DoesRoomAlreadyExist(hotelID, hotelRoomNumber))
                 return new ServiceResult(HttpStatusCode.Conflict, new ErrorView($"Room with RoomNumber equal to {hotelRoomNumber} already exists"));
 

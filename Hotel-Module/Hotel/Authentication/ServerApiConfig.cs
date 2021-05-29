@@ -7,7 +7,7 @@ namespace Hotel_Module.Authentication
 {
     public static class ServerApiConfig
     {
-        public static string BaseUrl { get; set; } = "https://localhost:6001/api-hotel";
-        public static string TokenHeaderName { get; set; } = "x-hotel-token";
+        public static string BaseUrl { get; set; }
+        public static string TokenHeaderName { get; set; }
     }
 }

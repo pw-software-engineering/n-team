@@ -21,11 +21,12 @@ namespace Hotel.Controllers
         }
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var result = HttpContext.User.Claims.Where(x => x.Type == "authString").ToArray();
             httpClient = clientFactory.CreateClient();
-            httpClient.DefaultRequestHeaders.Add("x-hotel-token", result[0].Value);
-
+            httpClient.DefaultRequestHeaders.Add(
+                ServerApiConfig.TokenHeaderName,
+                HttpContext.User.Claims.First(c => c.Type == HotelCookieTokenManagerOptions.AuthStringClaimType).Value);
         }
+
         [HttpGet("/profile")]
         public IActionResult Index()
         {

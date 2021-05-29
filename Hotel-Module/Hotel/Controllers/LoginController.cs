@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -29,6 +30,12 @@ namespace Hotel.Controllers
             //var t = httpClient.GetAsync("endpoint");
         }
 
+        [HttpGet("/")]
+        public IActionResult Home()
+        {
+            return Redirect("/profile");
+        }
+
         [HttpGet("/login")]
         public IActionResult Login()
         {
@@ -36,49 +43,36 @@ namespace Hotel.Controllers
         }
 
         [HttpPost("/login")]
-        public async Task<IActionResult> Login([FromForm] string loginString)
+        public async Task<IActionResult> Login([FromForm] string authString)
         {
-            ClientSecrets secrets = new ClientSecrets(loginString);
-            HttpClient httpClient = httpClientFactory.CreateClient();
-            HttpRequestMessage httpRequest = new HttpRequestMessage();
-            httpRequest.Headers.Add("x-hotel-token", loginString);
-            /*httpRequest.Content = new StringContent(
-                JsonSerializer.Serialize(secrets, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
-                Encoding.UTF8,
-                "application/json");*/
-            httpRequest.Method = HttpMethod.Get;
-            httpRequest.RequestUri = new Uri($"{ServerApiConfig.BaseUrl}/hotelInfo");
-            HttpResponseMessage httpResponse = await httpClient.SendAsync(httpRequest);
-            if (httpResponse.IsSuccessStatusCode)
-            {/*
-                CookieOptions options = new CookieOptions();
-                Response.Cookies.Append(
-                    HotelTokenCookieDefaults.AuthCookieName,
-                    loginString,
-                    options);*/
-                return Redirect("/profile");
+            if(authString is null)
+            {
+                return View("~/Views/Login/Index.cshtml");
             }
-            //Console.WriteLine($"Status code: {httpResponse.StatusCode}\n{await httpResponse.Content.ReadAsStringAsync()}");
-            string serverError = null;
+
             try
             {
-                LogInError error = JsonSerializer.Deserialize<LogInError>(
-                    await httpResponse.Content.ReadAsStringAsync(),
-                    new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
-                );
-                serverError = error.Error;
+                HttpClient httpClient = httpClientFactory.CreateClient();
+                HttpRequestMessage httpRequest = new HttpRequestMessage();
+                httpRequest.Headers.Add(ServerApiConfig.TokenHeaderName, authString);
+                httpRequest.Method = HttpMethod.Get;
+                httpRequest.RequestUri = new Uri($"{ServerApiConfig.BaseUrl}/rooms?pageNumber=1&pageSize=1");
+                HttpResponseMessage httpResponse = await httpClient.SendAsync(httpRequest);
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    CookieOptions options = new CookieOptions();
+                    Response.Cookies.Append(
+                        HotelTokenCookieDefaults.AuthCookieName,
+                        authString,
+                        options);
+                    return Redirect("/profile");
+                }
+                return View("~/Views/Login/Index.cshtml", new LogInError() { Error = httpResponse.StatusCode.ToString() });
             }
-            catch (JsonException)
+            catch
             {
-                serverError = "500: Internal server error";
-            }/*
-            LogInViewModel viewModel = new LogInViewModel()
-            {
-                ServerLogInError = serverError
-            };
-            return View(viewModel);*/
-            //return Redirect("/profile");
-            return View("~/Views/Login/Index.cshtml");
+                return View("~/Views/Login/Index.cshtml", new LogInError() { Error = "Server is unreachable" });
+            }
         }
 
         [HttpGet("/logout")]
@@ -87,18 +81,10 @@ namespace Hotel.Controllers
             this.Response.Cookies.Delete(HotelTokenCookieDefaults.AuthCookieName);
             return Redirect("/");
         }
-        class ClientSecrets
-        {
-            public ClientSecrets(string loginString)
-            {
-                LoginString = loginString;
-            }
-            public string LoginString { get; }
-        }
+    }
 
-        class LogInError
-        {
-            public string Error { get; set; }
-        }
+    public class LogInError
+    {
+        public string Error { get; set; }
     }
 }

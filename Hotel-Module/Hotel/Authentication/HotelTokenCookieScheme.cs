@@ -18,12 +18,14 @@ using Newtonsoft.Json.Serialization;
 
 namespace Hotel_Module.Authentication
 {
-    public class HoteltTokenCookieScheme
+    public class HotelTokenCookieScheme
         : AuthenticationHandler<HotelTokenCookieSchemeOptions>
     {
         private HotelTokenCookieSchemeOptions _options;
         private IHotelCookieTokenManager _cookieTokenManager;
-        public HoteltTokenCookieScheme(
+        private IHttpClientFactory _httpClientFactory;
+        public HotelTokenCookieScheme(
+            IHttpClientFactory httpClientFactory,
             IHotelCookieTokenManager cookieTokenManager,
             IOptionsMonitor<HotelTokenCookieSchemeOptions> options,
             ILoggerFactory logger,
@@ -33,32 +35,46 @@ namespace Hotel_Module.Authentication
         {
             _options = options.CurrentValue;
             _cookieTokenManager = cookieTokenManager;
+            _httpClientFactory = httpClientFactory;
         }
-        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+        protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             Console.WriteLine($"{Guid.NewGuid()} - AUTHENTICATE");
             if (!Request.Cookies.ContainsKey(HotelTokenCookieDefaults.AuthCookieName))
             {
-                return Task.FromResult(AuthenticateResult.NoResult());
+                return AuthenticateResult.NoResult();
             }
-            string clientCookieToken = Request.Cookies[HotelTokenCookieDefaults.AuthCookieName];
-/*
-            HotelInfo clientInfo = _cookieTokenManager.ValidateCookieToken(clientCookieToken, out string validationError);
-            if (clientInfo == null)
+            string authString = Request.Cookies[HotelTokenCookieDefaults.AuthCookieName];
+
+            HttpClient httpClient = _httpClientFactory.CreateClient();
+            try
             {
-                return Task.FromResult(AuthenticateResult.NoResult());
-            }*/
-            var principal = _cookieTokenManager.CreatePrincipal(clientCookieToken);
+                HttpRequestMessage httpRequest = new HttpRequestMessage();
+                httpRequest.Headers.Add(ServerApiConfig.TokenHeaderName, authString);
+                httpRequest.Method = HttpMethod.Get;
+                string verificationEndpoint = "/rooms?pageNumber=1&pageSize=1";
+                httpRequest.RequestUri = new Uri($"{ServerApiConfig.BaseUrl}{verificationEndpoint}");
+                HttpResponseMessage httpResponse = await httpClient.SendAsync(httpRequest);
+                if (!httpResponse.IsSuccessStatusCode)
+                {
+                    return AuthenticateResult.NoResult();
+                }
+            }
+            catch
+            {
+                return AuthenticateResult.NoResult();
+            }
+
+            var principal = _cookieTokenManager.CreatePrincipal(authString);
             var ticket = new AuthenticationTicket(principal, HotelTokenCookieDefaults.AuthenticationScheme);
 
-            return Task.FromResult(AuthenticateResult.Success(ticket));
+            return AuthenticateResult.Success(ticket);
         }
 
         protected override Task HandleChallengeAsync(AuthenticationProperties properties)
         {
             Console.WriteLine($"CHALLANGE: {Response.StatusCode}");
             LinkGenerator urlGenerator = Context.RequestServices.GetService(typeof(LinkGenerator)) as LinkGenerator;
-            //Console.WriteLine($"{urlGenerator.GetPathByAction("LogIn", "Client")}");
             Context.Response.Redirect(urlGenerator.GetPathByAction("Login", "Login"));
             return Task.CompletedTask;
         }
@@ -66,8 +82,6 @@ namespace Hotel_Module.Authentication
         protected override Task HandleForbiddenAsync(AuthenticationProperties properties)
         {
             Console.WriteLine($"FORBIDDEN: {Response.StatusCode}");
-            //Response.Redirect(_options.ChallangeRedirectUrl, false);
-            //return Task.CompletedTask;
             return base.HandleForbiddenAsync(properties);
         }
     }

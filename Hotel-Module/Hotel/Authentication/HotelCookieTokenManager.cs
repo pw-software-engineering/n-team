@@ -13,12 +13,6 @@ namespace Hotel_Module.Authentication
 {
     public class HotelCookieTokenManager : IHotelCookieTokenManager
     {
-        private IHotelInfoAccessor _hotelInfoAccessor;
-        public HotelCookieTokenManager(IHotelInfoAccessor hotelInfoAccessor)
-        {
-            _hotelInfoAccessor = hotelInfoAccessor;
-        }
-
         public ClaimsPrincipal CreatePrincipal(string auth)
         {
             if(auth == null)
@@ -32,25 +26,10 @@ namespace Hotel_Module.Authentication
             var identity = new ClaimsIdentity(claims, "jwt");
             return new ClaimsPrincipal(identity);
         }
+    }
 
-        public HotelInfo ValidateCookieToken(string cookieToken, out string validationError)
-        {
-            if(string.IsNullOrEmpty(cookieToken))
-            {
-                validationError = "Client cookie token must be a non-empy string";
-                return null;
-            }
-            HotelInfo clientInfo = _hotelInfoAccessor.GetHotelInfo(cookieToken, out validationError);
-            if (clientInfo == null)
-            {
-                if(validationError == null)
-                {
-                    validationError = "Unexpected error - clientInfo contract is not fulfilled";
-                }
-                return null;
-            }
-            validationError = null;
-            return clientInfo;
-        }
+    public class HotelCookieTokenManagerOptions
+    {
+        public const string AuthStringClaimType = "authString";
     }
 }

@@ -233,6 +233,7 @@ namespace Server.Migrations
                 columns: new[] { "ClientID", "Email", "Name", "Password", "Surname", "Username" },
                 values: new object[,]
                 {
+                    { -1, "client", "TestName0", "client", "TestSurname0", "client" },
                     { 1, "TestEmail1", "TestName1", "TestPassword1", "TestSurname1", "TestUsername1" },
                     { 2, "TestEmail2", "TestName2", "TestPassword2", "TestSurname2", "TestUsername2" },
                     { 3, "TestEmail3", "TestName3", "TestPassword3", "TestSurname3", "TestUsername3" }
@@ -243,6 +244,7 @@ namespace Server.Migrations
                 columns: new[] { "HotelID", "AccessToken", "City", "Country", "HotelDescription", "HotelName", "HotelPreviewPicture" },
                 values: new object[,]
                 {
+                    { -1, "{\"id\":99999999,\"createdAt\":\"2021-05-11T18:21:50Z\"}", "TestCity0", "TestCountry0", "TestHotelDesc0", "TestHotelName0", "TestHotelPreviewPicture0" },
                     { 1, "TestAccessToken1", "TestCity1", "TestCountry1", "TestHotelDesc1", "TestHotelName1", "TestHotelPreviewPicture1" },
                     { 2, "TestAccessToken2", "TestCity2", "TestCountry2", "TestHotelDesc2", "TestHotelName2", "TestHotelPreviewPicture2" },
                     { 3, "TestAccessToken3", "TestCity3", "TestCountry3", "TestHotelDesc3", "TestHotelName3", "TestHotelPreviewPicture3" }
