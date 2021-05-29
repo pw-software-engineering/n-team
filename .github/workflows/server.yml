@@ -4,18 +4,19 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+env:
+  SRCDIR: ./Server-Module/Server
+  SOLFILE: ./Server-Module/Server.sln
+  CSPROJ: ./Server-Module/Server/Server.csproj
+  TESTPROJ: ./Server-Module/Server.Tests/Server.Tests.csproj
+  TESTCOV: ./Server-Module/Server.Tests/cobertura.xml
+      
 jobs:
   build:
     strategy:
       fail-fast: false
     name: Build and test
     runs-on: windows-latest
-    env:
-      SRCDIR: ./Server-Module/Server
-      SOLFILE: ./Server-Module/Server.sln
-      CSPROJ: ./Server-Module/Server/Server.csproj
-      TESTPROJ: ./Server-Module/Server.Tests/Server.Tests.csproj
-      TESTCOV: ./Server-Module/Server.Tests/cobertura.xml
     steps:
     - uses: actions/checkout@v2
     - name: Setup ASP.NET

@@ -4,18 +4,19 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+env:
+  SRCDIR: ./Hotel-Module/Hotel
+  SOLFILE: ./Hotel-Module/Hotel.sln
+  CSPROJ: ./Hotel-Module/Hotel/Hotel.csproj
+  TESTPROJ: ./Hotel-Module/Hotel.Tests/Hotel.Tests.csproj
+  TESTCOV: ./Hotel-Module/Hotel.Tests/cobertura.xml
+      
 jobs:
   build:
     strategy:
       fail-fast: false
     name: Build and test
     runs-on: windows-latest
-    env:
-      SRCDIR: ./Hotel-Module/Hotel
-      SOLFILE: ./Hotel-Module/Hotel.sln
-      CSPROJ: ./Hotel-Module/Hotel/Hotel.csproj
-      TESTPROJ: ./Hotel-Module/Hotel.Tests/Hotel.Tests.csproj
-      TESTCOV: ./Hotel-Module/Hotel.Tests/cobertura.xml
     steps:
     - uses: actions/checkout@v2
     - name: Setup ASP.NET
