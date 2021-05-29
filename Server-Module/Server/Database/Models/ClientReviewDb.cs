@@ -9,6 +9,7 @@ namespace Server.Database.Models
     {
         //Properties
         public int ReviewID { get; set; }
+        public int ReservationID { get; set; }
         public int ClientID { get; set; }
         //ReviewInfo Properties
         public int OfferID { get; set; }

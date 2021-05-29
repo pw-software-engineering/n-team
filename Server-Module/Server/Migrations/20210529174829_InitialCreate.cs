@@ -108,41 +108,35 @@ namespace Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClientReservations",
+                name: "ClientReviews",
                 columns: table => new
                 {
-                    ReservationID = table.Column<int>(type: "int", nullable: false)
+                    ReviewID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoomID = table.Column<int>(type: "int", nullable: true),
-                    ClientID = table.Column<int>(type: "int", nullable: true),
-                    ReviewID = table.Column<int>(type: "int", nullable: true),
-                    HotelID = table.Column<int>(type: "int", nullable: true),
-                    OfferID = table.Column<int>(type: "int", nullable: true),
-                    FromTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ToTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NumberOfChildren = table.Column<int>(type: "int", nullable: false),
-                    NumberOfAdults = table.Column<int>(type: "int", nullable: false)
+                    ReservationID = table.Column<int>(type: "int", nullable: false),
+                    ClientID = table.Column<int>(type: "int", nullable: false),
+                    OfferID = table.Column<int>(type: "int", nullable: false),
+                    HotelID = table.Column<int>(type: "int", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Rating = table.Column<long>(type: "bigint", nullable: false),
+                    ReviewDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClientReservations", x => x.ReservationID);
+                    table.PrimaryKey("PK_ClientReviews", x => x.ReviewID);
                     table.ForeignKey(
-                        name: "FK_ClientReservations_Clients_ClientID",
+                        name: "FK_ClientReviews_Clients_ClientID",
                         column: x => x.ClientID,
                         principalTable: "Clients",
                         principalColumn: "ClientID");
                     table.ForeignKey(
-                        name: "FK_ClientReservations_HotelRooms_RoomID",
-                        column: x => x.RoomID,
-                        principalTable: "HotelRooms",
-                        principalColumn: "RoomID");
-                    table.ForeignKey(
-                        name: "FK_ClientReservations_Hotels_HotelID",
+                        name: "FK_ClientReviews_Hotels_HotelID",
                         column: x => x.HotelID,
                         principalTable: "Hotels",
-                        principalColumn: "HotelID");
+                        principalColumn: "HotelID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ClientReservations_Offers_OfferID",
+                        name: "FK_ClientReviews_Offers_OfferID",
                         column: x => x.OfferID,
                         principalTable: "Offers",
                         principalColumn: "OfferID");
@@ -190,39 +184,47 @@ namespace Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClientReviews",
+                name: "ClientReservations",
                 columns: table => new
                 {
-                    ReviewID = table.Column<int>(type: "int", nullable: false),
-                    ClientID = table.Column<int>(type: "int", nullable: false),
-                    OfferID = table.Column<int>(type: "int", nullable: false),
-                    HotelID = table.Column<int>(type: "int", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Rating = table.Column<long>(type: "bigint", nullable: false),
-                    ReviewDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ReservationID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoomID = table.Column<int>(type: "int", nullable: true),
+                    ClientID = table.Column<int>(type: "int", nullable: true),
+                    ReviewID = table.Column<int>(type: "int", nullable: true),
+                    HotelID = table.Column<int>(type: "int", nullable: true),
+                    OfferID = table.Column<int>(type: "int", nullable: true),
+                    FromTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ToTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NumberOfChildren = table.Column<int>(type: "int", nullable: false),
+                    NumberOfAdults = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClientReviews", x => x.ReviewID);
+                    table.PrimaryKey("PK_ClientReservations", x => x.ReservationID);
                     table.ForeignKey(
-                        name: "FK_ClientReviews_ClientReservations_ReviewID",
+                        name: "FK_ClientReservations_ClientReviews_ReviewID",
                         column: x => x.ReviewID,
-                        principalTable: "ClientReservations",
-                        principalColumn: "ReservationID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "ClientReviews",
+                        principalColumn: "ReviewID",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ClientReviews_Clients_ClientID",
+                        name: "FK_ClientReservations_Clients_ClientID",
                         column: x => x.ClientID,
                         principalTable: "Clients",
                         principalColumn: "ClientID");
                     table.ForeignKey(
-                        name: "FK_ClientReviews_Hotels_HotelID",
+                        name: "FK_ClientReservations_HotelRooms_RoomID",
+                        column: x => x.RoomID,
+                        principalTable: "HotelRooms",
+                        principalColumn: "RoomID");
+                    table.ForeignKey(
+                        name: "FK_ClientReservations_Hotels_HotelID",
                         column: x => x.HotelID,
                         principalTable: "Hotels",
-                        principalColumn: "HotelID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "HotelID");
                     table.ForeignKey(
-                        name: "FK_ClientReviews_Offers_OfferID",
+                        name: "FK_ClientReservations_Offers_OfferID",
                         column: x => x.OfferID,
                         principalTable: "Offers",
                         principalColumn: "OfferID");
@@ -233,6 +235,7 @@ namespace Server.Migrations
                 columns: new[] { "ClientID", "Email", "Name", "Password", "Surname", "Username" },
                 values: new object[,]
                 {
+                    { -1, "client", "TestName0", "client", "TestSurname0", "client" },
                     { 1, "TestEmail1", "TestName1", "TestPassword1", "TestSurname1", "TestUsername1" },
                     { 2, "TestEmail2", "TestName2", "TestPassword2", "TestSurname2", "TestUsername2" },
                     { 3, "TestEmail3", "TestName3", "TestPassword3", "TestSurname3", "TestUsername3" }
@@ -243,6 +246,7 @@ namespace Server.Migrations
                 columns: new[] { "HotelID", "AccessToken", "City", "Country", "HotelDescription", "HotelName", "HotelPreviewPicture" },
                 values: new object[,]
                 {
+                    { -1, "{\"id\":99999999,\"createdAt\":\"2021-05-11T18:21:50Z\"}", "TestCity0", "TestCountry0", "TestHotelDesc0", "TestHotelName0", "TestHotelPreviewPicture0" },
                     { 1, "TestAccessToken1", "TestCity1", "TestCountry1", "TestHotelDesc1", "TestHotelName1", "TestHotelPreviewPicture1" },
                     { 2, "TestAccessToken2", "TestCity2", "TestCountry2", "TestHotelDesc2", "TestHotelName2", "TestHotelPreviewPicture2" },
                     { 3, "TestAccessToken3", "TestCity3", "TestCountry3", "TestHotelDesc3", "TestHotelName3", "TestHotelPreviewPicture3" }
@@ -280,13 +284,13 @@ namespace Server.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "ClientReservations",
-                columns: new[] { "ReservationID", "ClientID", "FromTime", "HotelID", "NumberOfAdults", "NumberOfChildren", "OfferID", "ReviewID", "RoomID", "ToTime" },
+                table: "ClientReviews",
+                columns: new[] { "ReviewID", "ClientID", "Content", "HotelID", "OfferID", "Rating", "ReservationID", "ReviewDate" },
                 values: new object[,]
                 {
-                    { 1, 2, new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 1, 0, 2, 1, 2, new DateTime(2001, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, 3, new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 1, 1, 3, 2, 2, new DateTime(3001, 2, 4, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, 3, new DateTime(3001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 1, 2, 3, 3, 3, new DateTime(3001, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, 2, "TestContent1", 2, 2, 1L, 0, new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, 3, "TestContent2", 3, 3, 2L, 0, new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, 3, "TestContent3", 3, 3, 3L, 0, new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
@@ -311,19 +315,19 @@ namespace Server.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "ClientReviews",
-                columns: new[] { "ReviewID", "ClientID", "Content", "HotelID", "OfferID", "Rating", "ReviewDate" },
-                values: new object[] { 1, 2, "TestContent1", 2, 2, 1L, new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+                table: "ClientReservations",
+                columns: new[] { "ReservationID", "ClientID", "FromTime", "HotelID", "NumberOfAdults", "NumberOfChildren", "OfferID", "ReviewID", "RoomID", "ToTime" },
+                values: new object[] { 1, 2, new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 1, 0, 2, 1, 2, new DateTime(2001, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) });
 
             migrationBuilder.InsertData(
-                table: "ClientReviews",
-                columns: new[] { "ReviewID", "ClientID", "Content", "HotelID", "OfferID", "Rating", "ReviewDate" },
-                values: new object[] { 2, 3, "TestContent2", 3, 3, 2L, new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+                table: "ClientReservations",
+                columns: new[] { "ReservationID", "ClientID", "FromTime", "HotelID", "NumberOfAdults", "NumberOfChildren", "OfferID", "ReviewID", "RoomID", "ToTime" },
+                values: new object[] { 2, 3, new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 1, 1, 3, 2, 2, new DateTime(3001, 2, 4, 0, 0, 0, 0, DateTimeKind.Unspecified) });
 
             migrationBuilder.InsertData(
-                table: "ClientReviews",
-                columns: new[] { "ReviewID", "ClientID", "Content", "HotelID", "OfferID", "Rating", "ReviewDate" },
-                values: new object[] { 3, 3, "TestContent3", 3, 3, 3L, new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+                table: "ClientReservations",
+                columns: new[] { "ReservationID", "ClientID", "FromTime", "HotelID", "NumberOfAdults", "NumberOfChildren", "OfferID", "ReviewID", "RoomID", "ToTime" },
+                values: new object[] { 3, 3, new DateTime(3001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 1, 2, 3, 3, 3, new DateTime(3001, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClientReservations_ClientID",
@@ -339,6 +343,13 @@ namespace Server.Migrations
                 name: "IX_ClientReservations_OfferID",
                 table: "ClientReservations",
                 column: "OfferID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClientReservations_ReviewID",
+                table: "ClientReservations",
+                column: "ReviewID",
+                unique: true,
+                filter: "[ReviewID] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClientReservations_RoomID",
@@ -389,7 +400,7 @@ namespace Server.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ClientReviews");
+                name: "ClientReservations");
 
             migrationBuilder.DropTable(
                 name: "HotelPictures");
@@ -401,13 +412,13 @@ namespace Server.Migrations
                 name: "OfferPictures");
 
             migrationBuilder.DropTable(
-                name: "ClientReservations");
-
-            migrationBuilder.DropTable(
-                name: "Clients");
+                name: "ClientReviews");
 
             migrationBuilder.DropTable(
                 name: "HotelRooms");
+
+            migrationBuilder.DropTable(
+                name: "Clients");
 
             migrationBuilder.DropTable(
                 name: "Offers");

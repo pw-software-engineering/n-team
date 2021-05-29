@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Server.Authentication.Client;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Server.Controllers.Client
     [Authorize(AuthenticationSchemes = ClientTokenDefaults.AuthenticationScheme)]
     [ApiController]
     [Route("/api-client")]
-    public class ClientReviewControler : ControllerBase
+    public class ClientReviewControler : Controller
     {
         private int _clientID;
         public override void OnActionExecuting(ActionExecutingContext context)

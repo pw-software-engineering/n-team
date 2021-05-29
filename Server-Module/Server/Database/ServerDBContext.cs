@@ -79,6 +79,10 @@ namespace Server.Database
                .WithMany(c => c.ClientReservations)
                .HasForeignKey(cr => cr.ClientID)
                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<ClientReservationDb>()
+               .HasOne(cr => cr.Review)
+               .WithOne(r => r.Reservation)
+               .HasForeignKey<ClientReviewDb>(cr => cr.ReservationID);
 
             modelBuilder.Entity<ClientReviewDb>()
                .HasOne(cr => cr.Client)
@@ -97,7 +101,7 @@ namespace Server.Database
             modelBuilder.Entity<ClientReviewDb>()
                .HasOne(cr => cr.Reservation)
                .WithOne(r => r.Review)
-               .HasForeignKey<ClientReviewDb>(cr => cr.ReviewID);
+               .HasForeignKey<ClientReservationDb>(cr => cr.ReviewID);
 
             //Relations for offers tables
             modelBuilder.Entity<OfferDb>()

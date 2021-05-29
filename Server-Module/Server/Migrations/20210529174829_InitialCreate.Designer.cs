@@ -10,7 +10,7 @@ using Server.Database;
 namespace Server.Migrations
 {
     [DbContext(typeof(ServerDbContext))]
-    [Migration("20210518091541_InitialCreate")]
+    [Migration("20210529174829_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,6 +48,15 @@ namespace Server.Migrations
                     b.ToTable("Clients");
 
                     b.HasData(
+                        new
+                        {
+                            ClientID = -1,
+                            Email = "client",
+                            Name = "TestName0",
+                            Password = "client",
+                            Surname = "TestSurname0",
+                            Username = "client"
+                        },
                         new
                         {
                             ClientID = 1,
@@ -119,6 +128,10 @@ namespace Server.Migrations
 
                     b.HasIndex("OfferID");
 
+                    b.HasIndex("ReviewID")
+                        .IsUnique()
+                        .HasFilter("[ReviewID] IS NOT NULL");
+
                     b.HasIndex("RoomID");
 
                     b.ToTable("ClientReservations");
@@ -168,7 +181,9 @@ namespace Server.Migrations
             modelBuilder.Entity("Server.Database.Models.ClientReviewDb", b =>
                 {
                     b.Property<int>("ReviewID")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<int>("ClientID")
                         .HasColumnType("int");
@@ -184,6 +199,9 @@ namespace Server.Migrations
 
                     b.Property<long>("Rating")
                         .HasColumnType("bigint");
+
+                    b.Property<int>("ReservationID")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("ReviewDate")
                         .HasColumnType("datetime2");
@@ -207,6 +225,7 @@ namespace Server.Migrations
                             HotelID = 2,
                             OfferID = 2,
                             Rating = 1L,
+                            ReservationID = 0,
                             ReviewDate = new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -217,6 +236,7 @@ namespace Server.Migrations
                             HotelID = 3,
                             OfferID = 3,
                             Rating = 2L,
+                            ReservationID = 0,
                             ReviewDate = new DateTime(2001, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -227,6 +247,7 @@ namespace Server.Migrations
                             HotelID = 3,
                             OfferID = 3,
                             Rating = 3L,
+                            ReservationID = 0,
                             ReviewDate = new DateTime(2001, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -261,6 +282,16 @@ namespace Server.Migrations
                     b.ToTable("Hotels");
 
                     b.HasData(
+                        new
+                        {
+                            HotelID = -1,
+                            AccessToken = "{\"id\":99999999,\"createdAt\":\"2021-05-11T18:21:50Z\"}",
+                            City = "TestCity0",
+                            Country = "TestCountry0",
+                            HotelDescription = "TestHotelDesc0",
+                            HotelName = "TestHotelName0",
+                            HotelPreviewPicture = "TestHotelPreviewPicture0"
+                        },
                         new
                         {
                             HotelID = 1,
@@ -562,6 +593,10 @@ namespace Server.Migrations
                         .HasForeignKey("OfferID")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.HasOne("Server.Database.Models.ClientReviewDb", "Review")
+                        .WithOne("Reservation")
+                        .HasForeignKey("Server.Database.Models.ClientReservationDb", "ReviewID");
+
                     b.HasOne("Server.Database.Models.HotelRoomDb", "Room")
                         .WithMany()
                         .HasForeignKey("RoomID")
@@ -572,6 +607,8 @@ namespace Server.Migrations
                     b.Navigation("Hotel");
 
                     b.Navigation("Offer");
+
+                    b.Navigation("Review");
 
                     b.Navigation("Room");
                 });
@@ -596,19 +633,11 @@ namespace Server.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Server.Database.Models.ClientReservationDb", "Reservation")
-                        .WithOne("Review")
-                        .HasForeignKey("Server.Database.Models.ClientReviewDb", "ReviewID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Client");
 
                     b.Navigation("Hotel");
 
                     b.Navigation("Offer");
-
-                    b.Navigation("Reservation");
                 });
 
             modelBuilder.Entity("Server.Database.Models.HotelPictureDb", b =>
@@ -681,9 +710,9 @@ namespace Server.Migrations
                     b.Navigation("ClientReviews");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.ClientReservationDb", b =>
+            modelBuilder.Entity("Server.Database.Models.ClientReviewDb", b =>
                 {
-                    b.Navigation("Review");
+                    b.Navigation("Reservation");
                 });
 
             modelBuilder.Entity("Server.Database.Models.HotelDb", b =>
