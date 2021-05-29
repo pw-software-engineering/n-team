@@ -30,18 +30,17 @@ namespace Hotel
         {
             services.AddHttpClient<DefaultHttpClient>(c =>
             {
-                //c.BaseAddress = new Uri($"{Hotel_Module.Authentication.ServerApiConfig.BaseUrl}");
-                c.BaseAddress = new Uri("https://localhost:6001/api-hotel/");
-                //c.DefaultRequestHeaders.Add("x-hotel-token", "TestAccessToken1");   // TODO: change it
+                c.BaseAddress = new Uri($"{ServerApiConfig.BaseUrl.TrimEnd('/')}/");
             });
-            services.AddControllersWithViews();
-            services.AddAuthentication(Hotel_Module.Authentication.HotelTokenCookieDefaults.AuthenticationScheme).AddScheme<Hotel_Module.Authentication.HotelTokenCookieSchemeOptions, Hotel_Module.Authentication.HotelTokenCookieScheme>(
-                Hotel_Module.Authentication.HotelTokenCookieDefaults.AuthenticationScheme, (Hotel_Module.Authentication.HotelTokenCookieSchemeOptions opt) =>
-                 {
-                     opt.ClaimsIssuer = "localhost";
-                 });
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation();
+            services.AddAuthentication(HotelTokenCookieDefaults.AuthenticationScheme).AddScheme<HotelTokenCookieSchemeOptions, HotelTokenCookieScheme>(
+                HotelTokenCookieDefaults.AuthenticationScheme, (HotelTokenCookieSchemeOptions opt) =>
+                {
+                    opt.ClaimsIssuer = "localhost";
+                });
             //services.AddSingleton<Hotel_Module.Authentication.IHotelInfoAccessor, Hotel_Module.Authentication.HotelInfoAccessor>();
-            services.AddSingleton<Hotel_Module.Authentication.IHotelCookieTokenManager, Hotel_Module.Authentication.HotelCookieTokenManager>();
+            services.AddSingleton<IHotelCookieTokenManager, HotelCookieTokenManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
