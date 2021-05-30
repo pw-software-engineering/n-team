@@ -7,6 +7,9 @@
     <UserSecretsId>51f3415e-c06d-4575-abe0-e3fbd95acac3</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
+  <PropertyGroup>
+    <DefineConstants Condition=" '$(CompileConstants)' != '' ">$(DefineConstants);$(CompileConstants)</DefineConstants>
+  </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\resources\" />
