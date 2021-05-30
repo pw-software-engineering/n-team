@@ -6,46 +6,65 @@
 <h1>Edit @Model.Offer.OfferTitle</h1>
 <hr />
 
-<div>
-    <label class="form-control-placeholder-static">Rooms</label>
-    @if (Model.Offer.Rooms is null || !Model.Offer.Rooms.Any())
-    {
-        <p class="text-center">There are no rooms in this offer.</p>
-    }
-    else
-    {
-        <ul class="list-group">
-            @foreach (string room in Model.Offer.Rooms)
-            {
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    @Html.Raw(room)
-                    <a href="#" class="ml-4 text-danger" data-toggle="tooltip" title="Detach room from this offer">
-                        <span class="badge badge-pill">
-                            <i class="fa fa-sm fa-unlink"></i>
-                            Detach
-                        </span>
-                    </a>
-                </li>
-            }
-        </ul>
-    }
-    <hr/>
+<!-- ROOMS MODAL -->
+<div class="modal fade" id="roomsModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.Offer.OfferTitle rooms</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
 
-    <form>
-        <div class="form-group">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Room number</span>
-                </div>
-                <input type="text" class="form-control" />
-                <div class="input-group-append">
-                    <button type="submit" class="btn btn-primary">Add new room</button>
-                </div>
+                <nav> <!-- paging -->
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" id="prevPageNavItem">
+                            <button id="prevPageBtn" class="page-link">
+                                <span class="fa fa-chevron-left"></span>
+                            </button>
+                        </li>
+
+                        <li class="page-item"><a class="page-link" id="pageNavLink">0</a></li>
+
+                        <li class="page-item" id="nextPageNavItem">
+                            <button id="nextPageBtn" class="page-link">
+                                <span class="fa fa-chevron-right"></span>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+
+                <p id="info-par" class="text-center"></p>
+                <ul class="list-group" id="roomsList">
+                    <!-- ROOMS -->
+                </ul>
+                <br />
+
+                <form id="addRoomForm">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Room number</span>
+                            </div>
+                            <input type="text" name="roomNumber" class="form-control" />
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary">Add new room</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
-    </form>
+    </div>
 </div>
-<hr />
+
+
 
 <form asp-action="@nameof(Hotel.Controllers.OffersController.Edit)" method="post" id="editOfferForm">
     <!-- Active -->
@@ -68,6 +87,7 @@
             </dd>
         </dl>
     </div>
+    <hr />
 
     <input asp-for="Offer.OfferID" hidden />
     <input asp-for="Offer.IsActive" hidden class="custom-control-input" />
@@ -138,6 +158,7 @@
         {
             <button type="button" class="btn btn-outline-success m-1" id="changeActiveBtn">Activate</button>
         }
+        <button type="button"class="btn btn-outline-info m-1" data-toggle="modal" data-target="#roomsModal">Manage rooms</button>
         <button type="button" class="btn btn-danger m-1 ml-auto" id="removeOfferBtn">Remove offer</button>
     </div>
 </form>
@@ -236,6 +257,127 @@
                     console.error('fetch error: ', error);
                 });
             });
-        })
+
+            // paging and modal window managing
+            $('#roomsModal').on('show.bs.modal', function () {
+                refreshRoomsModal();
+            });
+
+            //room pages managing
+            let pageNumber = 1;
+            let pageSize = 5;
+            $("#pageNavLink").text(pageNumber);
+            $("#prevPageNavItem").addClass("disabled");
+            document.getElementById("prevPageBtn").onclick = function () {
+                pageNumber -= 1;
+                refreshRoomsModal();
+            }
+            document.getElementById("nextPageBtn").onclick = function () {
+                pageNumber += 1;
+                refreshRoomsModal();
+            }
+
+            let modal = $('#roomsModal');
+            let modalBody = modal.find(".modal-body");
+            let roomsList = modal.find('#roomsList');
+            let infoPar = modal.find('#info-par');
+            let refreshRoomsModal = function () {
+                if (pageNumber < 2) {
+                    $('#prevPageNavItem').addClass("disabled");
+                } else {
+                    $('#prevPageNavItem').removeClass("disabled");
+                }
+
+                let loadingBox = $('<p></p>')
+                    .append($("<img></img>")
+                        .addClass("d-block mx-auto mt-2")
+                        .attr("style", "width: 75px")
+                        .attr("src", "/img/loading.gif"))
+                    .append($("<p></p>")
+                        .addClass("text-center h5 mt-2")
+                        .text("Loading rooms..."));
+
+                infoPar.empty();
+                roomsList.empty();
+                modalBody.prepend(loadingBox);
+
+                let ajx = $.ajax({
+                    url: `@Url.Action(nameof(Hotel.Controllers.OffersController.GetOfferRooms), new { offerID = Model.Offer.OfferID })?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+                    success: function (data, textStatus, jqXHR) {
+                        if (!data || data.length < 1) {
+                            infoPar.text('No rooms.');
+                            $("#nextPageNavItem").addClass("disabled");
+                        } else {
+                            data.forEach(function (room, index) {
+                                roomsList.append($('<li></li>') // <li> room element
+                                    .addClass("list-group-item d-flex justify-content-between align-items-center")
+                                    .text(room.hotelRoomNumber)
+                                    .append($("<button></button>")
+                                        .addClass("btn btn-sm btn-outline-danger detach-btn")
+                                        .attr("type", "button")
+                                        .attr("id", room.roomID)
+                                        .append($("<span></span>")
+                                            .addClass("badge badge-pill")
+                                            .text(" Detach")
+                                            .prepend($("<i></i>")
+                                                .addClass("fa fa-sm fa-unlink"))))
+                                );
+                            });
+                            if (data.length < pageSize) {
+                                $("#nextPageNavItem").addClass("disabled");
+                            } else {
+                                $("#nextPageNavItem").removeClass("disabled");
+                            }
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        infoPar.text('Unable to get rooms list: ' + textStatus);
+                    }
+                });
+                $.when(ajx).always(function () {
+                    loadingBox.empty();
+                });
+                $("#pageNavLink").text(pageNumber);
+            }
+
+            // detaching a room from offer
+            $("#roomsModal").on('click', ".detach-btn", function () {
+                let btn = $(this);
+                let roomID = btn.attr("id");
+                $.ajax({
+                    url: `/offers/@Model.Offer.OfferID/rooms/${roomID}`,
+                    method: "DELETE",
+                    success: function (data, textStatus, jqXHR) {
+                        alert("Room detached successfully");
+                        refreshRoomsModal();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert(textStatus + jqXHR.status);
+                    }
+                })
+            });
+
+            // attaching a room to offer
+            let addRoomForm = $("#addRoomForm")[0]
+            console.log(addRoomForm.elements['roomNumber'].value);
+            addRoomForm.onsubmit = function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "/offers/@Model.Offer.OfferID/rooms",
+                    method: "POST",
+                    data: {
+                        "roomNumber": addRoomForm.elements['roomNumber'].value
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        alert("Room successfully attached to offer.");
+                        pageNumber = 1;
+                        refreshRoomsModal();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert(textStatus + ". Couldn't attach a room. Make sure this room exists in your hotel.");
+                    }
+                });
+            }
+        });
     </script>
 }

@@ -1,34 +1,97 @@
-﻿@{
+﻿@model Hotel.ViewModels.RoomsIndexViewModel
+@{
     ViewData["Title"] = "Rooms";
 }
 
 <h1>Rooms in your hotel</h1>
 <br />
 
-<form>
-    <div class="form-group">
-        <input type="text" class="form-control" placeholder="Filter" />
-        <label class="form-control-placeholder">Room number</label>
-        <span class="fa fa-fw fa-lg fa-sort-alpha-up field-icon toggle-sort"></span>
-    </div>
-</form>
+<div class="row">
+    <form asp-action="Index" method="get" class="row" id="filterForm">
+        <div class="form-group col-sm-4 m-3">
+            <input asp-for="HotelRoomNumber" class="form-control" placeholder="Filter" />
+            <label class="form-control-placeholder">Room number</label>
+            @*<span class="fa fa-fw fa-lg fa-sort-alpha-up field-icon toggle-sort"></span>*@
+        </div>
+
+        <div class="form-group col-sm-4 m-3">
+            @Html.DropDownListFor(vm => vm.Paging.PageSize,
+                new SelectList(
+                    new[]
+                    {
+                        new { Value = "5", Text = "5"},
+                        new { Value = "10", Text = "10"},
+                        new { Value = "20", Text = "20"},
+                        new { Value = "50", Text = "50"}
+                    }, "Value", "Text", Model.Paging.PageSize
+                ),
+                new { @class = "form-control" }
+            )
+            <label class="form-control-placeholder">Entries per page</label>
+        </div>
+
+        <input asp-for="Paging.PageNumber" id="pageNumber" hidden />
+
+        <div class="form-group col-sm-1 m-3">
+            <button type="submit" id="applyBtn" class="btn btn-primary">Apply</button>
+        </div>
+    </form>
+</div>
+<nav>
+    <ul class="pagination justify-content-center">
+        <li class="page-item
+            @if (Model.Paging.PageNumber < 2)
+            {
+                @:disabled
+            }
+        ">
+            <button id="prevPageBtn" class="page-link" aria-label="Previous">
+                <span class="fa fa-chevron-left"></span>
+            </button>
+        </li>
+
+        <li class="page-item"><a class="page-link">@Model.Paging.PageNumber</a></li>
+
+        <li class="page-item
+            @if (Model.Rooms.Count() < Model.Paging.PageSize)
+            {
+                @:disabled
+            }
+        ">
+            <button id="nextPageBtn" class="page-link" aria-label="Next">
+                <span class="fa fa-chevron-right"></span>
+            </button>
+        </li>
+    </ul>
+</nav>
 <hr />
 
-<ul class="list-inline">
-    <li class="list-inline-item"><button type="button" id="test" class="room-text btn btn-link" data-toggle="modal" data-target="#roomOffersModal" data-offers='[1, 2, 3, 4]'>12</button></li>
-    <li class="list-inline-item"><button type="button" class="room-text btn btn-link">13</button></li>
-    <li class="list-inline-item"><button type="button" class="room-text btn btn-link">14</button></li>
-    <li class="list-inline-item"><button type="button" class="room-text btn btn-link">15</button></li>
-</ul>
+@if (Model.Rooms is null || !Model.Rooms.Any())
+{ 
+    <p>There are no rooms in your hotel.</p>
+}
+else
+{ 
+    <ul class="list-inline">
+        @foreach (Room room in Model.Rooms)
+        {
+            <li class="list-inline-item"><button type="button" class="room-text btn btn-link"
+                                                    data-toggle="modal"
+                                                    data-target="#roomOffersModal"
+                                                    data-room="@Newtonsoft.Json.JsonConvert.SerializeObject(room)">@room.HotelRoomNumber</button>
+            </li>
+        }
+    </ul>
+}
 <hr />
 
-<form>
+<form asp-action="AddRoom">
     <div class="form-group">
         <div class="input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text">Room number</span>
             </div>
-            <input type="text" class="form-control" />
+            <input name="roomNumber" type="text" class="form-control" />
             <div class="input-group-append">
                 <button type="submit" class="btn btn-primary">Add new room</button>
             </div>
@@ -56,7 +119,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger">
+                <button id="removeRoomBtn" type="button" class="btn btn-danger">
                     <span class="fa fa-trash"></span>
                     Delete this room
                 </button>
@@ -68,31 +131,86 @@
 
 @section Scripts {
     <script type="text/javascript">
-        $(".toggle-sort").click(function () {
-            $(this).toggleClass("fa-sort-alpha-up fa-sort-alpha-down");
-        });
+        //$(".toggle-sort").click(function () {         // <- this can be potentially easy implemented with server cooperation
+        //    $(this).toggleClass("fa-sort-alpha-up fa-sort-alpha-down");
+        //});
 
+        $(document).ready(function () {
+            var activeRoomID;
 
-        $('#roomOffersModal').on('show.bs.modal', function (event) {
-            var a = $(event.relatedTarget);
-            var roomNr = a.text();
-            var offerIDs = a.data('offers');
-            var modal = $(this);
-            var offersBody = modal.find('#offersBody');
+            // adjust modal to clicked room
+            $('#roomOffersModal').on('show.bs.modal', function (event) {
+                var a = $(event.relatedTarget);
+                var room = a.data('room');
+                var modal = $(this);
+                var offersBody = modal.find('#offersBody')[0];
 
-            modal.find('.modal-title').text('Room ' + roomNr);
+                offersBody.innerHTML = '';
+                modal.find('.modal-title').text('Room ' + room.HotelRoomNumber);
+                activeRoomID = room.RoomID;
 
-            // AJAX each offer and add table row inside #offersBody
-            offerIDs.forEach(function (offerID, index) {
+                // ukradzione z client-module
+                var loadingBox = `<tr>
+                        <td>
+                            <img class="d-block mx-auto mt-2", style="width: 75px", src="/img/loading.gif"></img>
+                            <p class="text-center h5 mt-2">Loading offers...</p>
+                        </td>
+                    </tr>`;
+                offersBody.insertAdjacentHTML('beforeend', loadingBox);
 
-                $.ajax({
-                    url: "/rooms/offerRowPartial",
-                    data: offerID,
-                    success: function (partial) {
-                        offersBody.append(partial);
-                    }
+                // AJAX each offer and add table row inside #offersBody
+                var ajaxes = new Array;
+                room.OfferID.forEach(function (offerID, index) {
+
+                    ajaxes[index] = $.ajax({
+                        url: "/rooms/offerRowPartial",
+                        data: {
+                            "offerID": offerID,
+                            "roomID": activeRoomID
+                        },
+                        success: function (partial) {
+                            offersBody.insertAdjacentHTML('beforeend', partial);
+                        }
+                    });
+                });
+                $.when.apply($, ajaxes).done(function () {
+                    offersBody.removeChild(offersBody.firstElementChild);
                 });
             });
+
+            // removing a room
+            $('#removeRoomBtn').on('click', async function () {
+                if (!confirm('Are you sure you want to permanently delete this room? This action is irreversible!'))
+                    return;
+
+                await fetch(`/rooms/${activeRoomID}`, {
+                    method: 'DELETE'
+                }).then((response) => {
+                    if (response.ok) {
+                        alert("Room deleted succesfully.");
+                        window.location.replace('@Url.Action(nameof(Hotel.Controllers.RoomsController.Index))');
+                    } else {
+                        alert("error: " + response.status);
+                    }
+                }).catch((error) => {
+                    console.error('fetch error: ', error);
+                });
+            });
+
+            // paging
+            var form = document.getElementById('filterForm');
+            var pageNumElem = document.getElementById('pageNumber');
+            document.getElementById('nextPageBtn').onclick = function () {
+                pageNumElem.value = parseInt(pageNumElem.value) + 1;
+                form.submit();
+            };
+            document.getElementById('prevPageBtn').onclick = function () {
+                pageNumElem.value = parseInt(pageNumElem.value) - 1;
+                form.submit();
+            };
+            document.getElementById('applyBtn').onclick = function () {
+                pageNumElem.value = 1;
+            };
         });
     </script>
 }
