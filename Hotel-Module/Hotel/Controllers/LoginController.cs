@@ -52,12 +52,9 @@ namespace Hotel.Controllers
 
             try
             {
-                HttpClient httpClient = httpClientFactory.CreateClient();
-                HttpRequestMessage httpRequest = new HttpRequestMessage();
-                httpRequest.Headers.Add(ServerApiConfig.TokenHeaderName, authString);
-                httpRequest.Method = HttpMethod.Get;
-                httpRequest.RequestUri = new Uri($"{ServerApiConfig.BaseUrl}/rooms?pageNumber=1&pageSize=1");
-                HttpResponseMessage httpResponse = await httpClient.SendAsync(httpRequest);
+                HttpClient httpClient = httpClientFactory.CreateClient(nameof(DefaultHttpClient));
+                httpClient.DefaultRequestHeaders.Add(ServerApiConfig.TokenHeaderName, authString);
+                HttpResponseMessage httpResponse = await httpClient.GetAsync("rooms?pageNumber=1&pageSize=1");
                 if (httpResponse.IsSuccessStatusCode)
                 {
                     CookieOptions options = new CookieOptions();
