@@ -38,7 +38,7 @@ namespace Server.Controllers.Client
         [HttpGet("reservations/{reservationID}/review")]
         public IActionResult GetReview([FromHeader]int reservationID)
         {
-            return _reviewService.GetReview(reservationID, _clientID);
+            return _reviewService.GetReview(reservationID);
         }
 
         [HttpPut("reservations/{reservationID}/review")]

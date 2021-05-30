@@ -45,7 +45,7 @@ namespace Server.Services.Client.ClientReviewService
             return new ServiceResult(HttpStatusCode.OK);
         }
 
-        public IServiceResult GetReview(int reservationID, int clientID)
+        public IServiceResult GetReview(int reservationID)
         {
             ReviewInfo result;
             _transaction.BeginTransaction();
