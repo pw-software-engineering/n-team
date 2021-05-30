@@ -11,19 +11,21 @@ namespace Server.Database.DataAccess.Client.Review
     public class ReviewDataAccess:IReviewDataAccess
     {
         private readonly ServerDbContext _dbContext;
-        public ReviewDataAccess(IMapper mapper, ServerDbContext dbContext)
+        public ReviewDataAccess(ServerDbContext dbContext)
         {
             _dbContext = dbContext;
         }
         
-        public bool IsReviewExist(int reservationID,int UserID)
+        public bool IsReviewExist(int reservationID)
         {
-            var wynik = _dbContext.ClientReviews.FirstOrDefault(x => x.ClientID == UserID && x.ReservationID == reservationID);
+            var wynik = _dbContext.ClientReviews.FirstOrDefault(x =>  x.ReservationID == reservationID);
             return wynik != null;
         }
         
         public int UpdateReview(int reservationID,ReviewUpdater reviewUpdater)
         {
+            if (reviewUpdater == null)
+                throw new Exception("info is a null");
             var wynik = _dbContext.ClientReviews.FirstOrDefault(x => x.ReservationID == reservationID);
             if (wynik == null)
                 throw new Exception("cannot find review");
@@ -35,7 +37,8 @@ namespace Server.Database.DataAccess.Client.Review
         }
         public int AddNewReview(int reservationID, ReviewUpdater reviewUpdater)
         {
-            //tu mam założenie poprawności danych
+            if (reviewUpdater == null)
+                throw new Exception("info is a null");
             var reservation = _dbContext.ClientReservations.FirstOrDefault(x => x.ReservationID == reservationID);
             if (reservation == null)
                 throw new Exception("cannot find reservation");

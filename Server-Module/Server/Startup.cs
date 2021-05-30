@@ -26,6 +26,8 @@ using Server.Services.Client;
 using Server.Database.DataAccess.Hotel;
 using Server.Database.DataAccess.Client;
 using Server.AutoMapper;
+using Server.Database.DataAccess.Client.Review;
+using Server.Services.Client.ClientReviewService;
 
 namespace Server
 {
@@ -51,6 +53,8 @@ namespace Server
             typeof(Startup));
 
             services.AddScoped<IDatabaseTransaction, DatabaseTransaction>();
+            services.AddTransient<IReviewDataAccess, ReviewDataAccess>();
+            services.AddTransient<IReviewSerice, ReviewService>();
             services.AddTransient<IOfferService, OfferService>();
             services.AddTransient<IClientAccountService, ClientAccountService>();
             services.AddTransient<IOfferDataAccess, OfferDataAccess>();
