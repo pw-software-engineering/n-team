@@ -25,7 +25,6 @@ env:
   NAMESPACE: n
   APPNAME: hotel
   DEPLOYFILE: deploy.yml
-  DOCKERFILE: ./Hotel-Module/Hotel/Dockerfile
   
 jobs:
   build:
@@ -74,7 +73,7 @@ jobs:
         username: ${{ secrets.ACR_USER_ID }}
         password: ${{ secrets.ACR_USER_PASSWORD }}
     - name: Build Docker image
-      run: docker build -f ${{ env.DOCKERFILE }} ${{ env.SRCDIR }} -t ${{ env.IMAGE_ID }}
+      run: docker build ${{ env.SRCDIR }} -t ${{ env.IMAGE_ID }}
     - name: Push Docker image to registry
       run: docker push ${{ env.IMAGE_ID }}
     - name: Login to Azure

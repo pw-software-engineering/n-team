@@ -28,7 +28,6 @@ env:
   APPNAME: server
   APPSETTINGS: appsettings.Production.json
   DEPLOYFILE: deploy.yml
-  DOCKERFILE: ./Server-Module/Server/Dockerfile
   
 jobs:
   build:
@@ -79,7 +78,7 @@ jobs:
     - name: Substitute environment variables in appsettings file
       run: envsubst < "${{ env.SRCDIR }}/${{ env.APPSETTINGS }}" > "${{ env.SRCDIR }}/${{ env.APPSETTINGS }}"
     - name: Build Docker image
-      run: docker build -f ${{ env.DOCKERFILE }} ${{ env.SRCDIR }} -t ${{ env.IMAGE_ID }}
+      run: docker build ${{ env.SRCDIR }} -t ${{ env.IMAGE_ID }}
     - name: Push Docker image to registry
       run: docker push ${{ env.IMAGE_ID }}
     - name: Login to Azure
