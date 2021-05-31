@@ -10,7 +10,7 @@ using Server.Database;
 namespace Server.Migrations
 {
     [DbContext(typeof(ServerDbContext))]
-    [Migration("20210518091541_InitialCreate")]
+    [Migration("20210529132055_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,6 +48,15 @@ namespace Server.Migrations
                     b.ToTable("Clients");
 
                     b.HasData(
+                        new
+                        {
+                            ClientID = -1,
+                            Email = "client",
+                            Name = "TestName0",
+                            Password = "client",
+                            Surname = "TestSurname0",
+                            Username = "client"
+                        },
                         new
                         {
                             ClientID = 1,
@@ -261,6 +270,16 @@ namespace Server.Migrations
                     b.ToTable("Hotels");
 
                     b.HasData(
+                        new
+                        {
+                            HotelID = -1,
+                            AccessToken = "{\"id\":99999999,\"createdAt\":\"2021-05-11T18:21:50Z\"}",
+                            City = "TestCity0",
+                            Country = "TestCountry0",
+                            HotelDescription = "TestHotelDesc0",
+                            HotelName = "TestHotelName0",
+                            HotelPreviewPicture = "TestHotelPreviewPicture0"
+                        },
                         new
                         {
                             HotelID = 1,

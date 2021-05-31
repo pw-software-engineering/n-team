@@ -1,9 +1,13 @@
 ﻿using Hotel.Models;
 using Hotel.ViewModels;
+using Hotel_Module.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -12,6 +16,7 @@ using System.Web;
 
 namespace Hotel.Controllers
 {
+    [Authorize(AuthenticationSchemes = HotelTokenCookieDefaults.AuthenticationScheme)]
     public class OffersController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -21,6 +26,12 @@ namespace Hotel.Controllers
             _httpClient = httpClientFactory.CreateClient(nameof(DefaultHttpClient));
         }
 
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            _httpClient.DefaultRequestHeaders.Add(
+                ServerApiConfig.TokenHeaderName,
+                HttpContext.User.Claims.First(c => c.Type == HotelCookieTokenManagerOptions.AuthStringClaimType).Value);
+        }
 
         [HttpGet("/offers")]
         public async Task<IActionResult> Index([FromQuery] bool? isActive, [FromQuery] Paging paging)
