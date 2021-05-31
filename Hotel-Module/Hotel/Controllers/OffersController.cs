@@ -26,6 +26,7 @@ namespace Hotel.Controllers
             _httpClient = httpClientFactory.CreateClient(nameof(DefaultHttpClient));
         }
 
+
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             _httpClient.DefaultRequestHeaders.Add(
@@ -85,11 +86,6 @@ namespace Hotel.Controllers
                 Offer offer = await _httpClient.GetFromJsonAsync<Offer>($"offers/{offerID}");
                 offer.OfferID = offerID;
                 IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>($"offers/{offerID}/rooms");
-                //IEnumerable<Room> rooms = new List<Room>
-                //{
-                //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-                //    new Room { HotelRoomNumber = "2", RoomID = 2, OfferID = new List<int> { offerID, 103 } }
-                //};
                 return View(new OfferEditViewModel(offer));
             }
             catch (HttpRequestException e)
@@ -153,23 +149,6 @@ namespace Hotel.Controllers
         public async Task<IActionResult> GetOfferRooms([FromRoute] int offerID, [FromQuery] Paging paging)
         {
             IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>($"offers/{offerID}/rooms");
-            //IEnumerable<Room> rooms = paging.PageNumber == 1 ? new List<Room>
-            //{
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "2", RoomID = 2, OfferID = new List<int> { offerID, 103 } }
-            //} : paging.PageNumber == 2 ?
-            //new List<Room>
-            //{
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "2", RoomID = 2, OfferID = new List<int> { offerID, 103 } }
-            //} :
-            //new List<Room>();
             return new JsonResult(rooms);
         }
 

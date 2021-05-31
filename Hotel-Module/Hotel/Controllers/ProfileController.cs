@@ -13,16 +13,17 @@ namespace Hotel.Controllers
     [Authorize(AuthenticationSchemes = HotelTokenCookieDefaults.AuthenticationScheme)]
     public class ProfileController : Controller
     {
-        private readonly IHttpClientFactory clientFactory;
-        private HttpClient httpClient;
+        private HttpClient _httpClient;
+
         public ProfileController(IHttpClientFactory httpClientFactory)
         {
-            clientFactory = httpClientFactory;
+            _httpClient = httpClientFactory.CreateClient(nameof(DefaultHttpClient));
         }
+
+
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            httpClient = clientFactory.CreateClient();
-            httpClient.DefaultRequestHeaders.Add(
+            _httpClient.DefaultRequestHeaders.Add(
                 ServerApiConfig.TokenHeaderName,
                 HttpContext.User.Claims.First(c => c.Type == HotelCookieTokenManagerOptions.AuthStringClaimType).Value);
         }

@@ -45,21 +45,6 @@ namespace Hotel.Controllers
             try
             {
                 IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>($"rooms?{query}");
-                //IEnumerable<Room> rooms = new List<Room>
-                //{
-                //    new Room
-                //    {
-                //        RoomID = 1,
-                //        HotelRoomNumber = "1",
-                //        OfferID = new List<int>{102, 103}
-                //    },
-                //    new Room
-                //    {
-                //        RoomID = 2,
-                //        HotelRoomNumber = "2",
-                //        OfferID = new List<int>{1, 2, 3, 4}
-                //    }
-                //};
                 RoomsIndexViewModel roomsVM = new RoomsIndexViewModel(rooms, paging, hotelRoomNumber);
                 return View(roomsVM);
             }

@@ -19,7 +19,6 @@ namespace Hotel
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            ServerApiConfig.BaseUrl = Configuration.GetSection("ServerApiConfig").GetValue<string>("BaseUrl");
             ServerApiConfig.TokenHeaderName = Configuration.GetSection("ServerApiConfig").GetValue<string>("TokenHeaderName");
         }
 
@@ -30,7 +29,7 @@ namespace Hotel
         {
             services.AddHttpClient<DefaultHttpClient>(c =>
             {
-                c.BaseAddress = new Uri($"{ServerApiConfig.BaseUrl.TrimEnd('/')}/");
+                c.BaseAddress = new Uri(Configuration.GetSection("ServerApiConfig").GetValue<string>("BaseUrl"));
             });
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
