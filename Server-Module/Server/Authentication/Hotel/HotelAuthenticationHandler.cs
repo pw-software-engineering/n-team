@@ -51,7 +51,6 @@ namespace Server.Authentication.Hotel
             var identity = new ClaimsIdentity(claims, HotelTokenDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, HotelTokenDefaults.AuthenticationScheme);
-            Console.WriteLine("User logged in");
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }
 

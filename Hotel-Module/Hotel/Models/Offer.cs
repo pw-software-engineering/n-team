@@ -4,7 +4,7 @@ namespace Hotel.Models
 {
     public class Offer
     {
-        public uint OfferID { get; set; }
+        public int OfferID { get; set; }
         public bool IsActive { get; set; }
         public double CostPerChild { get; set; }
         public double CostPerAdult { get; set; }

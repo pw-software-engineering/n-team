@@ -39,12 +39,14 @@ namespace Server.Database.DataAccess.Hotel
             if (roomNumber == null)
                 return _mapper.Map<List<HotelRoomView>>(_dbContext.HotelRooms
                             .Where(hr => hr.HotelID == hotelID)
+                            .OrderBy(hr => hr.RoomID)
                             .Skip(paging.PageSize * (paging.PageNumber - 1))
                             .Take(paging.PageSize)
                             .ToList());
 
             return _mapper.Map<List<HotelRoomView>>(_dbContext.HotelRooms
                         .Where(hr => hr.HotelID == hotelID && hr.HotelRoomNumber == roomNumber)
+                        .OrderBy(hr => hr.RoomID)
                         .Skip(paging.PageSize * (paging.PageNumber - 1))
                         .Take(paging.PageSize)
                         .ToList());

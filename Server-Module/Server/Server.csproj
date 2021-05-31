@@ -33,6 +33,7 @@
     <None Update="aspnet.pfx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 
