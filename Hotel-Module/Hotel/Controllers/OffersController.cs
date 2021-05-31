@@ -148,7 +148,8 @@ namespace Hotel.Controllers
         [HttpGet("/offers/{offerID}/rooms")]
         public async Task<IActionResult> GetOfferRooms([FromRoute] int offerID, [FromQuery] Paging paging)
         {
-            IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>($"offers/{offerID}/rooms");
+            IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>(
+                $"offers/{offerID}/rooms?pageNumber={paging.PageNumber}&pageSize={paging.PageSize}");
             return new JsonResult(rooms);
         }
 
@@ -164,7 +165,9 @@ namespace Hotel.Controllers
             Room[] room;
             try
             {
-                room = await _httpClient.GetFromJsonAsync<Room[]>($"offers/{offerID}/rooms?roomNumber={roomNumber}");
+                room = await _httpClient.GetFromJsonAsync<Room[]>($"rooms?roomNumber={roomNumber}");
+                if (room is null || !room.Any())
+                    return StatusCode((int)HttpStatusCode.NotFound);
             }
             catch (HttpRequestException e)
             {
@@ -174,7 +177,8 @@ namespace Hotel.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
-            return await CheckForConnectionError(_httpClient.PostAsJsonAsync($"offers/{offerID}/rooms", new { roomID = room[0].RoomID }));
+            int roomID = room[0].RoomID;
+            return await CheckForConnectionError(_httpClient.PostAsJsonAsync($"offers/{offerID}/rooms", roomID));
         }
 
         private async Task<StatusCodeResult> CheckForConnectionError(Task<HttpResponseMessage> responseTask)

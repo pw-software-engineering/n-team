@@ -28,13 +28,7 @@ else
                     </dl>
                 </div>
                 <div class="btn-group-vertical btn-group-sm col-sm-2">
-                    <form id="detachForm_@Model.Offer.OfferID" method="post"
-                       asp-controller="offers"
-                       asp-action="@nameof(Hotel.Controllers.OffersController.DetachRoom)",
-                       asp-route-offerID="@Model.Offer.OfferID"
-                       asp-route-roomID="@Model.RoomID">
-                    </form>
-                    <button form="detachForm_@Model.Offer.OfferID" type="submit" class="btn btn-sm btn-outline-danger">
+                    <button id="detachBtn_@Model.Offer.OfferID" type="button" class="btn btn-sm btn-outline-danger detachBtn">
                         <span class="fa fa-unlink"></span>
                         Detach from offer
                     </button>

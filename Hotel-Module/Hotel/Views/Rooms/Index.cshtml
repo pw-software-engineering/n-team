@@ -201,23 +201,33 @@ else
             $('#addRoomForm').on('submit', async function (e) {
                 e.preventDefault();
 
-                //$.ajax({
-                //    url: "/rooms/offerRowPartial",
-                //    data: {
-                //        "offerID": offerID,
-                //        "roomID": activeRoomID
-                //    },
-                //    success: function (partial) {
-                //        offersBody.insertAdjacentHTML('beforeend', partial);
-                //    }
-                //});
-                let formData = 
                 await fetch('/rooms', {
                     method: 'POST',
                     body: new FormData($("#addRoomForm")[0])
                 }).then((response) => {
                     if (response.ok) {
                         alert("Room added succesfully.");
+                        window.location.replace('@Url.Action(nameof(Hotel.Controllers.RoomsController.Index))');
+                    } else {
+                        alert("error: " + response.status);
+                    }
+                }).catch((error) => {
+                    console.error('fetch error: ', error);
+                });
+            });
+
+            // detaching a room (connects to dynamically generated code from _OfferRow)
+            $("#roomOffersModal").on("click", ".detachBtn", async function (e) {
+                e.preventDefault();
+                let detachRoomBtn = e.target;
+                let offerID = detachRoomBtn.id.split("_")[1];
+
+                await fetch(`/offers/${offerID}/rooms/${activeRoomID}`, {
+                    method: 'DELETE',
+                    body: new FormData($("#addRoomForm")[0])
+                }).then((response) => {
+                    if (response.ok) {
+                        alert("Room detached succesfully.");
                         window.location.replace('@Url.Action(nameof(Hotel.Controllers.RoomsController.Index))');
                     } else {
                         alert("error: " + response.status);
