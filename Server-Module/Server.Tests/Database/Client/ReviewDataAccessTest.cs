@@ -88,7 +88,7 @@ namespace Server.Tests.Database.Client
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReservations ON");
                 _context.ClientReservations.AddRange(
                     new ClientReservationDb { ReservationID = 1, OfferID = 2, ClientID = 2, HotelID = 2, RoomID = 2, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 0, FromTime = new DateTime(2001, 1, 1), ToTime = new DateTime(2001, 1, 2) },
-                    new ClientReservationDb { ReservationID = 2, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 2, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 1, FromTime = new DateTime(2001, 2, 2), ToTime =  DateTime.Now },
+                    new ClientReservationDb { ReservationID = 2, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 2, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 1, FromTime = new DateTime(2001, 2, 2), ToTime =  DateTime.UtcNow },
                     new ClientReservationDb { ReservationID = 3, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 3, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 2, FromTime = new DateTime(3001, 3, 3), ToTime = new DateTime(3001, 3, 6) });
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReservations OFF");
@@ -231,7 +231,6 @@ namespace Server.Tests.Database.Client
         [Fact]
         public void IsDataValid_GoodValues()
         {
-            // _dataAccess.IsDataValid
             for(int i=1;i<11;i++)
                 Assert.True(_dataAccess.IsDataValid(new ReviewUpdater { content = "a", rating = i }));
         }
@@ -250,7 +249,7 @@ namespace Server.Tests.Database.Client
         [Fact]
         public void IsAddingReviewToReservationEnabled_Goodtest()
         {
-            Assert.True(!_dataAccess.IsAddingReviewToReservationEnabled(2));
+            Assert.True(_dataAccess.IsAddingReviewToReservationEnabled(2));
         }
         [Fact]
         public void IsAddingReviewToReservationEnabled_BadID()

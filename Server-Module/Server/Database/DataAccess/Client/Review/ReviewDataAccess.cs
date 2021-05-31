@@ -112,7 +112,7 @@ namespace Server.Database.DataAccess.Client.Review
             if (reservation == null)
                 throw new Exception("reservation not found");
             var max_date_to_adding = new DateTime(reservation.ToTime.Year, reservation.ToTime.Month, reservation.ToTime.Day).AddDays(30);
-            return reservation.ToTime < DateTime.UtcNow && DateTime.UtcNow < max_date_to_adding;
+            return reservation.ToTime <= DateTime.UtcNow && DateTime.UtcNow <= max_date_to_adding;
         }
 
         public bool IsDataValid(ReviewUpdater reviewUpdater)
