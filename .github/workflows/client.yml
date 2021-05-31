@@ -3,7 +3,10 @@ name: Client module
 on:
   push:
   pull_request:
-    branches: [ develop ]
+    branches:
+      - 'develop'
+    paths:
+      - 'Client-Module/**'
 
 env:
   DEPLOY: ${{ github.event_name == 'push' }}
