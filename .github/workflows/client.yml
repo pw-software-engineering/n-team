@@ -2,9 +2,6 @@ name: Client module
 
 on:
   push:
-    branches: [ develop ]
-    paths:
-    - 'Client-Module/**'
   pull_request:
     branches: [ develop ]
     paths:

@@ -2,9 +2,6 @@ name: Hotel module
 
 on:
   push:
-    branches: [ develop ]
-    paths:
-    - 'Hotel-Module/**'
   pull_request:
     branches: [ develop ]
     paths:
