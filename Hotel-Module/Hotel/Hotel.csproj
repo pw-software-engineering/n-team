@@ -4,9 +4,13 @@
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>688ed45d-7cf6-47b0-9a2c-bbfc23cad3b6</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <Configurations>Debug;Release;Release-Production</Configurations>
   </PropertyGroup>
   <PropertyGroup>
     <DefineConstants Condition=" '$(CompileConstants)' != '' ">$(DefineConstants);$(CompileConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Production|AnyCPU'">
+    <DefineConstants>TRACE;PRODUCTION</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +21,12 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\lib\font-awesome\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="aspnet.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

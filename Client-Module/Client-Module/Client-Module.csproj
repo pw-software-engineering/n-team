@@ -6,9 +6,13 @@
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
     <UserSecretsId>51f3415e-c06d-4575-abe0-e3fbd95acac3</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <Configurations>Debug;Release;Release-Production</Configurations>
   </PropertyGroup>
   <PropertyGroup>
     <DefineConstants Condition=" '$(CompileConstants)' != '' ">$(DefineConstants);$(CompileConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Production|AnyCPU'">
+    <DefineConstants>TRACE;PRODUCTION</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +27,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ServerApiMockupControllers\ServerApiMockupControllers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="aspnet.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
