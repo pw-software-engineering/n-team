@@ -51,8 +51,8 @@
 
     <!-- Rooms -->
     <div class="form-group">
-        <input type="text" class="form-control" placeholder="Comma-delimited list of room numbers" />
-        <label class="form-control-placeholder">List of rooms</label>
+        <input asp-for="Rooms" type="text" pattern="^$|[0-9a-zA-Z]+ *(, *[0-9a-zA-Z]+ *)*" class="form-control" placeholder="Comma-delimited list of room numbers" />
+        <label asp-for="Rooms" class="form-control-placeholder">List of rooms</label>
     </div>
     <hr /><br />
 
@@ -78,40 +78,54 @@
 @section Scripts {
     <script type="text/javascript">
         $(document).ready(function () {
-            var form = $('#addOfferForm')[0];
+            let form = $('#addOfferForm')[0];
 
-            var previewPicInput = document.getElementById('@Html.IdFor(o => o.OfferPreviewPicture)');
-            var previewGalleryDiv = document.getElementById('previewGallery');
+            let previewPicInput = document.getElementById('@Html.IdFor(o => o.OfferPreviewPicture)');
+            let previewGalleryDiv = document.getElementById('previewGallery');
             previewPicInput.onchange = function () { previewGallery(previewPicInput, previewGalleryDiv); };
 
-            var additionalPicsInput = document.getElementById('@Html.IdFor(o => o.Pictures)');
-            var additionalGalleryDiv = document.getElementById('additionalGallery');
+            let additionalPicsInput = document.getElementById('@Html.IdFor(o => o.Pictures)');
+            let additionalGalleryDiv = document.getElementById('additionalGallery');
             additionalPicsInput.onchange = function () { previewGallery(additionalPicsInput, additionalGalleryDiv); };
 
             // override submit()
             // converting pictures to base64 and sending a form
             form.onsubmit = async function (e) {
                 e.preventDefault();
-                var formData = new FormData(form);
-                formData.set('@Html.NameFor(o => o.IsActive)', true);
-                var previewPicString = '@Html.NameFor(o => o.OfferPreviewPicture)';
-                var picsString = '@Html.NameFor(o => o.Pictures)';
+                let formData = new FormData(form);
 
-                var previewPic = formData.get(previewPicString);
-                var previewPic64 = await get64BaseString(previewPic);
+                // IsActive
+                formData.set('@Html.NameFor(o => o.IsActive)', true);
+
+                // OfferPreviewPicture
+                let previewPicString = '@Html.NameFor(o => o.OfferPreviewPicture)';
+                let previewPic = formData.get(previewPicString);
+                let previewPic64 = await get64BaseString(previewPic);
                 if (previewPic64) {
                     formData.set(previewPicString, previewPic64);           // .set() overrides value
                 }
 
-                var pics = formData.getAll(picsString);
+                // Pictures
+                let picsString = '@Html.NameFor(o => o.Pictures)';
+                let pics = formData.getAll(picsString);
                 formData.delete(picsString);
                 for (const pic of pics) {
-                    var pic64 = await (get64BaseString(pic));
+                    let pic64 = await (get64BaseString(pic));
                     if (pic64) {
                         formData.append(picsString, pic64);
                     }
                 }
 
+                // Rooms
+                let roomsString = '@Html.NameFor(o => o.Rooms)';
+                let rooms = formData.get(roomsString);
+                let roomsArray = rooms.split(/[\s,]+/).filter(r => r !== "");// JSON.parse(rooms);
+                formData.delete(roomsString);
+                roomsArray.forEach(function (room, index) {
+                    formData.append(roomsString, room);
+                });
+
+                // send
                 await fetch('@Url.Action(nameof(Hotel.Controllers.OffersController.Add))', {
                     method: 'POST',
                     body: formData
