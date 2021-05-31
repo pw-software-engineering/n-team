@@ -2,12 +2,10 @@
 using Server.Database.Models;
 using Server.RequestModels;
 using Server.RequestModels.Client;
-using Server.ViewModels;
 using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess.Client
 {
@@ -21,27 +19,27 @@ namespace Server.Database.DataAccess.Client
             _dbContext = dbContext;
         }
 
-        public List<OfferPreviewView> GetHotelOffers(int hotelID, OfferFilter offerFilter,  Paging paging)
+        public List<OfferPreviewView> GetHotelOffers(int hotelID, OfferFilter offerFilter, Paging paging)
         {
-            if(paging == null)
+            if (paging == null)
             {
                 throw new ArgumentNullException("paging");
             }
-            if(offerFilter == null)
+            if (offerFilter == null)
             {
                 throw new ArgumentNullException("offerFilter");
             }
 
             IEnumerable<OfferDb> offers = _dbContext.Offers.Where(o => !o.IsDeleted && o.IsActive && o.HotelID == hotelID);
-            if(offerFilter.CostMax.HasValue)
+            if (offerFilter.CostMax.HasValue)
             {
                 offers = offers.Where(o => Math.Max(o.CostPerAdult, o.CostPerChild) <= offerFilter.CostMax);
             }
-            if(offerFilter.CostMin.HasValue)
+            if (offerFilter.CostMin.HasValue)
             {
                 offers = offers.Where(o => Math.Min(o.CostPerAdult, o.CostPerChild) >= offerFilter.CostMin);
             }
-            if(offerFilter.MinGuests.HasValue)
+            if (offerFilter.MinGuests.HasValue)
             {
                 offers = offers.Where(o => o.MaxGuests >= offerFilter.MinGuests);
             }
@@ -56,9 +54,9 @@ namespace Server.Database.DataAccess.Client
 
         public bool CheckHotelOfferAvailability(int offerID, DateTime from, DateTime to)
         {
-            foreach(OfferHotelRoomDb offerRoom in _dbContext.OfferHotelRooms.Where(ohr => ohr.OfferID == offerID))
+            foreach (OfferHotelRoomDb offerRoom in _dbContext.OfferHotelRooms.Where(ohr => ohr.OfferID == offerID))
             {
-                if(_dbContext.ClientReservations.Where(cr => cr.RoomID == offerRoom.RoomID && !(cr.ToTime < from || cr.FromTime > to)).Any())
+                if (_dbContext.ClientReservations.Where(cr => cr.RoomID == offerRoom.RoomID && !(cr.ToTime < from || cr.FromTime > to)).Any())
                 {
                     continue;
                 }
@@ -87,7 +85,7 @@ namespace Server.Database.DataAccess.Client
 
         public List<AvailabilityTimeInterval> GetHotelOfferAvailability(int hotelID, int offerID, DateTime fromTime, DateTime toTime)
         {
-            if(!CheckHotelOfferExistence(hotelID, offerID))
+            if (!CheckHotelOfferExistence(hotelID, offerID))
             {
                 return null;
             }
@@ -110,23 +108,23 @@ namespace Server.Database.DataAccess.Client
                 .ToList();
 
             List<AvailabilityTimeInterval> roomAvailability = new List<AvailabilityTimeInterval>();
-            if(roomUnavailability.Count == 0)
+            if (roomUnavailability.Count == 0)
             {
                 roomAvailability.Add(new AvailabilityTimeInterval(fromTime, toTime));
                 return roomAvailability;
             }
-            
-            if(roomUnavailability[0].StartDate > fromTime)
+
+            if (roomUnavailability[0].StartDate > fromTime)
             {
                 roomAvailability.Add(new AvailabilityTimeInterval(fromTime, roomUnavailability[0].StartDate.AddDays(-1)));
             }
 
-            for(int i = 1; i < roomUnavailability.Count; i++)
+            for (int i = 1; i < roomUnavailability.Count; i++)
             {
                 AvailabilityTimeInterval timeInterval = new AvailabilityTimeInterval(
                     roomUnavailability[i - 1].EndDate.AddDays(1),
                     roomUnavailability[i].StartDate.AddDays(-1));
-                if(timeInterval.EndDate < timeInterval.StartDate)
+                if (timeInterval.EndDate < timeInterval.StartDate)
                 {
                     continue;
                 }
@@ -147,23 +145,23 @@ namespace Server.Database.DataAccess.Client
         {
             List<AvailabilityTimeInterval> resultTimeIntervals = new List<AvailabilityTimeInterval>();
             int it1 = 0, it2 = 0;
-            while(it1 < availabilityTimeIntervals1.Count || it2 < availabilityTimeIntervals2.Count)
+            while (it1 < availabilityTimeIntervals1.Count || it2 < availabilityTimeIntervals2.Count)
             {
-                if(it1 == availabilityTimeIntervals1.Count)
+                if (it1 == availabilityTimeIntervals1.Count)
                 {
                     resultTimeIntervals.Add(availabilityTimeIntervals2[it2++]);
                     continue;
                 }
-                else if(it2 == availabilityTimeIntervals2.Count)
+                else if (it2 == availabilityTimeIntervals2.Count)
                 {
                     resultTimeIntervals.Add(availabilityTimeIntervals1[it1++]);
                     continue;
                 }
                 AvailabilityTimeInterval interval1 = availabilityTimeIntervals1[it1];
                 AvailabilityTimeInterval interval2 = availabilityTimeIntervals2[it2];
-                if(interval1.StartDate >= interval2.StartDate)
+                if (interval1.StartDate >= interval2.StartDate)
                 {
-                    if(interval1.EndDate <= interval2.EndDate)
+                    if (interval1.EndDate <= interval2.EndDate)
                     {
                         it1++;
                         continue;
@@ -178,6 +176,52 @@ namespace Server.Database.DataAccess.Client
                 }
             }
             return resultTimeIntervals;
+        }
+
+        public List<ReviewInfo> GetOfferReviews(int hotelID, int offerID)
+        {
+            if (_dbContext.Hotels.FirstOrDefault(x => x.HotelID == hotelID) == null)
+                throw new Exception("cannot find hotel");
+            if (_dbContext.Offers.FirstOrDefault(x => x.OfferID == offerID) == null)
+                throw new Exception("cannot find offer");
+
+            List<ReviewInfo> reviewInfos = new List<ReviewInfo>();
+            var resultDB = _dbContext.ClientReviews.Where(x => x.OfferID == offerID).ToList();
+            foreach (var review in resultDB)
+            {
+                var client = _dbContext.Clients.Find(review.ClientID);
+                reviewInfos.Add(new ReviewInfo
+                {
+                    reviewID = review.ReviewID,
+                    content = review.Content,
+                    rating = (int)review.Rating,
+                    revewerUsername = client.Name,
+                    creationDate = review.ReviewDate
+                });
+            }
+            return reviewInfos;
+        }
+
+        public List<ReviewInfo> GetHotelReviews(int hotelID, int from, int take)
+        {
+            if (_dbContext.Hotels.FirstOrDefault(x => x.HotelID == hotelID) == null)
+                throw new Exception("cannot find hotel");
+
+            List<ReviewInfo> reviewInfos = new List<ReviewInfo>();
+            var resultDB = _dbContext.ClientReviews.Where(x => x.HotelID == hotelID).Skip(from).Take(take).ToList();
+            foreach (var review in resultDB)
+            {
+                var client = _dbContext.Clients.Find(review.ClientID);
+                reviewInfos.Add(new ReviewInfo
+                {
+                    reviewID = review.ReviewID,
+                    content = review.Content,
+                    rating = (int)review.Rating,
+                    revewerUsername = client.Name,
+                    creationDate = review.ReviewDate
+                });
+            }
+            return reviewInfos;
         }
     }
 }
