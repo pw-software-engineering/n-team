@@ -120,7 +120,6 @@ namespace Server.Services.Client
         public IServiceResult GetHotelReviews(int hotelID, int offerID, Paging paging)
         {
             int from = (paging.PageNumber - 1) * paging.PageSize;
-            return new ServiceResult(HttpStatusCode.OK, _offerSearchDataAccess.GetHotelReviews(hotelID, from, paging.PageSize));
             try
             {
                 return new ServiceResult(HttpStatusCode.OK, _offerSearchDataAccess.GetHotelReviews(hotelID, from, paging.PageSize));
