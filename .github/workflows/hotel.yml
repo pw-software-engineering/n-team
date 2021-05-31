@@ -17,17 +17,17 @@ on:
 
 env:
   # CI environment variables
-  SRCDIR: ./Hotel-Module/Hotel
-  SOLFILE: ./Hotel-Module/Hotel.sln
-  CSPROJ: ./Hotel-Module/Hotel/Hotel.csproj
-  TESTPROJ: ./Hotel-Module/Hotel.Tests/Hotel.Tests.csproj
-  TESTCOV: ./Hotel-Module/Hotel.Tests/cobertura.xml
+  SRCDIR: './Hotel-Module/Hotel'
+  SOLFILE: './Hotel-Module/Hotel.sln'
+  CSPROJ: './Hotel-Module/Hotel/Hotel.csproj'
+  TESTPROJ: './Hotel-Module/Hotel.Tests/Hotel.Tests.csproj'
+  TESTCOV: './Hotel-Module/Hotel.Tests/cobertura.xml'
   
   # CD environment variables
-  ACR: powoeuwacr.azurecr.io
-  NAMESPACE: n
-  APPNAME: hotel
-  DEPLOYFILE: deploy.yml
+  ACR: 'powoeuwacr.azurecr.io'
+  NAMESPACE: 'n'
+  APPNAME: 'hotel'
+  DEPLOYFILE: 'deploy.yml'
   
 jobs:
   build:

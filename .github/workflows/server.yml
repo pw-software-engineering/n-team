@@ -17,20 +17,20 @@ on:
 
 env:
   # CI environment variables
-  SRCDIR: ./Server-Module/Server
-  SOLFILE: ./Server-Module/Server.sln
-  CSPROJ: ./Server-Module/Server/Server.csproj
-  TESTPROJ: ./Server-Module/Server.Tests/Server.Tests.csproj
-  TESTCOV: ./Server-Module/Server.Tests/cobertura.xml
-  DBUSER: ${{ secrets.DBUSERNAME }}
-  DBPWD: ${{ secrets.DBPASSWORD }}
+  SRCDIR: './Server-Module/Server'
+  SOLFILE: './Server-Module/Server.sln'
+  CSPROJ: './Server-Module/Server/Server.csproj'
+  TESTPROJ: './Server-Module/Server.Tests/Server.Tests.csproj'
+  TESTCOV: './Server-Module/Server.Tests/cobertura.xml'
+  DBUSER: '${{ secrets.DBUSERNAME }}'
+  DBPWD: '${{ secrets.DBPASSWORD }}'
 
   # CD environment variables
-  ACR: powoeuwacr.azurecr.io
-  NAMESPACE: n
-  APPNAME: server
-  APPSETTINGS: appsettings.Production.json
-  DEPLOYFILE: deploy.yml
+  ACR: 'powoeuwacr.azurecr.io'
+  NAMESPACE: 'n'
+  APPNAME: 'server'
+  APPSETTINGS: 'appsettings.Production.json'
+  DEPLOYFILE: 'deploy.yml'
   
 jobs:
   build:
