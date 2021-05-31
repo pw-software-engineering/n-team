@@ -9,8 +9,6 @@ on:
       - 'Server-Module/**'
 
 env:
-  DEPLOY: ${{ github.event_name == 'push' }}
-
   # CI environment variables
   SRCDIR: ./Server-Module/Server
   SOLFILE: ./Server-Module/Server.sln
@@ -63,7 +61,7 @@ jobs:
     needs: build
     name: Deploy server module to Kubernetes cluster
     runs-on: ubuntu-latest
-    if: ${{ env.DEPLOY }}
+    if: ${{ github.event_name == 'push' }}
     steps:
     - name: Set IMAGE_ID as env variable
       run: echo "IMAGE_ID=${{ env.ACR }}/${{ env.APPNAME }}:v${{ github.run_number }}" >> $GITHUB_ENV
