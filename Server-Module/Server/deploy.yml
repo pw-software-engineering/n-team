@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+   name: ${NAMESPACE}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${APPNAME}
+  namespace: ${NAMESPACE}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${APPNAME}
+  template:
+    metadata:
+      labels:
+        app: ${APPNAME}
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: ${APPNAME}
+        image: ${IMAGE_ID}
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${APPNAME}
+  namespace: ${NAMESPACE}
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: ${APPNAME}
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ${APPNAME}
+  namespace: ${NAMESPACE}
+  labels:
+    name: ${APPNAME}
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: ${NAMESPACE}.${DOMAIN}
+    http:
+      paths:
+      - backend:
+          serviceName: ${APPNAME}
+          servicePort: 80
+        path: /${APPNAME}
