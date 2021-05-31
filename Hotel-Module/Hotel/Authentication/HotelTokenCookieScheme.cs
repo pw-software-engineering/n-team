@@ -15,6 +15,7 @@ using System.Net;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Hotel;
 
 namespace Hotel_Module.Authentication
 {
@@ -46,15 +47,11 @@ namespace Hotel_Module.Authentication
             }
             string authString = Request.Cookies[HotelTokenCookieDefaults.AuthCookieName];
 
-            HttpClient httpClient = _httpClientFactory.CreateClient();
             try
             {
-                HttpRequestMessage httpRequest = new HttpRequestMessage();
-                httpRequest.Headers.Add(ServerApiConfig.TokenHeaderName, authString);
-                httpRequest.Method = HttpMethod.Get;
-                string verificationEndpoint = "/rooms?pageNumber=1&pageSize=1";
-                httpRequest.RequestUri = new Uri($"{ServerApiConfig.BaseUrl}{verificationEndpoint}");
-                HttpResponseMessage httpResponse = await httpClient.SendAsync(httpRequest);
+                HttpClient httpClient = _httpClientFactory.CreateClient(nameof(DefaultHttpClient));
+                httpClient.DefaultRequestHeaders.Add(ServerApiConfig.TokenHeaderName, authString);
+                HttpResponseMessage httpResponse = await httpClient.GetAsync("rooms?pageNumber=1&pageSize=1");
                 if (!httpResponse.IsSuccessStatusCode)
                 {
                     return AuthenticateResult.NoResult();
