@@ -11,6 +11,8 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System.Linq;
 
 namespace Hotel.Controllers
 {
@@ -24,6 +26,12 @@ namespace Hotel.Controllers
             _httpClient = httpClientFactory.CreateClient(nameof(DefaultHttpClient));
         }
 
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            _httpClient.DefaultRequestHeaders.Add(
+                ServerApiConfig.TokenHeaderName,
+                HttpContext.User.Claims.First(c => c.Type == HotelCookieTokenManagerOptions.AuthStringClaimType).Value);
+        }
 
         [HttpGet("/rooms")]
         public async Task<IActionResult> Index([FromQuery] string hotelRoomNumber, [FromQuery] Paging paging)
