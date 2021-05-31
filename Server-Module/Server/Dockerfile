@@ -1,11 +1,19 @@
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
-EXPOSE 80 443
+ENV ASPNETCORE_URLS http://+:5000;https://+:5001
+ENV Kestrel__Certificates__Default__Path /app/aspnet.pfx
+ENV Kestrel__Certificates__Default__Password=ioioioio1234
+EXPOSE 80
+EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS publish
 COPY . /src
 WORKDIR /src
 RUN dotnet publish "Server.csproj" -c Release -p:CompileConstants=PRODUCTION -o /app/publish
+RUN dotnet tool install dotnet-ef --tool-path /tools --version 3.1.0
+ENV PATH="${PATH}:/tools:/app"
+ENV ASPNETCORE_ENVIRONMENT Production
+RUN dotnet ef database update
 
 FROM base AS final
 WORKDIR /app

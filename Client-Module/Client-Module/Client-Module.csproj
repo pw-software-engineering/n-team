@@ -25,4 +25,10 @@
     <ProjectReference Include="..\ServerApiMockupControllers\ServerApiMockupControllers.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="aspnet.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

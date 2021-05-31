@@ -18,4 +18,10 @@
     <Folder Include="wwwroot\lib\font-awesome\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="aspnet.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
