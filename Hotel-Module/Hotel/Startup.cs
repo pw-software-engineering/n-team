@@ -1,3 +1,4 @@
+using Hotel_Module.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -18,6 +19,8 @@ namespace Hotel
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            ServerApiConfig.BaseUrl = Configuration.GetSection("ServerApiConfig").GetValue<string>("BaseUrl");
+            ServerApiConfig.TokenHeaderName = Configuration.GetSection("ServerApiConfig").GetValue<string>("TokenHeaderName");
         }
 
         public IConfiguration Configuration { get; }
@@ -27,10 +30,17 @@ namespace Hotel
         {
             services.AddHttpClient<DefaultHttpClient>(c =>
             {
-                c.BaseAddress = new Uri("https://localhost:5001/api-hotel/");
-                c.DefaultRequestHeaders.Add("x-hotel-token", "TestAccessToken1");   // TODO: change it
+                c.BaseAddress = new Uri($"{ServerApiConfig.BaseUrl.TrimEnd('/')}/");
             });
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation();
+            services.AddAuthentication(HotelTokenCookieDefaults.AuthenticationScheme).AddScheme<HotelTokenCookieSchemeOptions, HotelTokenCookieScheme>(
+                HotelTokenCookieDefaults.AuthenticationScheme, (HotelTokenCookieSchemeOptions opt) =>
+                {
+                    opt.ClaimsIssuer = "localhost";
+                });
+            //services.AddSingleton<Hotel_Module.Authentication.IHotelInfoAccessor, Hotel_Module.Authentication.HotelInfoAccessor>();
+            services.AddSingleton<IHotelCookieTokenManager, HotelCookieTokenManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
