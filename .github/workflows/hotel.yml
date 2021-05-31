@@ -5,12 +5,14 @@ on:
     branches:
       - 'develop'
     paths:
-      - 'Server-Module/**'
+      - 'Hotel-Module/**'
+      - '.github/workflows/hotel.yml'
   pull_request:
     branches:
       - 'develop'
     paths:
       - 'Hotel-Module/**'
+      - '.github/workflows/hotel.yml'
   workflow_dispatch:
 
 env:
@@ -65,6 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/develop' }}
     steps:
+    - uses: actions/checkout@v2
     - name: Set IMAGE_ID as env variable
       run: echo "IMAGE_ID=${{ env.ACR }}/${{ env.APPNAME }}:v${{ github.run_number }}" >> $GITHUB_ENV
     - name: Login to ACR
