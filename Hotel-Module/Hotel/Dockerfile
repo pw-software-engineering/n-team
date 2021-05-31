@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
-ENV ASPNETCORE_URLS http://+:5000;https://+:5001
+ENV ASPNETCORE_URLS http://+:80;https://+:443
 ENV Kestrel__Certificates__Default__Path /app/aspnet.pfx
 ENV Kestrel__Certificates__Default__Password=ioioioio1234
 EXPOSE 80
