@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:5.0-buster-slim AS base
 WORKDIR /app
 ENV ASPNETCORE_URLS http://+:80;https://+:443
 ENV Kestrel__Certificates__Default__Path /app/aspnet.pfx
@@ -6,7 +6,7 @@ ENV Kestrel__Certificates__Default__Password=ioioioio1234
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS publish
+FROM mcr.microsoft.com/dotnet/core/sdk:5.0-buster AS publish
 COPY . /src
 WORKDIR /src
 RUN dotnet publish "Hotel.csproj" -c Release -p:CompileConstants=PRODUCTION -o /app/publish
