@@ -386,6 +386,24 @@ namespace Server.Tests.Database.Client
                 Assert.Equal(expectedTimeIntervals[i], timeIntervals[i]);
             }
         }
+        #region GetHotelReviews
+        [Fact]
+        public void GetHotelReviews_BadHotelID()
+        {
+            Assert.Throws<Exception>(() => _dataAccess.GetHotelReviews(1000, 100, 100));
+        }
+        #endregion
+        #region GetOfferReviews
+        [Fact]
+        public void GetOfferReviews_BadHotelID()
+        {
+            Assert.Throws<Exception>(() => _dataAccess.GetOfferReviews(100,1));
+        }
+        public void GetOfferReviews_BadOfferID()
+        {
+            Assert.Throws<Exception>(() => _dataAccess.GetOfferReviews(1, 100));
+        }
+        #endregion
 
         public void Dispose()
         {

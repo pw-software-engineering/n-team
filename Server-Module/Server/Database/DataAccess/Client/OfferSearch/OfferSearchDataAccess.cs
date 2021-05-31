@@ -189,6 +189,8 @@ namespace Server.Database.DataAccess.Client
             var resultDB = _dbContext.ClientReviews.Where(x => x.OfferID == offerID).ToList();
             foreach (var review in resultDB)
             {
+                if (review.HotelID != hotelID)
+                    throw new Exception("bad request");
                 var client = _dbContext.Clients.Find(review.ClientID);
                 reviewInfos.Add(new ReviewInfo
                 {
