@@ -36,19 +36,19 @@ namespace Server.Controllers.Client
         #endregion
         #region reservations/{reservationID}/review
         [HttpGet("reservations/{reservationID}/review")]
-        public IActionResult GetReview([FromHeader]int reservationID)
+        public IActionResult GetReview([FromRoute]int reservationID)
         {
             return _reviewService.GetReview(reservationID);
         }
 
         [HttpPut("reservations/{reservationID}/review")]
-        public IActionResult CreateReview([FromHeader] int reservationID,[FromBody]ReviewUpdater reviewUpdater)
+        public IActionResult CreateReview([FromRoute] int reservationID,[FromBody]ReviewUpdater reviewUpdater)
         {
             return _reviewService.PutReview(reservationID, _clientID,reviewUpdater);
         }
 
         [HttpDelete("reservations/{reservationID}/review")]
-        public IActionResult DeleteReview([FromHeader] int reservationID)
+        public IActionResult DeleteReview([FromRoute] int reservationID)
         {
             return _reviewService.DeleteReview(reservationID, _clientID);
         }

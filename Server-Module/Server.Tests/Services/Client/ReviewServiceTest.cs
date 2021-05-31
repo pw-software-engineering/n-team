@@ -91,6 +91,8 @@ namespace Server.Tests.Services.Client
             _dataAccessMock.Setup(da => da.IsClientTheOwnerOfReservation(It.IsAny<int>(), It.IsAny<int>())).Returns(true);
             _dataAccessMock.Setup(da => da.AddNewReview(1, updater)).Returns(1);
             _dataAccessMock.Setup(da => da.UpdateReview(1, updater)).Returns(2);
+            _dataAccessMock.Setup(da => da.IsAddingReviewToReservationEnabled(It.IsAny<int>())).Returns(true);
+            _dataAccessMock.Setup(da => da.IsDataValid(It.IsAny<ReviewUpdater>())).Returns(true);
             _dataAccessMock.Setup(da => da.IsReviewExist(It.IsAny<int>())).Returns(false);
             var result = _reviewService.PutReview(1, 1, updater);
             Assert.True(HttpStatusCode.OK == (result.StatusCode) && 1 == ((ReviewID)(result.Result)).reviewID);
@@ -102,11 +104,42 @@ namespace Server.Tests.Services.Client
             _dataAccessMock.Setup(da => da.IsClientTheOwnerOfReservation(It.IsAny<int>(), It.IsAny<int>())).Returns(true);
             _dataAccessMock.Setup(da => da.AddNewReview(1, updater)).Returns(1);
             _dataAccessMock.Setup(da => da.UpdateReview(1, updater)).Returns(2);
+            _dataAccessMock.Setup(da => da.IsAddingReviewToReservationEnabled(It.IsAny<int>())).Returns(true);
+            _dataAccessMock.Setup(da => da.IsDataValid(It.IsAny<ReviewUpdater>())).Returns(true);
             _dataAccessMock.Setup(da => da.IsReviewExist(It.IsAny<int>())).Returns(true);
             var result = _reviewService.PutReview(1, 1, updater);
             Assert.True(HttpStatusCode.OK == (result.StatusCode) && 2 == ((ReviewID)(result.Result)).reviewID);
         }
+        [Fact]
+        public void PutReview_InvalidData()
+        {
+            var updater = new ReviewUpdater { content = "new content", rating = 0 };
+            _dataAccessMock.Setup(da => da.IsClientTheOwnerOfReservation(It.IsAny<int>(), It.IsAny<int>())).Returns(true);
+            _dataAccessMock.Setup(da => da.AddNewReview(1, updater)).Returns(1);
+            _dataAccessMock.Setup(da => da.UpdateReview(1, updater)).Returns(2);
+            _dataAccessMock.Setup(da => da.IsAddingReviewToReservationEnabled(It.IsAny<int>())).Returns(true);
+            _dataAccessMock.Setup(da => da.IsDataValid(It.IsAny<ReviewUpdater>())).Returns(true);
+            _dataAccessMock.Setup(da => da.IsDataValid(updater)).Returns(false);
+            _dataAccessMock.Setup(da => da.IsReviewExist(It.IsAny<int>())).Returns(true);
+            var result = _reviewService.PutReview(1, 1, updater);
+            Assert.True(HttpStatusCode.BadRequest == (result.StatusCode));
 
+        }
+        [Fact]
+        public void PutReview_InvalidTime()
+        {
+            var updater = new ReviewUpdater { content = "new content", rating = 0 };
+            _dataAccessMock.Setup(da => da.IsClientTheOwnerOfReservation(It.IsAny<int>(), It.IsAny<int>())).Returns(true);
+            _dataAccessMock.Setup(da => da.AddNewReview(1, updater)).Returns(1);
+            _dataAccessMock.Setup(da => da.UpdateReview(1, updater)).Returns(2);
+            _dataAccessMock.Setup(da => da.IsAddingReviewToReservationEnabled(It.IsAny<int>())).Returns(true);
+            _dataAccessMock.Setup(da => da.IsDataValid(It.IsAny<ReviewUpdater>())).Returns(true);
+            _dataAccessMock.Setup(da => da.IsAddingReviewToReservationEnabled(1)).Returns(false);
+            _dataAccessMock.Setup(da => da.IsReviewExist(It.IsAny<int>())).Returns(true);
+            var result = _reviewService.PutReview(1, 1, updater);
+            Assert.True(HttpStatusCode.Forbidden == (result.StatusCode));
+
+        }
         #endregion
     }
 }

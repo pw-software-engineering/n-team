@@ -1,28 +1,25 @@
-﻿using AutoMapper;
-using Server.Database.Models;
+﻿using Server.Database.Models;
 using Server.ViewModels.Client;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess.Client.Review
 {
-    public class ReviewDataAccess:IReviewDataAccess
+    public class ReviewDataAccess : IReviewDataAccess
     {
         private readonly ServerDbContext _dbContext;
         public ReviewDataAccess(ServerDbContext dbContext)
         {
             _dbContext = dbContext;
         }
-        
+
         public bool IsReviewExist(int reservationID)
         {
-            var wynik = _dbContext.ClientReviews.FirstOrDefault(x =>  x.ReservationID == reservationID);
+            var wynik = _dbContext.ClientReviews.FirstOrDefault(x => x.ReservationID == reservationID);
             return wynik != null;
         }
-        
-        public int UpdateReview(int reservationID,ReviewUpdater reviewUpdater)
+
+        public int UpdateReview(int reservationID, ReviewUpdater reviewUpdater)
         {
             if (reviewUpdater == null)
                 throw new Exception("info is a null");
@@ -46,16 +43,18 @@ namespace Server.Database.DataAccess.Client.Review
             if (offer == null)
                 throw new Exception("cannot find offer");
 
-            ClientReviewDb newReviewInfo = new ClientReviewDb { 
+            ClientReviewDb newReviewInfo = new ClientReviewDb
+            {
                 Rating = (uint)reviewUpdater.rating,
                 Content = reviewUpdater.content,
                 ReviewDate = DateTime.UtcNow,
                 ClientID = reservation.ClientID.Value,
                 ReservationID = reservationID,
-                OfferID =offer.OfferID,
-                HotelID = offer.HotelID };
+                OfferID = offer.OfferID,
+                HotelID = offer.HotelID
+            };
 
-            
+
             // tutaj muszę 2 razy zapisywać by nadać id do review a potem przepisać je do reservation
             _dbContext.ClientReviews.Add(newReviewInfo);
             _dbContext.SaveChanges();
@@ -73,11 +72,15 @@ namespace Server.Database.DataAccess.Client.Review
             if (client == null)
                 throw new Exception("cannot find client");
 
-            return new ReviewInfo {reviewID = resultDB.ReviewID,
-                content=resultDB.Content,
+            return new ReviewInfo
+            {
+                reviewID = resultDB.ReviewID,
+                content = resultDB.Content,
                 rating = (int)resultDB.Rating,
                 creationDate = resultDB.ReviewDate
-                ,revewerUsername = client.Name };
+                ,
+                revewerUsername = client.Name
+            };
         }
 
         public void DeleteReview(int reservationID)
@@ -95,7 +98,7 @@ namespace Server.Database.DataAccess.Client.Review
 
         }
 
-        public bool IsClientTheOwnerOfReservation(int reservationID,int clientID)
+        public bool IsClientTheOwnerOfReservation(int reservationID, int clientID)
         {
             var reservation = _dbContext.ClientReservations.FirstOrDefault(x => x.ReservationID == reservationID);
             if (reservation == null)
@@ -103,6 +106,18 @@ namespace Server.Database.DataAccess.Client.Review
             return reservation.ClientID == clientID;
         }
 
+        public bool IsAddingReviewToReservationEnabled(int reservationID)
+        {
+            var reservation = _dbContext.ClientReservations.FirstOrDefault(x => x.ReservationID == reservationID);
+            if (reservation == null)
+                throw new Exception("reservation not found");
+            var max_date_to_adding = new DateTime(reservation.ToTime.Year, reservation.ToTime.Month, reservation.ToTime.Day).AddDays(30);
+            return reservation.ToTime < DateTime.UtcNow && DateTime.UtcNow < max_date_to_adding;
+        }
 
+        public bool IsDataValid(ReviewUpdater reviewUpdater)
+        {
+            return reviewUpdater.rating > 0 && reviewUpdater.rating <= 10;
+        }
     }
 }

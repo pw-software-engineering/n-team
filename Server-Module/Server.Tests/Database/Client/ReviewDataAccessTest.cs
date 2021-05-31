@@ -88,7 +88,7 @@ namespace Server.Tests.Database.Client
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReservations ON");
                 _context.ClientReservations.AddRange(
                     new ClientReservationDb { ReservationID = 1, OfferID = 2, ClientID = 2, HotelID = 2, RoomID = 2, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 0, FromTime = new DateTime(2001, 1, 1), ToTime = new DateTime(2001, 1, 2) },
-                    new ClientReservationDb { ReservationID = 2, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 2, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 1, FromTime = new DateTime(2001, 2, 2), ToTime = new DateTime(3001, 2, 4) },
+                    new ClientReservationDb { ReservationID = 2, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 2, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 1, FromTime = new DateTime(2001, 2, 2), ToTime =  DateTime.Now },
                     new ClientReservationDb { ReservationID = 3, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 3, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 2, FromTime = new DateTime(3001, 3, 3), ToTime = new DateTime(3001, 3, 6) });
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReservations OFF");
@@ -215,6 +215,47 @@ namespace Server.Tests.Database.Client
             var result = _context.ClientReviews.Find(reviewId);
             Assert.True(result.Content == paramertr.content);
 
+        }
+        #endregion
+        #region IsDataValid
+        [Fact]
+        public void IsDataValid_InvalidDataToLow()
+        {
+            Assert.True(!_dataAccess.IsDataValid(new ReviewUpdater { content = "a", rating = 0 }));
+        }
+        [Fact]
+        public void IsDataValid_InvalidDataToHight()
+        {
+            Assert.True(!_dataAccess.IsDataValid(new ReviewUpdater { content = "a", rating = 11 }));
+        }
+        [Fact]
+        public void IsDataValid_GoodValues()
+        {
+            // _dataAccess.IsDataValid
+            for(int i=1;i<11;i++)
+                Assert.True(_dataAccess.IsDataValid(new ReviewUpdater { content = "a", rating = i }));
+        }
+        #endregion
+        #region IsAddingReviewToReservationEnabled
+        [Fact]
+        public void IsAddingReviewToReservationEnabled_ToLate()
+        {
+            Assert.True(!_dataAccess.IsAddingReviewToReservationEnabled(1));
+        }
+        [Fact]
+        public void IsAddingReviewToReservationEnabled_ToEarly()
+        {
+            Assert.True(!_dataAccess.IsAddingReviewToReservationEnabled(3));
+        }
+        [Fact]
+        public void IsAddingReviewToReservationEnabled_Goodtest()
+        {
+            Assert.True(!_dataAccess.IsAddingReviewToReservationEnabled(2));
+        }
+        [Fact]
+        public void IsAddingReviewToReservationEnabled_BadID()
+        {
+            Assert.Throws<Exception>(() => _dataAccess.IsAddingReviewToReservationEnabled(100));
         }
         #endregion
     }

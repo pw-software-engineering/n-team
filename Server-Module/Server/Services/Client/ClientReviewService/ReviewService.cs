@@ -76,8 +76,18 @@ namespace Server.Services.Client.ClientReviewService
                     _transaction.RollbackTransaction();
                     return new ServiceResult(HttpStatusCode.Forbidden, new ErrorView("Not the owner"));
                 }
-                if(_reviewDataAccess.IsReviewExist(reservationID))
+                if(!_reviewDataAccess.IsDataValid(reviewUpdater))
                 {
+                    _transaction.RollbackTransaction();
+                    return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Invalid Data"));
+                }
+                if (_reviewDataAccess.IsReviewExist(reservationID))
+                {
+                    if(!_reviewDataAccess.IsAddingReviewToReservationEnabled(reservationID))
+                    {
+                        _transaction.RollbackTransaction();
+                        return new ServiceResult(HttpStatusCode.Forbidden, new ErrorView("The reservation not ended or ended mor than 30 days ego"));
+                    }
                     reviewID.reviewID = _reviewDataAccess.UpdateReview(reservationID, reviewUpdater);
                 }
                 else

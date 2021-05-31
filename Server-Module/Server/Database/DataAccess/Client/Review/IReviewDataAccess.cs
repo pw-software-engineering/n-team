@@ -14,5 +14,7 @@ namespace Server.Database.DataAccess.Client.Review
         public int UpdateReview(int reservationID, ReviewUpdater reviewUpdater);
         public void DeleteReview(int reservationID);
         public bool IsClientTheOwnerOfReservation(int reservationID, int clientID);
+        public bool IsAddingReviewToReservationEnabled(int reservationID);
+        public bool IsDataValid(ReviewUpdater reviewUpdater);
     }
 }
