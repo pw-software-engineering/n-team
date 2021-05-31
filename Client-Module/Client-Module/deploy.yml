@@ -1,27 +1,27 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-   name: ${NAMESPACE}
+   name: "${NAMESPACE}"
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ${APPNAME}
-  namespace: ${NAMESPACE}
+  name: "${APPNAME}"
+  namespace: "${NAMESPACE}"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ${APPNAME}
+      app: "${APPNAME}"
   template:
     metadata:
       labels:
-        app: ${APPNAME}
+        app: "${APPNAME}"
     spec:
       nodeSelector:
         "beta.kubernetes.io/os": linux
       containers:
-      - name: ${APPNAME}
+      - name: "${APPNAME}"
         image: ${IMAGE_ID}
         resources:
           requests:
@@ -36,22 +36,22 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ${APPNAME}
-  namespace: ${NAMESPACE}
+  name: "${APPNAME}"
+  namespace: "${NAMESPACE}"
 spec:
   type: ClusterIP
   ports:
   - port: 80
   selector:
-    app: ${APPNAME}
+    app: "${APPNAME}"
 ---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: ${APPNAME}
-  namespace: ${NAMESPACE}
+  name: "${APPNAME}"
+  namespace: "${NAMESPACE}"
   labels:
-    name: ${APPNAME}
+    name: "${APPNAME}"
   annotations:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
@@ -60,6 +60,6 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: ${APPNAME}
+          serviceName: "${APPNAME}"
           servicePort: 80
         path: /${APPNAME}
