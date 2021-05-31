@@ -4,8 +4,6 @@ on:
   push:
   pull_request:
     branches: [ develop ]
-    paths:
-    - 'Hotel-Module/**'
 
 env:
   DEPLOY: ${{ github.event_name == 'push' }}
