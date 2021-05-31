@@ -1,11 +1,8 @@
 ﻿using Server.RequestModels;
 using Server.RequestModels.Client;
-using Server.ViewModels;
 using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess.Client
 {
@@ -18,5 +15,9 @@ namespace Server.Database.DataAccess.Client
         OfferView GetHotelOfferDetails(int offerID);
         List<string> GetHotelOfferPictures(int offerID);
         List<AvailabilityTimeInterval> GetHotelOfferAvailability(int hotelID, int offerID, DateTime from, DateTime to);
+
+        List<ReviewInfo> GetOfferReviews(int hotelID, int offerID);
+
+        List<ReviewInfo> GetHotelReviews(int hotelID, int from, int take);
     }
 }

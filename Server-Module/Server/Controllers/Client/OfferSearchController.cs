@@ -41,7 +41,7 @@ namespace Server.Controllers.Client
         [HttpGet("hotel/{hotelID}/offers/{offerID}/reviews")]
         public IActionResult GetHotelOfferReviews([FromRoute] int hotelID, [FromRoute] int offerID)
         {
-            return _offerSearchService.GetHotelOfferDetails(hotelID, offerID);
+            return _offerSearchService.GetHotelOfferReviews(hotelID, offerID);
         }
 
     }
