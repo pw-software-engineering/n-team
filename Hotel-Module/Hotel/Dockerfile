@@ -11,4 +11,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 COPY --from=publish /src/Properties/launchSettings.json .
-ENTRYPOINT ["dotnet", "Hotel.dll"]
+ENTRYPOINT ["dotnet", "run", "Hotel.dll"]
