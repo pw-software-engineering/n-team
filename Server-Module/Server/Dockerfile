@@ -13,7 +13,7 @@ RUN dotnet publish "Server.csproj" -c Release -p:CompileConstants=PRODUCTION -o 
 RUN dotnet tool install dotnet-ef --tool-path /tools
 ENV PATH="${PATH}:/tools:/app"
 ENV ASPNETCORE_ENVIRONMENT Production
-RUN dotnet ef database drop
+RUN dotnet ef database drop -f
 RUN dotnet ef database update
 
 FROM base AS final
