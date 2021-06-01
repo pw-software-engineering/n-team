@@ -80,7 +80,10 @@ jobs:
         username: ${{ secrets.ACR_USER_ID }}
         password: ${{ secrets.ACR_USER_PASSWORD }}
     - name: Substitute environment variables in appsettings file
-      run: envsubst < "${{ env.SRCDIR }}/${{ env.APPSETTINGS }}" > "${{ env.SRCDIR }}/${{ env.APPSETTINGS }}"
+      run: |
+        envsubst < "${{ env.SRCDIR }}/${{ env.APPSETTINGS }}" > "${{ env.SRCDIR }}/out-${{ env.APPSETTINGS }}"
+        rm "${{ env.SRCDIR }}/${{ env.APPSETTINGS }}"
+        mv "${{ env.SRCDIR }}/out-${{ env.APPSETTINGS }}" "${{ env.SRCDIR }}/${{ env.APPSETTINGS }}"
     - name: Build Docker image
       run: docker build -t ${{ env.IMAGE_ID }} ${{ env.SRCDIR }}
     - name: Push Docker image to registry
