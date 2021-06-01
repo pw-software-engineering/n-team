@@ -112,9 +112,9 @@ namespace Server
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            #ifndef PRODUCTION
             app.UseHttpsRedirection();
-
+            #endif
             app.UseRouting();
 
             app.UseCors();
