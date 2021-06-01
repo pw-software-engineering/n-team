@@ -10,7 +10,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS publish
 COPY . /src
 WORKDIR /src
 RUN dotnet publish "Server.csproj" -c Release -p:CompileConstants=PRODUCTION -o /app/publish
-RUN dotnet tool install dotnet-ef --tool-path /tools --version 3.1.0
+RUN dotnet tool install dotnet-ef --tool-path /tools
 ENV PATH="${PATH}:/tools:/app"
 ENV ASPNETCORE_ENVIRONMENT Production
 RUN dotnet ef database update
