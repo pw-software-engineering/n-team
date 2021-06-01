@@ -33,9 +33,9 @@ namespace Server.Controllers.Hotel
         }
 
         [HttpGet("rooms")]
-        public IActionResult GetHotelRooms([FromQuery] string hotelRoomNumber, [FromQuery] Paging paging)
+        public IActionResult GetHotelRooms([FromQuery] string roomNumber, [FromQuery] Paging paging)
         {
-            return _service.GetHotelRooms(_hotelID, paging, hotelRoomNumber);
+            return _service.GetHotelRooms(_hotelID, paging, roomNumber);
         }
 
         [HttpPost("rooms")]
