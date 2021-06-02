@@ -68,7 +68,7 @@ jobs:
     needs: build
     name: Deploy server module to Kubernetes cluster
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/develop' }}
+    if: ${{ false }} #${{ github.ref == 'refs/heads/develop' }}
     steps:
     - uses: actions/checkout@v2
     - name: Set IMAGE_ID as env variable
