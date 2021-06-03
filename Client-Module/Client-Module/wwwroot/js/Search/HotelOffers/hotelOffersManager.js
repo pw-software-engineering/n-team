@@ -1,10 +1,10 @@
-﻿class HotelOffersManager {
+﻿class HotelOffersManager extends ServerApiManager {
     constructor({
         hotelID = null,
         apiConfig = null
     } = {}) {
+        super(apiConfig);
         this.hotelID = hotelID;
-        this.apiConfig = apiConfig;
     }
 
     getHotelOffers({
@@ -16,8 +16,6 @@
         pageNumber = null,
         pageSize = null
     } = {}) {
-        var headers = {};
-        headers[this.apiConfig.apiTokenHeaderName] = getCookie(this.apiConfig.apiTokenCookieName);
         var queryParameters = [];
         queryParameters.push(
             `fromTime=${from}`,
@@ -34,25 +32,9 @@
         if (queryString) {
             queryString = '?' + queryString;
         }
-        return $.ajax({
-            method: "GET",
-            url: `${this.apiConfig.apiBaseUrl}/hotels/${this.hotelID}/offers${queryString}`,
-            headers: headers
-        }).then(
-            (data, textStatus, jqXHR) => {
-                console.log(data);
-                for (var entry of data) {
-                    entry.hotelID = this.hotelID;
-                }
-                return data;
-            },
-            (jqXHR, textStatus, errorThrown) => {
-                var errorInfo = `Error has occured - ${textStatus} (status code: ${jqXHR.status})`;
-                if (jqXHR.responseJSON && "error" in jqXHR.responseJSON) {
-                    errorInfo += `: ${jqXHR.responseJSON.error}`;
-                }
-                throw new Error(errorInfo);
-            }
-        );
+        return this.createRequest({
+            httpVerb: "GET",
+            apiURL: `/hotels/${this.hotelID}/offers${queryString}`
+        });
     }
 }

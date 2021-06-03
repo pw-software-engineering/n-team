@@ -59,7 +59,15 @@
                 <p class="text-danger small mb-1 rating-valid-box text-center w-100 d-none">Rating field include a number between 1 and 5</p>
                 <div class="d-flex flex-row w-100">
                     <label for="review-rating" class="col-form-label flex-grow-0">Rating:</label>
-                    <input type="number" value="1" min="1" max="5" class="form-control flex-grow-1 ml-3" id="review-rating">
+                    <select class="form-control form-control flex-grow-1 ml-3" id="review-rating">
+                        <option value="" disabled selected hidden>Choose rating</option>
+                        @{
+                            for (int i = 1; i <= 10; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        }
+                    </select>
                 </div>
                 <hr class="mt-3 mb-0" />
                 <div class="form-group">
@@ -103,6 +111,7 @@
 
 @section Scripts{
     <script src="~/js/Shared/modalConfirmPopup.js"></script>
+    <script src="~/js/Shared/serverApiManager.js"></script>
     <script src="~/js/Reservations/reviewManager.js"></script>
     <script src="~/js/Reservations/modalReviewPopup.js"></script>
     <script src="~/js/Reservations/reservationEntry.js"></script>

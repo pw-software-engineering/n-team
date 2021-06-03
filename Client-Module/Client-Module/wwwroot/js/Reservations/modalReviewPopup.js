@@ -22,10 +22,10 @@
         } else {
             this.contentValidBox.addClass("d-none");
         }
-        if (!this.getRating() || this.getRating() < 1 || this.getRating() > 5) {
+        if (!this.getRating() || this.getRating() < 1 || this.getRating() > 10) {
             this.ratingValidBox
                 .removeClass("d-none")
-                .text("Rating must include a number between 1 and 5");
+                .text("Select rating value from 1 to 10");
             isValid = false;
         } else {
             this.ratingValidBox.addClass("d-none");
@@ -55,12 +55,12 @@
 }
 
 ModalReviewPopup.prototype.getRating = function () {
-    var ratingInput = this.modal.find("input");
-    return ratingInput.val();
+    var ratingInput = this.modal.find("select");
+    return Number(ratingInput.val());
 }
 
 ModalReviewPopup.prototype.setRating = function (rating) {
-    var ratingInput = this.modal.find("input");
+    var ratingInput = this.modal.find("select");
     if (rating !== null) {
         rating = Math.max(1, Math.min(5, Number(rating)));
     } else {
