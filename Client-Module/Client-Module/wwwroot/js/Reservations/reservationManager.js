@@ -35,17 +35,22 @@
     }
 
     async loadReservationEntries(pageNumber, pageSize) {
-        var reservationsAjaxData = await this.getReservations(pageNumber, pageSize);
-        this.reservationEntries = {};
-        for (var i = 0; i < reservationsAjaxData.length; i++) {
-            var entry = new ReservationEntry({
-                reservationData: reservationsAjaxData[i],
-                reservationManager: this,
-                reviewManager: this.reviewManager
-            });
-            this.reservationEntries[entry.getReservationID()] = entry;
+        this.reservationPresenter.displayLoading();
+        try {
+            var reservationsAjaxData = await this.getReservations(pageNumber, pageSize);
+            this.reservationEntries = {};
+            for (var i = 0; i < reservationsAjaxData.length; i++) {
+                var entry = new ReservationEntry({
+                    reservationData: reservationsAjaxData[i],
+                    reservationManager: this,
+                    reviewManager: this.reviewManager
+                });
+                this.reservationEntries[entry.getReservationID()] = entry;
+            }
+            this.reservationPresenter.displayReservations(this.reservationEntries);
+        } catch (error) {
+            this.reservationPresenter.displayError(error?.message);
         }
-        this.reservationPresenter.displayReservations(this.reservationEntries);
     }
 
     getReservations(pageNumber, pageSize) {

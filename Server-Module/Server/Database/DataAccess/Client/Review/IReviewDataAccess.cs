@@ -1,4 +1,5 @@
-﻿using Server.ViewModels.Client;
+﻿using Server.RequestModels.Client;
+using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +9,12 @@ namespace Server.Database.DataAccess.Client.Review
 {
     public interface IReviewDataAccess
     {
-        public ReviewInfo GetReview(int reservationID);
-        public int AddNewReview(int reservationID, ReviewUpdater reviewUpdater);
-        public bool IsReviewExist(int reservationID);
-        public int UpdateReview(int reservationID, ReviewUpdater reviewUpdater);
+        public ReviewView GetReview(int reservationID);
+        public int? FindReservationOwner(int reservationID);
         public void DeleteReview(int reservationID);
-        public bool IsClientTheOwnerOfReservation(int reservationID, int clientID);
-        public bool IsAddingReviewToReservationEnabled(int reservationID);
-        public bool IsDataValid(ReviewUpdater reviewUpdater);
+        public bool CheckReviewExistence(int reservationID);
+        public int AddReview(int reservationID, ReviewUpdate reviewUpdate);
+        public int EditReview(int reservationID, ReviewUpdate reviewUpdate);
+        public bool IsReviewChangeAllowed(int reservationID);
     }
 }

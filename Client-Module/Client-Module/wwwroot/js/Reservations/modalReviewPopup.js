@@ -140,13 +140,13 @@ ModalReviewPopup.prototype.displayProcessing = function () {
     );
 }
 
-ModalReviewPopup.prototype.displayError = function () {
+ModalReviewPopup.prototype.displayError = function (errorMessage) {
     var reviewStatusBox = this.modal.find(".review-status-box");
     reviewStatusBox.empty();
     reviewStatusBox.append(
         $("<h5>")
-            .attr("class", "text-center font-weight-normal text-success mb-3")
-            .text("Review updated successfully")
+            .attr("class", "text-center font-weight-normal text-danger mb-3")
+            .text(errorMessage)
     );
 }
 

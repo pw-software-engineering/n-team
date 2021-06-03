@@ -31,6 +31,21 @@ namespace Server.Services.Client
             if (response != null)
                 return response;
 
+            DateTime tomorrow = DateTime.Now;
+            tomorrow = new DateTime(tomorrow.Year, tomorrow.Month, tomorrow.Day).AddDays(1);
+            if(reservationInfo.From < tomorrow)
+            {
+                return new ServiceResult(
+                    HttpStatusCode.BadRequest,
+                    new ErrorView("Cannot create a reservation that begins earlier than tomorrow"));
+            }
+            if(reservationInfo.From > reservationInfo.To)
+            {
+                return new ServiceResult(
+                    HttpStatusCode.BadRequest,
+                    new ErrorView("FromTime cannot be greater than ToTime"));
+            }
+
             _transaction.BeginTransaction();
             List<int> roomIDs = _dataAccess.GetOfferRoomIDs(offerID);
             foreach (int roomID in roomIDs)
@@ -69,9 +84,19 @@ namespace Server.Services.Client
             return new ServiceResult(HttpStatusCode.OK);
         }
 
-        public IServiceResult GetReservations(int userID)
+        public IServiceResult GetReservations(int userID, Paging paging)
 		{
-            return new ServiceResult(HttpStatusCode.OK, _dataAccess.GetReservations(userID));
+            if(paging is null)
+            {
+                throw new ArgumentNullException("paging");
+            }
+            if (paging.PageNumber < 1 || paging.PageSize < 1)
+            {
+                return new ServiceResult(
+                    HttpStatusCode.BadRequest,
+                    new ErrorView("Invalid paging arguments"));
+            }
+            return new ServiceResult(HttpStatusCode.OK, _dataAccess.GetReservations(userID, paging));
 		}
 
         public IServiceResult CheckReservationExistanceAndOwnership(int reservationID, int userID)

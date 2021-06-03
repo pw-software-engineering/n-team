@@ -24,7 +24,8 @@
             httpVerb: "PUT",
             apiURL: `/client/reservations/${reservationID}/review`,
             additionalAjaxConfig: {
-                data: reviewInfo
+                contentType: "application/json",
+                data: JSON.stringify(reviewInfo)
             }
         });
     }
@@ -75,7 +76,7 @@
                 reviewID = await this.updateReview(reservationID, reviewInfo);
             } catch (ajaxError) {
                 console.log(ajaxError);
-                this.modalReviewPopup.displayError();
+                this.modalReviewPopup.displayError(ajaxError.message);
                 continue;
             }
             if (sessionID !== this.currentReviewSessionID) {

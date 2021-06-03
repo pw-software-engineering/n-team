@@ -24,7 +24,7 @@
         if (queryString) {
             queryString = '?' + queryString;
         }
-        this.createRequest({
+        return this.createRequest({
             httpVerb: "GET",
             apiURL: `/hotels${queryString}`
         });

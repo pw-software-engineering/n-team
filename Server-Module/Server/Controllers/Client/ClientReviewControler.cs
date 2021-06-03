@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Server.Authentication.Client;
+using Server.RequestModels.Client;
 using Server.Services.Client.ClientReviewService;
 using Server.ViewModels.Client;
 using System;
@@ -14,12 +15,12 @@ namespace Server.Controllers.Client
 {
     [Authorize(AuthenticationSchemes = ClientTokenDefaults.AuthenticationScheme)]
     [ApiController]
-    [Route("/api-client")]
+    [Route("/api-client/client")]
     public class ClientReviewControler : Controller
     {
         #region setup
-        private IReviewSerice _reviewService;
-        public ClientReviewControler(IReviewSerice reviewService)
+        private IReviewService _reviewService;
+        public ClientReviewControler(IReviewService reviewService)
         {
             _reviewService = reviewService;
         }
@@ -36,15 +37,15 @@ namespace Server.Controllers.Client
         #endregion
         #region reservations/{reservationID}/review
         [HttpGet("reservations/{reservationID}/review")]
-        public IActionResult GetReview([FromRoute]int reservationID)
+        public IActionResult GetReview([FromRoute] int reservationID)
         {
-            return _reviewService.GetReview(reservationID);
+            return _reviewService.GetReview(reservationID, _clientID);
         }
 
         [HttpPut("reservations/{reservationID}/review")]
-        public IActionResult CreateReview([FromRoute] int reservationID,[FromBody]ReviewUpdater reviewUpdater)
+        public IActionResult CreateReview([FromRoute] int reservationID, [FromBody] ReviewUpdate reviewUpdate)
         {
-            return _reviewService.PutReview(reservationID, _clientID,reviewUpdater);
+            return _reviewService.PutReview(reservationID, _clientID, reviewUpdate);
         }
 
         [HttpDelete("reservations/{reservationID}/review")]

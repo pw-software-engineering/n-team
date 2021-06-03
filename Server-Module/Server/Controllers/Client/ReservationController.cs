@@ -17,7 +17,6 @@ namespace Server.Controllers.Client
     [Authorize(AuthenticationSchemes = ClientTokenDefaults.AuthenticationScheme)]
     [ApiController]
     [Route("/api-client")]
-    [Authorize(AuthenticationSchemes = ClientTokenDefaults.AuthenticationScheme)]
     public class ReservationController : Controller
     {
         private readonly IReservationService _reservationService;
@@ -41,16 +40,16 @@ namespace Server.Controllers.Client
             return _reservationService.AddReservation(hotelID, offerID, _clientID, reservation);
         }
 
-        [HttpDelete("reservations/{reservationID:int}")]
+        [HttpDelete("client/reservations/{reservationID:int}")]
         public IActionResult CancelReservation([FromRoute] int reservationID)
         {
             return _reservationService.CancelReservation(reservationID, _clientID);
         }
 
-        [HttpGet("reservations")]
-        public IActionResult GetReservations()
+        [HttpGet("client/reservations")]
+        public IActionResult GetReservations([FromQuery] Paging paging)
         {
-            return _reservationService.GetReservations(_clientID);
+            return _reservationService.GetReservations(_clientID, paging);
         }
     }
 }

@@ -10,11 +10,11 @@ namespace Server.Services.Client
 {
     public interface IReservationService
     {
-        #region /reservations
-        public IServiceResult GetReservations(int userID);
+        #region /client/reservations
+        public IServiceResult GetReservations(int userID, Paging paging);
         #endregion
 
-        #region /reservations/{reservationID}
+        #region /client/reservations/{reservationID}
         public IServiceResult CancelReservation(int reservationID, int userID);
         #endregion
 

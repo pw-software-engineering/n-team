@@ -54,7 +54,7 @@ namespace Server
 
             services.AddScoped<IDatabaseTransaction, DatabaseTransaction>();
             services.AddTransient<IReviewDataAccess, ReviewDataAccess>();
-            services.AddTransient<IReviewSerice, ReviewService>();
+            services.AddTransient<IReviewService, ReviewService>();
             services.AddTransient<IOfferService, OfferService>();
             services.AddTransient<IClientAccountService, ClientAccountService>();
             services.AddTransient<IOfferDataAccess, OfferDataAccess>();
