@@ -1,4 +1,6 @@
-﻿using Hotel.Models;
+using Hotel.Models;
+using Hotel_Module.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Hotel.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,9 +11,12 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System.Linq;
 
 namespace Hotel.Controllers
 {
+    [Authorize(AuthenticationSchemes = HotelTokenCookieDefaults.AuthenticationScheme)]
     public class RoomsController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -21,6 +26,12 @@ namespace Hotel.Controllers
             _httpClient = httpClientFactory.CreateClient(nameof(DefaultHttpClient));
         }
 
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            _httpClient.DefaultRequestHeaders.Add(
+                ServerApiConfig.TokenHeaderName,
+                HttpContext.User.Claims.First(c => c.Type == HotelCookieTokenManagerOptions.AuthStringClaimType).Value);
+        }
 
         [HttpGet("/rooms")]
         public async Task<IActionResult> Index([FromQuery] string hotelRoomNumber, [FromQuery] Paging paging)
@@ -34,21 +45,6 @@ namespace Hotel.Controllers
             try
             {
                 IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>($"rooms?{query}");
-                //IEnumerable<Room> rooms = new List<Room>
-                //{
-                //    new Room
-                //    {
-                //        RoomID = 1,
-                //        HotelRoomNumber = "1",
-                //        OfferID = new List<int>{102, 103}
-                //    },
-                //    new Room
-                //    {
-                //        RoomID = 2,
-                //        HotelRoomNumber = "2",
-                //        OfferID = new List<int>{1, 2, 3, 4}
-                //    }
-                //};
                 RoomsIndexViewModel roomsVM = new RoomsIndexViewModel(rooms, paging, hotelRoomNumber);
                 return View(roomsVM);
             }

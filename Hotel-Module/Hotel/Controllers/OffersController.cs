@@ -1,9 +1,13 @@
 ﻿using Hotel.Models;
 using Hotel.ViewModels;
+using Hotel_Module.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -12,6 +16,7 @@ using System.Web;
 
 namespace Hotel.Controllers
 {
+    [Authorize(AuthenticationSchemes = HotelTokenCookieDefaults.AuthenticationScheme)]
     public class OffersController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -21,6 +26,13 @@ namespace Hotel.Controllers
             _httpClient = httpClientFactory.CreateClient(nameof(DefaultHttpClient));
         }
 
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            _httpClient.DefaultRequestHeaders.Add(
+                ServerApiConfig.TokenHeaderName,
+                HttpContext.User.Claims.First(c => c.Type == HotelCookieTokenManagerOptions.AuthStringClaimType).Value);
+        }
 
         [HttpGet("/offers")]
         public async Task<IActionResult> Index([FromQuery] bool? isActive, [FromQuery] Paging paging)
@@ -74,11 +86,6 @@ namespace Hotel.Controllers
                 Offer offer = await _httpClient.GetFromJsonAsync<Offer>($"offers/{offerID}");
                 offer.OfferID = offerID;
                 IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>($"offers/{offerID}/rooms");
-                //IEnumerable<Room> rooms = new List<Room>
-                //{
-                //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-                //    new Room { HotelRoomNumber = "2", RoomID = 2, OfferID = new List<int> { offerID, 103 } }
-                //};
                 return View(new OfferEditViewModel(offer));
             }
             catch (HttpRequestException e)
@@ -141,24 +148,8 @@ namespace Hotel.Controllers
         [HttpGet("/offers/{offerID}/rooms")]
         public async Task<IActionResult> GetOfferRooms([FromRoute] int offerID, [FromQuery] Paging paging)
         {
-            IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>($"offers/{offerID}/rooms");
-            //IEnumerable<Room> rooms = paging.PageNumber == 1 ? new List<Room>
-            //{
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "2", RoomID = 2, OfferID = new List<int> { offerID, 103 } }
-            //} : paging.PageNumber == 2 ?
-            //new List<Room>
-            //{
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "1", RoomID = 1, OfferID = new List<int> { offerID, 102 } },
-            //    new Room { HotelRoomNumber = "2", RoomID = 2, OfferID = new List<int> { offerID, 103 } }
-            //} :
-            //new List<Room>();
+            IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>(
+                $"offers/{offerID}/rooms?pageNumber={paging.PageNumber}&pageSize={paging.PageSize}");
             return new JsonResult(rooms);
         }
 
@@ -174,7 +165,9 @@ namespace Hotel.Controllers
             Room[] room;
             try
             {
-                room = await _httpClient.GetFromJsonAsync<Room[]>($"offers/{offerID}/rooms?roomNumber={roomNumber}");
+                room = await _httpClient.GetFromJsonAsync<Room[]>($"rooms?roomNumber={roomNumber}");
+                if (room is null || !room.Any())
+                    return StatusCode((int)HttpStatusCode.NotFound);
             }
             catch (HttpRequestException e)
             {
@@ -184,7 +177,8 @@ namespace Hotel.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
-            return await CheckForConnectionError(_httpClient.PostAsJsonAsync($"offers/{offerID}/rooms", new { roomID = room[0].RoomID }));
+            int roomID = room[0].RoomID;
+            return await CheckForConnectionError(_httpClient.PostAsJsonAsync($"offers/{offerID}/rooms", roomID));
         }
 
         private async Task<StatusCodeResult> CheckForConnectionError(Task<HttpResponseMessage> responseTask)

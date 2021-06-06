@@ -35,7 +35,7 @@ namespace Server.Services.Hotel
                 return result;
 
             if (_dataAccess.IsRoomAlreadyAddedToOffer(roomID, offerID))
-                return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView($"Room with ID equal to {roomID} is already added to offer ID equal to {offerID}"));
+                return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView($"Room with ID equal to {roomID} is already added to offer with ID equal to {offerID}"));
 
             _transaction.BeginTransaction();
             _dataAccess.AddRoomToOffer(roomID, offerID);
@@ -75,6 +75,8 @@ namespace Server.Services.Hotel
             if (result != null)
                 return result;
 
+            if (!_dataAccess.IsRoomAlreadyAddedToOffer(roomID, offerID))
+                return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView($"Room with ID equal to {roomID} is not added to offer with ID equal to {offerID}"));
             if (_dataAccess.DoesRoomHaveUnfinishedReservations(roomID, offerID))
                 return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView($"Room with ID equal to {roomID} has unfinished reservations"));
 

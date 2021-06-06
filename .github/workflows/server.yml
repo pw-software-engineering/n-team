@@ -1,21 +1,43 @@
-name: Build and test server module
+name: Server module
 
 on:
+  push:
+    branches:
+      - 'develop'
+    paths:
+      - 'Server-Module/**'
+      - '.github/workflows/server.yml'
   pull_request:
-    branches: [ main, develop ]
+    branches:
+      - 'develop'
+    paths:
+      - 'Server-Module/**'
+      - '.github/workflows/server.yml'
+  workflow_dispatch:
 
+env:
+  # CI environment variables
+  SRCDIR: './Server-Module/Server'
+  SOLFILE: './Server-Module/Server.sln'
+  CSPROJ: './Server-Module/Server/Server.csproj'
+  TESTPROJ: './Server-Module/Server.Tests/Server.Tests.csproj'
+  TESTCOV: './Server-Module/Server.Tests/cobertura.xml'
+  DBUSER: '${{ secrets.DBUSERNAME }}'
+  DBPWD: '${{ secrets.DBPASSWORD }}'
+
+  # CD environment variables
+  ACR: 'powoeuwacr.azurecr.io'
+  NAMESPACE: 'n'
+  APPNAME: 'server'
+  APPSETTINGS: 'appsettings.Production.json'
+  DEPLOYFILE: 'deploy.yml'
+  
 jobs:
   build:
     strategy:
       fail-fast: false
     name: Build and test
     runs-on: windows-latest
-    env:
-      SRCDIR: ./Server-Module/Server
-      SOLFILE: ./Server-Module/Server.sln
-      CSPROJ: ./Server-Module/Server/Server.csproj
-      TESTPROJ: ./Server-Module/Server.Tests/Server.Tests.csproj
-      TESTCOV: ./Server-Module/Server.Tests/cobertura.xml
     steps:
     - uses: actions/checkout@v2
     - name: Setup ASP.NET
@@ -42,3 +64,51 @@ jobs:
       with:
         name: Server module test report
         path: './coverage/*'
+  deploy:
+    needs: build
+    name: Deploy server module to Kubernetes cluster
+    runs-on: ubuntu-latest
+    if: ${{ false }} #${{ github.ref == 'refs/heads/develop' }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set IMAGE_ID as env variable
+      run: echo "IMAGE_ID=${{ env.ACR }}/${{ env.APPNAME }}:v${{ github.run_number }}" >> $GITHUB_ENV
+    - name: Login to ACR
+      uses: docker/login-action@v1
+      with:
+        registry: ${{ env.ACR }}
+        username: ${{ secrets.ACR_USER_ID }}
+        password: ${{ secrets.ACR_USER_PASSWORD }}
+    - name: Substitute environment variables in appsettings file
+      run: |
+        envsubst < "${{ env.SRCDIR }}/${{ env.APPSETTINGS }}" > "${{ env.SRCDIR }}/out-${{ env.APPSETTINGS }}"
+        rm "${{ env.SRCDIR }}/${{ env.APPSETTINGS }}"
+        mv "${{ env.SRCDIR }}/out-${{ env.APPSETTINGS }}" "${{ env.SRCDIR }}/${{ env.APPSETTINGS }}"
+    - name: Build Docker image
+      run: docker build -t ${{ env.IMAGE_ID }} ${{ env.SRCDIR }}
+    - name: Push Docker image to registry
+      run: docker push ${{ env.IMAGE_ID }}
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Setup KubeCTL
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'v1.18.8'
+    - name: Setup Kubernetes context for Azure
+      uses: azure/aks-set-context@v1
+      with:
+        creds: '${{ secrets.AZURE_CREDENTIALS }}'
+        cluster-name: ${{ secrets.AKS_NAME }}
+        resource-group: ${{ secrets.AKS_RG_NAME }}
+    - name: Set DOMAIN env variable
+      run: echo "DOMAIN=$(az aks show -g ${{ secrets.AKS_RG_NAME }} -n ${{ secrets.AKS_NAME }} --query addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName -o tsv)" >> $GITHUB_ENV
+    - name: Print DOMAIN and IMAGE_ID
+      run: |
+        echo "${{ env.DOMAIN }}"
+        echo "${{ env.IMAGE_ID }}"
+    - name: Substitute environment variables in app deployment file
+      run: envsubst < "${{ env.SRCDIR }}/${{ env.DEPLOYFILE }}" > "${{ env.SRCDIR }}/out-${{ env.DEPLOYFILE }}"
+    - name: Deploy app to Kubernetes cluster
+      run: kubectl apply -f ${{ env.SRCDIR }}/out-${{ env.DEPLOYFILE }} --wait

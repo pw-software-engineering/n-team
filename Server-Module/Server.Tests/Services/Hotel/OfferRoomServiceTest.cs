@@ -324,11 +324,26 @@ namespace Server.Tests.Services.Hotel
             int hotelID = 1;
             _dataAccessMock.Setup(da => da.FindRoomAndGetOwner(roomID)).Returns(hotelID);
             _dataAccessMock.Setup(da => da.FindOfferAndGetOwner(roomID)).Returns(hotelID);
+            _dataAccessMock.Setup(da => da.IsRoomAlreadyAddedToOffer(roomID, offerID)).Returns(true);
             _dataAccessMock.Setup(da => da.DoesRoomHaveUnfinishedReservations(roomID, offerID)).Returns(false);
 
             IServiceResult result = _offerRoomService.RemoveRoomFromOffer(roomID, offerID, hotelID);
 
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        }
+        [Fact]
+        public void RemoveRoomFromOffer_RoomNotAddedToOffer_400()
+        {
+            int roomID = 1;
+            int offerID = 1;
+            int hotelID = 1;
+            _dataAccessMock.Setup(da => da.FindRoomAndGetOwner(roomID)).Returns(hotelID);
+            _dataAccessMock.Setup(da => da.FindOfferAndGetOwner(roomID)).Returns(hotelID);
+            _dataAccessMock.Setup(da => da.IsRoomAlreadyAddedToOffer(roomID, offerID)).Returns(false);
+
+            IServiceResult result = _offerRoomService.RemoveRoomFromOffer(roomID, offerID, hotelID);
+
+            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         }
     }
 }

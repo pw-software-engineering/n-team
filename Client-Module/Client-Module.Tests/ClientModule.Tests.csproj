@@ -5,6 +5,7 @@
     <RootNamespace>ClientModule.Tests</RootNamespace>
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <IsPackable>false</IsPackable>
+    <Configurations>Debug;Release;Release-Production</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
