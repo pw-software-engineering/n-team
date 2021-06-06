@@ -105,7 +105,6 @@ namespace Server.Tests.Database.Client
                     new ClientReviewDb { ReviewID=1,ClientID = 1, HotelID = 2, Content = "content1", Rating = 4, ReviewDate = DateTime.UtcNow, ReservationID = 1, OfferID = 2 },
                     new ClientReviewDb { ReviewID = 2,ClientID = 3, HotelID = 3, Content = "content2", Rating = 4, ReviewDate = DateTime.UtcNow, ReservationID = 2, OfferID = 3 },
                     new ClientReviewDb { ReviewID = 3, ClientID = 3, HotelID = 3, Content = "content2", Rating = 4, ReviewDate = DateTime.UtcNow, ReservationID = 3, OfferID = 3 }
-
                     );
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReviews OFF");

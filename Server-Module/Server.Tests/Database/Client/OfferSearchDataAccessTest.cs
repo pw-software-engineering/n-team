@@ -50,6 +50,14 @@ namespace Server.Tests.Database.Client
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Clients ON");
+                _context.Clients.AddRange(
+                    new ClientDb { ClientID = 1, Username = "TestUsername1", Email = "TestEmail1", Name = "TestName1", Surname = "TestSurname1", Password = "TestPassword1" },
+                    new ClientDb { ClientID = 2, Username = "TestUsername2", Email = "TestEmail2", Name = "TestName2", Surname = "TestSurname2", Password = "TestPassword2" },
+                    new ClientDb { ClientID = 3, Username = "TestUsername3", Email = "TestEmail3", Name = "TestName3", Surname = "TestSurname3", Password = "TestPassword3" });
+                _context.SaveChanges();
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Clients OFF");
+
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Hotels ON");
                 _context.Hotels.AddRange(
                     new HotelDb { HotelID = 1, City = "TestCity1", Country = "TestCountry1", HotelDescription = "TestHotelDesc1", AccessToken = "TestAccessToken1", HotelName = "TestHotelName1", HotelPreviewPicture = "TestHotelPreviewPicture1" },
@@ -87,9 +95,9 @@ namespace Server.Tests.Database.Client
 
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReservations ON");
                 _context.ClientReservations.AddRange(
-                    new ClientReservationDb { ReservationID = 1, OfferID = 2, ClientID = null, HotelID = 2, RoomID = 2, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 0, FromTime = new DateTime(2001, 1, 1), ToTime = new DateTime(2001, 1, 2) },
-                    new ClientReservationDb { ReservationID = 2, OfferID = 3, ClientID = null, HotelID = 3, RoomID = 2, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 1, FromTime = new DateTime(2001, 2, 2), ToTime = new DateTime(3001, 2, 4) },
-                    new ClientReservationDb { ReservationID = 3, OfferID = 3, ClientID = null, HotelID = 3, RoomID = 3, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 2, FromTime = new DateTime(3001, 3, 3), ToTime = new DateTime(3001, 3, 6) });
+                    new ClientReservationDb { ReservationID = 1, OfferID = 2, ClientID = 1, HotelID = 2, RoomID = 2, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 0, FromTime = new DateTime(2001, 1, 1), ToTime = new DateTime(2001, 1, 2) },
+                    new ClientReservationDb { ReservationID = 2, OfferID = 3, ClientID = 2, HotelID = 3, RoomID = 2, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 1, FromTime = new DateTime(2001, 2, 2), ToTime = new DateTime(3001, 2, 4) },
+                    new ClientReservationDb { ReservationID = 3, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 3, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 2, FromTime = new DateTime(3001, 3, 3), ToTime = new DateTime(3001, 3, 6) });
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReservations OFF");
 
@@ -103,6 +111,15 @@ namespace Server.Tests.Database.Client
                     new OfferHotelRoomDb { OfferID = 3, RoomID = 3 });
                 _context.SaveChanges();
 
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReviews ON");
+                _context.ClientReviews.AddRange(
+                    new ClientReviewDb { ReviewID = 1, ClientID = 1, HotelID = 2, Content = "hotel2", Rating = 4, ReviewDate = DateTime.UtcNow, ReservationID = 1, OfferID = 2 },
+                    new ClientReviewDb { ReviewID = 2, ClientID = 2, HotelID = 3, Content = "hotel3", Rating = 4, ReviewDate = DateTime.UtcNow, ReservationID = 2, OfferID = 3 },
+                    new ClientReviewDb { ReviewID = 3, ClientID = 3, HotelID = 3, Content = "hotel3", Rating = 4, ReviewDate = DateTime.UtcNow, ReservationID = 3, OfferID = 3 }
+                    );
+                _context.SaveChanges();
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReviews OFF");
+
                 transaction.Commit();
             }
         }
@@ -111,7 +128,7 @@ namespace Server.Tests.Database.Client
         private ServerDbContext _context;
         private IMapper _mapper;
         private OfferSearchDataAccess _dataAccess;
-
+        #region Old
         [Fact]
         public void CheckHotelExistence_NonExistentHotelID_ReturnsFalse()
         {
@@ -386,11 +403,36 @@ namespace Server.Tests.Database.Client
                 Assert.Equal(expectedTimeIntervals[i], timeIntervals[i]);
             }
         }
+        #endregion
         #region GetHotelReviews
         [Fact]
         public void GetHotelReviews_BadHotelID()
         {
             Assert.Throws<Exception>(() => _dataAccess.GetHotelReviews(1000, 100, 100));
+        }
+        [Fact]
+        public void GetHotelReviews_GoodTestFromStartToAfterEnd()
+        {
+            var result = _dataAccess.GetHotelReviews(3, 0, 5);
+            int i = 0;
+            foreach(var review in result)
+            {
+                Assert.True(review.content == "hotel3");
+                i++;
+            }
+            Assert.True(i == 2);
+        }
+        [Fact]
+        public void GetHotelReviews_GoodTestFromSecondToAfterEnd()
+        {
+            var result = _dataAccess.GetHotelReviews(3, 1, 5);
+            int i = 0;
+            foreach (var review in result)
+            {
+                Assert.True(review.content == "hotel3");
+                i++;
+            }
+            Assert.True(i == 1);
         }
         #endregion
         #region GetOfferReviews
@@ -399,10 +441,25 @@ namespace Server.Tests.Database.Client
         {
             Assert.Throws<Exception>(() => _dataAccess.GetOfferReviews(100,1));
         }
+        [Fact]
         public void GetOfferReviews_BadOfferID()
         {
             Assert.Throws<Exception>(() => _dataAccess.GetOfferReviews(1, 100));
         }
+        [Fact]
+        public void GetOfferReviews_GoodTest()
+        {
+            var result = _dataAccess.GetOfferReviews(3,3);
+            int i = 0;
+            foreach (var review in result)
+            {
+                Assert.True(review.content == "hotel3");
+                i++;
+            }
+            Assert.True(i == 2);
+        }
+
+
         #endregion
 
         public void Dispose()
