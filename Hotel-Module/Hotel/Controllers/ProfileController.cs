@@ -1,4 +1,6 @@
-﻿using Hotel_Module.Authentication;
+﻿using Hotel.Models;
+using Hotel.ViewModels;
+using Hotel_Module.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -28,12 +30,24 @@ namespace Hotel.Controllers
         [HttpGet("/profile")]
         public IActionResult Index()
         {
-            return View();
+            HotelInfo hotelInfo = new HotelInfo();
+            return View(hotelInfo);
         }
 
+        [HttpGet("/profile/edit")]
         public IActionResult Edit()
         {
-            return View();
+            HotelEditViewModel hotelEdit = new HotelEditViewModel
+            {
+                HotelInfo = new HotelInfo()
+            };
+            return View(hotelEdit);
+        }
+
+        [HttpPost("/profile/edit")]
+        public IActionResult Edit([FromForm] HotelEditViewModel hotelEdit)
+        {
+            return RedirectToAction(nameof(Index));
         }
     }
 }

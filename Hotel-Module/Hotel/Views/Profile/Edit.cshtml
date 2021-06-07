@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Hotel.ViewModels.HotelEditViewModel
+@{
     ViewData["Title"] = "Edit";
 }
 
@@ -6,30 +7,30 @@
 <hr />
 <br />
 
-<form>
+<form asp-action="@nameof(Hotel.Controllers.ProfileController.Edit)" method="post">
     <!-- Title -->
     <div class="form-group">
-        <input type="text" class="form-control" placeholder="Hotel name" value="Hotel's name" />
-        <label class="form-control-placeholder">Name</label>
+        <input asp-for="HotelInfo.HotelName" value="@Model.HotelInfo.HotelName" class="form-control" placeholder="Hotel name" />
+        <label asp-for="HotelInfo.HotelName" class="form-control-placeholder">Name</label>
     </div>
     <hr /><br />
 
     <!-- Desc -->
     <div class="form-group">
-        <textarea class="form-control" rows="4">Hotel's description description description description description description description description description description</textarea>
-        <label class="form-control-placeholder">Description</label>
+        <textarea asp-for="HotelInfo.HotelDesc" class="form-control" rows="4" placeholder="Write something about this place...  ">@Model.HotelInfo.HotelDesc</textarea>
+        <label asp-for="HotelInfo.HotelDesc" class="form-control-placeholder">Description</label>
     </div>
     <hr /><br />
 
     <!-- Preview PIC -->
     <div class="form-group">
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" id="previewPicCheckbox" class="custom-control-input" />
-            <label class="custom-control-label" for="previewPicCheckbox">Change preview picture</label>
+            <input asp-for="ChangePreviewPicture" class="custom-control-input" />
+            <label asp-for="ChangePreviewPicture" class="custom-control-label">Change preview picture</label>
         </div>
         <div class="form-row">
-            <input id="previewFile" class="form-control col-sm-4" type="file" disabled />
-            <label class="form-control-placeholder-file">Preview picture</label>
+            <input asp-for="HotelInfo.HotelPreviewPicture" type="file" disabled class="form-control col-sm-4" />
+            <label asp-for="HotelInfo.HotelPreviewPicture" class="form-control-placeholder-file">Preview picture</label>
             <div id="previewGallery"></div>
         </div>
         <a href="~/img/dubai.jpg">Current picture</a>
@@ -39,12 +40,12 @@
     <!-- Additional PICS-->
     <div class="form-group">
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" id="additionalPicsCheckbox" class="custom-control-input" />
-            <label class="custom-control-label" for="additionalPicsCheckbox">Change additional pictures</label>
+            <input asp-for="ChangeHotelPictures" class="custom-control-input" />
+            <label asp-for="ChangeHotelPictures" class="custom-control-label">Change additional pictures</label>
         </div>
         <div class="form-row">
-            <input id="additionalFiles" class="form-control col-sm-4" type="file" multiple disabled />
-            <label class="form-control-placeholder-file">Additional pictures</label>
+            <input asp-for="HotelInfo.HotelPictures" type="file" multiple disabled class="form-control col-sm-4"  />
+            <label asp-for="HotelInfo.HotelPictures" class="form-control-placeholder-file">Additional pictures</label>
             <div id="additionalGallery"></div>
         </div>
     </div>
@@ -56,12 +57,12 @@
 @section Scripts {
     <script type="text/javascript">
         $(document).ready(function () {
-            var previewPicInput = document.getElementById('previewFile');
-            var previewPicChckbox = document.getElementById('previewPicCheckbox');
+            var previewPicInput = document.getElementById('@Html.IdFor(he => he.HotelInfo.HotelPreviewPicture)');
+            var previewPicChckbox = document.getElementById('@Html.IdFor(he => he.ChangePreviewPicture)');
             var previewGalleryDiv = document.getElementById('previewGallery');
 
-            var additionalPicsInput = document.getElementById('additionalFiles');
-            var additionalPicsChckbox = document.getElementById('additionalPicsCheckbox');
+            var additionalPicsInput = document.getElementById('@Html.IdFor(he => he.HotelInfo.HotelPictures)');
+            var additionalPicsChckbox = document.getElementById('@Html.IdFor(he => he.ChangeHotelPictures)');
             var additionalGalleryDiv = document.getElementById('additionalGallery');
 
             var previewDivHtml = previewGalleryDiv.innerHTML;
