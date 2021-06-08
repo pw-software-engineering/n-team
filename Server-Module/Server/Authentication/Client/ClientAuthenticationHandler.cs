@@ -1,25 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
-using Server.Authentication.Hotel;
-using Server.Database;
-using Server.Database.DataAccess;
 using Server.Services.Result;
 using Server.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net;
-using System.Security.Claims;
 using System.Text.Encodings.Web;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Server.Authentication.Client
@@ -28,7 +18,6 @@ namespace Server.Authentication.Client
         : AuthenticationHandler<ClientTokenSchemeOptions>
     {
         private IClientTokenManager _tokenManager;
-        private ClientTokenSchemeOptions _options;
 
         private string _errorString = null;
         public ClientTokenScheme(
@@ -40,7 +29,6 @@ namespace Server.Authentication.Client
             : base(options, logger, encoder, clock)
         {
             _tokenManager = tokenManager;
-            _options = options.CurrentValue;
         }
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {

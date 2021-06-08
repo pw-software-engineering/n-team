@@ -1,4 +1,5 @@
-﻿using Server.RequestModels;
+﻿using Microsoft.AspNetCore.Mvc;
+using Server.RequestModels;
 using Server.RequestModels.Client;
 using Server.Services.Result;
 using Server.ViewModels;
@@ -17,6 +18,7 @@ namespace Server.Services.Client
 
         #region /hotels/{hotelID}
         IServiceResult GetHotelDetails(int hotelID);
+        IActionResult GetHotelReviews(int hotelID, Paging paging);
         #endregion
     }
 }
