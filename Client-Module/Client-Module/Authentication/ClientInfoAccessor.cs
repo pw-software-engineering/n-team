@@ -23,18 +23,28 @@ namespace Client_Module.Authentication
         }
         public ClientInfo GetClientInfo(string cookieToken, out string serverError)
         {
-            HttpClient httpClient = _httpClientFactory.CreateClient("default-server-api");
-            HttpRequestMessage httpRequest = new HttpRequestMessage();
-            httpRequest.Method = HttpMethod.Get;
-            httpRequest.Headers.Add(ServerApiConfig.TokenHeaderName, cookieToken);
-            httpRequest.RequestUri = new Uri($"{ServerApiConfig.BaseUrl}/client");
-            HttpResponseMessage response = httpClient.SendAsync(httpRequest).Result;
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            string responseJSON;
+            try
             {
-                serverError = response.Content.ReadAsStringAsync().Result;
+                HttpClient httpClient = _httpClientFactory.CreateClient("default-server-api");
+                HttpRequestMessage httpRequest = new HttpRequestMessage();
+                httpRequest.Method = HttpMethod.Get;
+                httpRequest.Headers.Add(ServerApiConfig.TokenHeaderName, cookieToken);
+                httpRequest.RequestUri = new Uri($"{ServerApiConfig.BaseUrl}/client");
+                HttpResponseMessage response = httpClient.SendAsync(httpRequest).Result;
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    serverError = response.Content.ReadAsStringAsync().Result;
+                    return null;
+                }
+                responseJSON = response.Content.ReadAsStringAsync().Result;
+            }
+            catch
+            {
+                serverError = "Internal server error";
                 return null;
             }
-            string responseJSON = response.Content.ReadAsStringAsync().Result;
+
             //Console.WriteLine(responseJSON);
             ClientInfo clientInfo = null;
             try

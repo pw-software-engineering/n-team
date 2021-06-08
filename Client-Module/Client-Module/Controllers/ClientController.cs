@@ -38,23 +38,34 @@ namespace Client_Module.Controllers
         {
             Console.WriteLine($"{login} | {password}");
             ClientSecrets secrets = new ClientSecrets(login, password);
-            HttpClient httpClient = _httpClientFactory.CreateClient();
-            HttpRequestMessage httpRequest = new HttpRequestMessage();
-            httpRequest.Content = new StringContent(
-                JsonSerializer.Serialize(secrets, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }), 
-                Encoding.UTF8, 
-                "application/json");
-            httpRequest.Method = HttpMethod.Post;
-            httpRequest.RequestUri = new Uri($"{ServerApiConfig.BaseUrl}/client/login");
-            HttpResponseMessage httpResponse = await httpClient.SendAsync(httpRequest);
-            if(httpResponse.IsSuccessStatusCode)
+            HttpClient httpClient = null;
+            HttpResponseMessage httpResponse = null;
+            try
             {
-                CookieOptions options = new CookieOptions();
-                Response.Cookies.Append(
-                    ClientTokenCookieDefaults.AuthCookieName, 
-                    await httpResponse.Content.ReadAsStringAsync(), 
-                    options);
-                return Redirect("/");
+                httpClient = _httpClientFactory.CreateClient();
+                HttpRequestMessage httpRequest = new HttpRequestMessage();
+                httpRequest.Content = new StringContent(
+                JsonSerializer.Serialize(secrets, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
+                Encoding.UTF8,
+                "application/json");
+                httpRequest.Method = HttpMethod.Post;
+                httpRequest.RequestUri = new Uri($"{ServerApiConfig.BaseUrl}/client/login");
+                httpResponse = await httpClient.SendAsync(httpRequest);
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    CookieOptions options = new CookieOptions();
+                    Response.Cookies.Append(
+                        ClientTokenCookieDefaults.AuthCookieName,
+                        await httpResponse.Content.ReadAsStringAsync(),
+                        options);
+                    return Redirect("/");
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+                LogInViewModel error = new LogInViewModel() { ServerLogInError = "Internal server error" };
+                return View(error);
             }
             //Console.WriteLine($"Status code: {httpResponse.StatusCode}\n{await httpResponse.Content.ReadAsStringAsync()}");
             string serverError = null;

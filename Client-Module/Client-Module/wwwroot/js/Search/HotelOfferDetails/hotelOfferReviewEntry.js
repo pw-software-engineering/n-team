@@ -24,11 +24,17 @@
         ratingBoxComponent.append(
             $("<b>").attr("class", "text-secondary").text("Rating: ")
         );
-        var i = 0;
-        for (; i < this.reviewData.rating; i++) {
+        var i = 2;
+        for (; i < this.reviewData.rating; i += 2) {
             ratingBoxComponent.append('<i class="fas fa-star text-warning ml-1">');
         }
-        for (; i < 5; i++) {
+        if (i - this.reviewData.rating === 0) {
+            ratingBoxComponent.append('<i class="fas fa-star text-warning ml-1">');
+        } else {
+            ratingBoxComponent.append('<i class="fas fa-star-half-alt text-warning ml-1">');
+        }
+        i += 2;
+        for (; i <= 10; i += 2) {
             ratingBoxComponent.append('<i class="far fa-star text-warning ml-1">');
         }
 

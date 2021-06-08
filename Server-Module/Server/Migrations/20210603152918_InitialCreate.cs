@@ -190,10 +190,10 @@ namespace Server.Migrations
                     ReservationID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RoomID = table.Column<int>(type: "int", nullable: true),
-                    ClientID = table.Column<int>(type: "int", nullable: true),
+                    ClientID = table.Column<int>(type: "int", nullable: false),
                     ReviewID = table.Column<int>(type: "int", nullable: true),
-                    HotelID = table.Column<int>(type: "int", nullable: true),
-                    OfferID = table.Column<int>(type: "int", nullable: true),
+                    HotelID = table.Column<int>(type: "int", nullable: false),
+                    OfferID = table.Column<int>(type: "int", nullable: false),
                     FromTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ToTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     NumberOfChildren = table.Column<int>(type: "int", nullable: false),

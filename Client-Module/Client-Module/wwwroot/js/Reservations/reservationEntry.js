@@ -21,11 +21,11 @@ function ReservationEntry({
     this.reservationManager = reservationManager;
 
     var from = new Date(reservationData.reservationInfo.from).getTime();
-    var to = new Date(reservationData.reservationInfo.to).getTime();
+    var to = new Date(reservationData.reservationInfo.to).getTime() + 24 * 60 * 60 * 1000;
     var now = Date.now();
-    if (from - now > 0) {
+    if (from > now) {
         this.reservationState = ReservationState.Pending;
-    } else if (to - now > 0) {
+    } else if (to > now) {
         this.reservationState = ReservationState.Ongoing;
     } else {
         this.reservationState = ReservationState.Completed;

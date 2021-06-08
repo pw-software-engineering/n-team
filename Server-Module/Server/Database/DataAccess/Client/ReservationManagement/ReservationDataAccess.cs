@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Server.Database.Models;
+using Server.RequestModels;
 using Server.Services.Client;
 using Server.ViewModels.Client;
 using System;
@@ -64,10 +65,13 @@ namespace Server.Database.DataAccess.Client
             _dbContext.SaveChanges();
         }
 
-        public List<ReservationData> GetReservations(int userID)
+        public List<ReservationData> GetReservations(int userID, Paging paging)
         {
             return _dbContext.ClientReservations
                 .Where(reservation => reservation.ClientID == userID)
+                .OrderByDescending(reservation => reservation.ReservationID)
+                .Skip((paging.PageNumber - 1) * paging.PageSize)
+                .Take(paging.PageSize)
                 .Include(reservation => reservation.Hotel)
                 .Include(reservation => reservation.Offer)
                 .Select(rdb => new ReservationData()

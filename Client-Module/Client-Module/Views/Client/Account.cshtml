@@ -1,34 +1,42 @@
 ﻿@using Client_Module.ViewsTagID.Client;
 @{
     ViewData["Title"] = "Client account";
+    AccountTagID tagIDs = new AccountTagID();
 }
 
 <div class="text-center">
     <h1 class="display-4">Your client account information</h1>
 </div>
-<div class="w-100 shadow-border p-4 mt-4 bg-light">
+<hr class="mt-1 mb-3" />
+
+<div class="w-100 shadow-border bg-light p-4" id="@tagIDs.LoadingDataDivID">
+    <img class="d-block mx-auto" style="width: 75px" src="~/resources/loading.gif" />
+    <p class="text-center h5 mt-2">Loading hotel data...</p>
+</div>
+
+<div class="w-100 shadow-border p-4 mt-4 bg-light d-none" id="@tagIDs.MainContentDivID">
     <div class="form-group row">
         <label for="client-name" class="col-sm-2 col-form-label">Name</label>
         <div class="col-sm-10">
-            <input readonly type="text" class="form-control" id="@AccountTagID.InputClientNameID">
+            <input readonly type="text" class="form-control" id="@tagIDs.InputClientNameID">
         </div>
     </div>
     <div class="form-group row">
         <label for="client-surname" class="col-sm-2 col-form-label">Surname</label>
         <div class="col-sm-10">
-            <input readonly type="text" class="form-control" id="@AccountTagID.InputClientSurnameID">
+            <input readonly type="text" class="form-control" id="@tagIDs.InputClientSurnameID">
         </div>
     </div>
     <hr class="mt-1 mb-3" />
-    <p class="my-2 text-danger text-center d-none" id="@AccountTagID.ServerErrorBoxID"></p>
-    <p class="my-2 text-success text-center d-none" id="@AccountTagID.ServerSuccessBoxID">Client information successfully changed!</p>
+    <p class="my-2 text-danger text-center d-none" id="@tagIDs.ServerErrorBoxID"></p>
+    <p class="my-2 text-success text-center d-none" id="@tagIDs.ServerSuccessBoxID">Client information successfully changed!</p>
     <div class="form-group row">
         <div class="col-sm-2 mt-auto">
             <label for="client-username" class="col-form-label">Username</label>
         </div>
         <div class="col-sm-10">
-            <small class="m-0 text-danger d-none" id="@AccountTagID.ClientUsernameValidationBoxID"></small>
-            <input type="text" class="form-control" id="@AccountTagID.InputClientUsernameID">
+            <small class="m-0 text-danger d-none" id="@tagIDs.ClientUsernameValidationBoxID"></small>
+            <input type="text" class="form-control" id="@tagIDs.InputClientUsernameID">
         </div>
     </div>
     <div class="form-group row">
@@ -36,84 +44,68 @@
             <label for="client-email" class="col-form-label">E-mail</label>
         </div>
         <div class="col-sm-10">
-            <small class="m-0 text-danger d-none" id="@AccountTagID.ClientEmailValidationBoxID"></small>
-            <input type="email" class="form-control" id="@AccountTagID.InputClientEmailID">
+            <small class="m-0 text-danger d-none" id="@tagIDs.ClientEmailValidationBoxID"></small>
+            <input type="email" class="form-control" id="@tagIDs.InputClientEmailID">
         </div>
     </div>
     <hr class="mt-1 " />
-    <button class="btn btn-primary" id="@AccountTagID.ApplyChangesBtnID">Apply changes</button>
+    <button class="btn btn-primary my-2" style="vertical-align: middle" id="@tagIDs.ApplyChangesBtnID">Apply changes</button>
+    @*normal class: d-flex-inline (instead d-none)*@
+    <div class="d-none flex-row align-items-center ml-3 text-center" style="vertical-align: middle" id="@tagIDs.UpdatingClientInfoDivID">
+        <img class="d-" style="width: 50px; height: 50px" src="~/resources/loading.gif" />
+        <span class="text-center h5 mt-2 ml-3">Updating client information...</span>
+    </div>
 </div>
 
 @section Scripts{
+<script src="~/js/Shared/serverApiManager.js"></script>
+<script src="~/js/ClientAccount/clientAccountManager.js"></script>
+<script src="~/js/Shared/inputValidator.js"></script>
 <script>
     $(document).ready(function () {
-        function GetClientInfo() {
-            function FillClientInfo(data) {
-                $("#@AccountTagID.InputClientNameID").val(data.name);
-                $("#@AccountTagID.InputClientSurnameID").val(data.surname);
-                $("#@AccountTagID.InputClientUsernameID").val(data.username);
-                $("#@AccountTagID.InputClientEmailID").val(data.email);
-            }
-            $.ajax({
-                method: "GET",
-                url: "@ServerApiConfig.BaseUrl/client",
-                headers: {
-                    "@ServerApiConfig.TokenHeaderName": getCookie("@ClientTokenCookieDefaults.AuthCookieName")
-                },
-                success: (data, textStatus, jqXHR) => {
-                    console.log(data);
-                    FillClientInfo(data);
-                },
-                error: (jqXHR, textStatus, errorThrown) => {
-                    if (textStatus === "timeout") {
-                        alert("Operation timed out");
-                        return;
-                    }
-                    alert(`Response status: ${jqXHR.responseJSON.error}`);
-                }
+        var apiConfig = {
+            apiBaseUrl: "@ServerApiConfig.BaseUrl",
+            apiTokenCookieName: "@ClientTokenCookieDefaults.AuthCookieName",
+            apiTokenHeaderName: "@ServerApiConfig.TokenHeaderName"
+        };
+
+        var clientAccountManager = new ClientAccountManager(apiConfig);
+
+        function FillClientInfo(data) {
+            $("#@tagIDs.InputClientNameID").val(data.name);
+            $("#@tagIDs.InputClientSurnameID").val(data.surname);
+            $("#@tagIDs.InputClientUsernameID").val(data.username);
+            $("#@tagIDs.InputClientEmailID").val(data.email);
+        }
+
+        clientAccountManager
+            .getClientInfo()
+            .then((data) => {
+                FillClientInfo(data);
+                $("#@tagIDs.LoadingDataDivID").addClass("d-none");
+                $("#@tagIDs.MainContentDivID").removeClass("d-none");
+            }).catch((error) => {
+                var loadingDataDiv = $("#@tagIDs.LoadingDataDivID");
+                loadingDataDiv.empty();
+                loadingDataDiv.append(
+                    $("<p>").attr("class", "text-center text-danger h3").text("Error"),
+                    $("<p>").attr("class", "text-center text-danger h5").text(error.message)
+                );
             });
-        }
-
-        GetClientInfo();
-
-        function InputValidator(inputHandle, errorBoxHandle, inputValidator) {
-            this.inputHandle = inputHandle;
-            this.errorBoxHandle = errorBoxHandle;
-            this.inputValidator = inputValidator;
-        }
-
-        InputValidator.prototype.GetInputHandle = function () {
-            return this.inputHandle;
-        }
-
-        InputValidator.prototype.IsInputValid = function () {
-            return this.inputValidator(this.inputHandle.val());
-        }
-
-        InputValidator.prototype.HideValidationError = function () {
-            this.errorBoxHandle.addClass("d-none");
-            this.inputHandle.removeClass("clientinfo-input-error");
-        }
-
-        InputValidator.prototype.ShowValidationError = function (errorText) {
-            this.errorBoxHandle.removeClass("d-none");
-            this.errorBoxHandle.text(errorText);
-            this.inputHandle.addClass("clientinfo-input-error");
-        }
 
         function ShowServerError(error) {
-            var serverError = $("#@AccountTagID.ServerErrorBoxID");
+            var serverError = $("#@tagIDs.ServerErrorBoxID");
             serverError.removeClass("d-none");
             serverError.text(error);
         }
 
         function HideServerError() {
-            var serverError = $("#@AccountTagID.ServerErrorBoxID");
+            var serverError = $("#@tagIDs.ServerErrorBoxID");
             serverError.addClass("d-none");
         }
 
         function ToggleServerSuccessMessage(isVisible) {
-            var serverSuccessBox = $("#@AccountTagID.ServerSuccessBoxID");
+            var serverSuccessBox = $("#@tagIDs.ServerSuccessBoxID");
             if (isVisible) {
                 serverSuccessBox.removeClass("d-none");
             } else {
@@ -121,36 +113,38 @@
             }
         }
 
-        var clientEmailValidator = new InputValidator(
-            $("#@AccountTagID.InputClientEmailID"),
-            $("#@AccountTagID.ClientEmailValidationBoxID"),
-            (inputValue) => {
+        var clientEmailValidator = new InputValidator({
+            inputHandle: $("#@tagIDs.InputClientEmailID"),
+            errorBoxHandle: $("#@tagIDs.ClientEmailValidationBoxID"),
+            inputValidator: (inputValue) => {
                 var emailRegexp = /^[a-zA-Z]([a-zA-Z0-9]|[\.\-_]){0,100}@@[a-z]{1,50}\.[a-z]{1,50}$/;
                 return emailRegexp.test(inputValue);
-            });
+            },
+            validationError: "Email format is incorrect"
+        });
 
-        var clientUsernameValidator = new InputValidator(
-            $("#@AccountTagID.InputClientUsernameID"),
-            $("#@AccountTagID.ClientUsernameValidationBoxID"),
-            (inputValue) => {
+        var clientUsernameValidator = new InputValidator({
+            inputHandle: $("#@tagIDs.InputClientUsernameID"),
+            errorBoxHandle: $("#@tagIDs.ClientUsernameValidationBoxID"),
+            inputValidator: (inputValue) => {
                 var usernameRegexp = /^[a-zA-Z][a-zA-Z0-9]{5,30}$/;
                 return usernameRegexp.test(inputValue);
-            });
+            },
+            validationError: "Username must consist of only alphanumeric symbols (at least 5 and at most 30)"
+        });
 
         var isPendingUpdateRequest = false;
-        $("#@AccountTagID.ApplyChangesBtnID").click(function () {
+        $("#@tagIDs.ApplyChangesBtnID").click(function () {
             var areAllValid = true;
-            clientEmailValidator.HideValidationError();
-            clientUsernameValidator.HideValidationError();
+            clientEmailValidator.hideValidationError();
+            clientUsernameValidator.hideValidationError();
             HideServerError();
             ToggleServerSuccessMessage(false);
-            if (!clientEmailValidator.IsInputValid()) {
+            if (!clientEmailValidator.validate()) {
                 areAllValid = false;
-                clientEmailValidator.ShowValidationError("Email format is incorrect");
             }
-            if (!clientUsernameValidator.IsInputValid()) {
+            if (!clientUsernameValidator.validate()) {
                 areAllValid = false;
-                clientUsernameValidator.ShowValidationError("Username must consist of only alphanumeric symbols (at least 5 and at most 30)");
             }
             console.log(areAllValid);
             if (!areAllValid) {
@@ -161,34 +155,22 @@
                 return;
             }
             isPendingUpdateRequest = true;
-            console.log({
-                username: clientUsernameValidator.GetInputHandle().val(),
-                email: clientEmailValidator.GetInputHandle().val()
-            });
-            $.ajax({
-                method: "PATCH",
-                url: "@ServerApiConfig.BaseUrl/client",
-                headers: {
-                    "@ServerApiConfig.TokenHeaderName": getCookie("@ClientTokenCookieDefaults.AuthCookieName"),
-                },
-                contentType: "application/json",
-                data: JSON.stringify({
-                    username: clientUsernameValidator.GetInputHandle().val(),
-                    email: clientEmailValidator.GetInputHandle().val()
-                }),
-                success: (data, textStatus, jqXHR) => {
-                    //console.log(data);
-                    ToggleServerSuccessMessage(true);
-                    isPendingUpdateRequest = false;
-                },
-                error: (jqXHR, textStatus, errorThrown) => {
-                    if (textStatus === "timeout") {
-                        ShowServerErrorBox("Operation timed out");
-                        return;
-                    }
-                    ShowServerError(`${jqXHR.responseJSON.error}`);
-                    isPendingUpdateRequest = false;
-                }
+            $("#@tagIDs.UpdatingClientInfoDivID").removeClass("d-none");
+            $("#@tagIDs.UpdatingClientInfoDivID").addClass("d-inline-block");
+
+            clientAccountManager.updateClientInfo({
+                username: clientUsernameValidator.val(),
+                email: clientEmailValidator.val()
+            }).then(() => {
+                ToggleServerSuccessMessage(true);
+                isPendingUpdateRequest = false;
+                $("#@tagIDs.UpdatingClientInfoDivID").addClass("d-none");
+                $("#@tagIDs.UpdatingClientInfoDivID").removeClass("d-inline-block");
+            }).catch((error) => {
+                ShowServerError(error);
+                isPendingUpdateRequest = false;
+                $("#@tagIDs.UpdatingClientInfoDivID").addClass("d-none");
+                $("#@tagIDs.UpdatingClientInfoDivID").removeClass("d-inline-block");
             });
         });
     });

@@ -99,7 +99,7 @@ namespace Server.Services.Client
             OfferView offer = _offerSearchDataAccess.GetHotelOfferDetails(offerID);
             offer.OfferPictures = _offerSearchDataAccess.GetHotelOfferPictures(offerID);
             DateTime fromTime = DateTime.Now;
-            fromTime = new DateTime(fromTime.Year, fromTime.Month, fromTime.Day);
+            fromTime = new DateTime(fromTime.Year, fromTime.Month, fromTime.Day).AddDays(1);
             offer.AvailabilityTimeIntervals = _offerSearchDataAccess.GetHotelOfferAvailability(hotelID, offerID, fromTime, fromTime.AddMonths(6));
             _transaction.CommitTransaction();
 

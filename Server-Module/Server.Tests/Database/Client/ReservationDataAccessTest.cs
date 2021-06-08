@@ -245,47 +245,14 @@ namespace Server.Tests.Database.Client
         [Fact]
         public void GetReservations_NoClientReservations_ReturnsEmptyList()
 		{
+            Paging paging = new Paging(number: 1, size: 100000);
             int clientID = 1;
 
-            var reservations = _dataAccess.GetReservations(clientID);
+            var reservations = _dataAccess.GetReservations(clientID, paging);
 
             Assert.NotNull(reservations);
             Assert.Empty(reservations);
 		}
-        /*[Fact]
-        public void GetReservations_ReturnsReservations()
-        {
-            int clientID = 3;
-
-
-            List<ReservationData> data = new List<ReservationData>
-            {
-                new ReservationData()
-                {
-                    ReservationInfo = new ReservationInfoView()
-                    {
-                        ReservationID = 1,
-                        From = DateTime.Now,
-                        To = DateTime.Now,
-                        NumberOfAdults = 0,
-                        NumberOfChildren = 1
-                    },
-                    OfferInfoPreview = new ReservationOfferInfoPreview()
-                    {
-
-                    },
-                    HotelInfoPreview = new HotelInfoPreview()
-					{
-
-					}
-                }
-            };
-
-            var reservations = _dataAccess.GetReservations(clientID);
-
-            Assert.NotNull(reservations);
-            Assert.NotEmpty(reservations);
-        }*/
 
         public void Dispose()
         {
