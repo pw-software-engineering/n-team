@@ -7,7 +7,7 @@
 <hr />
 <br />
 
-<form asp-action="@nameof(Hotel.Controllers.ProfileController.Edit)" method="post">
+<form asp-action="@nameof(Hotel.Controllers.ProfileController.Edit)" method="post" id="editProfileForm">
     <!-- Title -->
     <div class="form-group">
         <input asp-for="HotelInfo.HotelName" value="@Model.HotelInfo.HotelName" class="form-control" placeholder="Hotel name" />
@@ -72,6 +72,45 @@
             previewPicInput.onchange = function () { previewGallery(previewPicInput, previewGalleryDiv); };
             additionalPicsChckbox.onclick = function () { switchEnabled(additionalPicsChckbox, additionalPicsInput, additionalGalleryDiv, additionalDivHtml); };
             additionalPicsInput.onchange = function () { previewGallery(additionalPicsInput, additionalGalleryDiv); };
+
+            
+            var form = document.getElementById('editProfileForm');
+            form.onsubmit = async function (e) {
+                e.preventDefault();
+                var formData = new FormData(form);
+                var previewPicString = '@Html.NameFor(hi => hi.HotelInfo.HotelPreviewPicture)';
+                var picsString = '@Html.NameFor(hi => hi.HotelInfo.HotelPictures)';
+
+                var previewPic = formData.get(previewPicString);
+                var previewPic64 = await get64BaseString(previewPic);
+                if (previewPic64) {
+                    formData.set(previewPicString, previewPic64);           // .set() overrides value
+                }
+
+                var pics = formData.getAll(picsString);
+                formData.delete(picsString);
+                for (const pic of pics) {
+                    var pic64 = await (get64BaseString(pic));
+                    if (pic64) {
+                        formData.append(picsString, pic64);
+                    }
+                }
+
+                await fetch('@Url.Action(nameof(Hotel.Controllers.ProfileController.Edit))', {
+                    method: 'POST',
+                    body: formData
+                }).then((response) => {
+                    if (response.ok) {
+                        alert("Offer edited successfully!")
+                        window.location.replace('@Url.Action(nameof(Hotel.Controllers.OffersController.Index))');
+                    } else {
+                        alert("error: " + response.status);
+                    }
+                }).catch((error) => {
+                    console.error('fetch error: ', error);
+                });
+            };
+
         });
     </script>
 }

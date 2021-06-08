@@ -4,8 +4,13 @@ using Hotel_Module.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
 
 namespace Hotel.Controllers
 {
@@ -28,26 +33,67 @@ namespace Hotel.Controllers
         }
 
         [HttpGet("/profile")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            HotelInfo hotelInfo = new HotelInfo();
-            return View(hotelInfo);
+            try
+            {
+                HotelInfo hotelInfo = await _httpClient.GetFromJsonAsync<HotelInfo>("hotelInfo");
+                return View(hotelInfo);
+            }
+            catch (HttpRequestException e)
+            {
+                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
+            }
+            catch (Exception)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpGet("/profile/edit")]
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit()
         {
-            HotelEditViewModel hotelEdit = new HotelEditViewModel
+            try
             {
-                HotelInfo = new HotelInfo()
-            };
-            return View(hotelEdit);
+                HotelInfo hotelInfo = await _httpClient.GetFromJsonAsync<HotelInfo>("hotelInfo");
+                HotelEditViewModel hotelEdit = new HotelEditViewModel(hotelInfo);
+                return View(hotelEdit);
+            }
+            catch (HttpRequestException e)
+            {
+                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
+            }
+            catch (Exception)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpPost("/profile/edit")]
-        public IActionResult Edit([FromForm] HotelEditViewModel hotelEdit)
+        public async Task<IActionResult> Edit([FromForm] HotelEditViewModel hotelEdit)
         {
-            return RedirectToAction(nameof(Index));
+            HotelInfo hotelInfo = hotelEdit.HotelInfo;
+            hotelInfo.HotelPreviewPicture = hotelEdit.ChangePreviewPicture ? (hotelEdit.HotelInfo.HotelPreviewPicture ?? "") : null;
+            hotelInfo.HotelPictures = hotelEdit.ChangeHotelPictures ? (hotelEdit.HotelInfo.HotelPictures ?? new List<string>()) : null;
+            
+            JsonContent content = JsonContent.Create(hotelInfo);
+            HttpResponseMessage response;
+            try
+            {
+                response = await _httpClient.PatchAsync("hotelInfo", content);
+            }
+            catch (HttpRequestException e)
+            {
+                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
+            }
+            catch (Exception)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
+            return StatusCode((int)response.StatusCode);
         }
     }
 }

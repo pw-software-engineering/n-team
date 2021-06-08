@@ -12,32 +12,11 @@
         background-image: url(@bg_img)">
         <div class="d-inline-flex flex-column rounded m-3 p-3" style="background-color: rgba(255, 255, 255, 0.35)">
             <h2 class="heading-section">
-                @if (string.IsNullOrWhiteSpace(Model.HotelName))
-                {
-                    @:(no-name)
-                }
-                else
-                {
-                    Html.Raw(Model.HotelName);
-                }
+                @Html.Raw(string.IsNullOrWhiteSpace(Model.HotelName) ? "(no-name)" : Model.HotelName)
             </h2>
             <div>
-                @if (string.IsNullOrWhiteSpace(Model.City))
-                {
-                    @:(no-city)
-                }
-                else
-                {
-                    Html.Raw(Model.City);
-                },
-                @if (string.IsNullOrWhiteSpace(Model.Country))
-                {
-                    @:(no-country)
-                }
-                else
-                {
-                    Html.Raw(Model.Country);
-                }
+                @Html.Raw(string.IsNullOrWhiteSpace(Model.City) ? "(no-city)" : Model.City),
+                @Html.Raw(string.IsNullOrWhiteSpace(Model.Country) ? "(no-country)" : Model.Country)
             </div>
         </div>
     </div>
@@ -62,11 +41,6 @@
                 <div class="col-sm-3">
                     <img class="img-thumbnail" src="data:image/png;base64,@Html.Raw(pic)">
                 </div>
-                @*<div class="col-sm-3">
-                        <a href="~/img/cats/cat1.jpg">
-                            <img class="img-thumbnail" src="~/img/cats/cat1.jpg">
-                        </a>
-                    </div>*@
             }
         </div>
     }
