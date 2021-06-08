@@ -1,15 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
-namespace Hotel_Module.Authentication
+namespace Hotel.Authentication
 {
     public class HotelCookieTokenManager : IHotelCookieTokenManager
     {

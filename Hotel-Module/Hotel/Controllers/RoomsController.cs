@@ -1,5 +1,5 @@
 using Hotel.Models;
-using Hotel_Module.Authentication;
+using Hotel.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Hotel.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +17,7 @@ using System.Linq;
 namespace Hotel.Controllers
 {
     [Authorize(AuthenticationSchemes = HotelTokenCookieDefaults.AuthenticationScheme)]
+    [Route("/rooms")]
     public class RoomsController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -33,7 +34,8 @@ namespace Hotel.Controllers
                 HttpContext.User.Claims.First(c => c.Type == HotelCookieTokenManagerOptions.AuthStringClaimType).Value);
         }
 
-        [HttpGet("/rooms")]
+
+        [HttpGet("")]
         public async Task<IActionResult> Index([FromQuery] string hotelRoomNumber, [FromQuery] Paging paging)
         {
             NameValueCollection query = HttpUtility.ParseQueryString("");
@@ -42,50 +44,33 @@ namespace Hotel.Controllers
             query["pageNumber"] = paging.PageNumber.ToString();
             query["pageSize"] = paging.PageSize.ToString();
 
-            try
+            return await this.TrySendAsync(async () =>
             {
                 IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>($"rooms?{query}");
                 RoomsIndexViewModel roomsVM = new RoomsIndexViewModel(rooms, paging, hotelRoomNumber);
                 return View(roomsVM);
-            }
-            catch (HttpRequestException e)
-            {
-                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
-            }
-            catch (Exception)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError);
-            }
+            });
         }
 
-        [HttpDelete("/rooms/{roomID}")]
+        [HttpDelete("{roomID}")]
         public async Task<IActionResult> RemoveRoom([FromRoute] int roomID)
         {
 
-            return await CheckForConnectionError(_httpClient.DeleteAsync($"rooms/{roomID}"));
+            return await this.TrySendAsync(async () =>
+            {
+                HttpResponseMessage response = await _httpClient.DeleteAsync($"rooms/{roomID}");
+                return StatusCode((int)response.StatusCode);
+            });
         }
 
-        [HttpPost("/rooms")]
+        [HttpPost("")]
         public async Task<IActionResult> AddRoom([FromForm] string roomNumber)
         {
-            return await CheckForConnectionError(_httpClient.PostAsJsonAsync("rooms", new { hotelRoomNumber = roomNumber }));
-        }
-
-        private async Task<StatusCodeResult> CheckForConnectionError(Task<HttpResponseMessage> responseTask)
-        {
-            try
+            return await this.TrySendAsync(async () =>
             {
-                HttpResponseMessage response = await responseTask;
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("rooms", new { hotelRoomNumber = roomNumber });
                 return StatusCode((int)response.StatusCode);
-            }
-            catch (HttpRequestException e)
-            {
-                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
-            }
-            catch (Exception)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError);
-            }
+            });
         }
 
         public async Task<PartialViewResult> OfferRowPartial(int offerID, int roomID)

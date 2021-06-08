@@ -101,7 +101,7 @@
                     body: formData
                 }).then((response) => {
                     if (response.ok) {
-                        alert("Offer edited successfully!")
+                        alert("Profile edited successfully!")
                         window.location.replace('@Url.Action(nameof(Hotel.Controllers.OffersController.Index))');
                     } else {
                         alert("error: " + response.status);
