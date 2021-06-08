@@ -153,8 +153,8 @@ namespace Hotel.Controllers
         {
             return await this.TrySendAsync(async () =>
             {
-                await _httpClient.DeleteAsync($"offers/{offerID}/rooms/{roomID}");
-                return RedirectToAction(nameof(Index));
+                HttpResponseMessage response = await _httpClient.DeleteAsync($"offers/{offerID}/rooms/{roomID}");
+                return StatusCode((int)response.StatusCode);
             });
         }
 

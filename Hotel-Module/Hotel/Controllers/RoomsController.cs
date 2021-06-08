@@ -73,6 +73,7 @@ namespace Hotel.Controllers
             });
         }
 
+        [HttpGet("offerRowPartial")]
         public async Task<PartialViewResult> OfferRowPartial(int offerID, int roomID)
         {
             try
