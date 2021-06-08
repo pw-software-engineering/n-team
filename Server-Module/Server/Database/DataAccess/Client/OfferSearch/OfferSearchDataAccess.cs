@@ -178,49 +178,49 @@ namespace Server.Database.DataAccess.Client
             return resultTimeIntervals;
         }
 
-        public List<ReviewInfo> GetOfferReviews(int hotelID, int offerID)
+        public List<ReviewView> GetOfferReviews(int hotelID, int offerID)
         {
             if (_dbContext.Hotels.FirstOrDefault(x => x.HotelID == hotelID) == null)
                 throw new Exception("cannot find hotel");
             if (_dbContext.Offers.FirstOrDefault(x => x.OfferID == offerID) == null)
                 throw new Exception("cannot find offer");
 
-            List<ReviewInfo> reviewInfos = new List<ReviewInfo>();
+            List<ReviewView> reviewInfos = new List<ReviewView>();
             var resultDB = _dbContext.ClientReviews.Where(x => x.OfferID == offerID).ToList();
             foreach (var review in resultDB)
             {
                 if (review.HotelID != hotelID)
                     throw new Exception("bad request");
                 var client = _dbContext.Clients.Find(review.ClientID);
-                reviewInfos.Add(new ReviewInfo
+                reviewInfos.Add(new ReviewView
                 {
-                    reviewID = review.ReviewID,
-                    content = review.Content,
-                    rating = (int)review.Rating,
-                    revewerUsername = client.Name,
-                    creationDate = review.ReviewDate
+                    ReviewID = review.ReviewID,
+                    Content = review.Content,
+                    Rating = (int)review.Rating,
+                    ReviewerUsername = client.Name,
+                    CreationDate = review.ReviewDate
                 });
             }
             return reviewInfos;
         }
 
-        public List<ReviewInfo> GetHotelReviews(int hotelID, int from, int take)
+        public List<ReviewView> GetHotelReviews(int hotelID, int from, int take)
         {
             if (_dbContext.Hotels.FirstOrDefault(x => x.HotelID == hotelID) == null)
                 throw new Exception("cannot find hotel");
 
-            List<ReviewInfo> reviewInfos = new List<ReviewInfo>();
+            List<ReviewView> reviewInfos = new List<ReviewView>();
             var resultDB = _dbContext.ClientReviews.Where(x => x.HotelID == hotelID).Skip(from).Take(take).ToList();
             foreach (var review in resultDB)
             {
                 var client = _dbContext.Clients.Find(review.ClientID);
-                reviewInfos.Add(new ReviewInfo
+                reviewInfos.Add(new ReviewView
                 {
-                    reviewID = review.ReviewID,
-                    content = review.Content,
-                    rating = (int)review.Rating,
-                    revewerUsername = client.Name,
-                    creationDate = review.ReviewDate
+                    ReviewID = review.ReviewID,
+                    Content = review.Content,
+                    Rating = (int)review.Rating,
+                    ReviewerUsername = client.Name,
+                    CreationDate = review.ReviewDate
                 });
             }
             return reviewInfos;
