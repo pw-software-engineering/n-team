@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using Moq;
-using Server.AutoMapper;
+﻿using Moq;
 using Server.Database.DataAccess.Client;
-using Server.Database.DatabaseTransaction;
 using Server.RequestModels;
 using Server.RequestModels.Client;
 using Server.Services.Client;
@@ -20,24 +17,16 @@ namespace Server.Tests.Services.Client
     {
         public OfferSearchServiceTest()
         {
-            var config = new MapperConfiguration(opts =>
-            {
-                opts.AddProfile(new ClientAutoMapperProfile());
-            });
-            _mapper = config.CreateMapper();
             _offerSearchDataAccessMock = new Mock<IOfferSearchDataAccess>();
             _offerSearchDataAccessMock.Setup(da => da.CheckHotelExistence(-1)).Returns(false);
             _offerSearchDataAccessMock.Setup(da => da.CheckHotelExistence(1)).Returns(true);
             _offerSearchDataAccessMock.Setup(da => da.CheckHotelOfferExistence(1, 4)).Returns(false);
             _offerSearchDataAccessMock.Setup(da => da.CheckHotelOfferExistence(1, 1)).Returns(true);
-            _transactionMock = new Mock<IDatabaseTransaction>();
 
-            _offerSearchService = new OfferSearchService(_mapper, _offerSearchDataAccessMock.Object, _transactionMock.Object);
+            _offerSearchService = new OfferSearchService(_offerSearchDataAccessMock.Object);
         }
         private OfferSearchService _offerSearchService;
         private Mock<IOfferSearchDataAccess> _offerSearchDataAccessMock;
-        private Mock<IDatabaseTransaction> _transactionMock;
-        private IMapper _mapper;
 
         #region GetHotelOffers
         [Fact]
@@ -249,65 +238,6 @@ namespace Server.Tests.Services.Client
             {
                 Assert.Equal(offerPictures[i], resultClientOffer.OfferPictures[i]);
             }
-        }
-        #endregion
-
-        #region GetHotelOfferReviews
-        [Fact]
-        public void GetHotelOfferReviews_GoodTest()
-        {
-            List<ReviewView> list = new List<ReviewView>();
-            list.Add(new ReviewView
-            {
-                Content = "con",
-                CreationDate = DateTime.Now,
-                Rating = 7,
-                ReviewerUsername = "Jezus",
-                ReviewID = 1
-            });
-            _offerSearchDataAccessMock.Setup(x => x.GetOfferReviews(It.IsAny<int>(), It.IsAny<int>())).Throws(new Exception());
-            _offerSearchDataAccessMock.Setup(x => x.GetOfferReviews(1, 1)).Returns(list);
-            var result = _offerSearchService.GetHotelOfferReviews(1, 1);
-            Assert.True(result.StatusCode == HttpStatusCode.OK);
-            List<ReviewView> reviewInfos = (List<ReviewView>)result.Result;
-            Assert.True(reviewInfos.Count == 1);
-            Assert.True(reviewInfos[0].ReviewID == 1);
-        }
-        [Fact]
-        public void GetHotelOfferReviews_ErrorTest()
-        {
-            _offerSearchDataAccessMock.Setup(x => x.GetOfferReviews(It.IsAny<int>(), It.IsAny<int>())).Throws(new Exception());
-            var result = _offerSearchService.GetHotelOfferReviews(1, 2);
-            Assert.True(result.StatusCode == HttpStatusCode.NotFound);
-        }
-        #endregion
-        #region GetHotelReviews
-        [Fact]
-        public void GetHotelReviews_GoodTest()
-        {
-            List<ReviewView> list = new List<ReviewView>();
-            list.Add(new ReviewView
-            {
-                Content = "con",
-                CreationDate = DateTime.Now,
-                Rating = 7,
-                ReviewerUsername = "Jezus",
-                ReviewID = 1
-            });
-            _offerSearchDataAccessMock.Setup(x => x.GetHotelReviews(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).Throws(new Exception());
-            _offerSearchDataAccessMock.Setup(x => x.GetHotelReviews(1, 0, 1)).Returns(list);
-            var result = _offerSearchService.GetHotelReviews(1, 1, new Paging { PageNumber = 1, PageSize = 1 });
-            Assert.True(result.StatusCode == HttpStatusCode.OK);
-            List<ReviewView> reviewInfos = (List<ReviewView>)result.Result;
-            Assert.True(reviewInfos.Count == 1);
-            Assert.True(reviewInfos[0].ReviewID == 1);
-        }
-        [Fact]
-        public void GetHotelReviews_ErrorTest()
-        {
-            _offerSearchDataAccessMock.Setup(x => x.GetHotelReviews(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).Throws(new Exception());
-            var result = _offerSearchService.GetHotelReviews(1, 2, new Paging { PageNumber = 1, PageSize = 1 });
-            Assert.True(result.StatusCode == HttpStatusCode.NotFound);
         }
         #endregion
     }

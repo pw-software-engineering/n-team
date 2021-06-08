@@ -1,9 +1,5 @@
-﻿using AutoMapper;
-using Moq;
-using Server.AutoMapper;
-using Server.Database.DataAccess;
+﻿using Moq;
 using Server.Database.DataAccess.Client;
-using Server.Database.DatabaseTransaction;
 using Server.RequestModels;
 using Server.RequestModels.Client;
 using Server.Services.Client;
@@ -13,7 +9,6 @@ using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using Xunit;
 
 namespace Server.Tests.Services.Client
@@ -21,21 +16,13 @@ namespace Server.Tests.Services.Client
     public class HotelSearchServiceTest
     {
         public HotelSearchServiceTest()
-        {
-            var config = new MapperConfiguration(opts =>
-            {
-                opts.AddProfile(new ClientAutoMapperProfile());
-            });
-            _mapper = config.CreateMapper();
+        {           
             _hotelSearchDataAccessMock = new Mock<IHotelSearchDataAccess>();
-            _transactionMock = new Mock<IDatabaseTransaction>();
 
-            _hotelSearchService = new HotelSearchService(_hotelSearchDataAccessMock.Object, _mapper, _transactionMock.Object);
+            _hotelSearchService = new HotelSearchService(_hotelSearchDataAccessMock.Object);
         }
         private HotelSearchService _hotelSearchService;
         private Mock<IHotelSearchDataAccess> _hotelSearchDataAccessMock;
-        private Mock<IDatabaseTransaction> _transactionMock;
-        private IMapper _mapper;
 
         #region GetHotels
         [Fact]

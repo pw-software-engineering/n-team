@@ -46,7 +46,7 @@ namespace Server.Database.DataAccess.Client
         public bool CheckHotelOfferAvailability(int offerID, DateTime from, DateTime to)
         {
             foreach (OfferHotelRoomDb offerRoom in _dbContext.OfferHotelRooms.Where(ohr => ohr.OfferID == offerID))
-                if (!_dbContext.ClientReservations.Where(cr => cr.RoomID == offerRoom.RoomID || (cr.ToTime < from || cr.FromTime > to)).Any())
+                if (!_dbContext.ClientReservations.Where(cr => cr.RoomID == offerRoom.RoomID && !(cr.ToTime < from || cr.FromTime > to)).Any())
                     return true;
             return false;
         }

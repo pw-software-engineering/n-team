@@ -56,7 +56,7 @@ namespace Server.Services.Hotel
         public IServiceResult DeleteOffer(int hotelID, int offerID)
         {
             IServiceResult response = CheckExistanceAndOwnership(hotelID, offerID);
-            if (response is null)
+            if (!(response is null))
                 return response;
 
             if (_dataAccess.AreThereUnfinishedReservationsForOffer(offerID))
@@ -84,7 +84,7 @@ namespace Server.Services.Hotel
         public IServiceResult GetOffer(int hotelID, int offerID)
         {
             IServiceResult response = CheckExistanceAndOwnership(hotelID, offerID);
-            if (response is null)
+            if (!(response is null))
                 return response;
 
             OfferView offerView = _dataAccess.GetOffer(offerID);
@@ -95,7 +95,7 @@ namespace Server.Services.Hotel
         public IServiceResult UpdateOffer(int hotelID, int offerID, OfferInfoUpdate offerUpdateInfo)
         {
             IServiceResult response = CheckExistanceAndOwnership(hotelID, offerID);
-            if (response is null)
+            if (!(response is null))
                 return response;
 
             using (IDatabaseTransaction transaction = _transaction.BeginTransaction())
@@ -110,9 +110,9 @@ namespace Server.Services.Hotel
         public IServiceResult CheckExistanceAndOwnership(int hotelID, int offerID)
         {
             int? ownerID = _dataAccess.FindOfferAndGetOwner(offerID);
-            if (ownerID == null)
+            if (!ownerID.HasValue)
                 return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Offer with ID equal to {offerID} does not exist"));
-            if (ownerID != hotelID)
+            if (ownerID.Value != hotelID)
                 return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView($"Offer with ID equal to {offerID} does not belong to hotel with ID equal to {hotelID}"));
             return null;
         }

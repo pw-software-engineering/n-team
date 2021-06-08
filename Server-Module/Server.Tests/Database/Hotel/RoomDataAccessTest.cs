@@ -169,7 +169,12 @@ namespace Server.Tests.Database.Hotel
             Paging paging = new Paging();
 
             List<HotelRoomView> hotelRoomsTest = _dataAccess.GetRooms(hotelID, paging);
-            List<HotelRoomDb> hotelRooms = _context.HotelRooms.Where(hr => hr.HotelID == hotelID).ToList();
+            List<HotelRoomDb> hotelRooms = _context.HotelRooms
+                                               .Where(hr => hr.HotelID == hotelID)
+                                               .OrderByDescending(hr => hr.RoomID)
+                                               .Skip((paging.PageNumber-1)*paging.PageSize)
+                                               .Take(paging.PageSize)
+                                               .ToList();
 
             Assert.Equal(hotelRooms.Count, hotelRoomsTest.Count);
             for (int i = 0; i < hotelRooms.Count; i++)
@@ -186,7 +191,12 @@ namespace Server.Tests.Database.Hotel
             Paging paging = new Paging();
 
             List<HotelRoomView> hotelRoomsTest = _dataAccess.GetRooms(hotelID, paging, roomNumber);
-            List<HotelRoomDb> hotelRooms = _context.HotelRooms.Where(hr => hr.HotelID == hotelID && hr.HotelRoomNumber == roomNumber).ToList();
+            List<HotelRoomDb> hotelRooms = _context.HotelRooms
+                                                    .Where(hr => hr.HotelID == hotelID && hr.HotelRoomNumber == roomNumber)
+                                                    .OrderByDescending(hr => hr.RoomID)
+                                                    .Skip((paging.PageNumber - 1) * paging.PageSize)
+                                                    .Take(paging.PageSize)
+                                                    .ToList();
 
             Assert.Equal(hotelRooms.Count, hotelRoomsTest.Count);
             for (int i = 0; i < hotelRooms.Count; i++)

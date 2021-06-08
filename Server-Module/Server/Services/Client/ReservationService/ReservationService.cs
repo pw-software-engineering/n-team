@@ -27,7 +27,7 @@ namespace Server.Services.Client
             using (IDatabaseTransaction transaction = _transaction.BeginTransaction())
             {
                 IServiceResult response = CheckOfferExistanceAndOwnership(offerID, hotelID);
-                if (response is null)
+                if (!(response is null))
                     return response;
 
                 DateTime tomorrow = DateTime.Now;
@@ -42,7 +42,6 @@ namespace Server.Services.Client
                         HttpStatusCode.BadRequest,
                         new ErrorView("FromTime cannot be greater than ToTime"));
 
-                _transaction.BeginTransaction();
                 List<int> roomIDs = _dataAccess.GetOfferRoomIDs(offerID);
                 foreach (int roomID in roomIDs)
                 {
@@ -69,7 +68,7 @@ namespace Server.Services.Client
             using (IDatabaseTransaction transaction = _transaction.BeginTransaction())
             {
                 IServiceResult response = CheckReservationExistanceAndOwnership(reservationID, userID);
-                if (response is null)
+                if (!(response is null))
                     return response;
 
                 if (_dataAccess.HasReservationBegun(reservationID))
@@ -96,18 +95,18 @@ namespace Server.Services.Client
         public IServiceResult CheckReservationExistanceAndOwnership(int reservationID, int userID)
         {
             int? ownerID = _dataAccess.FindReservationAndGetOwner(reservationID); 
-            if (ownerID is null)
+            if (!ownerID.HasValue)
                 return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Reservation with ID equal to {reservationID} does not exist"));
-            if (ownerID != userID)
+            if (ownerID.Value != userID)
                 return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView("You are not owner of requested reservation"));
             return null;
         }
         public IServiceResult CheckOfferExistanceAndOwnership(int offerID, int hotelID)
         {
             int? ownerID = _dataAccess.FindOfferAndGetOwner(offerID);
-            if (ownerID is null) 
+            if (!ownerID.HasValue) 
                 return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Hotel with ID equal to {hotelID} does not exist"));
-            if (ownerID != hotelID)
+            if (ownerID.Value != hotelID)
                 return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView($"Hotel with ID equal to {hotelID} has no offer with ID equal to {offerID}"));
             return null;
         }

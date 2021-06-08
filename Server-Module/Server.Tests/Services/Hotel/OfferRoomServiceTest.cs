@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Moq;
-using Server.AutoMapper;
+﻿using Moq;
 using Server.Database.DataAccess.Hotel;
 using Server.Database.DatabaseTransaction;
 using Server.RequestModels;
@@ -10,7 +8,6 @@ using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using Xunit;
 
 namespace Server.Tests.Services.Hotel
@@ -19,20 +16,14 @@ namespace Server.Tests.Services.Hotel
     {
         public OfferRoomServiceTest()
         {
-            var config = new MapperConfiguration(opts =>
-            {
-                opts.AddProfile(new HotelAutoMapperProfile());
-            });
-            _mapper = config.CreateMapper();
             _dataAccessMock = new Mock<IOfferRoomDataAccess>();
             _transactionMock = new Mock<IDatabaseTransaction>();
 
-            _offerRoomService = new OfferRoomService(_dataAccessMock.Object, _mapper, _transactionMock.Object);
+            _offerRoomService = new OfferRoomService(_dataAccessMock.Object, _transactionMock.Object);
         }
         private OfferRoomService _offerRoomService;
         private Mock<IOfferRoomDataAccess> _dataAccessMock;
         private Mock<IDatabaseTransaction> _transactionMock;
-        private IMapper _mapper;
 
         [Fact]
         public void AddRoomToOffer_NoRoomWithGivenID_404()

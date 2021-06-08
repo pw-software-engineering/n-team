@@ -10,7 +10,6 @@ using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using Xunit;
 
 namespace Server.Tests.Services.Hotel
@@ -19,20 +18,14 @@ namespace Server.Tests.Services.Hotel
     {
         public ReservationServiceTest()
         {
-            var config = new MapperConfiguration(opts =>
-            {
-                opts.AddProfile(new HotelAutoMapperProfile());
-            });
-            _mapper = config.CreateMapper();
             _dataAccessMock = new Mock<IReservationDataAccess>();
             _transactionMock = new Mock<IDatabaseTransaction>();
 
-            _reservationService = new ReservationService(_dataAccessMock.Object, _mapper, _transactionMock.Object);
+            _reservationService = new ReservationService(_dataAccessMock.Object, _transactionMock.Object);
         }
         private ReservationService _reservationService;
         private Mock<IReservationDataAccess> _dataAccessMock;
         private Mock<IDatabaseTransaction> _transactionMock;
-        private IMapper _mapper;
 
         [Fact]
         public void CheckRoomExistenceAndOwnership_RoomExistsAndHotelIsOwner_ReturnsNull()

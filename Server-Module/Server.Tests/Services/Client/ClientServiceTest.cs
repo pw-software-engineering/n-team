@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using AutoMapper;
 using Moq;
 using Server.Authentication.Client;
 using Server.AutoMapper;
-using Server.Database.DataAccess;
 using Server.Database.DatabaseTransaction;
 using Server.Services.Result;
-using Server.RequestModels;
 using Xunit;
 using Server.ViewModels;
 using Server.Database.DataAccess.Client;
@@ -23,20 +19,14 @@ namespace Server.Tests.Services.Client
     {
         public ClientServiceTest()
         {
-            var config = new MapperConfiguration(opts =>
-            {
-                opts.AddProfile(new ClientAutoMapperProfile());
-            });
-            _mapper = config.CreateMapper();
             _dataAccessMock = new Mock<IClientDataAccess>();
             _transactionMock = new Mock<IDatabaseTransaction>();
 
-            _clientService = new ClientAccountService(_dataAccessMock.Object, _mapper, _transactionMock.Object);
+            _clientService = new ClientAccountService(_dataAccessMock.Object, _transactionMock.Object);
         }
         private ClientAccountService _clientService;
         private Mock<IClientDataAccess> _dataAccessMock;
         private Mock<IDatabaseTransaction> _transactionMock;
-        private IMapper _mapper;
 
         #region GetClientInfo
         [Fact]
