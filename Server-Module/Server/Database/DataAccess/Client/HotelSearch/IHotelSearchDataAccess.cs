@@ -16,5 +16,6 @@ namespace Server.Database.DataAccess.Client
         List<string> GetHotelPictures(int hotelID);
         #endregion
         List<ReviewView> GetHotelReviews(int hotelID, Paging paging);
+        bool DoesHotelExist(int hotelID);
     }
 }

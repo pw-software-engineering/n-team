@@ -5,23 +5,18 @@ using Server.RequestModels;
 using Server.Services.Result;
 using Server.ViewModels;
 using Server.ViewModels.Hotel;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace Server.Services.Hotel
 {
     public class OfferRoomService : IOfferRoomService
     {
         private readonly IOfferRoomDataAccess _dataAccess;
-        private readonly IMapper _mapper;
         private readonly IDatabaseTransaction _transaction;
-        public OfferRoomService(IOfferRoomDataAccess dataAccess, IMapper mapper, IDatabaseTransaction transaction)
+        public OfferRoomService(IOfferRoomDataAccess dataAccess, IDatabaseTransaction transaction)
         {
             _dataAccess = dataAccess;
-            _mapper = mapper;
             _transaction = transaction;
         }
         public IServiceResult AddRoomToOffer(int roomID, int offerID, int hotelID)
@@ -37,16 +32,18 @@ namespace Server.Services.Hotel
             if (_dataAccess.IsRoomAlreadyAddedToOffer(roomID, offerID))
                 return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView($"Room with ID equal to {roomID} is already added to offer with ID equal to {offerID}"));
 
-            _transaction.BeginTransaction();
-            _dataAccess.AddRoomToOffer(roomID, offerID);
-            _transaction.CommitTransaction();
+            using (IDatabaseTransaction transaction = _transaction.BeginTransaction())
+            {
+                _dataAccess.AddRoomToOffer(roomID, offerID);
+                _transaction.CommitTransaction();
+            }
 
             return new ServiceResult(HttpStatusCode.OK);
         }
 
         public IServiceResult GetOfferRooms(int offerID, int hotelID, string hotelRoomNumber, Paging paging)
         {
-            if (paging.PageSize < 0 || paging.PageNumber < 0)
+            if (paging.PageSize < 1 || paging.PageNumber < 1)
                 return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Invalid paging arguments"));
 
             IServiceResult result = CheckOfferExistanceAndOwnership(offerID, hotelID);

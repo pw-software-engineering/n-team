@@ -1,11 +1,6 @@
-﻿using Server.Database;
-using Server.Database.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Server.ViewModels;
-using Server.Database.DataAccess;
 using AutoMapper;
 using Server.Services.Result;
 using Server.RequestModels;
@@ -30,51 +25,51 @@ namespace Server.Services.Hotel
         }
         public IServiceResult AddOffer(int hotelID, OfferInfo offerInfo)
         {
-            if(offerInfo == null)
-            {
+            if(offerInfo is null)
                 throw new ArgumentNullException("offerInfo");
-            }
+
             if(!offerInfo.MaxGuests.HasValue || offerInfo.MaxGuests.Value <= 0)
-            {
                 return new ServiceResult(
                     HttpStatusCode.BadRequest,
                     new ErrorView("MaxGuests property is required and must contain a positive integer value"));
-            }
+
             if(!offerInfo.CostPerAdult.HasValue || offerInfo.CostPerAdult.Value < 0)
-            {
                 return new ServiceResult(
                     HttpStatusCode.BadRequest,
                     new ErrorView("CostPerAdult property is required and must contain a positive real number"));
-            }
+
             if(!offerInfo.CostPerChild.HasValue || offerInfo.CostPerChild.Value < 0)
-            {
                 return new ServiceResult(
                     HttpStatusCode.BadRequest,
                     new ErrorView("CostPerChild property is required and must contain a positive real number"));
-            }
-            _transaction.BeginTransaction();
-            int offerID = _dataAccess.AddOffer(hotelID, offerInfo);
-            _dataAccess.AddOfferPictures(offerID, offerInfo.Pictures);
-            _transaction.CommitTransaction();
 
-            return new ServiceResult(HttpStatusCode.OK, new OfferIDView(offerID));
+            using (IDatabaseTransaction transaction = _transaction.BeginTransaction())
+            {
+                int offerID = _dataAccess.AddOffer(hotelID, offerInfo);
+                _dataAccess.AddOfferPictures(offerID, offerInfo.Pictures);
+                _transaction.CommitTransaction();
+
+                return new ServiceResult(HttpStatusCode.OK, new OfferIDView(offerID));
+            }
         }
 
         public IServiceResult DeleteOffer(int hotelID, int offerID)
         {
             IServiceResult response = CheckExistanceAndOwnership(hotelID, offerID);
-            if (response != null)
+            if (response is null)
                 return response;
 
             if (_dataAccess.AreThereUnfinishedReservationsForOffer(offerID))
                 return new ServiceResult(HttpStatusCode.Conflict, new ErrorView($"There are still pending reservations for offer with ID equal to {offerID}"));
 
-            _transaction.BeginTransaction();
-            _dataAccess.UnpinRoomsFromOffer(offerID);
-            _dataAccess.DeleteOffer(offerID);
-            _transaction.CommitTransaction();
+            using (IDatabaseTransaction transaction = _transaction.BeginTransaction())
+            {
+                _dataAccess.UnpinRoomsFromOffer(offerID);
+                _dataAccess.DeleteOffer(offerID);
+                _transaction.CommitTransaction();
 
-            return new ServiceResult(HttpStatusCode.OK);
+                return new ServiceResult(HttpStatusCode.OK);
+            }
         }
 
         public IServiceResult GetHotelOffers(int hotelID, Paging paging, bool? isActive = null)
@@ -89,7 +84,7 @@ namespace Server.Services.Hotel
         public IServiceResult GetOffer(int hotelID, int offerID)
         {
             IServiceResult response = CheckExistanceAndOwnership(hotelID, offerID);
-            if (response != null)
+            if (response is null)
                 return response;
 
             OfferView offerView = _dataAccess.GetOffer(offerID);
@@ -100,14 +95,16 @@ namespace Server.Services.Hotel
         public IServiceResult UpdateOffer(int hotelID, int offerID, OfferInfoUpdate offerUpdateInfo)
         {
             IServiceResult response = CheckExistanceAndOwnership(hotelID, offerID);
-            if (response != null)
+            if (response is null)
                 return response;
 
-            _transaction.BeginTransaction();
-            _dataAccess.UpdateOffer(offerID, offerUpdateInfo);
-            _transaction.CommitTransaction();
+            using (IDatabaseTransaction transaction = _transaction.BeginTransaction())
+            {
+                _dataAccess.UpdateOffer(offerID, offerUpdateInfo);
+                _transaction.CommitTransaction();
 
-            return new ServiceResult(HttpStatusCode.OK);
+                return new ServiceResult(HttpStatusCode.OK);
+            }
         }
 
         public IServiceResult CheckExistanceAndOwnership(int hotelID, int offerID)

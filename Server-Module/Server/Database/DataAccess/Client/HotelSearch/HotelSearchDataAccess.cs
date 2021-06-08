@@ -71,5 +71,10 @@ namespace Server.Database.DataAccess.Client
             }
             return reviewInfos;
         }
+
+        public bool DoesHotelExist(int hotelID)
+        {
+            return !(_dbContext.Hotels.Find(hotelID) is null);
+        }
     }
 }

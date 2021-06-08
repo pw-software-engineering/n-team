@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Server.Database.Models;
 using Server.RequestModels.Client;
 using Server.ViewModels.Client;
@@ -70,7 +71,7 @@ namespace Server.Database.DataAccess.Client.Review
         }
 
         public int? FindReservationOwner(int reservationID)
-        {
+        { 
             return _dbContext.ClientReservations.Find(reservationID)?.ClientID;
         }
 

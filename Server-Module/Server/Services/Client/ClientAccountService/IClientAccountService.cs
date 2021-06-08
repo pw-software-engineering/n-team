@@ -1,12 +1,5 @@
-﻿using Server.Database.Models;
-using Server.RequestModels;
-using Server.RequestModels.Client;
+﻿using Server.RequestModels.Client;
 using Server.Services.Result;
-using Server.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Services.Client
 {
