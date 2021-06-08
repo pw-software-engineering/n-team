@@ -256,14 +256,22 @@ namespace Server.Tests.Services.Client
         [Fact]
         public void GetHotelOfferReviews_GoodTest()
         {
-            List<ReviewInfo> list = new List<ReviewInfo>();
-            list.Add(new ReviewInfo { content = "con", creationDate = DateTime.Now, rating = 7, revewerUsername = "Jezus", reviewID = 1 });
+            List<ReviewView> list = new List<ReviewView>();
+            list.Add(new ReviewView
+            {
+                Content = "con",
+                CreationDate = DateTime.Now,
+                Rating = 7,
+                ReviewerUsername = "Jezus",
+                ReviewID = 1
+            });
             _offerSearchDataAccessMock.Setup(x => x.GetOfferReviews(It.IsAny<int>(), It.IsAny<int>())).Throws(new Exception());
             _offerSearchDataAccessMock.Setup(x => x.GetOfferReviews(1, 1)).Returns(list);
             var result = _offerSearchService.GetHotelOfferReviews(1, 1);
             Assert.True(result.StatusCode == HttpStatusCode.OK);
-            List<ReviewInfo> reviewInfos = (List<ReviewInfo>)result.Result;
-            Assert.True(reviewInfos.Count == 1 && reviewInfos[0].reviewID == 1);
+            List<ReviewView> reviewInfos = (List<ReviewView>)result.Result;
+            Assert.True(reviewInfos.Count == 1);
+            Assert.True(reviewInfos[0].ReviewID == 1);
         }
         [Fact]
         public void GetHotelOfferReviews_ErrorTest()
@@ -277,14 +285,22 @@ namespace Server.Tests.Services.Client
         [Fact]
         public void GetHotelReviews_GoodTest()
         {
-            List<ReviewInfo> list = new List<ReviewInfo>();
-            list.Add(new ReviewInfo { content = "con", creationDate = DateTime.Now, rating = 7, revewerUsername = "Jezus", reviewID = 1 });
+            List<ReviewView> list = new List<ReviewView>();
+            list.Add(new ReviewView
+            {
+                Content = "con",
+                CreationDate = DateTime.Now,
+                Rating = 7,
+                ReviewerUsername = "Jezus",
+                ReviewID = 1
+            });
             _offerSearchDataAccessMock.Setup(x => x.GetHotelReviews(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).Throws(new Exception());
             _offerSearchDataAccessMock.Setup(x => x.GetHotelReviews(1, 0, 1)).Returns(list);
             var result = _offerSearchService.GetHotelReviews(1, 1, new Paging { PageNumber = 1, PageSize = 1 });
             Assert.True(result.StatusCode == HttpStatusCode.OK);
-            List<ReviewInfo> reviewInfos = (List<ReviewInfo>)result.Result;
-            Assert.True(reviewInfos.Count == 1 && reviewInfos[0].reviewID == 1);
+            List<ReviewView> reviewInfos = (List<ReviewView>)result.Result;
+            Assert.True(reviewInfos.Count == 1);
+            Assert.True(reviewInfos[0].ReviewID == 1);
         }
         [Fact]
         public void GetHotelReviews_ErrorTest()

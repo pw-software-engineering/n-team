@@ -417,7 +417,7 @@ namespace Server.Tests.Database.Client
             int i = 0;
             foreach(var review in result)
             {
-                Assert.True(review.content == "hotel3");
+                Assert.True(review.Content == "hotel3");
                 i++;
             }
             Assert.True(i == 2);
@@ -429,7 +429,7 @@ namespace Server.Tests.Database.Client
             int i = 0;
             foreach (var review in result)
             {
-                Assert.True(review.content == "hotel3");
+                Assert.True(review.Content == "hotel3");
                 i++;
             }
             Assert.True(i == 1);
@@ -453,7 +453,7 @@ namespace Server.Tests.Database.Client
             int i = 0;
             foreach (var review in result)
             {
-                Assert.True(review.content == "hotel3");
+                Assert.True(review.Content == "hotel3");
                 i++;
             }
             Assert.True(i == 2);
