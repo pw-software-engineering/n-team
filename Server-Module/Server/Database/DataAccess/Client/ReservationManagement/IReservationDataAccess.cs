@@ -2,9 +2,6 @@
 using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
-using Server.Database.Models;
-using System.Linq;
-using System.Threading.Tasks;
 using Server.RequestModels;
 
 namespace Server.Database.DataAccess.Client

@@ -92,7 +92,7 @@ namespace Server.Services.Hotel
             if (response != null)
                 return response;
 
-            OfferView offerView = _mapper.Map<OfferView>(_dataAccess.GetOffer(offerID));
+            OfferView offerView = _dataAccess.GetOffer(offerID);
             offerView.Pictures = _dataAccess.GetOfferPictures(offerID);
             return new ServiceResult(HttpStatusCode.OK, offerView);
         }

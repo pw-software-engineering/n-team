@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Server.Database.Models;
 using Server.RequestModels.Client;
-using Server.Services.Result;
 using Server.ViewModels.Client;
 using System;
 using System.Linq;
@@ -25,10 +24,10 @@ namespace Server.Database.DataAccess.Client.Review
 
         public int EditReview(int reservationID, ReviewUpdate reviewUpdate)
         {
-            if (reviewUpdate == null)
+            if (reviewUpdate is null)
                 throw new ArgumentNullException("reviewUpdate");
-            ClientReviewDb review = _dbContext.ClientReviews.First(r => r.ReservationID == reservationID);
 
+            ClientReviewDb review = _dbContext.ClientReviews.First(r => r.ReservationID == reservationID);
             review.Content = reviewUpdate.Content;
             review.Rating = (uint)reviewUpdate.Rating;
             _dbContext.SaveChanges();
@@ -36,7 +35,7 @@ namespace Server.Database.DataAccess.Client.Review
         }
         public int AddReview(int reservationID, ReviewUpdate reviewUpdate)
         {
-            if (reviewUpdate == null)
+            if (reviewUpdate is null)
                 throw new ArgumentNullException("reviewUpdate");
 
             ClientReservationDb reservation = _dbContext.ClientReservations.Find(reservationID);
@@ -52,8 +51,6 @@ namespace Server.Database.DataAccess.Client.Review
                 HotelID = reservation.HotelID
             };
 
-
-            // tutaj muszę 2 razy zapisywać by nadać id do review a potem przepisać je do reservation
             _dbContext.ClientReviews.Add(newReviewInfo);
             _dbContext.SaveChanges();
             reservation.ReviewID = newReviewInfo.ReviewID;

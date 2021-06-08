@@ -1,8 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Database.DatabaseTransaction
 {
@@ -38,9 +34,7 @@ namespace Server.Database.DatabaseTransaction
             if(_hasTransactionBegun)
             {
                 if(!_isDone)
-                {
                     RollbackTransaction();
-                }
                 _transaction.Dispose();
             }
         }

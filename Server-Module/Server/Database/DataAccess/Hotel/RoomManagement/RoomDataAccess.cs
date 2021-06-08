@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using Server.Database.Models;
 using Server.RequestModels;
-using Server.ViewModels;
 using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess.Hotel
 {
@@ -38,18 +36,18 @@ namespace Server.Database.DataAccess.Hotel
         {
             if (roomNumber == null)
                 return _mapper.Map<List<HotelRoomView>>(_dbContext.HotelRooms
-                            .Where(hr => hr.HotelID == hotelID)
-                            .OrderBy(hr => hr.RoomID)
-                            .Skip(paging.PageSize * (paging.PageNumber - 1))
-                            .Take(paging.PageSize)
-                            .ToList());
+                                                          .Where(hr => hr.HotelID == hotelID)
+                                                          .OrderByDescending(hr => hr.RoomID)
+                                                          .Skip(paging.PageSize * (paging.PageNumber - 1))
+                                                          .Take(paging.PageSize)
+                                                          .ToList());
 
             return _mapper.Map<List<HotelRoomView>>(_dbContext.HotelRooms
-                        .Where(hr => hr.HotelID == hotelID && hr.HotelRoomNumber == roomNumber)
-                        .OrderBy(hr => hr.RoomID)
-                        .Skip(paging.PageSize * (paging.PageNumber - 1))
-                        .Take(paging.PageSize)
-                        .ToList());
+                                                      .Where(hr => hr.HotelID == hotelID && hr.HotelRoomNumber == roomNumber)
+                                                      .OrderByDescending(hr => hr.RoomID)
+                                                      .Skip(paging.PageSize * (paging.PageNumber - 1))
+                                                      .Take(paging.PageSize)
+                                                      .ToList());
         }
         public List<int> GetOfferIDsForRoom(int roomId)
         {

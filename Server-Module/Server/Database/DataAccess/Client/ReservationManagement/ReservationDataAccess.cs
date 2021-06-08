@@ -7,7 +7,6 @@ using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess.Client
 {
@@ -68,18 +67,18 @@ namespace Server.Database.DataAccess.Client
         public List<ReservationData> GetReservations(int userID, Paging paging)
         {
             return _dbContext.ClientReservations
-                .Where(reservation => reservation.ClientID == userID)
-                .OrderByDescending(reservation => reservation.ReservationID)
-                .Skip((paging.PageNumber - 1) * paging.PageSize)
-                .Take(paging.PageSize)
-                .Include(reservation => reservation.Hotel)
-                .Include(reservation => reservation.Offer)
-                .Select(rdb => new ReservationData()
-                {
-                    HotelInfoPreview = _mapper.Map<HotelInfoPreview>(rdb.Hotel),
-                    ReservationInfo = _mapper.Map<ReservationInfoView>(rdb),
-                    OfferInfoPreview = _mapper.Map<ReservationOfferInfoPreview>(rdb.Offer)
-                }).ToList();
+                    .Where(reservation => reservation.ClientID == userID)
+                    .OrderByDescending(reservation => reservation.ReservationID)
+                    .Skip((paging.PageNumber - 1) * paging.PageSize)
+                    .Take(paging.PageSize)
+                    .Include(reservation => reservation.Hotel)
+                    .Include(reservation => reservation.Offer)
+                    .Select(rdb => new ReservationData()
+                    {
+                        HotelInfoPreview = _mapper.Map<HotelInfoPreview>(rdb.Hotel),
+                        ReservationInfo = _mapper.Map<ReservationInfoView>(rdb),
+                        OfferInfoPreview = _mapper.Map<ReservationOfferInfoPreview>(rdb.Offer)
+                    }).ToList();
         }
     }
 }
