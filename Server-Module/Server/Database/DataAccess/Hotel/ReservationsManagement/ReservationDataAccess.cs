@@ -43,7 +43,7 @@ namespace Server.Database.DataAccess.Hotel
                 ReservationObjectView reservationView = new ReservationObjectView();
                 reservationView.Reservation = _mapper.Map<ReservationView>(reservation);
                 reservationView.Room = GetRoomDetails(reservation.RoomID.Value);
-                reservationView.Client = GetClientDetails(reservation.ClientID.Value);                
+                reservationView.Client = GetClientDetails(reservation.ClientID);                
                 reservationViews.Add(reservationView);
             }
             return reservationViews;

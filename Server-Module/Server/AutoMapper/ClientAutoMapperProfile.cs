@@ -24,7 +24,10 @@ namespace Server.AutoMapper
             CreateMap<HotelDb, HotelView>();
             CreateMap<HotelDb, HotelInfoPreview>();
             CreateMap<OfferDb, OfferPreviewView>();
-            CreateMap<OfferDb, OfferView>();
+            CreateMap<OfferDb, OfferView>().AfterMap((odb, o) =>
+            {
+                o.OfferDescription = odb.Description;
+            });
             CreateMap<OfferDb, ReservationOfferInfoPreview>();
             CreateMap<ClientDb, ClientInfoView>();
             CreateMap<ClientReservationDb, ReservationInfoView>().AfterMap((cr, r) =>
@@ -32,7 +35,10 @@ namespace Server.AutoMapper
                 r.From = cr.FromTime;
                 r.To = cr.ToTime;
             });
-            //CreateMap<ClientReviewDb, ReviewInfoView>();
+            CreateMap<ClientReviewDb, ReviewView>().AfterMap((rdb, r) =>
+            {
+                r.CreationDate = rdb.ReviewDate;
+            });
             #endregion
 
             #region Request -> Model -> Db

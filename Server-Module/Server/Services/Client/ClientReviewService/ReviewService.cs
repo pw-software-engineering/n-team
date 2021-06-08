@@ -1,5 +1,6 @@
 ﻿using Server.Database.DataAccess.Client.Review;
 using Server.Database.DatabaseTransaction;
+using Server.RequestModels.Client;
 using Server.Services.Result;
 using Server.ViewModels;
 using Server.ViewModels.Client;
@@ -11,100 +12,100 @@ using System.Threading.Tasks;
 
 namespace Server.Services.Client.ClientReviewService
 {
-    public class ReviewService : IReviewSerice
+    public class ReviewService : IReviewService
     {
         private readonly IReviewDataAccess _reviewDataAccess;
         private readonly IDatabaseTransaction _transaction;
 
-        public ReviewService(IReviewDataAccess reviewDataAccess,IDatabaseTransaction transaction)
+        public ReviewService(IReviewDataAccess reviewDataAccess, IDatabaseTransaction transaction)
         {
             _reviewDataAccess = reviewDataAccess;
             _transaction = transaction;
         }
-        
-        public IServiceResult DeleteReview(int reservationID,int clientID)
-        {
-            _transaction.BeginTransaction();
-            try
-            {
-                if(!_reviewDataAccess.IsClientTheOwnerOfReservation(reservationID,clientID))
-                {
-                    _transaction.RollbackTransaction();
-                    return new ServiceResult(HttpStatusCode.Forbidden, new ErrorView("Not the owner"));
-                }
 
+        public IServiceResult GetReview(int reservationID, int clientID)
+        {
+            IServiceResult result = CheckReservationExistenceAndOwnership(reservationID, clientID);
+            if(!(result is null))
+            {
+                return result;
+            }
+            ReviewView reviewInfo = _reviewDataAccess.GetReview(reservationID);
+            if(reviewInfo is null)
+            {
+                return new ServiceResult(
+                    HttpStatusCode.NotFound, 
+                    new ErrorView($"Reservation with ID equal to {reservationID} does not have a review"));
+            }
+            return new ServiceResult(HttpStatusCode.OK, reviewInfo);
+        }
+
+        public IServiceResult DeleteReview(int reservationID, int clientID)
+        {
+            using(IDatabaseTransaction transaction = _transaction.BeginTransaction())
+            {
+                IServiceResult result = CheckReservationExistenceAndOwnership(reservationID, clientID);
+                if (!(result is null))
+                {
+                    return result;
+                }
+                if (!_reviewDataAccess.CheckReviewExistence(reservationID))
+                {
+                    return new ServiceResult(
+                        HttpStatusCode.NotFound,
+                        new ErrorView($"Reservation with ID equal to {reservationID} does not have a review"));
+                }
                 _reviewDataAccess.DeleteReview(reservationID);
-
-            }catch(Exception e)
-            {
-                _transaction.RollbackTransaction();
-                return new ServiceResult(HttpStatusCode.NotFound,new ErrorView(e.Message));
+                transaction.CommitTransaction();
+                return new ServiceResult(HttpStatusCode.OK);
             }
-
-            _transaction.CommitTransaction();
-            return new ServiceResult(HttpStatusCode.OK);
         }
 
-        public IServiceResult GetReview(int reservationID)
+        public IServiceResult PutReview(int reservationID, int clientID, ReviewUpdate reviewUpdate)
         {
-            ReviewInfo result;
-            _transaction.BeginTransaction();
-            try
+            IServiceResult result = CheckReservationExistenceAndOwnership(reservationID, clientID);
+            if (!(result is null))
             {
-
-                result = _reviewDataAccess.GetReview(reservationID);
-
+                return result;
             }
-            catch (Exception e)
+            if(!_reviewDataAccess.IsReviewChangeAllowed(reservationID))
             {
-                _transaction.RollbackTransaction();
-                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView(e.Message));
+                return new ServiceResult(
+                    HttpStatusCode.BadRequest,
+                    new ErrorView($"Reviews can be changed/created during 30 days after the reservation has ended"));
             }
-
-            _transaction.CommitTransaction();
-            return new ServiceResult(HttpStatusCode.OK,result);
-        }
-
-        public IServiceResult PutReview(int reservationID, int clientID,ReviewUpdater reviewUpdater)
-        {
-            ReviewID reviewID = new ReviewID();
-            _transaction.BeginTransaction();
-            try
+            int reviewID;
+            using(IDatabaseTransaction transaction = _transaction.BeginTransaction())
             {
-                if (!_reviewDataAccess.IsClientTheOwnerOfReservation(reservationID, clientID))
+                if(!_reviewDataAccess.CheckReviewExistence(reservationID))
                 {
-                    _transaction.RollbackTransaction();
-                    return new ServiceResult(HttpStatusCode.Forbidden, new ErrorView("Not the owner"));
-                }
-                if(!_reviewDataAccess.IsDataValid(reviewUpdater))
-                {
-                    _transaction.RollbackTransaction();
-                    return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Invalid Data"));
-                }
-                if (_reviewDataAccess.IsReviewExist(reservationID))
-                {
-                    if(!_reviewDataAccess.IsAddingReviewToReservationEnabled(reservationID))
-                    {
-                        _transaction.RollbackTransaction();
-                        return new ServiceResult(HttpStatusCode.Forbidden, new ErrorView("The reservation not ended or ended mor than 30 days ego"));
-                    }
-                    reviewID.reviewID = _reviewDataAccess.UpdateReview(reservationID, reviewUpdater);
+                    reviewID = _reviewDataAccess.AddReview(reservationID, reviewUpdate);
                 }
                 else
                 {
-                    reviewID.reviewID = _reviewDataAccess.AddNewReview(reservationID, reviewUpdater);
+                    reviewID = _reviewDataAccess.EditReview(reservationID, reviewUpdate);
                 }
-                
-
+                _transaction.CommitTransaction();
+                return new ServiceResult(HttpStatusCode.OK, new ReviewIDView() { ReviewID = reviewID });
             }
-            catch (Exception e)
+        }
+
+        public IServiceResult CheckReservationExistenceAndOwnership(int reservationID, int clientID)
+        {
+            int? ownerID = _reviewDataAccess.FindReservationOwner(reservationID);
+            if (!ownerID.HasValue)
             {
-                _transaction.RollbackTransaction();
-                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView(e.Message));
+                return new ServiceResult(
+                    HttpStatusCode.NotFound,
+                    new ErrorView($"Reservation with ID equal to {reservationID} does not exist"));
             }
-
-            _transaction.CommitTransaction();
-            return new ServiceResult(HttpStatusCode.OK, reviewID);
+            if (clientID != ownerID.Value)
+            {
+                return new ServiceResult(
+                    HttpStatusCode.Forbidden,
+                    new ErrorView($"Reservation with ID equal to {reservationID} does not belong to client with ID equal to {clientID}"));
+            }
+            return null;
         }
     }
 }

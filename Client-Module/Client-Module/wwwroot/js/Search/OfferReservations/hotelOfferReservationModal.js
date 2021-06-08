@@ -44,13 +44,14 @@
             }
         }
 
+        var now = new Date(new Date(new Date().toISOString().split('T')[0]).getTime() + 24 * 60 * 60 * 1000);
         var fromTimeInput = this.inputHandles.fromTimeInput;
         fromTimeInput.focusout(function () {
             var input = $(this);
             var inputData = input.val();
-            var now = new Date().toISOString().split('T')[0];
-            if (!inputData || new Date(inputData) < new Date(now)) {
-                input.val(now);
+            if (!inputData || new Date(inputData) < now) {
+                input.val(now.toISOString().split('T')[0]);
+                inputData = input.val();
             }
             if (new Date(inputData) > new Date(toTimeInput.val())) {
                 toTimeInput.val(inputData);
@@ -62,9 +63,9 @@
         toTimeInput.focusout(function () {
             var input = $(this);
             var inputData = input.val();
-            var now = new Date().toISOString().split('T')[0];
-            if (!inputData || new Date(inputData) < new Date(now)) {
-                input.val(now);
+            if (!inputData || new Date(inputData) < now) {
+                input.val(now.toISOString().split('T')[0]);
+                inputData = input.val();
             }
             if (new Date(inputData) < new Date(fromTimeInput.val())) {
                 fromTimeInput.val(inputData);
@@ -92,7 +93,7 @@
             this.guestInputsValidationBox.addClass("d-none");
             var numberOfAdults = Number(this.inputHandles.numberOfAdultsInput.val());
             var numberOfChildren = Number(this.inputHandles.numberOfChildrenInput.val());
-            if (!numberOfAdults || !numberOfChildren) {
+            if (numberOfAdults < 0 || numberOfChildren < 0) {
                 this.guestInputsValidationBox
                     .removeClass("d-none")
                     .text("Both fields 'Number of adults' and 'Number of children' must contain a non-negative integer");

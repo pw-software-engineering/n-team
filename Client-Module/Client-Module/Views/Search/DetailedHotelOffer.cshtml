@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Offer details";
     HotelOfferDetailsTagID tagIDs = new HotelOfferDetailsTagID();
+    DateTime tomorrow = DateTime.Now;
+    tomorrow = new DateTime(tomorrow.Year, tomorrow.Month, tomorrow.Day).AddDays(1);
 }
 
 <div class="w-100 shadow-border bg-light p-4" id="@tagIDs.LoadingDataDivID">
@@ -145,11 +147,11 @@
                 <div class="d-flex flex-row flex-wrap">
                     <div class="flex-grow-1 mx-3">
                         <p class="text-muted my-0 mx-2">From:</p>
-                        <input class="form-control flex-grow-1 w-100" type="date" id="@tagIDs.ReservationFromTimeInputID" value="@(Model.FromTime.HasValue ? Model.FromTime.Value.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
+                        <input class="form-control flex-grow-1 w-100" type="date" id="@tagIDs.ReservationFromTimeInputID" value="@(Model.FromTime.HasValue ? Model.FromTime.Value.ToString("yyyy-MM-dd") : tomorrow.ToString("yyyy-MM-dd"))" />
                     </div>
                     <div class="flex-grow-1 mx-3">
                         <p class="text-muted my-0 mx-2">To:</p>
-                        <input class="form-control flex-grow-1 w-100" type="date" id="@tagIDs.ReservationToTimeInputID" value="@(Model.ToTime.HasValue ? Model.ToTime.Value.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
+                        <input class="form-control flex-grow-1 w-100" type="date" id="@tagIDs.ReservationToTimeInputID" value="@(Model.ToTime.HasValue ? Model.ToTime.Value.ToString("yyyy-MM-dd") : tomorrow.ToString("yyyy-MM-dd"))" />
                     </div>
                 </div>
                 <hr style="border-top: 1px dashed lightgray" />
@@ -278,7 +280,6 @@
 <script src="~/js/Shared/pager.js"></script>
 <script>
     offerDetailsLoadedPromise.then(function () {
-        console.log("LOADING REVIEWS");
         var apiConfig = {
             apiBaseUrl: "@ServerApiConfig.BaseUrl",
             apiTokenCookieName: "@ClientTokenCookieDefaults.AuthCookieName",

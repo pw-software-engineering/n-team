@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Server.Database.DatabaseTransaction
 {
-    public interface IDatabaseTransaction
+    public interface IDatabaseTransaction : IDisposable
     {
-        void BeginTransaction();
+        IDatabaseTransaction BeginTransaction();
         void CommitTransaction();
         void RollbackTransaction();
     }
