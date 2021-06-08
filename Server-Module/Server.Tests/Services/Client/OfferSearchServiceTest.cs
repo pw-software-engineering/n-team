@@ -12,7 +12,6 @@ using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using Xunit;
 
 namespace Server.Tests.Services.Client
@@ -187,7 +186,7 @@ namespace Server.Tests.Services.Client
 
             Assert.Equal(HttpStatusCode.OK, serviceResult.StatusCode);
             Assert.Equal(offerPreviews.Count, clientOfferPreviews.Count);
-            for(int i = 0; i < clientOfferPreviews.Count; i++)
+            for (int i = 0; i < clientOfferPreviews.Count; i++)
             {
                 Assert.Equal(offerPreview.CostPerAdult, clientOfferPreviews[i].CostPerAdult);
                 Assert.Equal(offerPreview.CostPerChild, clientOfferPreviews[i].CostPerChild);
@@ -246,10 +245,69 @@ namespace Server.Tests.Services.Client
             Assert.Equal(clientOffer.MaxGuests, resultClientOffer.MaxGuests);
             Assert.Equal(clientOffer.OfferTitle, resultClientOffer.OfferTitle);
             Assert.Equal(offerPictures.Count, resultClientOffer.OfferPictures.Count);
-            for(int i = 0; i < offerPictures.Count; i++)
+            for (int i = 0; i < offerPictures.Count; i++)
             {
                 Assert.Equal(offerPictures[i], resultClientOffer.OfferPictures[i]);
-            }            
+            }
+        }
+        #endregion
+
+        #region GetHotelOfferReviews
+        [Fact]
+        public void GetHotelOfferReviews_GoodTest()
+        {
+            List<ReviewView> list = new List<ReviewView>();
+            list.Add(new ReviewView
+            {
+                Content = "con",
+                CreationDate = DateTime.Now,
+                Rating = 7,
+                ReviewerUsername = "Jezus",
+                ReviewID = 1
+            });
+            _offerSearchDataAccessMock.Setup(x => x.GetOfferReviews(It.IsAny<int>(), It.IsAny<int>())).Throws(new Exception());
+            _offerSearchDataAccessMock.Setup(x => x.GetOfferReviews(1, 1)).Returns(list);
+            var result = _offerSearchService.GetHotelOfferReviews(1, 1);
+            Assert.True(result.StatusCode == HttpStatusCode.OK);
+            List<ReviewView> reviewInfos = (List<ReviewView>)result.Result;
+            Assert.True(reviewInfos.Count == 1);
+            Assert.True(reviewInfos[0].ReviewID == 1);
+        }
+        [Fact]
+        public void GetHotelOfferReviews_ErrorTest()
+        {
+            _offerSearchDataAccessMock.Setup(x => x.GetOfferReviews(It.IsAny<int>(), It.IsAny<int>())).Throws(new Exception());
+            var result = _offerSearchService.GetHotelOfferReviews(1, 2);
+            Assert.True(result.StatusCode == HttpStatusCode.NotFound);
+        }
+        #endregion
+        #region GetHotelReviews
+        [Fact]
+        public void GetHotelReviews_GoodTest()
+        {
+            List<ReviewView> list = new List<ReviewView>();
+            list.Add(new ReviewView
+            {
+                Content = "con",
+                CreationDate = DateTime.Now,
+                Rating = 7,
+                ReviewerUsername = "Jezus",
+                ReviewID = 1
+            });
+            _offerSearchDataAccessMock.Setup(x => x.GetHotelReviews(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).Throws(new Exception());
+            _offerSearchDataAccessMock.Setup(x => x.GetHotelReviews(1, 0, 1)).Returns(list);
+            var result = _offerSearchService.GetHotelReviews(1, 1, new Paging { PageNumber = 1, PageSize = 1 });
+            Assert.True(result.StatusCode == HttpStatusCode.OK);
+            List<ReviewView> reviewInfos = (List<ReviewView>)result.Result;
+            Assert.True(reviewInfos.Count == 1);
+            Assert.True(reviewInfos[0].ReviewID == 1);
+        }
+        [Fact]
+        public void GetHotelReviews_ErrorTest()
+        {
+            _offerSearchDataAccessMock.Setup(x => x.GetHotelReviews(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).Throws(new Exception());
+            var result = _offerSearchService.GetHotelReviews(1, 2, new Paging { PageNumber = 1, PageSize = 1 });
+            Assert.True(result.StatusCode == HttpStatusCode.NotFound);
         }
         #endregion
     }

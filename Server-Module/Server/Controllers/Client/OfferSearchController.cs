@@ -24,7 +24,7 @@ namespace Server.Controllers.Client
         {
             _offerSearchService = offerSearchService;
         }
-
+        
         //[HotelOfferSearchValidateModel]
         [HttpGet("hotels/{hotelID:int}/offers")]
         public IActionResult GetHotelOffers([FromRoute] int hotelID, [FromQuery] OfferFilter offerFilter, [FromQuery] Paging paging)
@@ -37,6 +37,13 @@ namespace Server.Controllers.Client
         {
             return _offerSearchService.GetHotelOfferDetails(hotelID, offerID);
         }
+
+        [HttpGet("hotel/{hotelID}/offers/{offerID}/reviews")]
+        public IActionResult GetHotelOfferReviews([FromRoute] int hotelID, [FromRoute] int offerID)
+        {
+            return _offerSearchService.GetHotelOfferReviews(hotelID, offerID);
+        }
+
     }
 
     //public class HotelOfferSearchValidateModelAttribute : ActionFilterAttribute

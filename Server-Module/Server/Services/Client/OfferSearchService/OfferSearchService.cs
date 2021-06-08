@@ -105,5 +105,29 @@ namespace Server.Services.Client
 
             return new ServiceResult(HttpStatusCode.OK, offer);
         }
+
+        public IServiceResult GetHotelOfferReviews(int hotelID, int offerID)
+        {
+            try 
+            {
+                return new ServiceResult(HttpStatusCode.OK, _offerSearchDataAccess.GetOfferReviews(hotelID, offerID));
+            }catch(Exception e)
+            {
+                return new ServiceResult(HttpStatusCode.NotFound,new ErrorView(e.Message));
+            }
+        }
+
+        public IServiceResult GetHotelReviews(int hotelID, int offerID, Paging paging)
+        {
+            int from = (paging.PageNumber - 1) * paging.PageSize;
+            try
+            {
+                return new ServiceResult(HttpStatusCode.OK, _offerSearchDataAccess.GetHotelReviews(hotelID, from, paging.PageSize));
+            }
+            catch (Exception e)
+            {
+                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView(e.Message));
+            }
+        }
     }
 }
