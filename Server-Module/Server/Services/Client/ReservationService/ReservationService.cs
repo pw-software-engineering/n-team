@@ -75,6 +75,7 @@ namespace Server.Services.Client
                     return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Reservation is currently underway or already completed"));
 
                 _dataAccess.RemoveReservation(reservationID);
+                _transaction.CommitTransaction();
 
                 return new ServiceResult(HttpStatusCode.OK);
             }

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Server.Database.DataAccess.Hotel;
+﻿using Server.Database.DataAccess.Hotel;
 using Server.Database.DatabaseTransaction;
 using Server.RequestModels;
 using Server.Services.Result;
@@ -22,11 +21,11 @@ namespace Server.Services.Hotel
         public IServiceResult AddRoomToOffer(int roomID, int offerID, int hotelID)
         {
             IServiceResult result = CheckRoomExistanceAndOwnership(roomID, hotelID);
-            if (result != null)
+            if (!(result is null))
                 return result;
 
             result = CheckOfferExistanceAndOwnership(offerID, hotelID);
-            if (result != null)
+            if (!(result is null))
                 return result;
 
             if (_dataAccess.IsRoomAlreadyAddedToOffer(roomID, offerID))
@@ -47,7 +46,7 @@ namespace Server.Services.Hotel
                 return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Invalid paging arguments"));
 
             IServiceResult result = CheckOfferExistanceAndOwnership(offerID, hotelID);
-            if (result != null)
+            if (!(result is null))
                 return result;
 
             if (hotelRoomNumber != null)
@@ -65,29 +64,31 @@ namespace Server.Services.Hotel
         public IServiceResult RemoveRoomFromOffer(int roomID, int offerID, int hotelID)
         {
             IServiceResult result = CheckRoomExistanceAndOwnership(roomID, hotelID);
-            if (result != null)
+            if (!(result is null))
                 return result;
 
             result = CheckOfferExistanceAndOwnership(offerID, hotelID);
-            if (result != null)
+            if (!(result is null))
                 return result;
 
             if (!_dataAccess.IsRoomAlreadyAddedToOffer(roomID, offerID))
                 return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView($"Room with ID equal to {roomID} is not added to offer with ID equal to {offerID}"));
             if (_dataAccess.DoesRoomHaveUnfinishedReservations(roomID, offerID))
                 return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView($"Room with ID equal to {roomID} has unfinished reservations"));
+           
+            using (IDatabaseTransaction transaction = _transaction.BeginTransaction())
+            {
+                _dataAccess.UnpinRoomFromOffer(roomID, offerID);
+                _transaction.CommitTransaction();
 
-            _transaction.BeginTransaction();
-            _dataAccess.UnpinRoomFromOffer(roomID, offerID);
-            _transaction.CommitTransaction();
-
-            return new ServiceResult(HttpStatusCode.OK);
+                return new ServiceResult(HttpStatusCode.OK);
+            }
         }
 
         public IServiceResult CheckRoomExistanceAndOwnership(string hotelRoomNumber, int hotelID)
         {
             int? ownerID = _dataAccess.FindRoomAndGetOwner(hotelRoomNumber);
-            if (ownerID == null)
+            if (ownerID is null)
                 return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Room with RoomNumber equal to {hotelRoomNumber} does not exist"));
             if (ownerID != hotelID)
                 return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView($"Room with RoomNumber equal to {hotelRoomNumber} does not belong to hotel with ID equal to {hotelID}"));
@@ -96,7 +97,7 @@ namespace Server.Services.Hotel
         public IServiceResult CheckRoomExistanceAndOwnership(int roomID, int hotelID)
         {
             int? ownerID = _dataAccess.FindRoomAndGetOwner(roomID);
-            if (ownerID == null)
+            if (ownerID is null)
                 return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Room with ID equal to {roomID} does not exist"));
             if (ownerID != hotelID)
                 return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView($"Room with ID equal to {roomID} does not belong to hotel with ID equal to {hotelID}"));
@@ -105,7 +106,7 @@ namespace Server.Services.Hotel
         public IServiceResult CheckOfferExistanceAndOwnership(int offerID, int hotelID)
         {
             int? ownerID = _dataAccess.FindOfferAndGetOwner(offerID);
-            if (ownerID == null)
+            if (ownerID is null)
                 return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Offer with ID equal to {offerID} does not exist"));
             if (ownerID != hotelID)
                 return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView($"Offer with ID equal to {offerID} does not belong to hotel with ID equal to {hotelID}"));

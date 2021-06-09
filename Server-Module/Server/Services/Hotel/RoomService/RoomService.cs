@@ -62,7 +62,10 @@ namespace Server.Services.Hotel
         {
             if (paging.PageNumber < 1 || paging.PageSize < 1)
                 return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Invalid paging arguments"));
-
+            
+            if(hotelRoomNumber != null && !_dataAccess.DoesRoomAlreadyExist(hotelID, hotelRoomNumber))
+                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Room with number equal to {hotelRoomNumber} does not exist"));
+            
             List<HotelRoomView> rooms = _dataAccess.GetRooms(hotelID, paging, hotelRoomNumber);
             foreach(HotelRoomView room in rooms)
                 room.OfferID = _dataAccess.GetOfferIDsForRoom(room.RoomID);
