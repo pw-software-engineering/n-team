@@ -160,6 +160,24 @@ namespace Server.Tests.Database.Client
             Assert.Equal(2, hotelPictures.Count);
             Assert.NotEqual(hotelPictures[0], hotelPictures[1]);
         }
+        [Fact]
+        public void GetOfferReviews_ReturnsListOfHotelReviews()
+        {
+            int hotelID = 1;
+            Paging paging = new Paging();
+
+            List<ReviewView> testedReviews = _dataAccess.GetHotelReviews(hotelID, paging);
+            List<ClientReviewDb> reviews = _context.ClientReviews
+                                                   .Where(cr => cr.HotelID == hotelID)
+                                                   .OrderByDescending(cr => cr.ReviewID)
+                                                   .Skip((paging.PageNumber - 1) * paging.PageSize)
+                                                   .Take(paging.PageSize)
+                                                   .ToList();
+
+            Assert.Equal(testedReviews.Count, reviews.Count);
+            for (int i = 0; i < testedReviews.Count; i++)
+                Assert.Equal(reviews[i].ReviewID, testedReviews[i].ReviewID);
+        }
 
         public void Dispose()
         {

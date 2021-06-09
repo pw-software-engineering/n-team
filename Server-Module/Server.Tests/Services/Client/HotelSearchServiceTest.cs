@@ -127,5 +127,41 @@ namespace Server.Tests.Services.Client
             }
         }
         #endregion
+        [Fact]
+        public void GetHotelReviews_InvalidPagingArguments_400()
+        {
+            Paging paging = new Paging()
+            {
+                PageNumber = -1,
+                PageSize = 2
+            };
+            int hotelID = 1;
+
+            IServiceResult result = _hotelSearchService.GetHotelReviews(hotelID, paging);
+
+            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+        }
+        [Fact]
+        public void GetHotelReviews_HotelDoesNotExist_404()
+        {
+            Paging paging = new Paging();
+            int hotelID = -1;
+            _hotelSearchDataAccessMock.Setup(da => da.DoesHotelExist(hotelID)).Returns(false);
+
+            IServiceResult result = _hotelSearchService.GetHotelReviews(hotelID, paging);
+
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+        }
+        [Fact]
+        public void GetHotelReviews_200()
+        {
+            Paging paging = new Paging();
+            int hotelID = 1;
+            _hotelSearchDataAccessMock.Setup(da => da.DoesHotelExist(hotelID)).Returns(true);
+
+            IServiceResult result = _hotelSearchService.GetHotelReviews(hotelID, paging);
+
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        }
     }
 }

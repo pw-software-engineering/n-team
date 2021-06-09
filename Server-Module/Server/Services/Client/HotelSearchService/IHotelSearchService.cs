@@ -13,7 +13,7 @@ namespace Server.Services.Client
 
         #region /hotels/{hotelID}
         IServiceResult GetHotelDetails(int hotelID);
-        IActionResult GetHotelReviews(int hotelID, Paging paging);
+        IServiceResult GetHotelReviews(int hotelID, Paging paging);
         #endregion
     }
 }

@@ -240,5 +240,56 @@ namespace Server.Tests.Services.Client
             }
         }
         #endregion
+        [Fact]
+        public void GetOfferReviews_InvalidPagingArguments_400()
+        {
+            Paging paging = new Paging()
+            {
+                PageNumber = -1,
+                PageSize = 2
+            };
+            int hotelID = 1;
+            int offerID = 1;
+
+            IServiceResult result = _offerSearchService.GetHotelOfferReviews(hotelID, offerID, paging);
+
+            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+        }
+        [Fact]
+        public void GetHotelReviews_HotelDoesNotExist_404()
+        {
+            Paging paging = new Paging();
+            int hotelID = -1;
+            int offerID = 1;
+            _offerSearchDataAccessMock.Setup(da => da.CheckHotelOfferExistence(hotelID, offerID)).Returns(false);
+
+            IServiceResult result = _offerSearchService.GetHotelOfferReviews(hotelID, offerID, paging);
+
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+        }
+        [Fact]
+        public void GetHotelReviews_OfferDoesNotExist_404()
+        {
+            Paging paging = new Paging();
+            int hotelID = 1;
+            int offerID = -1;
+            _offerSearchDataAccessMock.Setup(da => da.CheckHotelOfferExistence(hotelID, offerID)).Returns(false);
+
+            IServiceResult result = _offerSearchService.GetHotelOfferReviews(hotelID, offerID, paging);
+
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+        }
+        [Fact]
+        public void GetHotelReviews_200()
+        {
+            Paging paging = new Paging();
+            int hotelID = 1;
+            int offerID = 1;
+            _offerSearchDataAccessMock.Setup(da => da.CheckHotelOfferExistence(hotelID, offerID)).Returns(true);
+
+            IServiceResult result = _offerSearchService.GetHotelOfferReviews(hotelID, offerID, paging);
+
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        }
     }
 }

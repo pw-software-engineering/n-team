@@ -4,17 +4,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Server.AutoMapper;
 using Server.Database;
-using Server.Database.DataAccess;
 using Server.Database.DataAccess.Client;
 using Server.Database.Models;
 using Server.RequestModels;
 using Server.Services.Client;
-using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace Server.Tests.Database.Client

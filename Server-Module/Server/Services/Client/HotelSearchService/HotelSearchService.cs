@@ -40,7 +40,7 @@ namespace Server.Services.Client
             return new ServiceResult(HttpStatusCode.OK, hotelView);
         }
 
-        public IActionResult GetHotelReviews(int hotelID, Paging paging)
+        public IServiceResult GetHotelReviews(int hotelID, Paging paging)
         {
             if (paging.PageNumber < 1 || paging.PageSize < 1)
                 return new ServiceResult(

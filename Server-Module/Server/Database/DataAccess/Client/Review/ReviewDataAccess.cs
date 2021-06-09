@@ -18,7 +18,7 @@ namespace Server.Database.DataAccess.Client.Review
             _mapper = mapper;
         }
 
-        public bool CheckReviewExistence(int reservationID)
+        public bool DoesReviewExist(int reservationID)
         {
             return _dbContext.ClientReviews.Any(review => review.ReservationID == reservationID);
         }

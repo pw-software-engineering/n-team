@@ -4,6 +4,7 @@ using Server.RequestModels.Client;
 using Server.Services.Result;
 using Server.ViewModels;
 using Server.ViewModels.Client;
+using System;
 using System.Net;
 
 namespace Server.Services.Client.ClientReviewService
@@ -39,7 +40,8 @@ namespace Server.Services.Client.ClientReviewService
             IServiceResult result = CheckReservationExistenceAndOwnership(reservationID, clientID);
             if (!(result is null))
                 return result;
-            if (!_reviewDataAccess.CheckReviewExistence(reservationID))
+
+            if (!_reviewDataAccess.DoesReviewExist(reservationID))
                 return new ServiceResult(
                     HttpStatusCode.NotFound,
                     new ErrorView($"Reservation with ID equal to {reservationID} does not have a review"));
@@ -47,13 +49,16 @@ namespace Server.Services.Client.ClientReviewService
             using (IDatabaseTransaction transaction = _transaction.BeginTransaction())
             {
                 _reviewDataAccess.DeleteReview(reservationID);
-                transaction.CommitTransaction();
+                _transaction.CommitTransaction();
                 return new ServiceResult(HttpStatusCode.OK);
             }
         }
 
         public IServiceResult PutReview(int reservationID, int clientID, ReviewUpdate reviewUpdate)
         {
+            if (reviewUpdate is null)
+                throw new ArgumentNullException("reviewUpdate");
+
             IServiceResult result = CheckReservationExistenceAndOwnership(reservationID, clientID);
             if (!(result is null))
                 return result;
@@ -62,10 +67,11 @@ namespace Server.Services.Client.ClientReviewService
                 return new ServiceResult(
                     HttpStatusCode.BadRequest,
                     new ErrorView($"Reviews can be changed/created during 30 days after the reservation has ended"));
+
             int reviewID;
             using (IDatabaseTransaction transaction = _transaction.BeginTransaction())
             {
-                if (!_reviewDataAccess.CheckReviewExistence(reservationID))
+                if (!_reviewDataAccess.DoesReviewExist(reservationID))
                     reviewID = _reviewDataAccess.AddReview(reservationID, reviewUpdate);
                 else
                     reviewID = _reviewDataAccess.EditReview(reservationID, reviewUpdate);

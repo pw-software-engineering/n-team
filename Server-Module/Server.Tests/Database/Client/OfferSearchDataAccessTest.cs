@@ -397,6 +397,26 @@ namespace Server.Tests.Database.Client
             }
         }
 
+        [Fact]
+        public void GetOfferReviews_ReturnsListOfOfferReviews()
+        {
+            int hotelID = 1;
+            int offerID = 1;
+            Paging paging = new Paging();
+
+            List<ReviewView> testedReviews = _dataAccess.GetOfferReviews(hotelID, offerID, paging);
+            List<ClientReviewDb> reviews = _context.ClientReviews
+                                                   .Where(cr => cr.OfferID == offerID)
+                                                   .OrderByDescending(cr => cr.ReviewID)
+                                                   .Skip((paging.PageNumber - 1) * paging.PageSize)
+                                                   .Take(paging.PageSize)
+                                                   .ToList();
+
+            Assert.Equal(testedReviews.Count, reviews.Count);
+            for (int i = 0; i < testedReviews.Count; i++)
+                Assert.Equal(reviews[i].ReviewID, testedReviews[i].ReviewID);
+        }
+
         public void Dispose()
         {
             _context.Database.EnsureDeleted();
