@@ -29,7 +29,8 @@ namespace Server.Database.DataAccess.Client
 
         public bool IsRoomAvailable(int roomID, DateTime from, DateTime to)
         {
-
+            if (!_dbContext.HotelRooms.Find(roomID).IsActive)
+                return false;
             return !_dbContext.ClientReservations.Any(cr => cr.RoomID == roomID &&
                                                             ((cr.FromTime >= from && cr.FromTime < to) ||
                                                             (cr.ToTime > from && cr.ToTime <= to)));                                                           

@@ -26,7 +26,8 @@ namespace Server.Database.DataAccess.Hotel
             HotelRoomDb room = new HotelRoomDb
             {
                 HotelID = hotelID,
-                HotelRoomNumber = hotelRoomNumber
+                HotelRoomNumber = hotelRoomNumber,
+                IsActive = true
             };
             _dbContext.HotelRooms.Add(room);
             _dbContext.SaveChanges();

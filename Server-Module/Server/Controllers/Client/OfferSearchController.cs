@@ -30,7 +30,7 @@ namespace Server.Controllers.Client
             return _service.GetHotelOfferDetails(hotelID, offerID);
         }
 
-        [HttpGet("hotel/{hotelID:int}/offers/{offerID:int}/reviews")]
+        [HttpGet("hotels/{hotelID:int}/offers/{offerID:int}/reviews")]
         public IActionResult GetHotelOfferReviews([FromRoute] int hotelID, [FromRoute] int offerID, [FromQuery] Paging paging)
         {
             return _service.GetHotelOfferReviews(hotelID, offerID, paging);

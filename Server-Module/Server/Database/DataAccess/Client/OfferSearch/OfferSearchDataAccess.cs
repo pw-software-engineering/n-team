@@ -46,8 +46,12 @@ namespace Server.Database.DataAccess.Client
         public bool CheckHotelOfferAvailability(int offerID, DateTime from, DateTime to)
         {
             foreach (OfferHotelRoomDb offerRoom in _dbContext.OfferHotelRooms.Where(ohr => ohr.OfferID == offerID))
+            {
+                if (!_dbContext.HotelRooms.Find(offerRoom.RoomID).IsActive)
+                    continue;
                 if (!_dbContext.ClientReservations.Where(cr => cr.RoomID == offerRoom.RoomID && !(cr.ToTime < from || cr.FromTime > to)).Any())
                     return true;
+            }
             return false;
         }
         public OfferView GetHotelOfferDetails(int offerID)
@@ -77,6 +81,8 @@ namespace Server.Database.DataAccess.Client
             List<AvailabilityTimeInterval> availabilityTimeIntervals = new List<AvailabilityTimeInterval>();
             foreach (OfferHotelRoomDb offerRoom in _dbContext.OfferHotelRooms.Where(ohr => ohr.OfferID == offerID))
             {
+                if (!_dbContext.HotelRooms.Find(offerRoom.RoomID).IsActive)
+                    continue;
                 List<AvailabilityTimeInterval> roomAvailability = GetRoomAvailabilityTimeIntervals(offerRoom.RoomID, fromTime, toTime);
                 availabilityTimeIntervals = MergeAvailabilityTimeIntervals(availabilityTimeIntervals, roomAvailability);
             }
