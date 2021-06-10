@@ -54,8 +54,6 @@ metadata:
     name: "${APPNAME}"
   annotations:
     kubernetes.io/ingress.class: addon-http-application-routing
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
   - host: ${NAMESPACE}.${DOMAIN}
@@ -64,4 +62,4 @@ spec:
       - backend:
           serviceName: "${APPNAME}"
           servicePort: 80
-        path: /${APPNAME}(/|$)(.*)
+        path: /${APPNAME}
