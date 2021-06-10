@@ -98,6 +98,7 @@ else
         </div>
     </div>
 </form>
+<div id="main-loader" class="loader"></div>
 
 <!-- MODAL -->
 <div class="modal fade" id="roomOffersModal" tabindex="-1" role="dialog">
@@ -119,6 +120,7 @@ else
 
             </div>
             <div class="modal-footer">
+                <div id="modal-loader" class="loader"></div>
                 <button id="removeRoomBtn" type="button" class="btn btn-danger">
                     <span class="fa fa-trash"></span>
                     Delete this room
@@ -131,26 +133,24 @@ else
 
 @section Scripts {
     <script type="text/javascript">
-        //$(".toggle-sort").click(function () {         // <- this can be potentially easy implemented with server cooperation
-        //    $(this).toggleClass("fa-sort-alpha-up fa-sort-alpha-down");
-        //});
-
         $(document).ready(function () {
-            var activeRoomID;
+            let activeRoomID;
+            let modalLoader = document.getElementById('modal-loader');
+            let mainLoader = document.getElementById('main-loader');
 
             // adjust modal to clicked room
             $('#roomOffersModal').on('show.bs.modal', function (event) {
-                var a = $(event.relatedTarget);
-                var room = a.data('room');
-                var modal = $(this);
-                var offersBody = modal.find('#offersBody')[0];
+                let a = $(event.relatedTarget);
+                let room = a.data('room');
+                let modal = $(this);
+                let offersBody = modal.find('#offersBody')[0];
 
                 offersBody.innerHTML = '';
                 modal.find('.modal-title').text('Room ' + room.HotelRoomNumber);
                 activeRoomID = room.RoomID;
 
                 // ukradzione z client-module
-                var loadingBox = `<tr>
+                let loadingBox = `<tr>
                         <td>
                             <img class="d-block mx-auto mt-2", style="width: 75px", src="/img/loading.gif"></img>
                             <p class="text-center h5 mt-2">Loading offers...</p>
@@ -159,7 +159,7 @@ else
                 offersBody.insertAdjacentHTML('beforeend', loadingBox);
 
                 // AJAX each offer and add table row inside #offersBody
-                var ajaxes = new Array;
+                let ajaxes = new Array;
                 room.OfferID.forEach(function (offerID, index) {
 
                     ajaxes[index] = $.ajax({
@@ -180,40 +180,29 @@ else
 
             // removing a room
             $('#removeRoomBtn').on('click', async function () {
-                if (!confirm('Are you sure you want to permanently delete this room? This action is irreversible!'))
-                    return;
-
-                await fetch(`/rooms/${activeRoomID}`, {
-                    method: 'DELETE'
-                }).then((response) => {
-                    if (response.ok) {
-                        alert("Room deleted succesfully.");
-                        window.location.replace('@Url.Action(nameof(Hotel.Controllers.RoomsController.Index))');
-                    } else {
-                        alert("error: " + response.status);
-                    }
-                }).catch((error) => {
-                    console.error('fetch error: ', error);
-                });
+                await fetchSend(
+                    'Are you sure you want to permanently delete this room? This action is irreversible!',
+                    `/rooms/${activeRoomID}`,
+                    'DELETE',
+                    null,
+                    "Room deleted succesfully.",
+                    '@Url.Action(nameof(Hotel.Controllers.RoomsController.Index))',
+                    modalLoader
+                );
             });
 
             // adding a room
             $('#addRoomForm').on('submit', async function (e) {
                 e.preventDefault();
-
-                await fetch('/rooms', {
-                    method: 'POST',
-                    body: new FormData($("#addRoomForm")[0])
-                }).then((response) => {
-                    if (response.ok) {
-                        alert("Room added succesfully.");
-                        window.location.replace('@Url.Action(nameof(Hotel.Controllers.RoomsController.Index))');
-                    } else {
-                        alert("error: " + response.status);
-                    }
-                }).catch((error) => {
-                    console.error('fetch error: ', error);
-                });
+                await fetchSend(
+                    null,
+                    '/rooms',
+                    'POST',
+                    new FormData($("#addRoomForm")[0]),
+                    "Room added succesfully.",
+                    '@Url.Action(nameof(Hotel.Controllers.RoomsController.Index))',
+                    mainLoader
+                );
             });
 
             // detaching a room (connects to dynamically generated code from _OfferRow)
@@ -222,19 +211,15 @@ else
                 let detachRoomBtn = e.target;
                 let offerID = detachRoomBtn.id.split("_")[1];
 
-                await fetch(`/offers/${offerID}/rooms/${activeRoomID}`, {
-                    method: 'DELETE',
-                    body: new FormData($("#addRoomForm")[0])
-                }).then((response) => {
-                    if (response.ok) {
-                        alert("Room detached succesfully.");
-                        window.location.replace('@Url.Action(nameof(Hotel.Controllers.RoomsController.Index))');
-                    } else {
-                        alert("error: " + response.status);
-                    }
-                }).catch((error) => {
-                    console.error('fetch error: ', error);
-                });
+                await fetchSend(
+                    null,
+                    `/offers/${offerID}/rooms/${activeRoomID}`,
+                    'DELETE',
+                    new FormData($("#addRoomForm")[0]),
+                    "Room detached succesfully.",
+                    '@Url.Action(nameof(Hotel.Controllers.RoomsController.Index))',
+                    modalLoader
+                );
             });
 
             // paging
