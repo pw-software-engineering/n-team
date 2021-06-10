@@ -1,28 +1,21 @@
-﻿using AutoMapper;
-using Server.Database.DataAccess;
-using Server.Database.DataAccess.Hotel;
+﻿using Server.Database.DataAccess.Hotel;
 using Server.Database.DatabaseTransaction;
 using Server.RequestModels;
 using Server.Services.Result;
 using Server.ViewModels;
 using Server.ViewModels.Hotel;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace Server.Services.Hotel
 {
     public class RoomService : IRoomService
     {
         private readonly IRoomDataAccess _dataAccess;
-        private readonly IMapper _mapper;
         private readonly IDatabaseTransaction _transaction;
-        public RoomService(IRoomDataAccess dataAccess, IMapper mapper, IDatabaseTransaction transaction)
+        public RoomService(IRoomDataAccess dataAccess, IDatabaseTransaction transaction)
         {
             _dataAccess = dataAccess;
-            _mapper = mapper;
             _transaction = transaction;
         }
         public IServiceResult AddRoom(int hotelID, string hotelRoomNumber)
@@ -33,10 +26,12 @@ namespace Server.Services.Hotel
             if (_dataAccess.DoesRoomAlreadyExist(hotelID, hotelRoomNumber))
                 return new ServiceResult(HttpStatusCode.Conflict, new ErrorView($"Room with RoomNumber equal to {hotelRoomNumber} already exists"));
 
-            _transaction.BeginTransaction();
-            int roomID = _dataAccess.AddRoom(hotelID, hotelRoomNumber);
-            _transaction.CommitTransaction();
-            return new ServiceResult(HttpStatusCode.OK, new RoomIDView(roomID));
+            using (IDatabaseTransaction transaction = _transaction.BeginTransaction())
+            {
+                int roomID = _dataAccess.AddRoom(hotelID, hotelRoomNumber);
+                _transaction.CommitTransaction();
+                return new ServiceResult(HttpStatusCode.OK, new RoomIDView(roomID));
+            }
         }
 
         public IServiceResult DeleteRoom(int hotelID, int roomID)
@@ -45,27 +40,32 @@ namespace Server.Services.Hotel
             if (response != null)
                 return response;
 
-            _transaction.BeginTransaction();
-            if (_dataAccess.CheckAnyUnfinishedReservations(roomID))
+            using (IDatabaseTransaction transaction = _transaction.BeginTransaction())
             {
-                _dataAccess.ChangeActivationMark(roomID, false);
+                if (_dataAccess.CheckAnyUnfinishedReservations(roomID))
+                {
+                    _dataAccess.ChangeActivationMark(roomID, false);
+                    _transaction.CommitTransaction();
+                    return new ServiceResult(HttpStatusCode.Conflict, new ErrorView($"There are still pending reservations for room with ID equal to {roomID}"));
+                }
+
+                _dataAccess.UnpinRoomFromAnyOffers(roomID);
+                _dataAccess.RemoveRoomFromPastReservations(roomID);
+                _dataAccess.DeleteRoom(roomID);
                 _transaction.CommitTransaction();
-                return new ServiceResult(HttpStatusCode.Conflict, new ErrorView($"There are still pending reservations for room with ID equal to {roomID}"));
+
+                return new ServiceResult(HttpStatusCode.OK);
             }
-
-            _dataAccess.UnpinRoomFromAnyOffers(roomID);
-            _dataAccess.RemoveRoomFromPastReservations(roomID);
-            _dataAccess.DeleteRoom(roomID);
-            _transaction.CommitTransaction();
-
-            return new ServiceResult(HttpStatusCode.OK);
         }
 
         public IServiceResult GetHotelRooms(int hotelID, Paging paging, string hotelRoomNumber = null)
         {
             if (paging.PageNumber < 1 || paging.PageSize < 1)
                 return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Invalid paging arguments"));
-
+            
+            if(hotelRoomNumber != null && !_dataAccess.DoesRoomAlreadyExist(hotelID, hotelRoomNumber))
+                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Room with number equal to {hotelRoomNumber} does not exist"));
+            
             List<HotelRoomView> rooms = _dataAccess.GetRooms(hotelID, paging, hotelRoomNumber);
             foreach(HotelRoomView room in rooms)
                 room.OfferID = _dataAccess.GetOfferIDsForRoom(room.RoomID);
@@ -75,9 +75,9 @@ namespace Server.Services.Hotel
         public IServiceResult CheckExistanceAndOwnership(int hotelID, int roomID)
         {
             int? ownerID = _dataAccess.FindRoomAndGetOwner(roomID);
-            if (ownerID == null)
+            if (!ownerID.HasValue)
                 return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Room with ID equal to {roomID} does not exist"));
-            if (ownerID != hotelID)
+            if (ownerID.Value != hotelID)
                 return new ServiceResult(HttpStatusCode.Unauthorized, new ErrorView($"Room with ID equal to {roomID} does not belong to hotel with ID equal to {hotelID}"));
             return null;
         }

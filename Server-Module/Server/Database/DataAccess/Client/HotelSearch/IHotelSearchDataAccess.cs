@@ -1,11 +1,7 @@
 ﻿using Server.RequestModels;
 using Server.RequestModels.Client;
-using Server.ViewModels;
 using Server.ViewModels.Client;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess.Client
 {
@@ -19,5 +15,7 @@ namespace Server.Database.DataAccess.Client
         HotelView GetHotelDetails(int hotelID);
         List<string> GetHotelPictures(int hotelID);
         #endregion
+        List<ReviewView> GetHotelReviews(int hotelID, Paging paging);
+        bool DoesHotelExist(int hotelID);
     }
 }

@@ -2,9 +2,7 @@
 using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
-using Server.Database.Models;
-using System.Linq;
-using System.Threading.Tasks;
+using Server.RequestModels;
 
 namespace Server.Database.DataAccess.Client
 {
@@ -15,7 +13,7 @@ namespace Server.Database.DataAccess.Client
         int AddReservation(Reservation reservation);
         bool HasReservationBegun(int reservationID);
         void RemoveReservation(int ReservationID);
-        List<ReservationData> GetReservations(int userID);
+        List<ReservationData> GetReservations(int userID, Paging paging);
 
         int? FindReservationAndGetOwner(int reservationID);
         int? FindOfferAndGetOwner(int offerID);

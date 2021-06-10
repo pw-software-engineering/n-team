@@ -206,7 +206,7 @@ namespace ServerApiMockup.MockupApiControllers
                     ReviewerUsername = $"TestUsername_{i}",
                     CreationDate = new DateTime(2020, i + 1, 10 + i),
                     Content = "This is test\nReview with some\nnewlines in between.",
-                    Rating = rng.Next(1, 6),
+                    Rating = rng.Next(1, 11),
                 });
             }
             return new JsonResult(

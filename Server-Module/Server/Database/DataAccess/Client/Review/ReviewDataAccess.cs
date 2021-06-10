@@ -1,4 +1,7 @@
-﻿using Server.Database.Models;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Server.Database.Models;
+using Server.RequestModels.Client;
 using Server.ViewModels.Client;
 using System;
 using System.Linq;
@@ -8,54 +11,47 @@ namespace Server.Database.DataAccess.Client.Review
     public class ReviewDataAccess : IReviewDataAccess
     {
         private readonly ServerDbContext _dbContext;
-        public ReviewDataAccess(ServerDbContext dbContext)
+        private readonly IMapper _mapper;
+        public ReviewDataAccess(ServerDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
-        public bool IsReviewExist(int reservationID)
+        public bool DoesReviewExist(int reservationID)
         {
-            var wynik = _dbContext.ClientReviews.FirstOrDefault(x => x.ReservationID == reservationID);
-            return wynik != null;
+            return _dbContext.ClientReviews.Any(review => review.ReservationID == reservationID);
         }
 
-        public int UpdateReview(int reservationID, ReviewUpdater reviewUpdater)
+        public int EditReview(int reservationID, ReviewUpdate reviewUpdate)
         {
-            if (reviewUpdater == null)
-                throw new Exception("info is a null");
-            var wynik = _dbContext.ClientReviews.FirstOrDefault(x => x.ReservationID == reservationID);
-            if (wynik == null)
-                throw new Exception("cannot find review");
+            if (reviewUpdate is null)
+                throw new ArgumentNullException("reviewUpdate");
 
-            wynik.Content = reviewUpdater.content;
-            wynik.Rating = (uint)reviewUpdater.rating;
+            ClientReviewDb review = _dbContext.ClientReviews.First(r => r.ReservationID == reservationID);
+            review.Content = reviewUpdate.Content;
+            review.Rating = (uint)reviewUpdate.Rating;
             _dbContext.SaveChanges();
-            return wynik.ReviewID;
+            return review.ReviewID;
         }
-        public int AddNewReview(int reservationID, ReviewUpdater reviewUpdater)
+        public int AddReview(int reservationID, ReviewUpdate reviewUpdate)
         {
-            if (reviewUpdater == null)
-                throw new Exception("info is a null");
-            var reservation = _dbContext.ClientReservations.FirstOrDefault(x => x.ReservationID == reservationID);
-            if (reservation == null)
-                throw new Exception("cannot find reservation");
-            var offer = _dbContext.Offers.FirstOrDefault(x => x.OfferID == reservation.OfferID);
-            if (offer == null)
-                throw new Exception("cannot find offer");
+            if (reviewUpdate is null)
+                throw new ArgumentNullException("reviewUpdate");
+
+            ClientReservationDb reservation = _dbContext.ClientReservations.Find(reservationID);
 
             ClientReviewDb newReviewInfo = new ClientReviewDb
             {
-                Rating = (uint)reviewUpdater.rating,
-                Content = reviewUpdater.content,
+                Rating = (uint)reviewUpdate.Rating,
+                Content = reviewUpdate.Content,
                 ReviewDate = DateTime.UtcNow,
-                ClientID = reservation.ClientID.Value,
+                ClientID = reservation.ClientID,
                 ReservationID = reservationID,
-                OfferID = offer.OfferID,
-                HotelID = offer.HotelID
+                OfferID = reservation.OfferID,
+                HotelID = reservation.HotelID
             };
 
-
-            // tutaj muszę 2 razy zapisywać by nadać id do review a potem przepisać je do reservation
             _dbContext.ClientReviews.Add(newReviewInfo);
             _dbContext.SaveChanges();
             reservation.ReviewID = newReviewInfo.ReviewID;
@@ -63,61 +59,36 @@ namespace Server.Database.DataAccess.Client.Review
             return newReviewInfo.ReviewID;
         }
 
-        public ReviewInfo GetReview(int reservationID)
+        public ReviewView GetReview(int reservationID)
         {
-            var resultDB = _dbContext.ClientReviews.FirstOrDefault(x => x.ReservationID == reservationID);
-            if (resultDB == null)
-                throw new Exception("cannot find review");
-            var client = _dbContext.Clients.FirstOrDefault(x => x.ClientID == resultDB.ClientID);
-            if (client == null)
-                throw new Exception("cannot find client");
+            ClientReviewDb review = _dbContext.ClientReviews.First(r => r.ReservationID == reservationID);
+            ClientDb client = _dbContext.Clients.Find(review.ClientID);
 
-            return new ReviewInfo
-            {
-                reviewID = resultDB.ReviewID,
-                content = resultDB.Content,
-                rating = (int)resultDB.Rating,
-                creationDate = resultDB.ReviewDate
-                ,
-                revewerUsername = client.Name
-            };
+            ReviewView view = _mapper.Map<ReviewView>(review);
+            view.ReviewerUsername = client.Username;
+
+            return view;
+        }
+
+        public int? FindReservationOwner(int reservationID)
+        { 
+            return _dbContext.ClientReservations.Find(reservationID)?.ClientID;
         }
 
         public void DeleteReview(int reservationID)
         {
-            var reservation = _dbContext.ClientReservations.FirstOrDefault(x => x.ReservationID == reservationID);
-            if (reservation == null)
-                throw new Exception("cannot find reservation");
-            var review = _dbContext.ClientReviews.FirstOrDefault(x => x.ReservationID == reservationID);
-            if (review == null)
-                throw new Exception("cannot find review");
+            ClientReservationDb reservation = _dbContext.ClientReservations.Find(reservationID);
+            ClientReviewDb review = _dbContext.ClientReviews.Find(reservation.ReviewID);
 
-            _dbContext.ClientReviews.Remove(review);
             reservation.ReviewID = null;
+            _dbContext.ClientReviews.Remove(review);
             _dbContext.SaveChanges();
-
         }
 
-        public bool IsClientTheOwnerOfReservation(int reservationID, int clientID)
+        public bool IsReviewChangeAllowed(int reservationID)
         {
-            var reservation = _dbContext.ClientReservations.FirstOrDefault(x => x.ReservationID == reservationID);
-            if (reservation == null)
-                return false;
-            return reservation.ClientID == clientID;
-        }
-
-        public bool IsAddingReviewToReservationEnabled(int reservationID)
-        {
-            var reservation = _dbContext.ClientReservations.FirstOrDefault(x => x.ReservationID == reservationID);
-            if (reservation == null)
-                throw new Exception("reservation not found");
-            var max_date_to_adding = new DateTime(reservation.ToTime.Year, reservation.ToTime.Month, reservation.ToTime.Day).AddDays(30);
-            return reservation.ToTime <= DateTime.UtcNow && DateTime.UtcNow <= max_date_to_adding;
-        }
-
-        public bool IsDataValid(ReviewUpdater reviewUpdater)
-        {
-            return reviewUpdater.rating > 0 && reviewUpdater.rating <= 10;
+            DateTime reservationEndTime = _dbContext.ClientReservations.Find(reservationID).ToTime;
+            return reservationEndTime <= DateTime.UtcNow && DateTime.UtcNow <= reservationEndTime.AddDays(30);
         }
     }
 }

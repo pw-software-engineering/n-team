@@ -1,18 +1,10 @@
-﻿using AutoMapper;
-using Server.Database.DataAccess;
-using Server.Database.DataAccess.Hotel;
+﻿using Server.Database.DataAccess.Hotel;
 using Server.Database.DatabaseTransaction;
-using Server.Database.Models;
-using Server.RequestModels;
 using Server.RequestModels.Hotel;
 using Server.Services.Result;
-using Server.ViewModels;
 using Server.ViewModels.Hotel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace Server.Services.Hotel
 {
@@ -36,17 +28,20 @@ namespace Server.Services.Hotel
 
         public IServiceResult UpdateHotelInfo(int hotelId, HotelInfoUpdate hotelInfoUpdate)
         {
-            if (hotelInfoUpdate == null)
-                throw new ArgumentNullException("hotelInfoUpdate");
-            _transaction.BeginTransaction();
-            if (hotelInfoUpdate.HotelPictures != null)
+            using (IDatabaseTransaction transaction = _transaction.BeginTransaction())
             {
-                _hotelAccountDataAccess.DeletePictures(hotelId);
-                _hotelAccountDataAccess.AddPictures(hotelInfoUpdate.HotelPictures, hotelId);
+                if (hotelInfoUpdate is null)
+                    throw new ArgumentNullException("hotelInfoUpdate");
+
+                if (hotelInfoUpdate.HotelPictures != null)
+                {
+                    _hotelAccountDataAccess.DeletePictures(hotelId);
+                    _hotelAccountDataAccess.AddPictures(hotelInfoUpdate.HotelPictures, hotelId);
+                }
+                _hotelAccountDataAccess.UpdateHotelInfo(hotelId, hotelInfoUpdate);
+                _transaction.CommitTransaction();
+                return new ServiceResult(HttpStatusCode.OK);
             }
-            _hotelAccountDataAccess.UpdateHotelInfo(hotelId, hotelInfoUpdate);
-            _transaction.CommitTransaction();
-            return new ServiceResult(HttpStatusCode.OK);
         }   
     }
 }

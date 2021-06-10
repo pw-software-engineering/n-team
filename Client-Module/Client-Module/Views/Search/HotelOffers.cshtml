@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Search Offers";
     HotelOffersTagID tagIDs = new HotelOffersTagID();
+    DateTime tomorrow = DateTime.Now;
+    tomorrow = new DateTime(tomorrow.Year, tomorrow.Month, tomorrow.Day).AddDays(1);
 }
 
 <div class="text-center">
@@ -16,7 +18,7 @@
                 <div class="input-group-prepend">
                     <div class="input-group-text bg-light font-weight-500">From :</div>
                 </div>
-                <input type="date" class="form-control w-100" id="@tagIDs.FilterFromTimeInputID" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                <input type="date" class="form-control w-100" id="@tagIDs.FilterFromTimeInputID" value="@tomorrow.ToString("yyyy-MM-dd")">
             </div>
         </div>
         <div class="form-inline d-inline-block col-md-6 my-1">
@@ -24,7 +26,7 @@
                 <div class="input-group-prepend">
                     <div class="input-group-text bg-light font-weight-500">To :</div>
                 </div>
-                <input type="date" class="form-control w-100" id="@tagIDs.FilterToTimeInputID" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                <input type="date" class="form-control w-100" id="@tagIDs.FilterToTimeInputID" value="@tomorrow.ToString("yyyy-MM-dd")">
             </div>
         </div>
     </div>
@@ -99,6 +101,7 @@
 </div>
 
 @section Scripts {
+    <script src="~/js/Shared/serverApiManager.js"></script>
     <script src="~/js/Search/HotelOffers/hotelOfferEntry.js"></script>
     <script src="~/js/Search/HotelOffers/hotelOffersManager.js"></script>
     <script src="~/js/Shared/inputValidator.js"></script>
@@ -163,9 +166,9 @@
             fromTimeInput.focusout(function () {
                 var input = $(this);
                 var inputData = input.val();
-                if (!inputData || new Date(inputData) < new Date("@DateTime.Now.ToString("yyyy-MM-dd")")) {
+                if (!inputData || new Date(inputData) < new Date("@tomorrow.ToString("yyyy-MM-dd")")) {
                     //input.val(new Date().toISOString().split('T')[0]);
-                    input.val("@DateTime.Now.ToString("yyyy-MM-dd")");
+                    input.val("@tomorrow.ToString("yyyy-MM-dd")");
                     return;
                 }
                 if (new Date(inputData) > new Date(toTimeInput.val())) {
@@ -176,9 +179,9 @@
             toTimeInput.focusout(function () {
                 var input = $(this);
                 var inputData = input.val();
-                if (!inputData || new Date(inputData) < new Date("@DateTime.Now.ToString("yyyy-MM-dd")")) {
+                if (!inputData || new Date(inputData) < new Date("@tomorrow.ToString("yyyy-MM-dd")")) {
                     //input.val(new Date().toISOString().split('T')[0]);
-                    input.val("@DateTime.Now.ToString("yyyy-MM-dd")");
+                    input.val("@tomorrow.ToString("yyyy-MM-dd")");
                     return;
                 }
                 if (new Date(inputData) < new Date(fromTimeInput.val())) {

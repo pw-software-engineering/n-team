@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Server.Database.DataAccess;
+﻿using Microsoft.AspNetCore.Mvc;
 using Server.Database.DataAccess.Client;
-using Server.Database.DatabaseTransaction;
 using Server.RequestModels;
 using Server.RequestModels.Client;
 using Server.Services.Result;
@@ -10,52 +7,50 @@ using Server.ViewModels;
 using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace Server.Services.Client
 {
     public class HotelSearchService : IHotelSearchService
     {
-        private readonly IMapper _mapper;
         private readonly IHotelSearchDataAccess _hotelSearchDataAccess;
-        private readonly IDatabaseTransaction _transaction;
-        public HotelSearchService(IHotelSearchDataAccess hotelSearchDataAccess, IMapper mapper, IDatabaseTransaction transaction)
+        public HotelSearchService(IHotelSearchDataAccess hotelSearchDataAccess)
         {
-            _mapper = mapper;
             _hotelSearchDataAccess = hotelSearchDataAccess;
-            _transaction = transaction;
         }
         public IServiceResult GetHotels(HotelFilter hotelFilter, Paging paging)
         {
-            if (hotelFilter == null)
-            {
+            if (hotelFilter is null)
                 throw new ArgumentNullException("hotelFilter");
-            }
             if (paging.PageNumber < 1 || paging.PageSize < 1)
-            {
                 return new ServiceResult(
                     HttpStatusCode.BadRequest,
                     new ErrorView("Invalid paging arguments"));
-            }
 
             List<HotelPreviewView> hotelPreviews = _hotelSearchDataAccess.GetHotels(hotelFilter, paging);
-            
             return new ServiceResult(HttpStatusCode.OK, hotelPreviews);
         }
         public IServiceResult GetHotelDetails(int hotelID)
         {
-            _transaction.BeginTransaction();
             HotelView hotelView = _hotelSearchDataAccess.GetHotelDetails(hotelID);
-            if(hotelView == null)
-            {
+            if(hotelView is null)
                 return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Hotel with ID equal to {hotelID} does not exist"));
-            }
             hotelView.HotelPictures = _hotelSearchDataAccess.GetHotelPictures(hotelID);
-            _transaction.CommitTransaction();
 
             return new ServiceResult(HttpStatusCode.OK, hotelView);
+        }
+
+        public IServiceResult GetHotelReviews(int hotelID, Paging paging)
+        {
+            if (paging.PageNumber < 1 || paging.PageSize < 1)
+                return new ServiceResult(
+                    HttpStatusCode.BadRequest,
+                    new ErrorView("Invalid paging arguments"));
+
+            if(!_hotelSearchDataAccess.DoesHotelExist(hotelID))
+                return new ServiceResult(HttpStatusCode.NotFound, new ErrorView($"Hotel with ID equal to {hotelID} does not exist"));
+
+            return new ServiceResult(HttpStatusCode.OK, _hotelSearchDataAccess.GetHotelReviews(hotelID, paging));
         }
     }
 }

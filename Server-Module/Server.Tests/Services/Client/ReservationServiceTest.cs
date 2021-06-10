@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Server.AutoMapper;
-using Server.Database.DataAccess;
 using Server.Database.DataAccess.Client;
 using Server.Database.DatabaseTransaction;
-using Server.Database.Models;
 using Server.RequestModels;
 using Server.RequestModels.Client;
 using Server.Services.Client;
 using Server.Services.Result;
-using Server.ViewModels;
 using Server.ViewModels.Client;
 using Xunit;
 
@@ -47,8 +42,8 @@ namespace Server.Tests.Services.Client
             int userID = 1;
             ReservationInfo reservation = new ReservationInfo()
             {
-                From = DateTime.Now,
-                To = DateTime.Now,
+                From = DateTime.Now.AddDays(1),
+                To = DateTime.Now.AddDays(1),
                 NumberOfChildren = 1,
                 NumberOfAdults = 1
             };
@@ -75,7 +70,7 @@ namespace Server.Tests.Services.Client
 
             IServiceResult result = _reservationService.AddReservation(hotelID, offerID, userID, reservation);
 
-            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
         }
         [Fact]
         public void AddReservation_NoRoomIsAvailable_400()
@@ -107,8 +102,8 @@ namespace Server.Tests.Services.Client
             int userID = 1;
             ReservationInfo reservation = new ReservationInfo()
             {
-                From = DateTime.Now,
-                To = DateTime.Now,
+                From = DateTime.Now.AddDays(1),
+                To = DateTime.Now.AddDays(2),
                 NumberOfChildren = 1,
                 NumberOfAdults = 1
             };
@@ -170,28 +165,17 @@ namespace Server.Tests.Services.Client
         [Fact]
         public void GetReservations_NoClientReservations_200()
 		{
+            Paging paging = new Paging(number: 1, size: 100000);
             int userID = 1;
-            _dataAccessMock.Setup(da => da.GetReservations(userID)).Returns(new List<ReservationData>());
+            _dataAccessMock.Setup(da => da.GetReservations(userID, paging)).Returns(new List<ReservationData>());
 
-            IServiceResult result = _reservationService.GetReservations(userID);
+            IServiceResult result = _reservationService.GetReservations(userID, paging);
             List<ReservationData> collection = result.Result as List<ReservationData>;
 
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.NotNull(collection);
             Assert.Empty(collection);
         }
-
-        /*[Fact]
-        public void GetReservations_ClientHasReservations_200()
-        {
-            int userID = 3;
-            _dataAccessMock.Setup(da => da.GetReservations(userID)).Returns(daReturnObj);
-
-            IServiceResult result = _reservationService.GetReservations(userID);
-            List<ReservationData> reservations = result.Result as List<ReservationData>;
-            
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-        }*/
     }
 }
 

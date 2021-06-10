@@ -5,16 +5,13 @@ using Server.Authentication.Hotel;
 using Server.RequestModels;
 using Server.RequestModels.Hotel;
 using Server.Services.Hotel;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Controllers.Hotel
 {
+    [Authorize(AuthenticationSchemes = HotelTokenDefaults.AuthenticationScheme)]
     [ApiController]
     [Route("/api-hotel")]
-    [Authorize(AuthenticationSchemes = HotelTokenDefaults.AuthenticationScheme)]
     public class HotelRoomController : Controller
     {
         private readonly IRoomService _service;
@@ -25,10 +22,7 @@ namespace Server.Controllers.Hotel
         }
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var ids = from claim in HttpContext.User.Claims
-                      where claim.Type == HotelTokenManagerOptions.HotelIdClaimName
-                      select claim.Value;
-            _hotelID = Convert.ToInt32(ids.Single());
+            _hotelID = int.Parse(HttpContext.User.Claims.First(c => c.Type == HotelTokenManagerOptions.HotelIdClaimName).Value);
             base.OnActionExecuting(context);
         }
 

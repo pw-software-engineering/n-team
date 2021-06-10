@@ -1,12 +1,6 @@
-﻿using Server.Database.Models;
-using Server.RequestModels;
-using Server.RequestModels.Hotel;
-using Server.ViewModels;
+﻿using Server.RequestModels.Hotel;
 using Server.ViewModels.Hotel;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess.Hotel
 {

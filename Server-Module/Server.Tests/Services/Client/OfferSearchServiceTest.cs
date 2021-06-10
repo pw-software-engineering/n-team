@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using Moq;
-using Server.AutoMapper;
+﻿using Moq;
 using Server.Database.DataAccess.Client;
-using Server.Database.DatabaseTransaction;
 using Server.RequestModels;
 using Server.RequestModels.Client;
 using Server.Services.Client;
@@ -12,7 +9,6 @@ using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using Xunit;
 
 namespace Server.Tests.Services.Client
@@ -21,24 +17,16 @@ namespace Server.Tests.Services.Client
     {
         public OfferSearchServiceTest()
         {
-            var config = new MapperConfiguration(opts =>
-            {
-                opts.AddProfile(new ClientAutoMapperProfile());
-            });
-            _mapper = config.CreateMapper();
             _offerSearchDataAccessMock = new Mock<IOfferSearchDataAccess>();
             _offerSearchDataAccessMock.Setup(da => da.CheckHotelExistence(-1)).Returns(false);
             _offerSearchDataAccessMock.Setup(da => da.CheckHotelExistence(1)).Returns(true);
             _offerSearchDataAccessMock.Setup(da => da.CheckHotelOfferExistence(1, 4)).Returns(false);
             _offerSearchDataAccessMock.Setup(da => da.CheckHotelOfferExistence(1, 1)).Returns(true);
-            _transactionMock = new Mock<IDatabaseTransaction>();
 
-            _offerSearchService = new OfferSearchService(_mapper, _offerSearchDataAccessMock.Object, _transactionMock.Object);
+            _offerSearchService = new OfferSearchService(_offerSearchDataAccessMock.Object);
         }
         private OfferSearchService _offerSearchService;
         private Mock<IOfferSearchDataAccess> _offerSearchDataAccessMock;
-        private Mock<IDatabaseTransaction> _transactionMock;
-        private IMapper _mapper;
 
         #region GetHotelOffers
         [Fact]
@@ -187,7 +175,7 @@ namespace Server.Tests.Services.Client
 
             Assert.Equal(HttpStatusCode.OK, serviceResult.StatusCode);
             Assert.Equal(offerPreviews.Count, clientOfferPreviews.Count);
-            for(int i = 0; i < clientOfferPreviews.Count; i++)
+            for (int i = 0; i < clientOfferPreviews.Count; i++)
             {
                 Assert.Equal(offerPreview.CostPerAdult, clientOfferPreviews[i].CostPerAdult);
                 Assert.Equal(offerPreview.CostPerChild, clientOfferPreviews[i].CostPerChild);
@@ -246,11 +234,62 @@ namespace Server.Tests.Services.Client
             Assert.Equal(clientOffer.MaxGuests, resultClientOffer.MaxGuests);
             Assert.Equal(clientOffer.OfferTitle, resultClientOffer.OfferTitle);
             Assert.Equal(offerPictures.Count, resultClientOffer.OfferPictures.Count);
-            for(int i = 0; i < offerPictures.Count; i++)
+            for (int i = 0; i < offerPictures.Count; i++)
             {
                 Assert.Equal(offerPictures[i], resultClientOffer.OfferPictures[i]);
-            }            
+            }
         }
         #endregion
+        [Fact]
+        public void GetOfferReviews_InvalidPagingArguments_400()
+        {
+            Paging paging = new Paging()
+            {
+                PageNumber = -1,
+                PageSize = 2
+            };
+            int hotelID = 1;
+            int offerID = 1;
+
+            IServiceResult result = _offerSearchService.GetHotelOfferReviews(hotelID, offerID, paging);
+
+            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+        }
+        [Fact]
+        public void GetHotelReviews_HotelDoesNotExist_404()
+        {
+            Paging paging = new Paging();
+            int hotelID = -1;
+            int offerID = 1;
+            _offerSearchDataAccessMock.Setup(da => da.CheckHotelOfferExistence(hotelID, offerID)).Returns(false);
+
+            IServiceResult result = _offerSearchService.GetHotelOfferReviews(hotelID, offerID, paging);
+
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+        }
+        [Fact]
+        public void GetHotelReviews_OfferDoesNotExist_404()
+        {
+            Paging paging = new Paging();
+            int hotelID = 1;
+            int offerID = -1;
+            _offerSearchDataAccessMock.Setup(da => da.CheckHotelOfferExistence(hotelID, offerID)).Returns(false);
+
+            IServiceResult result = _offerSearchService.GetHotelOfferReviews(hotelID, offerID, paging);
+
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+        }
+        [Fact]
+        public void GetHotelReviews_200()
+        {
+            Paging paging = new Paging();
+            int hotelID = 1;
+            int offerID = 1;
+            _offerSearchDataAccessMock.Setup(da => da.CheckHotelOfferExistence(hotelID, offerID)).Returns(true);
+
+            IServiceResult result = _offerSearchService.GetHotelOfferReviews(hotelID, offerID, paging);
+
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        }
     }
 }

@@ -10,7 +10,7 @@ using Server.Database;
 namespace Server.Migrations
 {
     [DbContext(typeof(ServerDbContext))]
-    [Migration("20210601124339_InitialCreate")]
+    [Migration("20210603152918_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,13 +93,13 @@ namespace Server.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("ClientID")
+                    b.Property<int>("ClientID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("FromTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("HotelID")
+                    b.Property<int>("HotelID")
                         .HasColumnType("int");
 
                     b.Property<int>("NumberOfAdults")
@@ -108,7 +108,7 @@ namespace Server.Migrations
                     b.Property<int>("NumberOfChildren")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OfferID")
+                    b.Property<int>("OfferID")
                         .HasColumnType("int");
 
                     b.Property<int?>("ReviewID")
@@ -581,17 +581,20 @@ namespace Server.Migrations
                     b.HasOne("Server.Database.Models.ClientDb", "Client")
                         .WithMany("ClientReservations")
                         .HasForeignKey("ClientID")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("Server.Database.Models.HotelDb", "Hotel")
                         .WithMany()
                         .HasForeignKey("HotelID")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("Server.Database.Models.OfferDb", "Offer")
                         .WithMany()
                         .HasForeignKey("OfferID")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("Server.Database.Models.ClientReviewDb", "Review")
                         .WithOne("Reservation")

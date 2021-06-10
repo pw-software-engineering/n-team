@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using Server.Database.Models;
-using Server.RequestModels;
 using Server.RequestModels.Hotel;
-using Server.ViewModels;
 using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
@@ -21,37 +19,39 @@ namespace Server.Database.DataAccess.Hotel
         }
         public void AddPictures(List<string> pictures, int hotelId)
         {
-            if (pictures == null)
+            if (pictures is null)
                 throw new ArgumentNullException("pictures");
-            foreach(string picture in pictures)
+
+            foreach (string picture in pictures)
             {
-                HotelPictureDb pictureDb = new HotelPictureDb();
-                pictureDb.HotelID = hotelId;
-                pictureDb.Picture = picture;
+                HotelPictureDb pictureDb = new HotelPictureDb()
+                {
+                    HotelID = hotelId,
+                    Picture = picture
+                };
                 _dbContext.HotelPictures.Add(pictureDb);
             }
             _dbContext.SaveChanges();
         }
         public void DeletePictures(int hotelId)
         {
-            IEnumerable<HotelPictureDb> pictures = _dbContext.HotelPictures.Where(x => x.HotelID == hotelId);
+            IEnumerable<HotelPictureDb> pictures = _dbContext.HotelPictures.Where(hp => hp.HotelID == hotelId);
             _dbContext.HotelPictures.RemoveRange(pictures);
             _dbContext.SaveChanges();
         }
-
         public List<string> GetPictures(int hotelId)
         {
-            return _dbContext.HotelPictures.Where(x => x.HotelID == hotelId).Select(x => x.Picture).ToList();
+            return _dbContext.HotelPictures.Where(hp => hp.HotelID == hotelId).Select(hp => hp.Picture).ToList();
         }
-
         public HotelInfoView GetHotelInfo(int hotelId)
         { 
             return _mapper.Map<HotelInfoView>(_dbContext.Hotels.Find(hotelId));
         }
         public void UpdateHotelInfo(int hotelId, HotelInfoUpdate hotelInfoUpdate)
         {
-            if (hotelInfoUpdate == null)
+            if (hotelInfoUpdate is null)
                 throw new ArgumentNullException("hotelUpdateInfo");
+
             HotelDb hotelDb = _dbContext.Hotels.Find(hotelId);
             hotelDb.HotelDescription = hotelInfoUpdate.HotelDesc ?? hotelDb.HotelDescription;
             hotelDb.HotelPreviewPicture = hotelInfoUpdate.HotelPreviewPicture ?? hotelDb.HotelPreviewPicture;

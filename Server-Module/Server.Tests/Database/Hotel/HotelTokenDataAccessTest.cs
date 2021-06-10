@@ -4,14 +4,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Server.AutoMapper;
 using Server.Database;
-using Server.Database.DataAccess;
 using Server.Database.DataAccess.Hotel;
 using Server.Database.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace Server.Tests.Database.Hotel
@@ -19,7 +15,6 @@ namespace Server.Tests.Database.Hotel
     public class HotelTokenDataAccessTest : IDisposable
     {
         private ServerDbContext _context;
-        private IMapper _mapper;
         private HotelTokenDataAccess _dataAccess;
 
         #region TestsSetup
@@ -39,13 +34,7 @@ namespace Server.Tests.Database.Hotel
             _context.Database.EnsureCreated();
             Seed();
 
-            var config = new MapperConfiguration(opts =>
-            {
-                opts.AddProfile(new HotelAutoMapperProfile());
-            });
-            _mapper = config.CreateMapper();
-
-            _dataAccess = new HotelTokenDataAccess(_mapper, _context);
+            _dataAccess = new HotelTokenDataAccess(_context);
         }
         private void Seed()
         {

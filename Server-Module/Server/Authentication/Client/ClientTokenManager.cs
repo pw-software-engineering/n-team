@@ -1,13 +1,10 @@
 ﻿using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Server.Database.DataAccess;
 using Server.Database.DataAccess.Client;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Server.Authentication.Client
 {

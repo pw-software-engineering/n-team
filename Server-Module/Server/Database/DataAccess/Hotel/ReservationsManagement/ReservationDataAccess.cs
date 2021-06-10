@@ -5,7 +5,6 @@ using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess.Hotel
 {
@@ -33,7 +32,8 @@ namespace Server.Database.DataAccess.Hotel
             if (roomID.HasValue)
                 reservations = reservations.Where(r => r.RoomID == roomID).ToList();
 
-            reservations = reservations.Skip((paging.PageNumber - 1) * paging.PageSize)
+            reservations = reservations.OrderByDescending(r => r.ReservationID)
+                                       .Skip((paging.PageNumber - 1) * paging.PageSize)
                                        .Take(paging.PageSize)
                                        .ToList();
 
@@ -43,7 +43,7 @@ namespace Server.Database.DataAccess.Hotel
                 ReservationObjectView reservationView = new ReservationObjectView();
                 reservationView.Reservation = _mapper.Map<ReservationView>(reservation);
                 reservationView.Room = GetRoomDetails(reservation.RoomID.Value);
-                reservationView.Client = GetClientDetails(reservation.ClientID.Value);                
+                reservationView.Client = GetClientDetails(reservation.ClientID);                
                 reservationViews.Add(reservationView);
             }
             return reservationViews;

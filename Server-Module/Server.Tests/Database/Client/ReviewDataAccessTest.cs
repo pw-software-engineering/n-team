@@ -6,9 +6,11 @@ using Server.AutoMapper;
 using Server.Database;
 using Server.Database.DataAccess.Client.Review;
 using Server.Database.Models;
+using Server.RequestModels.Client;
 using Server.ViewModels.Client;
 using System;
 using System.IO;
+using System.Linq;
 using Xunit;
 
 namespace Server.Tests.Database.Client
@@ -39,7 +41,7 @@ namespace Server.Tests.Database.Client
             });
             _mapper = config.CreateMapper();
 
-            _dataAccess = new ReviewDataAccess(_context);
+            _dataAccess = new ReviewDataAccess(_context, _mapper);
         }
         private void Seed()
         {
@@ -85,11 +87,18 @@ namespace Server.Tests.Database.Client
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Clients OFF");
 
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReviews ON");
+                _context.ClientReviews.AddRange(
+                    new ClientReviewDb { ReviewID = 1, ClientID = 1, HotelID = 2, Content = "content1", Rating = 4, ReviewDate = DateTime.UtcNow, ReservationID = 1, OfferID = 2 },
+                    new ClientReviewDb { ReviewID = 2, ClientID = 3, HotelID = 3, Content = "content2", Rating = 4, ReviewDate = DateTime.UtcNow, ReservationID = 1, OfferID = 3 });
+                _context.SaveChanges();
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReviews OFF");
+
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReservations ON");
                 _context.ClientReservations.AddRange(
-                    new ClientReservationDb { ReservationID = 1, OfferID = 2, ClientID = 2, HotelID = 2, RoomID = 2, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 0, FromTime = new DateTime(2001, 1, 1), ToTime = new DateTime(2001, 1, 2) },
-                    new ClientReservationDb { ReservationID = 2, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 2, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 1, FromTime = new DateTime(2001, 2, 2), ToTime =  DateTime.UtcNow },
-                    new ClientReservationDb { ReservationID = 3, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 3, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 2, FromTime = new DateTime(3001, 3, 3), ToTime = new DateTime(3001, 3, 6) });
+                    new ClientReservationDb { ReservationID = 1, OfferID = 2, ClientID = 2, HotelID = 2, RoomID = 2, ReviewID = 1, NumberOfAdults = 1, NumberOfChildren = 0, FromTime = new DateTime(2001, 1, 1), ToTime = new DateTime(2001, 1, 2) },
+                    new ClientReservationDb { ReservationID = 2, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 2, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 1, FromTime = new DateTime(2001, 2, 2), ToTime = DateTime.UtcNow },
+                    new ClientReservationDb { ReservationID = 3, OfferID = 3, ClientID = 3, HotelID = 3, RoomID = 3, ReviewID = null, NumberOfAdults = 1, NumberOfChildren = 2, FromTime = new DateTime(2001, 3, 3), ToTime = DateTime.Now.AddDays(-1) });
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReservations OFF");
 
@@ -99,16 +108,6 @@ namespace Server.Tests.Database.Client
                     new OfferHotelRoomDb { OfferID = 3, RoomID = 2 },
                     new OfferHotelRoomDb { OfferID = 3, RoomID = 3 });
                 _context.SaveChanges();
-
-                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReviews ON");
-                _context.ClientReviews.AddRange(
-                    new ClientReviewDb { ReviewID=1,ClientID = 1, HotelID = 2, Content = "content1", Rating = 4, ReviewDate = DateTime.UtcNow, ReservationID = 1, OfferID = 2 },
-                    new ClientReviewDb { ReviewID = 2,ClientID = 3, HotelID = 3, Content = "content2", Rating = 4, ReviewDate = DateTime.UtcNow, ReservationID = 2, OfferID = 3 },
-                    new ClientReviewDb { ReviewID = 3, ClientID = 3, HotelID = 3, Content = "content2", Rating = 4, ReviewDate = DateTime.UtcNow, ReservationID = 3, OfferID = 3 }
-
-                    );
-                _context.SaveChanges();
-                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT ClientReviews OFF");
 
                 transaction.Commit();
             }
@@ -122,140 +121,147 @@ namespace Server.Tests.Database.Client
         private IMapper _mapper;
         private ReviewDataAccess _dataAccess;
 
-        #region GetReview
         [Fact]
-        public void GetReview_BadID()
-        {
-            int reservationID = 4;
-            Assert.Throws<Exception>(()=>_dataAccess.GetReview(reservationID));
-        }
-        [Fact]
-        public void GetReview_GoodID()
+        public void DoesReviewExist_ReviewExists_ReturnsTrue()
         {
             int reservationID = 1;
-            var good_result = _context.ClientReviews.Find(reservationID);
-            var user = _context.Clients.Find(good_result.ClientID);
-            var result = _dataAccess.GetReview(reservationID);
-            Assert.True(result.creationDate == good_result.ReviewDate && result.content == good_result.Content&& result.revewerUsername==user.Name);
-        }
-        #endregion
-        #region DeleteReview
-        [Fact]
-        public void DeleteReview_BadID()
-        {
-            int reservationID = 4;
-            Assert.Throws<Exception>(() => _dataAccess.DeleteReview(reservationID));
+
+            bool doesExist = _dataAccess.DoesReviewExist(reservationID);
+
+            Assert.True(doesExist);
         }
         [Fact]
-        public void DeleteReview_GoodID()
+        public void DoesReviewExist_ReviewDoesNotExist_ReturnsFalse()
         {
             int reservationID = 2;
-            _dataAccess.DeleteReview(reservationID);
-            var reservation = _context.ClientReservations.Find(reservationID);
-            Assert.True(reservation.ReviewID == null && _context.ClientReviews.Find(reservationID) == null);
-        }
-        #endregion
-        #region IsReviewExist
-        [Fact]
-        public void IsReviewExist_Test()
-        {
-            var result = _dataAccess.IsReviewExist(4);
-            var result2 = _dataAccess.IsReviewExist(1);
-            Assert.True(!result && !result);
-        }
-        #endregion
-        #region IsClientTheOwnerOfReservation
-        [Fact]
-        public void IsClientTheOwnerOfReservation_Test()
-        {
-            bool t1=_dataAccess.IsClientTheOwnerOfReservation(1, 2);
-            bool t2=_dataAccess.IsClientTheOwnerOfReservation(1, 1);
-            bool t3=_dataAccess.IsClientTheOwnerOfReservation(4, 1);
-            Assert.True(t1 && !t2 && !t3);
-        }
-        #endregion
-        #region AddNewReview
-        [Fact]
-        public void AddNewReview_BadID()
-        {
-            var paramertr = new ReviewUpdater { content = "this is updated content", rating = 10 };
-            Assert.Throws<Exception>(()=> _dataAccess.AddNewReview(4, paramertr));
-        }
-        [Fact]
-        public void AddNewReview_NullParameter()
-        {
-            Assert.Throws<Exception>(() => _dataAccess.AddNewReview(3, null));
-        }
-        [Fact]
-        public void AddNewReview_GoodTest()
-        {
-            var paramertr = new ReviewUpdater { content = "this is updated content", rating = 10 };
-            int reviewID = _dataAccess.AddNewReview(3, paramertr);
-            var result = _context.ClientReviews.Find(reviewID);
-            Assert.True(result.Rating == paramertr.rating && result.Content == paramertr.content);
-        }
-        #endregion
-        #region UpdateReview
-        [Fact]
-        public void UpdateReview_NullUpadater()
-        {
-            Assert.Throws<Exception>(() => _dataAccess.UpdateReview(3, null));
-        }
-        [Fact]
-        public void UpdateReview_BadId()
-        {
-            var paramertr = new ReviewUpdater { content = "this is updated content", rating = 10 };
-            Assert.Throws<Exception>(() => _dataAccess.UpdateReview(55, paramertr));
-        }
-        [Fact]
-        public void UpdateReview_GoodTest()
-        {
-            var paramertr = new ReviewUpdater { content = "this is updated content", rating = 10 };
-            int reviewId = _dataAccess.UpdateReview(3, paramertr);
-            var result = _context.ClientReviews.Find(reviewId);
-            Assert.True(result.Content == paramertr.content);
 
-        }
-        #endregion
-        #region IsDataValid
-        [Fact]
-        public void IsDataValid_InvalidDataToLow()
-        {
-            Assert.True(!_dataAccess.IsDataValid(new ReviewUpdater { content = "a", rating = 0 }));
+            bool doesExist = _dataAccess.DoesReviewExist(reservationID);
+
+            Assert.False(doesExist);
         }
         [Fact]
-        public void IsDataValid_InvalidDataToHight()
+        public void EditReview_ReviewUpdateIsNull_ThrowsArgumentNullException()
         {
-            Assert.True(!_dataAccess.IsDataValid(new ReviewUpdater { content = "a", rating = 11 }));
+            int reservationID = 1;
+            ReviewUpdate reviewUpdate = null;
+
+            Action action = () => _dataAccess.EditReview(reservationID, reviewUpdate);
+
+            Assert.Throws<ArgumentNullException>(action);
         }
         [Fact]
-        public void IsDataValid_GoodValues()
+        public void EditReview_ReturnsModifiedReviewID()
         {
-            for(int i=1;i<11;i++)
-                Assert.True(_dataAccess.IsDataValid(new ReviewUpdater { content = "a", rating = i }));
-        }
-        #endregion
-        #region IsAddingReviewToReservationEnabled
-        [Fact]
-        public void IsAddingReviewToReservationEnabled_ToLate()
-        {
-            Assert.True(!_dataAccess.IsAddingReviewToReservationEnabled(1));
-        }
-        [Fact]
-        public void IsAddingReviewToReservationEnabled_ToEarly()
-        {
-            Assert.True(!_dataAccess.IsAddingReviewToReservationEnabled(3));
-        }
-        [Fact]
-        public void IsAddingReviewToReservationEnabled_Goodtest()
-        {
-            Assert.True(_dataAccess.IsAddingReviewToReservationEnabled(2));
+            int reservationID = 1;
+            ReviewUpdate reviewUpdate = new ReviewUpdate()
+            {
+                Content = "TestContent",
+                Rating = 1
+            };
+
+            int reviewID = _dataAccess.EditReview(reservationID, reviewUpdate);
+            ClientReviewDb review = _context.ClientReviews.Find(reviewID);
+
+            Assert.NotNull(review);
+            Assert.Equal(reviewUpdate.Content, review.Content);
+            Assert.Equal(reviewUpdate.Rating, (int)review.Rating);
         }
         [Fact]
-        public void IsAddingReviewToReservationEnabled_BadID()
+        public void AddReview_ReviewUpdateIsNull_ThrowsArgumentNullException()
         {
-            Assert.Throws<Exception>(() => _dataAccess.IsAddingReviewToReservationEnabled(100));
+            int reservationID = 1;
+            ReviewUpdate reviewUpdate = null;
+
+            Action action = () => _dataAccess.AddReview(reservationID, reviewUpdate);
+
+            Assert.Throws<ArgumentNullException>(action);
         }
-        #endregion
+        [Fact]
+        public void AddReview_ReturnsAddedReviewID()
+        {
+            int reservationID = 2;
+            ReviewUpdate reviewUpdate = new ReviewUpdate()
+            {
+                Content = "TestContent",
+                Rating = 1
+            };
+
+            int reviewID = _dataAccess.AddReview(reservationID, reviewUpdate);
+            ClientReviewDb review = _context.ClientReviews.Find(reviewID);
+            ClientReservationDb reservation = _context.ClientReservations.Find(reservationID);
+
+            Assert.NotNull(review);
+            Assert.Equal(reviewID, reservation.ReviewID);
+            Assert.Equal(reservationID, review.ReservationID);
+            Assert.Equal(reservation.OfferID, review.OfferID);
+            Assert.Equal(reservation.HotelID, review.HotelID);
+            Assert.Equal(reservation.ClientID, review.ClientID);
+            Assert.Equal(reviewUpdate.Content, review.Content);
+            Assert.Equal(reviewUpdate.Rating, (int)review.Rating);
+        }
+        [Fact]
+        public void GetReview_ReturnsReviewView()
+        {
+            int reservationID = 1;
+
+            ReviewView testedReview = _dataAccess.GetReview(reservationID);
+            ClientReviewDb review = _context.ClientReviews.First(cr => cr.ReservationID == reservationID);
+            string clientName = _context.Clients.Find(review.ClientID).Username;
+
+            Assert.Equal(review.ReviewID, testedReview.ReviewID);
+            Assert.Equal(review.Content, testedReview.Content);
+            Assert.Equal((int)review.Rating, testedReview.Rating);
+            Assert.Equal(review.ReviewDate, testedReview.CreationDate);
+            Assert.Equal(clientName, testedReview.ReviewerUsername);
+        }
+        [Fact]
+        public void FindReservationOwner_NoReservation_ReturnsNull()
+        {
+            int reservationID = -1;
+
+            int? ownerID = _dataAccess.FindReservationOwner(reservationID);
+
+            Assert.Null(ownerID);
+        }
+        [Fact]
+        public void FindReservationOwner_ReturnsOwnerID()
+        {
+            int reservationID = 1;
+            int ownerID = 2;
+
+            int? ownerTestID = _dataAccess.FindReservationOwner(reservationID);
+
+            Assert.Equal(ownerID, ownerTestID);
+        }
+        [Fact]
+        public void DeleteReview_ReviewIsDeleted()
+        {
+            int reservationID = 1;
+            int reviewID = _context.ClientReviews.First(cr => cr.ReservationID == reservationID).ReviewID;
+
+            _dataAccess.DeleteReview(reservationID);
+            ClientReviewDb review = _context.ClientReviews.Find(reviewID);
+
+            Assert.Null(review);
+            Assert.Null(_context.ClientReservations.Find(reservationID).ReviewID);
+        }
+        [Fact]
+        public void IsReviewChangeAllowed_ChangeAllowed_ReturnsTrue()
+        {
+            int reservationID = 3;
+
+            bool changeAllowed = _dataAccess.IsReviewChangeAllowed(reservationID);
+
+            Assert.True(changeAllowed);
+        }
+        [Fact]
+        public void IsReviewChangeAllowed_ChangeNotAllowed_ReturnsFalse()
+        {
+            int reservationID = 1;
+
+            bool changeAllowed = _dataAccess.IsReviewChangeAllowed(reservationID);
+
+            Assert.False(changeAllowed);
+        }
     }
 }
