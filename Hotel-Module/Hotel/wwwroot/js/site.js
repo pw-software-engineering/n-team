@@ -54,3 +54,50 @@ function readUploadedImage(file) {
         reader.readAsDataURL(file);
     });
 }
+
+//const loader = document.querySelector("#loader");
+// showing loading
+function displayLoading(loader) {
+    loader.classList.add("display");
+}
+
+// hiding loading 
+function hideLoading(loader) {
+    loader.classList.remove("display");
+}
+
+async function fetchSend(confirmationMessage, url, httpMethod, formData, succesMessage, redirectUrl, loaderElem) {
+    if (confirmationMessage && !confirm(confirmationMessage))
+        return;
+
+    if (loaderElem) {
+        displayLoading(loaderElem);
+    }
+
+    let obj = formData ? {
+        method: httpMethod,
+        body: formData
+    } : {
+        method: httpMethod
+    };
+    await fetch(url,
+        obj
+    ).then((response) => {
+        if (loaderElem) {
+            hideLoading(loaderElem)
+        }
+        if (response.ok) {
+            if (succesMessage) {
+                alert(succesMessage);
+            }
+            window.location.replace(redirectUrl);
+        } else {
+            alert("error: " + response.status);
+        }
+    }).catch((error) => {
+        if (loaderElem) {
+            hideLoading(loaderElem)
+        }
+        console.error('fetch error: ', error);
+    });
+}

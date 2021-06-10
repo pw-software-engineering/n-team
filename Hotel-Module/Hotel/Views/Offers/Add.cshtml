@@ -72,7 +72,10 @@
     </div>
     <hr />
 
-    <button type="submit" class="btn btn-primary">Add offer</button>
+    <div class="row">
+        <button type="submit" class="btn btn-primary">Add offer</button>
+        <div id="loader" class="loader"></div>
+    </div>
 </form>
 
 @section Scripts {
@@ -88,10 +91,12 @@
             let additionalGalleryDiv = document.getElementById('additionalGallery');
             additionalPicsInput.onchange = function () { previewGallery(additionalPicsInput, additionalGalleryDiv); };
 
+            let loader = document.getElementById("loader");
             // override submit()
             // converting pictures to base64 and sending a form
             form.onsubmit = async function (e) {
                 e.preventDefault();
+                displayLoading(loader);
                 let formData = new FormData(form);
 
                 // IsActive
@@ -126,19 +131,14 @@
                 });
 
                 // send
-                await fetch('@Url.Action(nameof(Hotel.Controllers.OffersController.Add))', {
-                    method: 'POST',
-                    body: formData
-                }).then((response) => {
-                    if (response.ok) {
-                        alert("Offer added successfully!")
-                        window.location.replace('@Url.Action(nameof(Hotel.Controllers.OffersController.Index))');
-                    } else {
-                        alert("error: " + response.status);
-                    }
-                }).catch((error) => {
-                    console.error('fetch error: ', error);
-                });
+                await fetchSend(null,
+                    '@Url.Action(nameof(Hotel.Controllers.OffersController.Add))',
+                    "POST",
+                    formData,
+                    "Offer added successfully!",
+                    '@Url.Action(nameof(Hotel.Controllers.OffersController.Index))',
+                    loader
+                );
             };
         })
     </script>
