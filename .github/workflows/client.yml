@@ -102,7 +102,5 @@ jobs:
         echo "${{ env.IMAGE_ID }}"
     - name: Substitute environment variables in app deployment file
       run: envsubst < "${{ env.SRCDIR }}/${{ env.DEPLOYFILE }}" > "${{ env.SRCDIR }}/out-${{ env.DEPLOYFILE }}"
-    - name: Debug CI - print deployment file to console
-      run: cat "${{ env.SRCDIR }}/out-${{ env.DEPLOYFILE }}"
     - name: Deploy app to Kubernetes cluster
       run: kubectl apply -f ${{ env.SRCDIR }}/out-${{ env.DEPLOYFILE }} --wait
