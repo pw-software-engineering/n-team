@@ -15,9 +15,6 @@ namespace Server.Database.DataAccess.Client
         OfferView GetHotelOfferDetails(int offerID);
         List<string> GetHotelOfferPictures(int offerID);
         List<AvailabilityTimeInterval> GetHotelOfferAvailability(int hotelID, int offerID, DateTime from, DateTime to);
-
-        List<ReviewView> GetOfferReviews(int hotelID, int offerID);
-
-        List<ReviewView> GetHotelReviews(int hotelID, int from, int take);
+        List<ReviewView> GetOfferReviews(int hotelID, int offerID, Paging paging);
     }
 }

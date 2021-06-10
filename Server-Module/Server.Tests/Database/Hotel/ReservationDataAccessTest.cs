@@ -172,6 +172,7 @@ namespace Server.Tests.Database.Hotel
             List<ClientReservationDb> reservations = _context.ClientReservations.Where(cr => cr.HotelID == hotelID && 
                                                                                              cr.RoomID == roomID &&
                                                                                              cr.ToTime > DateTime.Now)
+                                                                                .OrderByDescending(cr => cr.ReservationID)
                                                                                 .Skip((paging.PageNumber - 1) * paging.PageSize)
                                                                                 .Take(paging.PageSize)
                                                                                 .ToList();
@@ -210,6 +211,7 @@ namespace Server.Tests.Database.Hotel
             List<ClientReservationDb> reservations = _context.ClientReservations.Where(cr => cr.HotelID == hotelID &&
                                                                                              cr.FromTime <= DateTime.Now && 
                                                                                              cr.ToTime > DateTime.Now)
+                                                                                .OrderByDescending(cr => cr.ReservationID)
                                                                                 .Skip((paging.PageNumber - 1) * paging.PageSize)
                                                                                 .Take(paging.PageSize)
                                                                                 .ToList();
@@ -226,6 +228,7 @@ namespace Server.Tests.Database.Hotel
 
             List<ReservationObjectView> testReservationObjects = _dataAccess.GetReservations(hotelID, null, null, paging);
             List<ClientReservationDb> reservations = _context.ClientReservations.Where(cr => cr.HotelID == hotelID && cr.ToTime > DateTime.Now)
+                                                                                .OrderByDescending(cr => cr.ReservationID)
                                                                                 .Skip((paging.PageNumber - 1) * paging.PageSize)
                                                                                 .Take(paging.PageSize)
                                                                                 .ToList();

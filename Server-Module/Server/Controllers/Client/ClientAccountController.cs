@@ -1,15 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Server.Services.Result;
 using Server.Authentication.Client;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Server.RequestModels;
 using Server.Services.Client;
 using Server.RequestModels.Client;
 
@@ -24,10 +17,7 @@ namespace Server.Controllers.Client
         private int _clientID;
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var id = from claim in HttpContext.User.Claims
-                     where claim.Type == ClientTokenManagerOptions.ClientIdClaimName
-                     select int.Parse(claim.Value);
-            _clientID = id.First();
+            _clientID = int.Parse(HttpContext.User.Claims.First(c => c.Type == ClientTokenManagerOptions.ClientIdClaimName).Value);
             base.OnActionExecuting(context);
         }
         public ClientAccountController(IClientAccountService service)

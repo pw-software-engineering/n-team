@@ -1,9 +1,4 @@
-﻿using Server.Authentication.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+﻿
 namespace Server.Database.DataAccess.Client
 {
     public class ClientTokenDataAccess : IClientTokenDataAccess
@@ -16,7 +11,7 @@ namespace Server.Database.DataAccess.Client
 
         public bool CheckIfClientExists(int clientID)
         {
-            return _dbContext.Clients.Any(client => client.ClientID == clientID);
+            return !(_dbContext.Clients.Find(clientID) is null);
         }
     }
 }

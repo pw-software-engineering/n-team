@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Server.Database;
-using Server.Database.DataAccess;
 using Server.Database.DataAccess.Hotel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -17,7 +13,6 @@ namespace Server.Authentication.Hotel
         : AuthenticationHandler<HotelTokenSchemeOptions>
     {
         private IHotelTokenDataAccess _hotelTokenDataAcess;
-        private HotelTokenSchemeOptions _options;
         public HotelTokenScheme(IHotelTokenDataAccess hotelTokenDataAcess,
             IOptionsMonitor<HotelTokenSchemeOptions> options,
             ILoggerFactory logger,
@@ -26,15 +21,13 @@ namespace Server.Authentication.Hotel
             : base(options, logger, encoder, clock)
         {
             _hotelTokenDataAcess = hotelTokenDataAcess;
-           // this.hotellTokenDataAcess = hotellTokenDataAcess;
-            _options = options.CurrentValue;
         }
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             string hotelToken;
             try
             {
-                hotelToken = this.Context.Request.Headers[HotelTokenDefaults.TokenHeaderName][0];
+                hotelToken = Context.Request.Headers[HotelTokenDefaults.TokenHeaderName][0];
             }
             catch(Exception)
             {

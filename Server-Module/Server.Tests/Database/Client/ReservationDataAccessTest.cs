@@ -4,17 +4,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Server.AutoMapper;
 using Server.Database;
-using Server.Database.DataAccess;
 using Server.Database.DataAccess.Client;
 using Server.Database.Models;
 using Server.RequestModels;
 using Server.Services.Client;
-using Server.ViewModels.Client;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace Server.Tests.Database.Client
@@ -76,9 +73,9 @@ namespace Server.Tests.Database.Client
 
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelRooms ON");
                 _context.HotelRooms.AddRange(
-                    new HotelRoomDb { RoomID = 1, HotelID = 2, HotelRoomNumber = "TestHotelRoomNumber1" },
-                    new HotelRoomDb { RoomID = 2, HotelID = 3, HotelRoomNumber = "TestHotelRoomNumber2" },
-                    new HotelRoomDb { RoomID = 3, HotelID = 3, HotelRoomNumber = "TestHotelRoomNumber3" });
+                    new HotelRoomDb { RoomID = 1, HotelID = 2, IsActive = true, HotelRoomNumber = "TestHotelRoomNumber1" },
+                    new HotelRoomDb { RoomID = 2, HotelID = 3, IsActive = true, HotelRoomNumber = "TestHotelRoomNumber2" },
+                    new HotelRoomDb { RoomID = 3, HotelID = 3, IsActive = true, HotelRoomNumber = "TestHotelRoomNumber3" });
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelRooms OFF");
 

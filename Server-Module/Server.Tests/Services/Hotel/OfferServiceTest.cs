@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Server.AutoMapper;
-using Server.Database.DataAccess;
 using Server.Database.DataAccess.Hotel;
 using Server.Database.DatabaseTransaction;
 using Server.RequestModels;
 using Server.RequestModels.Hotel;
 using Server.Services.Hotel;
 using Server.Services.Result;
-using Server.ViewModels;
 using Server.ViewModels.Hotel;
 using Xunit;
 

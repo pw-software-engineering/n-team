@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Server.AutoMapper;
 using Server.Database;
-using Server.Database.DataAccess;
 using Server.Database.DataAccess.Client;
 using Server.Database.Models;
 using Server.RequestModels;
@@ -14,7 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace Server.Tests.Database.Client
@@ -87,9 +85,9 @@ namespace Server.Tests.Database.Client
 
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelRooms ON");
                 _context.HotelRooms.AddRange(
-                    new HotelRoomDb { RoomID = 1, HotelID = 2, HotelRoomNumber = "TestHotelRoomNumber1" },
-                    new HotelRoomDb { RoomID = 2, HotelID = 3, HotelRoomNumber = "TestHotelRoomNumber2" },
-                    new HotelRoomDb { RoomID = 3, HotelID = 3, HotelRoomNumber = "TestHotelRoomNumber3" });
+                    new HotelRoomDb { RoomID = 1, HotelID = 2, IsActive = true, HotelRoomNumber = "TestHotelRoomNumber1" },
+                    new HotelRoomDb { RoomID = 2, HotelID = 3, IsActive = true, HotelRoomNumber = "TestHotelRoomNumber2" },
+                    new HotelRoomDb { RoomID = 3, HotelID = 3, IsActive = true, HotelRoomNumber = "TestHotelRoomNumber3" });
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HotelRooms OFF");
 
@@ -128,7 +126,6 @@ namespace Server.Tests.Database.Client
         private ServerDbContext _context;
         private IMapper _mapper;
         private OfferSearchDataAccess _dataAccess;
-        #region Old
         [Fact]
         public void CheckHotelExistence_NonExistentHotelID_ReturnsFalse()
         {
@@ -146,14 +143,10 @@ namespace Server.Tests.Database.Client
             bool[] results = new bool[hotelIDs.Length];
             
             for(int i = 0; i < hotelIDs.Length; i++)
-            {
                 results[i] = _dataAccess.CheckHotelExistence(hotelIDs[i]);
-            }
 
             for (int i = 0; i < hotelIDs.Length; i++)
-            {
                 Assert.True(results[i]);
-            }
         }
 
         [Fact]
@@ -403,64 +396,26 @@ namespace Server.Tests.Database.Client
                 Assert.Equal(expectedTimeIntervals[i], timeIntervals[i]);
             }
         }
-        #endregion
-        #region GetHotelReviews
-        [Fact]
-        public void GetHotelReviews_BadHotelID()
-        {
-            Assert.Throws<Exception>(() => _dataAccess.GetHotelReviews(1000, 100, 100));
-        }
-        [Fact]
-        public void GetHotelReviews_GoodTestFromStartToAfterEnd()
-        {
-            var result = _dataAccess.GetHotelReviews(3, 0, 5);
-            int i = 0;
-            foreach(var review in result)
-            {
-                Assert.True(review.Content == "hotel3");
-                i++;
-            }
-            Assert.True(i == 2);
-        }
-        [Fact]
-        public void GetHotelReviews_GoodTestFromSecondToAfterEnd()
-        {
-            var result = _dataAccess.GetHotelReviews(3, 1, 5);
-            int i = 0;
-            foreach (var review in result)
-            {
-                Assert.True(review.Content == "hotel3");
-                i++;
-            }
-            Assert.True(i == 1);
-        }
-        #endregion
-        #region GetOfferReviews
-        [Fact]
-        public void GetOfferReviews_BadHotelID()
-        {
-            Assert.Throws<Exception>(() => _dataAccess.GetOfferReviews(100,1));
-        }
-        [Fact]
-        public void GetOfferReviews_BadOfferID()
-        {
-            Assert.Throws<Exception>(() => _dataAccess.GetOfferReviews(1, 100));
-        }
-        [Fact]
-        public void GetOfferReviews_GoodTest()
-        {
-            var result = _dataAccess.GetOfferReviews(3,3);
-            int i = 0;
-            foreach (var review in result)
-            {
-                Assert.True(review.Content == "hotel3");
-                i++;
-            }
-            Assert.True(i == 2);
-        }
 
+        [Fact]
+        public void GetOfferReviews_ReturnsListOfOfferReviews()
+        {
+            int hotelID = 1;
+            int offerID = 1;
+            Paging paging = new Paging();
 
-        #endregion
+            List<ReviewView> testedReviews = _dataAccess.GetOfferReviews(hotelID, offerID, paging);
+            List<ClientReviewDb> reviews = _context.ClientReviews
+                                                   .Where(cr => cr.OfferID == offerID)
+                                                   .OrderByDescending(cr => cr.ReviewID)
+                                                   .Skip((paging.PageNumber - 1) * paging.PageSize)
+                                                   .Take(paging.PageSize)
+                                                   .ToList();
+
+            Assert.Equal(testedReviews.Count, reviews.Count);
+            for (int i = 0; i < testedReviews.Count; i++)
+                Assert.Equal(reviews[i].ReviewID, testedReviews[i].ReviewID);
+        }
 
         public void Dispose()
         {

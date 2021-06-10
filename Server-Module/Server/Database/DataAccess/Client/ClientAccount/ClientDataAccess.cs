@@ -1,13 +1,8 @@
 ﻿using AutoMapper;
 using Server.Database.Models;
-using Server.RequestModels;
 using Server.RequestModels.Client;
-using Server.ViewModels;
 using Server.ViewModels.Client;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess.Client
 {
@@ -33,7 +28,7 @@ namespace Server.Database.DataAccess.Client
 
         public void UpdateClientInfo(int clientID, ClientInfoUpdate editClientInfo)
         {
-            var client = _dbContext.Clients.Find(clientID);
+            ClientDb client = _dbContext.Clients.Find(clientID);
             client.Username = string.IsNullOrWhiteSpace(editClientInfo.Username) ? client.Username : editClientInfo.Username;
             client.Email = string.IsNullOrWhiteSpace(editClientInfo.Email) ? client.Email : editClientInfo.Email;
             _dbContext.SaveChanges();

@@ -1,22 +1,18 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Server.Database.Models;
 using Server.RequestModels;
 using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess.Hotel
 {
     public class OfferRoomDataAccess : IOfferRoomDataAccess
     {
         private ServerDbContext _dbContext;
-        private IMapper _mapper;
-        public OfferRoomDataAccess(IMapper mapper, ServerDbContext dbContext)
+        public OfferRoomDataAccess(ServerDbContext dbContext)
         {
-            _mapper = mapper;
             _dbContext = dbContext;
         }
         public void AddRoomToOffer(int roomID, int offerID)
@@ -56,14 +52,12 @@ namespace Server.Database.DataAccess.Hotel
             List<OfferRoomView> roomViews = new List<OfferRoomView>();
             List<HotelRoomDb> rooms = _dbContext.HotelRooms.Include(hr => hr.OfferHotelRooms)
                                                            .Where(hr => hr.OfferHotelRooms.Any(ohr => ohr.OfferID == offerID))
+                                                           .OrderByDescending(hr => hr.RoomID)
                                                            .Skip((paging.PageNumber-1)*paging.PageSize)
                                                            .Take(paging.PageSize)
                                                            .ToList();
             if (hotelRoomNumber != null)
-            {
-                HotelRoomDb room = rooms.First(room => room.HotelRoomNumber == hotelRoomNumber);
-                rooms = new List<HotelRoomDb>() {room};
-            }
+                rooms = new List<HotelRoomDb>() { rooms.First(room => room.HotelRoomNumber == hotelRoomNumber) };
 
             foreach(HotelRoomDb room in rooms)
             {

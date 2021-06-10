@@ -5,11 +5,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Server.Authentication.Client;
 using Server.RequestModels.Client;
 using Server.Services.Client.ClientReviewService;
-using Server.ViewModels.Client;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Controllers.Client
 {
@@ -19,39 +15,36 @@ namespace Server.Controllers.Client
     public class ClientReviewControler : Controller
     {
         #region setup
-        private IReviewService _reviewService;
+        private IReviewService _service;
+        private int _clientID;
         public ClientReviewControler(IReviewService reviewService)
         {
-            _reviewService = reviewService;
+            _service = reviewService;
         }
 
-        private int _clientID;
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var id = from claim in HttpContext.User.Claims
-                     where claim.Type == ClientTokenManagerOptions.ClientIdClaimName
-                     select int.Parse(claim.Value);
-            _clientID = id.First();
+            _clientID = int.Parse(HttpContext.User.Claims.First(c => c.Type == ClientTokenManagerOptions.ClientIdClaimName).Value);
             base.OnActionExecuting(context);
         }
         #endregion
         #region reservations/{reservationID}/review
-        [HttpGet("reservations/{reservationID}/review")]
+        [HttpGet("reservations/{reservationID:int}/review")]
         public IActionResult GetReview([FromRoute] int reservationID)
         {
-            return _reviewService.GetReview(reservationID, _clientID);
+            return _service.GetReview(reservationID, _clientID);
         }
 
-        [HttpPut("reservations/{reservationID}/review")]
+        [HttpPut("reservations/{reservationID:int}/review")]
         public IActionResult CreateReview([FromRoute] int reservationID, [FromBody] ReviewUpdate reviewUpdate)
         {
-            return _reviewService.PutReview(reservationID, _clientID, reviewUpdate);
+            return _service.PutReview(reservationID, _clientID, reviewUpdate);
         }
 
-        [HttpDelete("reservations/{reservationID}/review")]
+        [HttpDelete("reservations/{reservationID:int}/review")]
         public IActionResult DeleteReview([FromRoute] int reservationID)
         {
-            return _reviewService.DeleteReview(reservationID, _clientID);
+            return _service.DeleteReview(reservationID, _clientID);
         }
         #endregion
     }

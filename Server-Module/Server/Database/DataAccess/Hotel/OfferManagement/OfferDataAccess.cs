@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Server.Database.Models;
 using Server.RequestModels;
 using Server.RequestModels.Hotel;
-using Server.ViewModels;
 using Server.ViewModels.Hotel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Database.DataAccess.Hotel
 {
@@ -39,22 +36,20 @@ namespace Server.Database.DataAccess.Hotel
         }
         public List<OfferPreviewView> GetHotelOffers(int hotelID, Paging paging, bool? isActive)
         {
-            var ret = _mapper.Map<List<OfferPreviewView>>(_dbContext.Offers
-                             .Where(o => o.HotelID == hotelID && !o.IsDeleted));
+            List<OfferPreviewView> offers = _mapper.Map<List<OfferPreviewView>>(_dbContext.Offers
+                                                                                .Where(o => o.HotelID == hotelID && !o.IsDeleted));
 
             if (isActive.HasValue)
-                ret = ret.Where(o => o.IsActive == isActive).ToList();
+                offers = offers.Where(o => o.IsActive == isActive).ToList();
 
-            return ret.Skip((paging.PageNumber - 1) * paging.PageSize)
-                      .Take(paging.PageSize)
-                      .ToList();
+            return offers.OrderByDescending(o => o.OfferID)
+                         .Skip((paging.PageNumber - 1) * paging.PageSize)
+                         .Take(paging.PageSize)
+                         .ToList();
         }
 
         public OfferView GetOffer(int offerID)
         {
-            OfferDb offer = _dbContext.Offers.Find(offerID);
-            if (offer is null || offer.IsDeleted)
-                return null;
             return _mapper.Map<OfferView>(_dbContext.Offers.Find(offerID));
         }
         public int? FindOfferAndGetOwner(int offerID)
@@ -71,11 +66,15 @@ namespace Server.Database.DataAccess.Hotel
             offer.OfferTitle = offerInfoUpdate.OfferTitle ?? offer.OfferTitle;
             offer.Description = offerInfoUpdate.Description ?? offer.Description;
             offer.OfferPreviewPicture = offerInfoUpdate.OfferPreviewPicture ?? offer.OfferPreviewPicture;
-            if (!(offerInfoUpdate.OfferPictures == null))
+            if (!(offerInfoUpdate.OfferPictures is null))
             {
-                _dbContext.OfferPictures.RemoveRange(_dbContext.OfferPictures.Where(p => p.OfferID == offerID));
+                _dbContext.OfferPictures.RemoveRange(_dbContext.OfferPictures.Where(op => op.OfferID == offerID));
                 foreach (string picture in offerInfoUpdate.OfferPictures)
-                    _dbContext.OfferPictures.Add(new OfferPictureDb(picture, offerID));
+                    _dbContext.OfferPictures.Add(new OfferPictureDb()
+                    {
+                        OfferID = offerID,
+                        Picture = picture
+                    });
             }
             _dbContext.SaveChanges();
         }
@@ -86,7 +85,11 @@ namespace Server.Database.DataAccess.Hotel
             {
                 List<OfferPictureDb> picturesDb = new List<OfferPictureDb>();
                 foreach (string picture in pictures)
-                    picturesDb.Add(new OfferPictureDb(picture, offerID));
+                    picturesDb.Add(new OfferPictureDb()
+                    {
+                        OfferID = offerID,
+                        Picture = picture
+                    });
 
                 _dbContext.OfferPictures.AddRange(picturesDb);
                 _dbContext.SaveChanges();
