@@ -55,6 +55,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: addon-http-application-routing
     nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/service-upstream: true
 spec:
   rules:
   - host: ${NAMESPACE}.${DOMAIN}
