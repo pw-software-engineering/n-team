@@ -56,6 +56,20 @@ namespace Client_Module
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //app.Use(async (context, next) =>
+            //{
+            //    Console.WriteLine(context.Request.Path.Value);
+            //    await next();
+            //});
+
+            app.Map("/client", mainApp =>
+            {
+                MappedConfigure(mainApp, env);
+            });
+        }
+
+        private void MappedConfigure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
