@@ -58,50 +58,20 @@ namespace Client_Module
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            #if PRODUCTION
-            app.Use(async (context, next) =>
+            //app.Use(async (context, next) =>
+            //{
+            //    Console.WriteLine(context.Request.Path.Value);
+            //    await next();
+            //});
+
+            app.Map("/client", mainApp =>
             {
-                string msg = context.Request.Protocol
-                  + " " + context.Request.Method
-                  + " : " + context.Request.Path;
-                string sep = new String('-', msg.Length);
-                Console.WriteLine(sep
-                    + Environment.NewLine
-                    + msg
-                    + Environment.NewLine
-                    + sep);
-
-                foreach (string key in context.Request.Headers.Keys)
-                {
-                    Console.WriteLine(key + " = "
-                        + context.Request.Headers[key]);
-                }
-
-                foreach (string key in context.Request.Cookies.Keys)
-                {
-                    Console.WriteLine(key + " : " + context.Request.Cookies[key]);
-                }
-
-                if (context.Request.Body != null)
-                {
-                    string body = String.Empty;
-
-                    using (StreamReader sr =
-                      new StreamReader(context.Request.Body))
-                    {
-                        body = sr.ReadToEndAsync().Result;
-                    }
-
-                    Console.WriteLine(body);
-                    context.Request.Body =
-                      new MemoryStream(Encoding.UTF8.GetBytes(body));
-                    context.Request.Body.Position = 0;
-                }
-
-                await next();
+                MappedConfigure(mainApp, env);
             });
-            #endif
+        }
 
+        private void MappedConfigure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
