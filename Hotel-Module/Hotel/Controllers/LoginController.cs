@@ -62,7 +62,7 @@ namespace Hotel.Controllers
         public IActionResult LogOut()
         {
             this.Response.Cookies.Delete(HotelTokenCookieDefaults.AuthCookieName);
-            return Redirect($"{HttpContext.Request.PathBase}");
+            return RedirectToAction(nameof(Index));
         }
     }
 

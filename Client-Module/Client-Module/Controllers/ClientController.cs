@@ -80,7 +80,7 @@ namespace Client_Module.Controllers
             }
             catch(JsonException)
             {
-                serverError = $"Invalid JSON response format. Status code: {httpResponse.StatusCode}";
+                serverError = $"Invalid JSON response format. Status code: {(int)httpResponse.StatusCode}";
             }
             LogInViewModel viewModel = new LogInViewModel()
             {

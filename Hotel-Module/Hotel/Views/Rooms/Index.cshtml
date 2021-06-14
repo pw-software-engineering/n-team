@@ -150,9 +150,10 @@ else
                 activeRoomID = room.RoomID;
 
                 // ukradzione z client-module
+                let pathBase = "@Context.Request.PathBase.ToString()";
                 let loadingBox = `<tr>
                         <td>
-                            <img class="d-block mx-auto mt-2", style="width: 75px", src="/img/loading.gif"></img>
+                            <img class="d-block mx-auto mt-2", style="width: 75px", src="${pathBase}/img/loading.gif"></img>
                             <p class="text-center h5 mt-2">Loading offers...</p>
                         </td>
                     </tr>`;
@@ -163,7 +164,7 @@ else
                 room.OfferID.forEach(function (offerID, index) {
 
                     ajaxes[index] = $.ajax({
-                        url: "/rooms/offerRowPartial",
+                        url: `${pathBase}/rooms/offerRowPartial`,
                         data: {
                             "offerID": offerID,
                             "roomID": activeRoomID
@@ -182,7 +183,7 @@ else
             $('#removeRoomBtn').on('click', async function () {
                 await fetchSend(
                     'Are you sure you want to permanently delete this room? This action is irreversible!',
-                    `/rooms/${activeRoomID}`,
+                    `${pathBase}/rooms/${activeRoomID}`,
                     'DELETE',
                     null,
                     "Room deleted succesfully.",
@@ -196,7 +197,7 @@ else
                 e.preventDefault();
                 await fetchSend(
                     null,
-                    '/rooms',
+                    `${pathBase}/rooms`,
                     'POST',
                     new FormData($("#addRoomForm")[0]),
                     "Room added succesfully.",
@@ -213,7 +214,7 @@ else
 
                 await fetchSend(
                     null,
-                    `/offers/${offerID}/rooms/${activeRoomID}`,
+                    `${pathBase}/offers/${offerID}/rooms/${activeRoomID}`,
                     'DELETE',
                     new FormData($("#addRoomForm")[0]),
                     "Room detached succesfully.",
