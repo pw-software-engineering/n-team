@@ -21,7 +21,7 @@ namespace ServerApiMockup.MockupApiControllers
         public IActionResult GetHotels(string hotelName = null, string country = null, string city = null, int pageNumber = 1, int pageSize = 10)
         {
             byte[] imgRaw = System.IO.File.ReadAllBytes($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Resources/picture.png");
-            string imgBase64 = "data:image/png;base64," + Convert.ToBase64String(imgRaw);
+            string imgBase64 = "data:;base64," + Convert.ToBase64String(imgRaw);
             HotelPreviewInfo templatePreviewInfo = new HotelPreviewInfo()
             {
                 HotelID = 1,

@@ -99,10 +99,11 @@
 
             var carouselPictures = [];
             var currentPictureIdx = -1;
+            var pathBase = "@Context.Request.PathBase.ToString()";
             function DisplayPicture(index) {
                 var carouselPictureImg = $("#@tagIDs.CarouselPictureImgID");
                 if (index === null) {
-                    carouselPictureImg.attr("src", "/resources/no-image-available.jpg");
+                    carouselPictureImg.attr("src", `${pathBase}/resources/no-image-available.jpg`);
                     return;
                 }
                 if (index < 0 || index >= carouselPictures.length) {

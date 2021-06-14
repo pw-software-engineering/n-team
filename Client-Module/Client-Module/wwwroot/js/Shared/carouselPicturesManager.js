@@ -32,7 +32,7 @@
         this._pictures = pictures;
         if (this._pictures.length === 0) {
             this.currentPictureIdx = -1;
-            this.imgDisplayHandle.attr("src", "/resources/no-image-available.jpg");
+            this.imgDisplayHandle.attr("src", `${pathBase}/resources/no-image-available.jpg`);
             return;
         }
         this.showPictureIdx(0);
