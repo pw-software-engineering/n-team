@@ -28,5 +28,7 @@ jobs:
         creds: '${{ secrets.AZURE_CREDENTIALS }}'
         cluster-name: ${{ secrets.AKS_NAME }}
         resource-group: ${{ secrets.AKS_RG_NAME }}
+    - name: Get pod labels
+      run: kubectl get pods -n "${{ env.NAMESPACE }}" --show-labels
     - name: Obtain logs for module
       run: kubectl logs -n "${{ env.NAMESPACE }}" "${{ env.APPNAME }}"
