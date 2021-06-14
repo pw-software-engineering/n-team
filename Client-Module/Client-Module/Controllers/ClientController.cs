@@ -4,6 +4,7 @@ using Client_Module.ViewsTagID.Layout;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -58,7 +59,7 @@ namespace Client_Module.Controllers
                         ClientTokenCookieDefaults.AuthCookieName,
                         await httpResponse.Content.ReadAsStringAsync(),
                         options);
-                    return Redirect("/");
+                    return Redirect(Url.Action(action: "Index", controller: "Home"));
                 }
             }
             catch(Exception e)
@@ -92,7 +93,8 @@ namespace Client_Module.Controllers
         public IActionResult LogOut()
         {
             this.Response.Cookies.Delete(ClientTokenCookieDefaults.AuthCookieName);
-            return Redirect("/");
+
+            return Redirect(Url.Action(action: "Index", controller: "Home"));
         }
 
         [HttpGet("/account")]

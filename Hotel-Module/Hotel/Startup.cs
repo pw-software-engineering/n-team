@@ -46,7 +46,6 @@ namespace Hotel
                 await next();
             });
 #endif
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

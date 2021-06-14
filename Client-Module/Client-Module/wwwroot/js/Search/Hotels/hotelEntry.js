@@ -60,19 +60,19 @@ HotelEntry.prototype.createHotelInfoComponent = function () {
         )
     );
 
-    var detailsBtn = $("<a>")
+    var detailsBtn = $("<button>")
         .attr("class", "w-100 my-2 btn btn-secondary mt-4")
         .text("Find out more")
         .append($(`<i class="ml-2 fas fa-chevron-right">`))
-        .attr("href", `/hotels/${this.hotelData.hotelID}`);
+        //.attr("href", `/hotels/${this.hotelData.hotelID}`);
     detailsBtn.on("click", () => {
         this.hotelEntryEvents.onDetails(this);
     });
-    var offersBtn = $("<a>")
+    var offersBtn = $("<button>")
         .attr("class", "w-100 my-2 btn btn-info")
         .text("Show offers")
         .append($(`<i class="ml-2 fas fa-chevron-right">`))
-        .attr("href", `/hotels/${this.hotelData.hotelID}/offers`);
+        //.attr("href", `/hotels/${this.hotelData.hotelID}/offers`);
     offersBtn.on("click", () => {
         this.hotelEntryEvents.onOffers(this);
     });

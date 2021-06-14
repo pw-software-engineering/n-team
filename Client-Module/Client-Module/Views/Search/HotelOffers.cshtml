@@ -295,16 +295,17 @@
                 }
                 hotelOffersList.empty();
                 // Create new HotelOfferEntry instances, generate and display hotel offer preview components
+                var pathBase = "@Context.Request.PathBase.ToString()";
                 for (var i = 0; i < data.length; i++) {
                     var hotelOfferEntry = new HotelOfferEntry({
                         hotelOfferData: data[i],
                         hotelOfferEvents: {
                             onOfferDetails: function (entry) {
-                                console.log("AAA");
+                                //console.log("AAA");
                                 var queryParameters = [];
                                 queryParameters.push(`fromTime=${$("#@tagIDs.FilterFromTimeInputID").val()}`);
                                 queryParameters.push(`toTime=${$("#@tagIDs.FilterToTimeInputID").val()}`);
-                                window.location.href = `/hotels/@Model.HotelID/offers/${entry.hotelOfferData.offerID}?${queryParameters.join('&')}`;
+                                window.location.href = `${pathBase}/hotels/@Model.HotelID/offers/${entry.hotelOfferData.offerID}?${queryParameters.join('&')}`;
                             }
                         }
                     });
