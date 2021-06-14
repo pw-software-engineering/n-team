@@ -19,7 +19,7 @@ namespace Hotel.Controllers
         [HttpGet("/")]
         public IActionResult Home()
         {
-            return Redirect("/profile");
+            return Redirect($"{HttpContext.Request.PathBase}/profile");
         }
 
         [HttpGet("/login")]
@@ -48,7 +48,7 @@ namespace Hotel.Controllers
                         HotelTokenCookieDefaults.AuthCookieName,
                         authString,
                         options);
-                    return Redirect("/profile");
+                    return Redirect($"{HttpContext.Request.PathBase}/profile");
                 }
                 return View("~/Views/Login/Index.cshtml", new LogInError() { Error = httpResponse.StatusCode.ToString() });
             }
@@ -62,7 +62,7 @@ namespace Hotel.Controllers
         public IActionResult LogOut()
         {
             this.Response.Cookies.Delete(HotelTokenCookieDefaults.AuthCookieName);
-            return Redirect("/");
+            return Redirect($"{HttpContext.Request.PathBase}");
         }
     }
 

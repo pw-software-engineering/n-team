@@ -39,12 +39,13 @@ namespace Hotel
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+#if PRODUCTION
             app.Use(async (context, next) =>
             {
                 context.Request.PathBase = new Microsoft.AspNetCore.Http.PathString("/hotel");
                 await next();
             });
-			
+#endif
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -55,9 +56,9 @@ namespace Hotel
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            #if !PRODUCTION
+#if !PRODUCTION
             app.UseHttpsRedirection();
-            #endif
+#endif
             app.UseStaticFiles();
 
             app.UseRouting();
