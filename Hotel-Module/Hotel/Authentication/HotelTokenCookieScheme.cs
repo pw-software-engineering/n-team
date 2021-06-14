@@ -81,7 +81,7 @@ namespace Hotel.Authentication
 
     public static class HotelTokenCookieDefaults
     {
-        public const string AuthenticationScheme = "HoteltTokenCookieScheme";
-        public const string AuthCookieName = "clientTokenCookie";
+        public const string AuthenticationScheme = "HotelTokenCookieScheme";
+        public const string AuthCookieName = "hotelTokenCookie";
     }
 }
