@@ -69,7 +69,7 @@ namespace Client_Module.Controllers
                 return View(error);
             }
             //Console.WriteLine($"Status code: {httpResponse.StatusCode}\n{await httpResponse.Content.ReadAsStringAsync()}");
-            string serverError = null;
+            string serverError;
             try
             {
                 LogInError error = JsonSerializer.Deserialize<LogInError>(

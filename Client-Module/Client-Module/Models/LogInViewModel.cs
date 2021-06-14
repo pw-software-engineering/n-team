@@ -8,6 +8,5 @@ namespace Client_Module.Models
     public class LogInViewModel
     {
         public string ServerLogInError { get; set; }
-        public string ConsoleInfo { get; set; }
     }
 }
