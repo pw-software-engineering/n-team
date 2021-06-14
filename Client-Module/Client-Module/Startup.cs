@@ -64,7 +64,7 @@ namespace Client_Module
             //    await next();
             //});
 
-            app.Map("/client", mainApp =>
+            app.Map("", mainApp =>
             {
                 MappedConfigure(mainApp, env);
             });
@@ -72,6 +72,12 @@ namespace Client_Module
 
         private void MappedConfigure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.Use(async (context, next) =>
+            {
+                context.Request.PathBase = new Microsoft.AspNetCore.Http.PathString("/client");
+                await next();
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
