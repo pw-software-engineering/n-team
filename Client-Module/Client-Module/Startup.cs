@@ -58,20 +58,50 @@ namespace Client_Module
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //app.Use(async (context, next) =>
-            //{
-            //    Console.WriteLine(context.Request.Path.Value);
-            //    await next();
-            //});
-
-            app.Map("/client", mainApp =>
+            #if PRODUCTION
+            app.Use(async (context, next) =>
             {
-                MappedConfigure(mainApp, env);
-            });
-        }
+                string msg = context.Request.Protocol
+                  + " " + context.Request.Method
+                  + " : " + context.Request.Path;
+                string sep = new String('-', msg.Length);
+                Console.WriteLine(sep
+                    + Environment.NewLine
+                    + msg
+                    + Environment.NewLine
+                    + sep);
 
-        private void MappedConfigure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
+                foreach (string key in context.Request.Headers.Keys)
+                {
+                    Console.WriteLine(key + " = "
+                        + context.Request.Headers[key]);
+                }
+
+                foreach (string key in context.Request.Cookies.Keys)
+                {
+                    Console.WriteLine(key + " : " + context.Request.Cookies[key]);
+                }
+
+                if (context.Request.Body != null)
+                {
+                    string body = String.Empty;
+
+                    using (StreamReader sr =
+                      new StreamReader(context.Request.Body))
+                    {
+                        body = sr.ReadToEndAsync().Result;
+                    }
+
+                    Console.WriteLine(body);
+                    context.Request.Body =
+                      new MemoryStream(Encoding.UTF8.GetBytes(body));
+                    context.Request.Body.Position = 0;
+                }
+
+                await next();
+            });
+            #endif
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
