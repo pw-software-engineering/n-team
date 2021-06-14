@@ -69,7 +69,7 @@ ModalConfirmPopup.prototype.displayProcessing = function () {
     this.popupOutput.append(
         $("<h5>").attr("class", "text-center").text("Processing..."),
         $("<img>")
-            .attr("src", "/resources/loading.gif")
+            .attr("src", `${pathBase}/resources/loading.gif`)
             .attr("style", "width: 50px; height: 50px")
             .attr("class", "d-block ml-auto mr-auto")
     );

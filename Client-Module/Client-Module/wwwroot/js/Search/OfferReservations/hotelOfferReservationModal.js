@@ -167,7 +167,7 @@
         this.serverErrorBox.append(
             $("<p>").attr("class", "text-center h3").append(
                 $("<img>")
-                    .attr("src", "/resources/loading.gif")
+                    .attr("src", `${pathBase}/resources/loading.gif`)
                     .attr("style", "width: 50px; height: 50px")
                     .attr("class", "d-inline-block mr-3"),
                 $("<span>").attr("class", "text-secondary").css("vertical-align", "middle").text("Processing...")

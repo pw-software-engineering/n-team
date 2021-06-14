@@ -325,6 +325,7 @@
         });
 
         var offerReviewsList = $("#@tagIDs.OfferReviewsListID");
+        var pathBase = "@Context.Request.PathBase.ToString()";
         var currentActionID = 0;
         async function DisplayOfferReviews() {
             var actionID = ++currentActionID;
@@ -335,7 +336,7 @@
                 .append(
                     $("<img>")
                         .attr("class", "d-block mx-auto mt-2")
-                        .attr("style", "width: 75px").attr("src", "/resources/loading.gif"),
+                        .attr("style", "width: 75px").attr("src", `${pathBase}/resources/loading.gif`),
                     $("<p>")
                         .attr("class", "text-center h5 mt-2")
                         .text("Loading offer reviews...")

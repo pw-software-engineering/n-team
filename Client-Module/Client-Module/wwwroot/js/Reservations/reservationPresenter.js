@@ -12,7 +12,7 @@ ReservationPresenter.prototype.displayLoading = function () {
             .append(
                 $("<img>")
                     .attr("class", "d-block mx-auto mt-2")
-                    .attr("style", "width: 75px").attr("src", "/resources/loading.gif"),
+                    .attr("style", "width: 75px").attr("src", `${pathBase}/resources/loading.gif`),
                 $("<p>")
                     .attr("class", "text-center h5 mt-2")
                     .text("Loading hotel offer page...")
