@@ -16,6 +16,7 @@ using Server.Database.DataAccess.Client;
 using Server.AutoMapper;
 using Server.Database.DataAccess.Client.Review;
 using Server.Services.Client.ClientReviewService;
+using System;
 
 namespace Server
 {
@@ -68,6 +69,16 @@ namespace Server
 
             services.AddDbContext<ServerDbContext>(options =>           
                 options.UseSqlServer(Configuration.GetConnectionString("ServerDBContext")));
+
+#if PRODUCTION
+            // Database migration
+            Console.WriteLine("Migrating database...");
+            var optionsBuilder = new DbContextOptionsBuilder<ServerDbContext>();
+            optionsBuilder.UseSqlServer(Configuration.GetConnectionString("ServerDBContext"));
+            using (var context = new ServerDbContext(optionsBuilder.Options)) context.Database.Migrate();
+            Console.WriteLine("Done.");
+#endif
+
             //services.AddAuthentication("HotellBasic").AddScheme<HotellTokenSchemeOptions, HotellTokenScheme>("HotellBasic", null);
             services.AddAuthentication()
                 .AddScheme<HotelTokenSchemeOptions, HotelTokenScheme>(
@@ -104,9 +115,9 @@ namespace Server
             {
                 app.UseDeveloperExceptionPage();
             }
-            #if !PRODUCTION
+#if !PRODUCTION
             app.UseHttpsRedirection();
-            #endif
+#endif
             app.UseRouting();
 
             app.UseCors();
