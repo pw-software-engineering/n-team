@@ -206,9 +206,18 @@
                     return;
                 }
                 hotelDisplayList.empty();
+                var pathBase = "@Context.Request.PathBase.ToString()";
                 for (var i = 0; i < data.length; i++) {
                     var hotelEntry = new HotelEntry({
-                        hotelData: data[i]
+                        hotelData: data[i],
+                        hotelEntryEvents: {
+                            onDetails: function (entry) {
+                                window.location.href = `${pathBase}/hotels/${entry.hotelData.hotelID}`;
+                            },
+                            onOffers: function (entry) {
+                                window.location.href = `${pathBase}/hotels/${entry.hotelData.hotelID}/offers`;
+                            }
+                        }
                     });
                     hotelDisplayList.append(hotelEntry.component);
                 }

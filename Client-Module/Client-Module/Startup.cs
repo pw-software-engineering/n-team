@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Net.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Client_Module
 {
@@ -30,13 +32,8 @@ namespace Client_Module
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddTransient<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
             services.AddControllersWithViews();
             services.AddHttpClient();
-            //services.AddHttpClient("default-server-api", (HttpClient client) =>
-            //{
-            //    client.BaseAddress = new Uri(ServerApiConfig.BaseUrl.TrimEnd('/') + '/');
-            //});
             services.AddAuthentication(ClientTokenCookieDefaults.AuthenticationScheme)
                 .AddScheme<ClientTokenCookieSchemeOptions, ClientTokenCookieScheme>(
                 ClientTokenCookieDefaults.AuthenticationScheme,
@@ -58,26 +55,13 @@ namespace Client_Module
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //app.Use(async (context, next) =>
-            //{
-            //    Console.WriteLine(context.Request.Path.Value);
-            //    await next();
-            //});
-
-            app.Map("", mainApp =>
-            {
-                MappedConfigure(mainApp, env);
-            });
-        }
-
-        private void MappedConfigure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
+#if PRODUCTION
             app.Use(async (context, next) =>
             {
                 context.Request.PathBase = new Microsoft.AspNetCore.Http.PathString("/client");
                 await next();
             });
-
+#endif
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
