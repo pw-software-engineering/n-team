@@ -1,4 +1,4 @@
-name: Server module
+name: Get server logs
 
 on:
   workflow_dispatch:
