@@ -62,7 +62,7 @@ namespace Hotel.Authentication
         {
             Console.WriteLine($"CHALLANGE: {Response.StatusCode}");
             LinkGenerator urlGenerator = Context.RequestServices.GetService(typeof(LinkGenerator)) as LinkGenerator;
-            Context.Response.Redirect(urlGenerator.GetPathByAction("Login", "Login"));
+            Context.Response.Redirect(urlGenerator.GetPathByAction(action: "Login", controller: "Login", pathBase: Context.Request.PathBase));
             return Task.CompletedTask;
         }
 
