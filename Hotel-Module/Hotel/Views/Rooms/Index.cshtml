@@ -137,6 +137,7 @@ else
             let activeRoomID;
             let modalLoader = document.getElementById('modal-loader');
             let mainLoader = document.getElementById('main-loader');
+            let pathBase = "@Context.Request.PathBase.ToString()";
 
             // adjust modal to clicked room
             $('#roomOffersModal').on('show.bs.modal', function (event) {
@@ -150,7 +151,6 @@ else
                 activeRoomID = room.RoomID;
 
                 // ukradzione z client-module
-                let pathBase = "@Context.Request.PathBase.ToString()";
                 let loadingBox = `<tr>
                         <td>
                             <img class="d-block mx-auto mt-2", style="width: 75px", src="${pathBase}/img/loading.gif"></img>
