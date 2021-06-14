@@ -60,7 +60,7 @@ namespace Client_Module.Authentication
             Console.WriteLine($"CHALLANGE: {Response.StatusCode}");
             LinkGenerator urlGenerator = Context.RequestServices.GetService(typeof(LinkGenerator)) as LinkGenerator;
             //Console.WriteLine($"{urlGenerator.GetPathByAction("LogIn", "Client")}");
-            Context.Response.Redirect(urlGenerator.GetPathByAction("LogIn", "Client"));
+            Context.Response.Redirect(urlGenerator.GetPathByAction(action: "LogIn", controller: "Client", pathBase: Request.PathBase));
             return Task.CompletedTask;
         }
 
@@ -68,7 +68,6 @@ namespace Client_Module.Authentication
         {
             Console.WriteLine($"FORBIDDEN: {Response.StatusCode}");
             //Response.Redirect(_options.ChallangeRedirectUrl, false);
-            //return Task.CompletedTask;
             return base.HandleForbiddenAsync(properties);
         }
     }
