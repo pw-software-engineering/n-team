@@ -1,23 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using System.Net.Http;
-using Microsoft.AspNetCore.Http;
-using System.Net;
-using System.IO;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using Hotel;
 
-namespace Hotel_Module.Authentication
+namespace Hotel.Authentication
 {
     public class HotelTokenCookieScheme
         : AuthenticationHandler<HotelTokenCookieSchemeOptions>

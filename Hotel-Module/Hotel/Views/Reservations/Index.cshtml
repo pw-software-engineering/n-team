@@ -1,235 +1,147 @@
-﻿@{
+﻿@model Hotel.ViewModels.ReservationIndexViewModel
+@{
     ViewData["Title"] = "Reservations";
-
-    // data managed and passed to view by controller
-    ViewData["PageNo"] = 2;
-    ViewData["EntrPerPage"] = 10;
-    int pageNr = int.Parse(ViewData["PageNo"].ToString());
-    int entries = int.Parse(ViewData["EntrPerPage"].ToString());
-
-    ViewData["FilterSelection"] = "all"; // "all" or "current"
-    ViewData["RoomNo"] = "13A";
-
-
-    string filter = ViewData["FilterSelection"].ToString();
-    string rnr;
-    if (!(ViewData["RoomNo"] is null))
-        rnr = ViewData["RoomNo"].ToString();
-    else
-        rnr = "";
 }
 
 <h1>Reservations</h1>
 
 <div>
     <div class="row">
-        <form onsubmit="return validateForm();">
-            <div class="form-row">
-                <div class="form-group m-3">
-                    <select class="form-control">
-                        @if (filter == "current")
+        <form asp-action="@nameof(Hotel.Controllers.ReservationsController.Index)" class="row" id="filterForm">
+            <div class="form-group col-sm-4 m-3">
+                @Html.DropDownListFor(vm => vm.CurrentOnly,
+                    new SelectList(
+                        new[]
                         {
-                            <option>All reservations</option>
-                            <option selected>Under service only</option>
+                            new { Value = false.ToString(), Text = "All reservations"},
+                            new { Value = true.ToString(), Text = "Under service only" }
+                        }, "Value", "Text", Model.CurrentOnly
+                    ),
+                    new { @class = "form-control" }
+                )
+                <label class="form-control-placeholder">Filter</label>
+            </div>
+            <div class="form-group col-sm-2 m-3">
+                <input asp-for="RoomNumber" value="@Model.RoomNumber" class="form-control" />
+                <label class="form-control-placeholder">Room</label>
+            </div>
+            <div class="form-group col-sm-3 m-3">
+                @Html.DropDownListFor(vm => vm.Paging.PageSize,
+                    new SelectList(
+                        new[]
+                        {
+                            new { Value = "5", Text = "5"},
+                            new { Value = "10", Text = "10"},
+                            new { Value = "20", Text = "20"},
+                            new { Value = "50", Text = "50"}
+                        }, "Value", "Text", Model.Paging.PageSize
+                    ),
+                    new { @class = "form-control" }
+                )
+                <label class="form-control-placeholder">Entries per page</label>
+            </div>
+            <div class="form-group col-sm-1 m-3">
+                <button type="submit" class="btn btn-primary rounded" id="applyBtn">Apply</button>
+            </div>
+
+            <input asp-for="Paging.PageNumber" hidden />
+
+        </form>
+    </div>
+
+    @if (Model.Reservations is null || !Model.Reservations.Any())
+    {
+        <p class="text-center">There ain't no reservations.</p>
+    }
+    else
+    {
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td>Beggining of stay</td>
+                    <td>End of stay</td>
+                    <td>Guest</td>
+                    <td>Adult guests</td>
+                    <td>Children</td>
+                    <td>Room</td>
+                    <td class="text-center">Offer</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (ReservationObject reservation in Model.Reservations)
+                {
+                    <tr>
+                        @if(reservation.Reservation.FromTime > DateTime.Today)
+                        {
+                            <td><span class="fa fa-calendar-alt"></span></td>
                         }
                         else
                         {
-                            <option selected>All reservations</option>
-                            <option>Under service only</option>
+                            <td><span class="fa fa-bed"></span></td>
                         }
-                    </select>
-                    <label class="form-control-placeholder">Filter</label>
-                </div>
-
-                <!-- Do potencjalnego zaimplementowania w przyszłości, Could-Have -->
-                <!--
-                            <div class="form-group m-3">
-                                <input type="date" class="form-control" />
-                                <label class="form-control-placeholder">After</label>
-                            </div>
-                            <div class="form-group m-3">
-                                <input type="date" class="form-control" />
-                                <label class="form-control-placeholder">Before</label>
-                            </div>
-                            <div class="form-group m-3">
-                                <input type="text" class="form-control" />
-                                <label class="form-control-placeholder">Guest name</label>
-                            </div>
-                -->
-                <!--        <div class="form-group m-3">
-                                <input type="number" min="0" class="form-control" />
-                                <label class="form-control-placeholder">Adults</label>
-                            </div>
-                            <div class="form-group m-3">
-                                <input type="number" min="0" class="form-control" />
-                                <label class="form-control-placeholder">Children</label>
-                            </div>
-                -->
-                <div class="form-group m-3">
-                    <input id="roomNr" type="text" class="form-control" value="@rnr" />
-                    <label class="form-control-placeholder">Room</label>
-                </div>
-                <div class="form-group m-3">
-                    <button type="submit" class="btn btn-primary rounded">Apply</button>
-                </div>
-            </div>
-        </form>
-        <div class="form-group ml-auto col-sm-2 m-3">
-            <select class="form-control">
-                @if (entries == 50)
-                {
-                    <option>10</option>
-                    <option>20</option>
-                    <option selected>50</option>
+                        <td>@reservation.Reservation.FromTime.ToLongDateString()</td>
+                        <td>@reservation.Reservation.ToTime.ToLongDateString()</td>
+                        <td>@reservation.Client.Name @reservation.Client.Surname</td>
+                        <td>@reservation.Reservation.AdultsCount</td>
+                        <td>@reservation.Reservation.ChildrenCount</td>
+                        <td>@reservation.Room.HotelRoomNumber</td>
+                        <td class="text-center p-1">
+                            <a class="btn btn-sm btn-outline-success"
+                                asp-controller="offers"
+                                asp-action="@nameof(Hotel.Controllers.OffersController.Details)"
+                                asp-route-offerID="@reservation.Reservation.OfferID">Show offer</a>
+                        </td>
+                    </tr>
                 }
-                else if (entries == 20)
-                {
-                    <option>10</option>
-                    <option selected>20</option>
-                    <option>50</option>
-                }
-                else
-                {
-                    <option selected>10</option>
-                    <option>20</option>
-                    <option>50</option>
-                }
-            </select>
-            <label class="form-control-placeholder">Entries per page</label>
-        </div>
-    </div>
-
-
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <td></td>
-                <td>Beggining of stay</td>
-                <td>End of stay</td>
-                <td>Guest</td>
-                <td>Adult guests</td>
-                <td>Children</td>
-                <td>Room</td>
-                <td class="text-center">Offer</td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><span class="fa fa-bed"></span></td>
-                <td>20 Mar</td>
-                <td>31 Mar</td>
-                <td>Robert Johnson</td>
-                <td>2</td>
-                <td>2</td>
-                <td>31</td>
-                <td class="text-center p-1"><a class="btn btn-sm btn-outline-success" asp-controller="offers" asp-action="details">Show offer</a></td>
-            </tr>
-            <tr>
-                <td><span class="fa fa-bed"></span></td>
-                <td>22 Mar</td>
-                <td>30 Mar</td>
-                <td>Maria Smith</td>
-                <td>7</td>
-                <td>0</td>
-                <td>12</td>
-                <td class="text-center p-1"><a class="btn btn-outline-success">Show offer</a></td>
-            </tr>
-            <tr>
-                <td><span class="fa fa-calendar-alt"></span></td>
-                <td>30 Mar</td>
-                <td>4 Apr</td>
-                <td>Anita Hillman</td>
-                <td>1</td>
-                <td>0</td>
-                <td>99</td>
-                <td class="text-center p-1"><a class="btn btn-outline-success">Show offer</a></td>
-            </tr>
-            <tr>
-                <td><span class="fa fa-calendar-alt"></span></td>
-                <td>4 Apr</td>
-                <td>7 Apr</td>
-                <td>Mark Bobadilla</td>
-                <td>2</td>
-                <td>0</td>
-                <td>99</td>
-                <td class="text-center p-1"><a class="btn btn-outline-success">Show offer</a></td>
-            </tr>
-            <tr>
-                <td><span class="fa fa-calendar-alt"></span></td>
-                <td>13 Nov</td>
-                <td>14 Nov</td>
-                <td>Donna Burroughs</td>
-                <td>1</td>
-                <td>2</td>
-                <td>20</td>
-                <td class="text-center p-1"><a class="btn btn-outline-success">Show offer</a></td>
-            </tr>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    }
 </div>
 <hr />
 
-<nav aria-label="Reservations pages">
+<nav>
     <ul class="pagination justify-content-center">
-        @if (pageNr <= 1)
-        {
-            <li class="page-item disabled">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span class="fa fa-chevron-left"></span>
-                </a>
-            </li>
-        }
-        else
-        {
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span class="fa fa-chevron-left"></span>
-                </a>
-            </li>
-        }
-        <li class="page-item"><a class="page-link">@pageNr.ToString()</a></li>
-        <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
+        <li class="page-item
+            @if (Model.Paging.PageNumber < 2)
+            {
+                @:disabled
+            }
+        ">
+            <button id="prevPageBtn" class="page-link">
+                <span class="fa fa-chevron-left"></span>
+            </button>
+        </li>
+
+        <li class="page-item"><a class="page-link">@Model.Paging.PageNumber</a></li>
+
+        <li class="page-item
+            @if (Model.Reservations.Count() < Model.Paging.PageSize)
+            {
+                @:disabled
+            }
+        ">
+            <button id="nextPageBtn" class="page-link">
                 <span class="fa fa-chevron-right"></span>
-            </a>
+            </button>
         </li>
     </ul>
 </nav>
 
 @section Scripts {
     <script type="text/javascript">
-        //var hotelRooms = null;
-        var hotelRooms = [
-            {
-                roomID: 1,
-                hotelRoomNumber: "13A",
-                offerID: [1, 2, 3]
-            }
-        ];
-
-        function validateForm() {
-            var roomNo = $("#roomNr").val();
-            if (roomNo == null || roomNo == "")
-                return true;
-            else if (!validateRoom(roomNo)) {
-                alert("Room with this number does not exist.")
-                return false;
-            }
+        var form = document.getElementById('filterForm');
+        var pageNumElem = document.getElementById('@Html.IdFor(vm => vm.Paging.PageNumber)');
+        document.getElementById('nextPageBtn').onclick = function () {
+            pageNumElem.value = parseInt(pageNumElem.value) + 1;
+            form.submit();
         };
-
-        // check for existency of hotelRoomNr in hotel
-        function validateRoom(hotelRoomNr) {
-            if (hotelRooms == null) {
-                //$.ajax({
-                //    // API /rooms GET
-                //    success: function (response) {
-                //        hotelRooms = response;
-                //    }
-                //})
-            }
-            return hotelRooms.some(function (room) {
-                return room.hotelRoomNumber == hotelRoomNr;
-            });
+        document.getElementById('prevPageBtn').onclick = function () {
+            pageNumElem.value = parseInt(pageNumElem.value) - 1;
+            form.submit();
+        };
+        document.getElementById('applyBtn').onclick = function () {
+            pageNumElem.value = 1;
         };
     </script>
 }

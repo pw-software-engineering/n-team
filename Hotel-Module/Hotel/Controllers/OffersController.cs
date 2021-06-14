@@ -1,10 +1,9 @@
 ﻿using Hotel.Models;
 using Hotel.ViewModels;
-using Hotel_Module.Authentication;
+using Hotel.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -17,6 +16,7 @@ using System.Web;
 namespace Hotel.Controllers
 {
     [Authorize(AuthenticationSchemes = HotelTokenCookieDefaults.AuthenticationScheme)]
+    [Route("/offers")]
     public class OffersController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -26,7 +26,6 @@ namespace Hotel.Controllers
             _httpClient = httpClientFactory.CreateClient(nameof(DefaultHttpClient));
         }
 
-
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             _httpClient.DefaultRequestHeaders.Add(
@@ -34,7 +33,8 @@ namespace Hotel.Controllers
                 HttpContext.User.Claims.First(c => c.Type == HotelCookieTokenManagerOptions.AuthStringClaimType).Value);
         }
 
-        [HttpGet("/offers")]
+
+        [HttpGet("")]
         public async Task<IActionResult> Index([FromQuery] bool? isActive, [FromQuery] Paging paging)
         {
             NameValueCollection query = HttpUtility.ParseQueryString("");
@@ -43,62 +43,44 @@ namespace Hotel.Controllers
             query["pageNumber"] = paging.PageNumber.ToString();
             query["pageSize"] = paging.PageSize.ToString();
 
-            try
+            return await this.TrySendAsync(async () =>
             {
                 IEnumerable<OfferPreview> response = await _httpClient.GetFromJsonAsync<IEnumerable<OfferPreview>>($"offers?{query}");
                 OffersIndexViewModel offersVM = new OffersIndexViewModel(response, paging, isActive);
                 return View(offersVM);
-            }
-            catch (HttpRequestException e)
-            {
-                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
-            }
-            catch (Exception)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError);
-            }
+            });
         }
 
-        [HttpGet("/offers/{offerID}")]
+        [HttpGet("{offerID}")]
         public async Task<IActionResult> Details([FromRoute] int offerID)
         {
-            try
+            return await this.TrySendAsync(async () =>
             {
                 Offer offer = await _httpClient.GetFromJsonAsync<Offer>($"offers/{offerID}");
                 offer.OfferID = offerID;
                 return View(offer);
-            }
-            catch (HttpRequestException e)
-            {
-                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
-            }
-            catch (Exception)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError);
-            }
+            });
         }
 
-        [HttpGet("/offers/{offerID}/edit")]
+        [HttpGet("{offerID}/edit")]
         public async Task<IActionResult> Edit([FromRoute] int offerID)
         {
-            try
+            return await this.TrySendAsync(async () =>
             {
                 Offer offer = await _httpClient.GetFromJsonAsync<Offer>($"offers/{offerID}");
                 offer.OfferID = offerID;
                 IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>($"offers/{offerID}/rooms");
                 return View(new OfferEditViewModel(offer));
-            }
-            catch (HttpRequestException e)
-            {
-                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
-            }
-            catch (Exception)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError);
-            }
+            });
         }
 
-        [HttpPost("/offers/{offerID}/edit")]
+        [HttpGet("add")]
+        public IActionResult Add()
+        {
+            return View();
+        }
+
+        [HttpPost("{offerID}/edit")]
         public async Task<IActionResult> Edit([FromForm] OfferEditViewModel offerViewModel)
         {
             OfferUpdateInfo offer = new OfferUpdateInfo
@@ -111,10 +93,14 @@ namespace Hotel.Controllers
             };
             HttpContent content = JsonContent.Create(offer);
 
-            return await CheckForConnectionError(_httpClient.PatchAsync($"offers/{offerViewModel.Offer.OfferID}", content));
+            return await this.TrySendAsync(async () =>
+            {
+                HttpResponseMessage response = await _httpClient.PatchAsync($"offers/{offerViewModel.Offer.OfferID}", content);
+                return StatusCode((int)response.StatusCode);
+            });
         }
 
-        [HttpPost("/offers/{offerID}/changeActive")]
+        [HttpPost("{offerID}/changeActive")]
         public async Task<IActionResult> ChangeActive([FromRoute] int offerID, [FromQuery] bool isActive)
         {
             OfferUpdateInfo offer = new OfferUpdateInfo
@@ -123,79 +109,70 @@ namespace Hotel.Controllers
             };
             HttpContent content = JsonContent.Create(offer);
 
-            await CheckForConnectionError(_httpClient.PatchAsync($"offers/{offerID}", content));
+            await this.TrySendAsync(async () =>
+            {
+                await _httpClient.PatchAsync($"offers/{offerID}", content);
+                return StatusCode((int)Response.StatusCode);
+            });
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet("/offers/add")]
-        public IActionResult Add()
-        {
-            return View();
-        }
-
-        [HttpPost("/offers/add")]
+        [HttpPost("add")]
         public async Task<IActionResult> Add([FromForm] Offer offer)
         {
-            return await CheckForConnectionError(_httpClient.PostAsJsonAsync("offers", offer));
+            return await this.TrySendAsync(async () =>
+            {
+                await _httpClient.PostAsJsonAsync("offers", offer);
+                return RedirectToAction(nameof(Index));
+            });
         }
 
-        [HttpGet("/offers/{offerID}/delete")]
+        [HttpGet("{offerID}/delete")]
         public async Task<IActionResult> Delete([FromRoute] int offerID)
         {
-            return await CheckForConnectionError(_httpClient.DeleteAsync($"offers/{offerID}"));
+            return await this.TrySendAsync(async () =>
+            {
+                await _httpClient.DeleteAsync($"offers/{offerID}");
+                return RedirectToAction(nameof(Index));
+            });
         }
 
-        [HttpGet("/offers/{offerID}/rooms")]
+        [HttpGet("{offerID}/rooms")]
         public async Task<IActionResult> GetOfferRooms([FromRoute] int offerID, [FromQuery] Paging paging)
         {
-            IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>(
-                $"offers/{offerID}/rooms?pageNumber={paging.PageNumber}&pageSize={paging.PageSize}");
-            return new JsonResult(rooms);
+            return await this.TrySendAsync(async () =>
+            {
+                IEnumerable<Room> rooms = await _httpClient.GetFromJsonAsync<IEnumerable<Room>>(
+                    $"offers/{offerID}/rooms?pageNumber={paging.PageNumber}&pageSize={paging.PageSize}");
+                return new JsonResult(rooms);
+            });
         }
 
-        [HttpDelete("/offers/{offerID}/rooms/{roomID}")]
+        [HttpDelete("{offerID}/rooms/{roomID}")]
         public async Task<IActionResult> DetachRoom([FromRoute] int offerID, [FromRoute] int roomID)
         {
-            return await CheckForConnectionError(_httpClient.DeleteAsync($"offers/{offerID}/rooms/{roomID}"));
+            return await this.TrySendAsync(async () =>
+            {
+                HttpResponseMessage response = await _httpClient.DeleteAsync($"offers/{offerID}/rooms/{roomID}");
+                return StatusCode((int)response.StatusCode);
+            });
         }
 
-        [HttpPost("/offers/{offerID}/rooms")]
+        [HttpPost("{offerID}/rooms")]
         public async Task<IActionResult> AttachRoom([FromRoute]int offerID, [FromForm]string roomNumber)
         {
-            Room[] room;
-            try
+            return await this.TrySendAsync(async () =>
             {
-                room = await _httpClient.GetFromJsonAsync<Room[]>($"rooms?roomNumber={roomNumber}");
+                Room[] room = await _httpClient.GetFromJsonAsync<Room[]>($"rooms?roomNumber={roomNumber}");
                 if (room is null || !room.Any())
                     return StatusCode((int)HttpStatusCode.NotFound);
-            }
-            catch (HttpRequestException e)
-            {
-                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
-            }
-            catch (Exception)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError);
-            }
-            int roomID = room[0].RoomID;
-            return await CheckForConnectionError(_httpClient.PostAsJsonAsync($"offers/{offerID}/rooms", roomID));
-        }
-
-        private async Task<StatusCodeResult> CheckForConnectionError(Task<HttpResponseMessage> responseTask)
-        {
-            try
-            {
-                HttpResponseMessage response = await responseTask;
-                return StatusCode((int)response.StatusCode);
-            }
-            catch (HttpRequestException e)
-            {
-                return StatusCode((int)(e.StatusCode ?? HttpStatusCode.InternalServerError));
-            }
-            catch (Exception)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError);
-            }
+                int roomID = room[0].RoomID;
+                return await this.TrySendAsync(async () =>
+                {
+                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync($"offers/{offerID}/rooms", roomID);
+                    return StatusCode((int)response.StatusCode);
+                });
+            });
         }
     }
 }

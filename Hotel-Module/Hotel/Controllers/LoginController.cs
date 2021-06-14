@@ -1,4 +1,4 @@
-﻿using Hotel_Module.Authentication;
+﻿using Hotel.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
@@ -23,9 +23,9 @@ namespace Hotel.Controllers
         }
 
         [HttpGet("/login")]
-        public IActionResult Login()
+        public IActionResult Index()
         {
-            return View("~/Views/Login/Index.cshtml");
+            return View();
         }
 
         [HttpPost("/login")]
