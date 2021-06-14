@@ -75,7 +75,7 @@ namespace Server
             Console.WriteLine("Migrating database...");
             var optionsBuilder = new DbContextOptionsBuilder<ServerDbContext>();
             optionsBuilder.UseSqlServer(Configuration.GetConnectionString("ServerDBContext"));
-            using (var context = new ServerDbContext(optionsBuilder.Options, false)) context.Database.Migrate();
+            using (var context = new ServerDbContext(optionsBuilder.Options)) context.Database.Migrate();
             Console.WriteLine("Done.");
 #endif
 
