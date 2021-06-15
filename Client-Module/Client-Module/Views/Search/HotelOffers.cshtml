@@ -242,10 +242,10 @@
             $("#@tagIDs.ApplyFilterBtn").on('click', DisplayHotelOffers);
 
             var hotelOffersList = $("#@tagIDs.HotelOffersListID");
-            var pathBase = "@Context.Request.PathBase.ToString()";
             async function DisplayHotelOffers() {
                 hotelOffersList.empty();
                 //Show a loading box while AJAX is fetching hotel offers info
+                var pathBase = "@Context.Request.PathBase.ToString()";
                 var loadingBox = $("<li>")
                     .attr("class", "list-group-item rounded-0 m-1 mb-3 bg-light reservation-list-entry")
                     .append(

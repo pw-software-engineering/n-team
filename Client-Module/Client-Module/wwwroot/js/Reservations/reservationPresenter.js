@@ -15,7 +15,7 @@ ReservationPresenter.prototype.displayLoading = function () {
                     .attr("style", "width: 75px").attr("src", `${pathBase}/resources/loading.gif`),
                 $("<p>")
                     .attr("class", "text-center h5 mt-2")
-                    .text("Loading hotel offer page...")
+                    .text("Loading client reservation page...")
             )
     );
 }
