@@ -1,7 +1,7 @@
 ﻿@model Hotel.Models.HotelInfo
 @{
     ViewData["Title"] = "Your profile";
-    string bg_img = string.IsNullOrWhiteSpace(Model.HotelPreviewPicture) ? "img/Atlantis-bg.png" : $"data:image/png;base64,{Model.HotelPreviewPicture}";
+    string bg_img = string.IsNullOrWhiteSpace(Model.HotelPreviewPicture) ? "img/Atlantis-bg.png" : $"{Model.HotelPreviewPicture}";
 }
 
 
