@@ -57,6 +57,15 @@ namespace Server.Migrations
                         },
                         new
                         {
+                            ClientID = -2,
+                            Email = "client2",
+                            Name = "TestNameX",
+                            Password = "client2",
+                            Surname = "TestSurnameX",
+                            Username = "client2"
+                        },
+                        new
+                        {
                             ClientID = 1,
                             Email = "TestEmail1",
                             Name = "TestName1",
@@ -282,13 +291,23 @@ namespace Server.Migrations
                     b.HasData(
                         new
                         {
-                            HotelID = -1,
+                            HotelID = 99999999,
                             AccessToken = "{\"id\":99999999,\"createdAt\":\"2021-05-11T18:21:50Z\"}",
                             City = "TestCity0",
                             Country = "TestCountry0",
                             HotelDescription = "TestHotelDesc0",
                             HotelName = "TestHotelName0",
                             HotelPreviewPicture = "TestHotelPreviewPicture0"
+                        },
+                        new
+                        {
+                            HotelID = 99999998,
+                            AccessToken = "{\"id\":99999998,\"createdAt\":\"2021-05-11T18:21:50Z\"}",
+                            City = "TestCityX",
+                            Country = "TestCountryX",
+                            HotelDescription = "TestHotelDescX",
+                            HotelName = "TestHotelNameX",
+                            HotelPreviewPicture = "TestHotelPreviewPictureX"
                         },
                         new
                         {
