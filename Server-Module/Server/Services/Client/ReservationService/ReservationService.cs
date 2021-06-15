@@ -53,9 +53,9 @@ namespace Server.Services.Client
                         reservation.OfferID = offerID;
                         reservation.RoomID = roomID;
 
-                        _dataAccess.AddReservation(reservation);
+                        int reservationID = _dataAccess.AddReservation(reservation);
                         _transaction.CommitTransaction();
-                        return new ServiceResult(HttpStatusCode.OK);
+                        return new ServiceResult(HttpStatusCode.OK, reservationID);
                     }
                 }
 
