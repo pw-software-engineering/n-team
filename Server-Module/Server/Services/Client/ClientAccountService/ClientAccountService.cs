@@ -26,7 +26,7 @@ namespace Server.Services.Client
             bool usernameEmpty = string.IsNullOrWhiteSpace(clientInfoUpdate.Username);
             Regex usernameRegex = new Regex(@"^[a-zA-Z][a-zA-Z0-9]{5,60}$");
             bool emailEmpty = string.IsNullOrWhiteSpace(clientInfoUpdate.Email);
-            Regex emailRegex = new Regex(@"^[a-zA-Z]([a-zA-Z0-9]|[\.\-_]){0,100}\@[a-z]{1,40}\.[a-z]{1,40}$");
+            Regex emailRegex = new Regex(@"^[a-zA-Z]([a-zA-Z0-9]|[\.\-_]){0,100}\@([a-zA-Z0-9]{1,40}\.)+[a-z]{1,40}$");
 
             if (usernameEmpty && emailEmpty)
                 return new ServiceResult(HttpStatusCode.BadRequest, new ErrorView("Username and e-mail are null"));
