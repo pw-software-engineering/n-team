@@ -32,6 +32,8 @@ function switchEnabled(checkbox, inputElement, gallery, defaultGalleryHtml) {
 // function used when sending a picture to controller
 async function get64BaseString(file) {
     var str;
+    if (file.name === "")
+        return null;
     await readUploadedImage(file)
         .then(value => {
             str = value;

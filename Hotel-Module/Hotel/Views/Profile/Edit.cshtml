@@ -31,7 +31,12 @@
         <div class="form-row">
             <input asp-for="HotelInfo.HotelPreviewPicture" type="file" disabled class="form-control col-sm-4" />
             <label asp-for="HotelInfo.HotelPreviewPicture" class="form-control-placeholder-file">Preview picture</label>
-            <div id="previewGallery"></div>
+            <div id="previewGallery">
+                @if (!(Model.HotelInfo.HotelPreviewPicture is null) && !string.IsNullOrWhiteSpace(Model.HotelInfo.HotelPreviewPicture))
+                {
+                    <img src="@Html.Raw(Model.HotelInfo.HotelPreviewPicture)" class="gallery-img" />
+                }
+            </div>
         </div>
         <a href="~/img/dubai.jpg">Current picture</a>
     </div>
@@ -46,7 +51,16 @@
         <div class="form-row">
             <input asp-for="HotelInfo.HotelPictures" type="file" multiple disabled class="form-control col-sm-4" />
             <label asp-for="HotelInfo.HotelPictures" class="form-control-placeholder-file">Additional pictures</label>
-            <div id="additionalGallery"></div>
+            <div id="additionalGallery">
+                @if (!(Model.HotelInfo.HotelPictures is null))
+                {
+                    @foreach (string pic in Model.HotelInfo.HotelPictures)
+                    {
+                        @:<img src="@Html.Raw(pic)" class="gallery-img" />
+
+                    }
+                }
+            </div>
         </div>
     </div>
     <hr />
@@ -84,9 +98,11 @@
                 let picsString = '@Html.NameFor(hi => hi.HotelInfo.HotelPictures)';
 
                 let previewPic = formData.get(previewPicString);
-                let previewPic64 = await get64BaseString(previewPic);
-                if (previewPic64) {
-                    formData.set(previewPicString, previewPic64);           // .set() overrides value
+                if (previewPic) {
+                    let previewPic64 = await get64BaseString(previewPic);
+                    if (previewPic64) {
+                        formData.set(previewPicString, previewPic64);           // .set() overrides value
+                    }
                 }
 
                 let pics = formData.getAll(picsString);
