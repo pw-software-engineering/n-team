@@ -20,7 +20,10 @@ namespace Server.AutoMapper
             #endregion
 
             #region Db -> View
-            CreateMap<HotelDb, HotelPreviewView>();
+            CreateMap<HotelDb, HotelPreviewView>().AfterMap((hdb, h) =>
+            {
+                h.PreviewPicture = hdb.HotelPreviewPicture;
+            });
             CreateMap<HotelDb, HotelView>();
             CreateMap<HotelDb, HotelInfoPreview>();
             CreateMap<OfferDb, OfferPreviewView>();
