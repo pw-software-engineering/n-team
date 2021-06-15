@@ -34,7 +34,7 @@ async function get64BaseString(file) {
     var str;
     await readUploadedImage(file)
         .then(value => {
-            str = value.split(',')[1];
+            str = value;
         })
         .catch(function () {
             console.log("oops");

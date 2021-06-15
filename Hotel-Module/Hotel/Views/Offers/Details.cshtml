@@ -12,7 +12,7 @@
     }
     else
     {
-        <img class="img rounded preview-img" src="data:image/png;base64,@Html.Raw(Model.OfferPreviewPicture)" />
+        <img class="img rounded preview-img" src="@Html.Raw(Model.OfferPreviewPicture)" />
     }
 
     <div>
@@ -75,7 +75,7 @@
             foreach (string picture in Model.Pictures)
             {
                 <div class="col-sm-3">
-                    <img class="img-thumbnail" src="data:image/png;base64,@Html.Raw(picture)">
+                    <img class="img-thumbnail" src="@Html.Raw(picture)">
                 </div>
             }
     </div>
